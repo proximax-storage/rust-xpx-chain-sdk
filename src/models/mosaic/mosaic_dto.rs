@@ -56,13 +56,13 @@ impl MosaicIds {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::MosaicMetaDto,
+    pub meta: crate::models::mosaic::MosaicMetaDto,
     #[serde(rename = "mosaic")]
-    pub mosaic: crate::models::MosaicDefinitionDto,
+    pub mosaic: crate::models::mosaic::MosaicDefinitionDto,
 }
 
 impl MosaicInfoDto {
-    pub fn new(meta: crate::models::MosaicMetaDto, mosaic: crate::models::MosaicDefinitionDto) -> MosaicInfoDto {
+    pub fn new(meta: crate::models::mosaic::MosaicMetaDto, mosaic: crate::models::mosaic::MosaicDefinitionDto) -> MosaicInfoDto {
         MosaicInfoDto {
             meta,
             mosaic,
@@ -120,11 +120,11 @@ pub struct MosaicDefinitionDto {
     #[serde(rename = "revision")]
     pub revision: i32,
     #[serde(rename = "properties")]
-    pub properties: Vec<crate::models::MosaicPropertyDto>,
+    pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
 }
 
 impl MosaicDefinitionDto {
-    pub fn new(mosaic_id: Vec<i32>, supply: Vec<i32>, height: Vec<i32>, owner: String, revision: i32, properties: Vec<crate::models::MosaicPropertyDto>) -> MosaicDefinitionDto {
+    pub fn new(mosaic_id: Vec<i32>, supply: Vec<i32>, height: Vec<i32>, owner: String, revision: i32, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> MosaicDefinitionDto {
         MosaicDefinitionDto {
             mosaic_id,
             supply,
@@ -176,11 +176,11 @@ impl MosaicMetadataDtoAllOf {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicMetadataInfoDto {
     #[serde(rename = "metadata")]
-    pub metadata: crate::models::MosaicMetadataDto,
+    pub metadata: crate::models::mosaic::MosaicMetadataDto,
 }
 
 impl MosaicMetadataInfoDto {
-    pub fn new(metadata: crate::models::MosaicMetadataDto) -> MosaicMetadataInfoDto {
+    pub fn new(metadata: crate::models::mosaic::MosaicMetadataDto) -> MosaicMetadataInfoDto {
         MosaicMetadataInfoDto {
             metadata,
         }
@@ -196,7 +196,7 @@ pub struct MosaicMetadataTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -252,7 +252,7 @@ impl MosaicNamesDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicPropertyDto {
     #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
-    pub id: Option<crate::models::MosaicPropertyIdEnum>,
+    pub id: Option<crate::models::mosaic::MosaicPropertyIdEnum>,
     #[serde(rename = "value", skip_serializing_if = "Option::is_none")]
     pub value: Option<Vec<i32>>,
 }
@@ -271,13 +271,13 @@ pub struct MosaicSupplyChangeTransactionBodyDto {
     #[serde(rename = "mosaicId")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "direction")]
-    pub direction: crate::models::MosaicDirectionEnum,
+    pub direction: crate::models::mosaic::MosaicDirectionEnum,
     #[serde(rename = "delta")]
     pub delta: Vec<i32>,
 }
 
 impl MosaicSupplyChangeTransactionBodyDto {
-    pub fn new(mosaic_id: Vec<i32>, direction: crate::models::MosaicDirectionEnum, delta: Vec<i32>) -> MosaicSupplyChangeTransactionBodyDto {
+    pub fn new(mosaic_id: Vec<i32>, direction: crate::models::mosaic::MosaicDirectionEnum, delta: Vec<i32>) -> MosaicSupplyChangeTransactionBodyDto {
         MosaicSupplyChangeTransactionBodyDto {
             mosaic_id,
             direction,
@@ -295,7 +295,7 @@ pub struct MosaicSupplyChangeTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -307,14 +307,14 @@ pub struct MosaicSupplyChangeTransactionDto {
     #[serde(rename = "mosaicId")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "direction")]
-    pub direction: crate::models::MosaicDirectionEnum,
+    pub direction: crate::models::mosaic::MosaicDirectionEnum,
     #[serde(rename = "delta")]
     pub delta: Vec<i32>,
 }
 
 impl MosaicSupplyChangeTransactionDto {
     /// Transaction to increase or decrease a mosaic’s supply.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_id: Vec<i32>, direction: crate::models::MosaicDirectionEnum, delta: Vec<i32>) -> MosaicSupplyChangeTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_id: Vec<i32>, direction: crate::models::mosaic::MosaicDirectionEnum, delta: Vec<i32>) -> MosaicSupplyChangeTransactionDto {
         MosaicSupplyChangeTransactionDto {
             signature,
             signer,
@@ -337,11 +337,11 @@ pub struct MosaicDefinitionTransactionBodyDto {
     #[serde(rename = "mosaicId")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "properties")]
-    pub properties: Vec<crate::models::MosaicPropertyDto>,
+    pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
 }
 
 impl MosaicDefinitionTransactionBodyDto {
-    pub fn new(mosaic_nonce: i32, mosaic_id: Vec<i32>, properties: Vec<crate::models::MosaicPropertyDto>) -> MosaicDefinitionTransactionBodyDto {
+    pub fn new(mosaic_nonce: i32, mosaic_id: Vec<i32>, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> MosaicDefinitionTransactionBodyDto {
         MosaicDefinitionTransactionBodyDto {
             mosaic_nonce,
             mosaic_id,
@@ -359,7 +359,7 @@ pub struct MosaicDefinitionTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -374,12 +374,12 @@ pub struct MosaicDefinitionTransactionDto {
     #[serde(rename = "mosaicId")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "properties")]
-    pub properties: Vec<crate::models::MosaicPropertyDto>,
+    pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
 }
 
 impl MosaicDefinitionTransactionDto {
     /// Transaction that creates a new mosaic.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_nonce: i32, mosaic_id: Vec<i32>, properties: Vec<crate::models::MosaicPropertyDto>) -> MosaicDefinitionTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_nonce: i32, mosaic_id: Vec<i32>, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> MosaicDefinitionTransactionDto {
         MosaicDefinitionTransactionDto {
             signature,
             signer,
@@ -399,7 +399,7 @@ pub struct EmbeddedMosaicDefinitionTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -414,11 +414,11 @@ pub struct EmbeddedMosaicDefinitionTransactionDto {
     #[serde(rename = "mosaicId")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "properties")]
-    pub properties: Vec<crate::models::MosaicPropertyDto>,
+    pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
 }
 
 impl EmbeddedMosaicDefinitionTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_nonce: i32, mosaic_id: Vec<i32>, properties: Vec<crate::models::MosaicPropertyDto>) -> EmbeddedMosaicDefinitionTransactionDto {
+    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_nonce: i32, mosaic_id: Vec<i32>, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> EmbeddedMosaicDefinitionTransactionDto {
         EmbeddedMosaicDefinitionTransactionDto {
             signer,
             version,
@@ -437,7 +437,7 @@ pub struct EmbeddedMosaicMetadataTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -475,7 +475,7 @@ pub struct EmbeddedMosaicSupplyChangeTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -487,13 +487,13 @@ pub struct EmbeddedMosaicSupplyChangeTransactionDto {
     #[serde(rename = "mosaicId")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "direction")]
-    pub direction: crate::models::MosaicDirectionEnum,
+    pub direction: crate::models::mosaic::MosaicDirectionEnum,
     #[serde(rename = "delta")]
     pub delta: Vec<i32>,
 }
 
 impl EmbeddedMosaicSupplyChangeTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_id: Vec<i32>, direction: crate::models::MosaicDirectionEnum, delta: Vec<i32>) -> EmbeddedMosaicSupplyChangeTransactionDto {
+    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_id: Vec<i32>, direction: crate::models::mosaic::MosaicDirectionEnum, delta: Vec<i32>) -> EmbeddedMosaicSupplyChangeTransactionDto {
         EmbeddedMosaicSupplyChangeTransactionDto {
             signer,
             version,

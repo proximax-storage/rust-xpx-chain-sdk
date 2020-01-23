@@ -85,16 +85,16 @@ pub struct AccountDto {
     pub public_key_height: Vec<i32>,
     /// The list of mosaics the account owns. The amount is represented in absolute amount. Thus a balance of 123456789 for a mosaic with divisibility 6 (absolute) means the account owns 123.456789 instead. 
     #[serde(rename = "mosaics")]
-    pub mosaics: Vec<crate::models::MosaicDto>,
+    pub mosaics: Vec<crate::models::mosaic::MosaicDto>,
     #[serde(rename = "accountType")]
-    pub account_type: crate::models::AccountLinkTypeEnum,
+    pub account_type: crate::models::account::AccountLinkTypeEnum,
     /// The public key of a linked account. The linked account can use|provide balance for delegated harvesting. 
     #[serde(rename = "linkedAccountKey")]
     pub linked_account_key: String,
 }
 
 impl AccountDto {
-    pub fn new(address: String, address_height: Vec<i32>, public_key: String, public_key_height: Vec<i32>, mosaics: Vec<crate::models::MosaicDto>, account_type: crate::models::AccountLinkTypeEnum, linked_account_key: String) -> AccountDto {
+    pub fn new(address: String, address_height: Vec<i32>, public_key: String, public_key_height: Vec<i32>, mosaics: Vec<crate::models::mosaic::MosaicDto>, account_type: crate::models::account::AccountLinkTypeEnum, linked_account_key: String) -> AccountDto {
         AccountDto {
             address,
             address_height,
@@ -129,13 +129,13 @@ impl AccountIds {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AccountInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::AccountMetaDto,
+    pub meta: crate::models::account::AccountMetaDto,
     #[serde(rename = "account")]
-    pub account: crate::models::AccountDto,
+    pub account: crate::models::account::AccountDto,
 }
 
 impl AccountInfoDto {
-    pub fn new(meta: crate::models::AccountMetaDto, account: crate::models::AccountDto) -> AccountInfoDto {
+    pub fn new(meta: crate::models::account::AccountMetaDto, account: crate::models::account::AccountDto) -> AccountInfoDto {
         AccountInfoDto {
             meta,
             account,
@@ -149,11 +149,11 @@ pub struct AccountLinkTransactionBodyDto {
     #[serde(rename = "remoteAccountKey")]
     pub remote_account_key: String,
     #[serde(rename = "action")]
-    pub action: crate::models::LinkActionEnum,
+    pub action: crate::models::alias::LinkActionEnum,
 }
 
 impl AccountLinkTransactionBodyDto {
-    pub fn new(remote_account_key: String, action: crate::models::LinkActionEnum) -> AccountLinkTransactionBodyDto {
+    pub fn new(remote_account_key: String, action: crate::models::alias::LinkActionEnum) -> AccountLinkTransactionBodyDto {
         AccountLinkTransactionBodyDto {
             remote_account_key,
             action,
@@ -170,7 +170,7 @@ pub struct AccountLinkTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -183,12 +183,12 @@ pub struct AccountLinkTransactionDto {
     #[serde(rename = "remoteAccountKey")]
     pub remote_account_key: String,
     #[serde(rename = "action")]
-    pub action: crate::models::LinkActionEnum,
+    pub action: crate::models::alias::LinkActionEnum,
 }
 
 impl AccountLinkTransactionDto {
     /// Delegates the account importance score to a proxy account.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, remote_account_key: String, action: crate::models::LinkActionEnum) -> AccountLinkTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, remote_account_key: String, action: crate::models::alias::LinkActionEnum) -> AccountLinkTransactionDto {
         AccountLinkTransactionDto {
             signature,
             signer,
@@ -227,11 +227,11 @@ pub struct AccountPropertiesDto {
     #[serde(rename = "address")]
     pub address: String,
     #[serde(rename = "properties")]
-    pub properties: Vec<crate::models::AccountPropertyDto>,
+    pub properties: Vec<crate::models::account::AccountPropertyDto>,
 }
 
 impl AccountPropertiesDto {
-    pub fn new(address: String, properties: Vec<crate::models::AccountPropertyDto>) -> AccountPropertiesDto {
+    pub fn new(address: String, properties: Vec<crate::models::account::AccountPropertyDto>) -> AccountPropertiesDto {
         AccountPropertiesDto {
             address,
             properties,
@@ -242,11 +242,11 @@ impl AccountPropertiesDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AccountPropertiesInfoDto {
     #[serde(rename = "accountProperties")]
-    pub account_properties: crate::models::AccountPropertiesDto,
+    pub account_properties: crate::models::account::AccountPropertiesDto,
 }
 
 impl AccountPropertiesInfoDto {
-    pub fn new(account_properties: crate::models::AccountPropertiesDto) -> AccountPropertiesInfoDto {
+    pub fn new(account_properties: crate::models::account::AccountPropertiesDto) -> AccountPropertiesInfoDto {
         AccountPropertiesInfoDto {
             account_properties,
         }
@@ -256,14 +256,14 @@ impl AccountPropertiesInfoDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AccountPropertiesModificationDto {
     #[serde(rename = "type")]
-    pub _type: crate::models::AccountPropertiesModificationTypeEnum,
+    pub _type: crate::models::account::AccountPropertiesModificationTypeEnum,
     /// The address, transaction type or mosaic id to filter.
     #[serde(rename = "values")]
     pub values: Vec<i32>,
 }
 
 impl AccountPropertiesModificationDto {
-    pub fn new(_type: crate::models::AccountPropertiesModificationTypeEnum, values: Vec<i32>) -> AccountPropertiesModificationDto {
+    pub fn new(_type: crate::models::account::AccountPropertiesModificationTypeEnum, values: Vec<i32>) -> AccountPropertiesModificationDto {
         AccountPropertiesModificationDto {
             _type,
             values,
@@ -274,13 +274,13 @@ impl AccountPropertiesModificationDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AccountPropertiesTransactionBodyDto {
     #[serde(rename = "propertyType")]
-    pub property_type: crate::models::AccountPropertyTypeEnum,
+    pub property_type: crate::models::account::AccountPropertyTypeEnum,
     #[serde(rename = "modifications")]
-    pub modifications: Vec<crate::models::AccountPropertiesModificationDto>,
+    pub modifications: Vec<crate::models::account::AccountPropertiesModificationDto>,
 }
 
 impl AccountPropertiesTransactionBodyDto {
-    pub fn new(property_type: crate::models::AccountPropertyTypeEnum, modifications: Vec<crate::models::AccountPropertiesModificationDto>) -> AccountPropertiesTransactionBodyDto {
+    pub fn new(property_type: crate::models::account::AccountPropertyTypeEnum, modifications: Vec<crate::models::account::AccountPropertiesModificationDto>) -> AccountPropertiesTransactionBodyDto {
         AccountPropertiesTransactionBodyDto {
             property_type,
             modifications,
@@ -297,7 +297,7 @@ pub struct AccountPropertiesTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -307,14 +307,14 @@ pub struct AccountPropertiesTransactionDto {
     #[serde(rename = "deadline")]
     pub deadline: Vec<i32>,
     #[serde(rename = "propertyType")]
-    pub property_type: crate::models::AccountPropertyTypeEnum,
+    pub property_type: crate::models::account::AccountPropertyTypeEnum,
     #[serde(rename = "modifications")]
-    pub modifications: Vec<crate::models::AccountPropertiesModificationDto>,
+    pub modifications: Vec<crate::models::account::AccountPropertiesModificationDto>,
 }
 
 impl AccountPropertiesTransactionDto {
     /// Transaction that prevents receiving transactions from undesired addresses, mosaics or sending certain transaction types.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, property_type: crate::models::AccountPropertyTypeEnum, modifications: Vec<crate::models::AccountPropertiesModificationDto>) -> AccountPropertiesTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, property_type: crate::models::account::AccountPropertyTypeEnum, modifications: Vec<crate::models::account::AccountPropertiesModificationDto>) -> AccountPropertiesTransactionDto {
         AccountPropertiesTransactionDto {
             signature,
             signer,
@@ -331,14 +331,14 @@ impl AccountPropertiesTransactionDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AccountPropertyDto {
     #[serde(rename = "propertyType")]
-    pub property_type: crate::models::AccountPropertyTypeEnum,
+    pub property_type: crate::models::account::AccountPropertyTypeEnum,
     /// The address, transaction type or mosaic id to filter.
     #[serde(rename = "values")]
     pub values: Vec<i32>,
 }
 
 impl AccountPropertyDto {
-    pub fn new(property_type: crate::models::AccountPropertyTypeEnum, values: Vec<i32>) -> AccountPropertyDto {
+    pub fn new(property_type: crate::models::account::AccountPropertyTypeEnum, values: Vec<i32>) -> AccountPropertyDto {
         AccountPropertyDto {
             property_type,
             values,
@@ -351,7 +351,7 @@ pub struct EmbeddedAccountLinkTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -364,11 +364,11 @@ pub struct EmbeddedAccountLinkTransactionDto {
     #[serde(rename = "remoteAccountKey")]
     pub remote_account_key: String,
     #[serde(rename = "action")]
-    pub action: crate::models::LinkActionEnum,
+    pub action: crate::models::alias::LinkActionEnum,
 }
 
 impl EmbeddedAccountLinkTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, remote_account_key: String, action: crate::models::LinkActionEnum) -> EmbeddedAccountLinkTransactionDto {
+    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, remote_account_key: String, action: crate::models::alias::LinkActionEnum) -> EmbeddedAccountLinkTransactionDto {
         EmbeddedAccountLinkTransactionDto {
             signer,
             version,
@@ -386,7 +386,7 @@ pub struct EmbeddedAccountPropertiesTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -396,13 +396,13 @@ pub struct EmbeddedAccountPropertiesTransactionDto {
     #[serde(rename = "deadline")]
     pub deadline: Vec<i32>,
     #[serde(rename = "propertyType")]
-    pub property_type: crate::models::AccountPropertyTypeEnum,
+    pub property_type: crate::models::account::AccountPropertyTypeEnum,
     #[serde(rename = "modifications")]
-    pub modifications: Vec<crate::models::AccountPropertiesModificationDto>,
+    pub modifications: Vec<crate::models::account::AccountPropertiesModificationDto>,
 }
 
 impl EmbeddedAccountPropertiesTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, property_type: crate::models::AccountPropertyTypeEnum, modifications: Vec<crate::models::AccountPropertiesModificationDto>) -> EmbeddedAccountPropertiesTransactionDto {
+    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, property_type: crate::models::account::AccountPropertyTypeEnum, modifications: Vec<crate::models::account::AccountPropertiesModificationDto>) -> EmbeddedAccountPropertiesTransactionDto {
         EmbeddedAccountPropertiesTransactionDto {
             signer,
             version,

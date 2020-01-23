@@ -16,16 +16,16 @@ pub enum HashAlgorithmEnum {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct HashLockTransactionBodyDto {
     #[serde(rename = "mosaic")]
-    pub mosaic: crate::models::MosaicDto,
+    pub mosaic: crate::models::mosaic::MosaicDto,
     #[serde(rename = "duration")]
-    pub duration: crate::models::MosaicDto,
+    pub duration: crate::models::mosaic::MosaicDto,
     /// The aggregate bonded transaction hash that has to be confirmed before unlocking the mosaics. 
     #[serde(rename = "hash")]
     pub hash: String,
 }
 
 impl HashLockTransactionBodyDto {
-    pub fn new(mosaic: crate::models::MosaicDto, duration: crate::models::MosaicDto, hash: String) -> HashLockTransactionBodyDto {
+    pub fn new(mosaic: crate::models::mosaic::MosaicDto, duration: crate::models::mosaic::MosaicDto, hash: String) -> HashLockTransactionBodyDto {
         HashLockTransactionBodyDto {
             mosaic,
             duration,
@@ -43,7 +43,7 @@ pub struct HashLockTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -53,9 +53,9 @@ pub struct HashLockTransactionDto {
     #[serde(rename = "deadline")]
     pub deadline: Vec<i32>,
     #[serde(rename = "mosaic")]
-    pub mosaic: crate::models::MosaicDto,
+    pub mosaic: crate::models::mosaic::MosaicDto,
     #[serde(rename = "duration")]
-    pub duration: crate::models::MosaicDto,
+    pub duration: crate::models::mosaic::MosaicDto,
     /// The aggregate bonded transaction hash that has to be confirmed before unlocking the mosaics.
     #[serde(rename = "hash")]
     pub hash: String,
@@ -63,7 +63,7 @@ pub struct HashLockTransactionDto {
 
 impl HashLockTransactionDto {
     /// Transaction to lock funds before sending an aggregate bonded transaction.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic: crate::models::MosaicDto, duration: crate::models::MosaicDto, hash: String) -> HashLockTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic: crate::models::mosaic::MosaicDto, duration: crate::models::mosaic::MosaicDto, hash: String) -> HashLockTransactionDto {
         HashLockTransactionDto {
             signature,
             signer,
@@ -83,7 +83,7 @@ pub struct EmbeddedHashLockTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -96,16 +96,16 @@ pub struct EmbeddedHashLockTransactionDto {
     #[serde(rename = "signature")]
     pub signature: String,
     #[serde(rename = "mosaic")]
-    pub mosaic: crate::models::MosaicDto,
+    pub mosaic: crate::models::mosaic::MosaicDto,
     #[serde(rename = "duration")]
-    pub duration: crate::models::MosaicDto,
+    pub duration: crate::models::mosaic::MosaicDto,
     /// The aggregate bonded transaction hash that has to be confirmed before unlocking the mosaics.
     #[serde(rename = "hash")]
     pub hash: String,
 }
 
 impl EmbeddedHashLockTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, signature: String, mosaic: crate::models::MosaicDto, duration: crate::models::MosaicDto, hash: String) -> EmbeddedHashLockTransactionDto {
+    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, signature: String, mosaic: crate::models::mosaic::MosaicDto, duration: crate::models::mosaic::MosaicDto, hash: String) -> EmbeddedHashLockTransactionDto {
         EmbeddedHashLockTransactionDto {
             signer,
             version,

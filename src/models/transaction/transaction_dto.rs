@@ -6,7 +6,7 @@ pub struct TransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network. 
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -80,13 +80,13 @@ impl TransactionIds {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::TransactionMetaDto,
+    pub meta: crate::models::transaction::TransactionMetaDto,
     #[serde(rename = "transaction")]
-    pub transaction: crate::models::EmbeddedBlockchainUpgradeTransactionDto,
+    pub transaction: crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto,
 }
 
 impl TransactionInfoDto {
-    pub fn new(meta: crate::models::TransactionMetaDto, transaction: crate::models::EmbeddedBlockchainUpgradeTransactionDto) -> TransactionInfoDto {
+    pub fn new(meta: crate::models::transaction::TransactionMetaDto, transaction: crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto) -> TransactionInfoDto {
         TransactionInfoDto {
             meta,
             transaction,
@@ -168,13 +168,13 @@ pub struct TransferTransactionBodyDto {
     pub recipient: String,
     /// The array of mosaics sent to the recipient. If the most significant bit of byte 0 is set, a namespaceId (alias) is used instead of a instead of a mosaicId corresponds to a mosaicId.
     #[serde(rename = "mosaics")]
-    pub mosaics: Vec<crate::models::MosaicDto>,
+    pub mosaics: Vec<crate::models::mosaic::MosaicDto>,
     #[serde(rename = "message")]
-    pub message: crate::models::MessageDto,
+    pub message: crate::models::message::MessageDto,
 }
 
 impl TransferTransactionBodyDto {
-    pub fn new(recipient: String, mosaics: Vec<crate::models::MosaicDto>, message: crate::models::MessageDto) -> TransferTransactionBodyDto {
+    pub fn new(recipient: String, mosaics: Vec<crate::models::mosaic::MosaicDto>, message: crate::models::message::MessageDto) -> TransferTransactionBodyDto {
         TransferTransactionBodyDto {
             recipient,
             mosaics,
@@ -192,7 +192,7 @@ pub struct TransferTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -206,14 +206,14 @@ pub struct TransferTransactionDto {
     pub recipient: String,
     /// The array of mosaics sent to the recipient. If the most significant bit of byte 0 is set, a namespaceId (alias) is used instead of a instead of a mosaicId corresponds to a mosaicId.
     #[serde(rename = "mosaics")]
-    pub mosaics: Vec<crate::models::MosaicDto>,
+    pub mosaics: Vec<crate::models::mosaic::MosaicDto>,
     #[serde(rename = "message")]
-    pub message: crate::models::MessageDto,
+    pub message: crate::models::message::MessageDto,
 }
 
 impl TransferTransactionDto {
     /// Transaction that transfers mosaics and messages to another account.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, recipient: String, mosaics: Vec<crate::models::MosaicDto>, message: crate::models::MessageDto) -> TransferTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, recipient: String, mosaics: Vec<crate::models::mosaic::MosaicDto>, message: crate::models::message::MessageDto) -> TransferTransactionDto {
         TransferTransactionDto {
             signature,
             signer,
@@ -233,7 +233,7 @@ pub struct EmbeddedTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -259,13 +259,13 @@ impl EmbeddedTransactionDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmbeddedTransactionInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::EmbeddedTransactionMetaDto,
+    pub meta: crate::models::transaction::EmbeddedTransactionMetaDto,
     #[serde(rename = "transaction")]
-    pub transaction: crate::models::EmbeddedBlockchainUpgradeTransactionDto,
+    pub transaction: crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto,
 }
 
 impl EmbeddedTransactionInfoDto {
-    pub fn new(meta: crate::models::EmbeddedTransactionMetaDto, transaction: crate::models::EmbeddedBlockchainUpgradeTransactionDto) -> EmbeddedTransactionInfoDto {
+    pub fn new(meta: crate::models::transaction::EmbeddedTransactionMetaDto, transaction: crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto) -> EmbeddedTransactionInfoDto {
         EmbeddedTransactionInfoDto {
             meta,
             transaction,

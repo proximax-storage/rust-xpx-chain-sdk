@@ -36,11 +36,11 @@ impl ContractDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ContractInfoDto {
     #[serde(rename = "contract")]
-    pub contract: crate::models::ContractDto,
+    pub contract: crate::models::contract::ContractDto,
 }
 
 impl ContractInfoDto {
-    pub fn new(contract: crate::models::ContractDto) -> ContractInfoDto {
+    pub fn new(contract: crate::models::contract::ContractDto) -> ContractInfoDto {
         ContractInfoDto {
             contract,
         }

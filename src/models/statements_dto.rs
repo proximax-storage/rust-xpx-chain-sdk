@@ -1,7 +1,4 @@
 /// StatementsDto : The collection of transaction statements and resolutions triggered for the block requested.
-
-
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatementsDto {
     /// The array of transaction statements for the block requested.

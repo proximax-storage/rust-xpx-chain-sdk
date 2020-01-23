@@ -6,7 +6,7 @@ pub struct BlockDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network. 
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -120,13 +120,13 @@ impl BlockDtoAllOf {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BlockInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::BlockMetaDto,
+    pub meta: crate::models::blockchain::BlockMetaDto,
     #[serde(rename = "block")]
-    pub block: crate::models::BlockDto,
+    pub block: crate::models::blockchain::BlockDto,
 }
 
 impl BlockInfoDto {
-    pub fn new(meta: crate::models::BlockMetaDto, block: crate::models::BlockDto) -> BlockInfoDto {
+    pub fn new(meta: crate::models::blockchain::BlockMetaDto, block: crate::models::blockchain::BlockDto) -> BlockInfoDto {
         BlockInfoDto {
             meta,
             block,

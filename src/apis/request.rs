@@ -1,13 +1,14 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
 
-use super::{configuration, Error};
 use futures;
 use futures::{Future, Stream};
 use hyper;
 use hyper::header::UserAgent;
 use serde;
 use serde_json;
+
+use super::{configuration, Error};
 
 pub(crate) struct ApiKey {
     pub in_header: bool,
@@ -98,11 +99,11 @@ impl Request {
     pub fn execute<'a, C, U>(
         self,
         conf: &configuration::Configuration<C>,
-    ) -> Box<dyn Future<Item = U, Error = Error<serde_json::Value>> + 'a>
-    where
-        C: hyper::client::Connect,
-        U: Sized + 'a,
-        for<'de> U: serde::Deserialize<'de>,
+    ) -> Box<dyn Future<Item=U, Error=Error<serde_json::Value>> + 'a>
+        where
+            C: hyper::client::Connect,
+            U: Sized + 'a,
+            for<'de> U: serde::Deserialize<'de>,
     {
         let mut query_string = ::url::form_urlencoded::Serializer::new("".to_owned());
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
@@ -202,22 +203,22 @@ impl Request {
 
         let no_ret_type = self.no_return_type;
         let res = conf.client
-                .request(req)
-                .map_err(|e| Error::from(e))
-                .and_then(|resp| {
-                    let status = resp.status();
-                    resp.body()
-                        .concat2()
-                        .and_then(move |body| Ok((status, body)))
-                        .map_err(|e| Error::from(e))
-                })
-                .and_then(|(status, body)| {
-                    if status.is_success() {
-                        Ok(body)
-                    } else {
-                        Err(Error::from((status, &*body)))
-                    }
-                });
+            .request(req)
+            .map_err(|e| Error::from(e))
+            .and_then(|resp| {
+                let status = resp.status();
+                resp.body()
+                    .concat2()
+                    .and_then(move |body| Ok((status, body)))
+                    .map_err(|e| Error::from(e))
+            })
+            .and_then(|(status, body)| {
+                if status.is_success() {
+                    Ok(body)
+                } else {
+                    Err(Error::from((status, &*body)))
+                }
+            });
         Box::new(
             res
                 .and_then(move |body| {

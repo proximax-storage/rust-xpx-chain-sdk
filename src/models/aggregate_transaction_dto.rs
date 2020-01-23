@@ -7,7 +7,7 @@ pub struct AggregateTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network. 
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -18,15 +18,15 @@ pub struct AggregateTransactionDto {
     pub deadline: Vec<i32>,
     /// An array of transaction cosignatures.
     #[serde(rename = "cosignatures")]
-    pub cosignatures: Vec<crate::models::CosignatureDto>,
+    pub cosignatures: Vec<crate::models::multisig::CosignatureDto>,
     /// The array of transactions initiated by different accounts.
     #[serde(rename = "transactions")]
-    pub transactions: Vec<crate::models::EmbeddedTransactionInfoDto>,
+    pub transactions: Vec<crate::models::transaction::EmbeddedTransactionInfoDto>,
 }
 
 impl AggregateTransactionDto {
     /// Transaction that combines multiple transactions together.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, cosignatures: Vec<crate::models::CosignatureDto>, transactions: Vec<crate::models::EmbeddedTransactionInfoDto>) -> AggregateTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, cosignatures: Vec<crate::models::multisig::CosignatureDto>, transactions: Vec<crate::models::transaction::EmbeddedTransactionInfoDto>) -> AggregateTransactionDto {
         AggregateTransactionDto {
             signature,
             signer,
@@ -44,14 +44,14 @@ impl AggregateTransactionDto {
 pub struct AggregateTransactionBodyDto {
     /// An array of transaction cosignatures.
     #[serde(rename = "cosignatures")]
-    pub cosignatures: Vec<crate::models::CosignatureDto>,
+    pub cosignatures: Vec<crate::models::multisig::CosignatureDto>,
     /// The array of transactions initiated by different accounts.
     #[serde(rename = "transactions")]
-    pub transactions: Vec<crate::models::EmbeddedTransactionInfoDto>,
+    pub transactions: Vec<crate::models::transaction::EmbeddedTransactionInfoDto>,
 }
 
 impl AggregateTransactionBodyDto {
-    pub fn new(cosignatures: Vec<crate::models::CosignatureDto>, transactions: Vec<crate::models::EmbeddedTransactionInfoDto>) -> AggregateTransactionBodyDto {
+    pub fn new(cosignatures: Vec<crate::models::multisig::CosignatureDto>, transactions: Vec<crate::models::transaction::EmbeddedTransactionInfoDto>) -> AggregateTransactionBodyDto {
         AggregateTransactionBodyDto {
             cosignatures,
             transactions,

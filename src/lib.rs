@@ -1,11 +1,17 @@
+#[cfg(any(feature = "std", test))]
+#[macro_use]
+extern crate std;
+extern crate failure;
+extern crate futures;
+extern crate hyper;
+extern crate serde;
+
 #[macro_use]
 extern crate serde_derive;
-
-extern crate serde;
 extern crate serde_json;
 extern crate url;
-extern crate hyper;
-extern crate futures;
+extern crate xpx_crypto;
+extern crate core;
 
 pub mod apis;
 pub mod models;

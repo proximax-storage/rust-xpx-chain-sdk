@@ -30,15 +30,15 @@ pub struct NamespaceDto {
     #[serde(rename = "level2", skip_serializing_if = "Option::is_none")]
     pub level2: Option<Vec<i32>>,
     #[serde(rename = "type")]
-    pub _type: crate::models::NamespaceTypeEnum,
+    pub _type: crate::models::namespace::NamespaceTypeEnum,
     #[serde(rename = "alias")]
-    pub alias: crate::models::AliasDto,
+    pub alias: crate::models::alias::AliasDto,
     #[serde(rename = "parentId")]
     pub parent_id: Vec<i32>,
 }
 
 impl NamespaceDto {
-    pub fn new(owner: String, owner_address: String, start_height: Vec<i32>, end_height: Vec<i32>, depth: i32, level0: Vec<i32>, _type: crate::models::NamespaceTypeEnum, alias: crate::models::AliasDto, parent_id: Vec<i32>) -> NamespaceDto {
+    pub fn new(owner: String, owner_address: String, start_height: Vec<i32>, end_height: Vec<i32>, depth: i32, level0: Vec<i32>, _type: crate::models::namespace::NamespaceTypeEnum, alias: crate::models::alias::AliasDto, parent_id: Vec<i32>) -> NamespaceDto {
         NamespaceDto {
             owner,
             owner_address,
@@ -73,13 +73,13 @@ impl NamespaceIds {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct NamespaceInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::NamespaceMetaDto,
+    pub meta: crate::models::namespace::NamespaceMetaDto,
     #[serde(rename = "namespace")]
-    pub namespace: crate::models::NamespaceDto,
+    pub namespace: crate::models::namespace::NamespaceDto,
 }
 
 impl NamespaceInfoDto {
-    pub fn new(meta: crate::models::NamespaceMetaDto, namespace: crate::models::NamespaceDto) -> NamespaceInfoDto {
+    pub fn new(meta: crate::models::namespace::NamespaceMetaDto, namespace: crate::models::namespace::NamespaceDto) -> NamespaceInfoDto {
         NamespaceInfoDto {
             meta,
             namespace,
@@ -168,11 +168,11 @@ impl NamespaceMetadataDtoAllOf {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct NamespaceMetadataInfoDto {
     #[serde(rename = "metadata")]
-    pub metadata: crate::models::NamespaceMetadataDto,
+    pub metadata: crate::models::namespace::NamespaceMetadataDto,
 }
 
 impl NamespaceMetadataInfoDto {
-    pub fn new(metadata: crate::models::NamespaceMetadataDto) -> NamespaceMetadataInfoDto {
+    pub fn new(metadata: crate::models::namespace::NamespaceMetadataDto) -> NamespaceMetadataInfoDto {
         NamespaceMetadataInfoDto {
             metadata,
         }
@@ -188,7 +188,7 @@ pub struct NamespaceMetadataTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -244,7 +244,7 @@ impl NamespaceNameDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct RegisterNamespaceTransactionBodyDto {
     #[serde(rename = "namespaceType")]
-    pub namespace_type: crate::models::NamespaceTypeEnum,
+    pub namespace_type: crate::models::namespace::NamespaceTypeEnum,
     #[serde(rename = "duration")]
     pub duration: Vec<i32>,
     #[serde(rename = "namespaceId")]
@@ -257,7 +257,7 @@ pub struct RegisterNamespaceTransactionBodyDto {
 }
 
 impl RegisterNamespaceTransactionBodyDto {
-    pub fn new(namespace_type: crate::models::NamespaceTypeEnum, duration: Vec<i32>, namespace_id: Vec<i32>, name: String, parent_id: Vec<i32>) -> RegisterNamespaceTransactionBodyDto {
+    pub fn new(namespace_type: crate::models::namespace::NamespaceTypeEnum, duration: Vec<i32>, namespace_id: Vec<i32>, name: String, parent_id: Vec<i32>) -> RegisterNamespaceTransactionBodyDto {
         RegisterNamespaceTransactionBodyDto {
             namespace_type,
             duration,
@@ -277,7 +277,7 @@ pub struct RegisterNamespaceTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -287,7 +287,7 @@ pub struct RegisterNamespaceTransactionDto {
     #[serde(rename = "deadline")]
     pub deadline: Vec<i32>,
     #[serde(rename = "namespaceType")]
-    pub namespace_type: crate::models::NamespaceTypeEnum,
+    pub namespace_type: crate::models::namespace::NamespaceTypeEnum,
     #[serde(rename = "duration")]
     pub duration: Vec<i32>,
     #[serde(rename = "namespaceId")]
@@ -301,7 +301,7 @@ pub struct RegisterNamespaceTransactionDto {
 
 impl RegisterNamespaceTransactionDto {
     /// Transaction that creates or renew a namespace.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, namespace_type: crate::models::NamespaceTypeEnum, duration: Vec<i32>, namespace_id: Vec<i32>, name: String, parent_id: Vec<i32>) -> RegisterNamespaceTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, namespace_type: crate::models::namespace::NamespaceTypeEnum, duration: Vec<i32>, namespace_id: Vec<i32>, name: String, parent_id: Vec<i32>) -> RegisterNamespaceTransactionDto {
         RegisterNamespaceTransactionDto {
             signature,
             signer,
@@ -323,7 +323,7 @@ pub struct EmbeddedNamespaceMetadataTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -361,7 +361,7 @@ pub struct EmbeddedRegisterNamespaceTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - Public main network. * 0x98 (TEST_NET) - Public test network. * 0x60 (MIJIN) - Private network. * 0x90 (MIJIN_TEST) - Private test network.
+    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
@@ -371,7 +371,7 @@ pub struct EmbeddedRegisterNamespaceTransactionDto {
     #[serde(rename = "deadline")]
     pub deadline: Vec<i32>,
     #[serde(rename = "namespaceType")]
-    pub namespace_type: crate::models::NamespaceTypeEnum,
+    pub namespace_type: crate::models::namespace::NamespaceTypeEnum,
     #[serde(rename = "duration")]
     pub duration: Vec<i32>,
     #[serde(rename = "namespaceId")]
@@ -384,7 +384,7 @@ pub struct EmbeddedRegisterNamespaceTransactionDto {
 }
 
 impl EmbeddedRegisterNamespaceTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, namespace_type: crate::models::NamespaceTypeEnum, duration: Vec<i32>, namespace_id: Vec<i32>, name: String, parent_id: Vec<i32>) -> EmbeddedRegisterNamespaceTransactionDto {
+    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, namespace_type: crate::models::namespace::NamespaceTypeEnum, duration: Vec<i32>, namespace_id: Vec<i32>, name: String, parent_id: Vec<i32>) -> EmbeddedRegisterNamespaceTransactionDto {
         EmbeddedRegisterNamespaceTransactionDto {
             signer,
             version,
