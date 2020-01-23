@@ -1,0 +1,44 @@
+extern crate base32;
+extern crate sha3;
+extern crate hex;
+extern crate ripemd160;
+
+use self::sha3::Sha3_256;
+use self::base32::Alphabet::RFC4648;
+use self::ripemd160::{Ripemd160, Digest};
+
+pub fn from_public_key(public_key: &str, version: u8) -> String {
+    let pk: Vec<u8> = public_key.as_bytes().iter().cloned().collect();
+
+    // step 1: sha3 hash of the public key
+    let sha3_public_key_hash = Sha3_256::digest(pk.as_slice());
+
+    // step 2: Ripemd160 hash of (1)
+    let ripemd160step_one_hash = Ripemd160::digest(
+        sha3_public_key_hash.as_slice());
+
+    // step 3: add version byte in front of (2)
+    let version_prefixed_ripemd160hash = [&[version], &ripemd160step_one_hash[..]].concat(); // ripemd160step_one_hash.to_vec();
+
+    // step 4: get the checksum of (3)
+    let step_three_checksum = generate_checksum(&version_prefixed_ripemd160hash);
+
+    // step 5: concatenate (3) and (4)
+    let concat_step_three_and_step_six = [&version_prefixed_ripemd160hash[..],
+        &step_three_checksum[..]].concat();
+
+    let algo = base32::encode(RFC4648 { padding: true },
+                              concat_step_three_and_step_six.as_slice());
+
+    String::from(algo)
+}
+
+fn generate_checksum(vec: &Vec<u8>) -> Box<[u8]> {
+    // step 1: sha3 hash of (input
+    let sha3step_three_hash = Sha3_256::digest(vec.as_slice());
+
+    // step 2: get the first numChecksumBytes bytes of (1)
+    let p = &sha3step_three_hash[0..4];
+
+    return Box::from(p.to_vec());
+}

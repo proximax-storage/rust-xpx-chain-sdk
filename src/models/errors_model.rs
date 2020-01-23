@@ -3,8 +3,7 @@
 #![allow(non_snake_case)]
 
 use core::fmt;
-
-use failure::_core::fmt::Display;
+use core::fmt::Display;
 
 /// Internal errors.  Most application-level developers will likely not
 /// need to pay any attention to these.

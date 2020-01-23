@@ -4,6 +4,7 @@ pub use self::address_dto::*;
 pub use self::address_model::*;
 pub use self::public_key::*;
 
+pub mod internal;
 pub mod account_model;
 pub mod public_key;
 pub mod address_model;

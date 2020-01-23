@@ -1,29 +1,33 @@
+use core::fmt;
+use core::fmt::Display;
+
 use models::errors_model::InternalError;
 use models::errors_model::ModelError;
 
 /// MIJIN private network identifier. Decimal value = 96.
-pub const MIJIN: NetworkType = NetworkType { _value: 0x60 };
+pub const MIJIN: NetworkType = NetworkType(0x60);
 
 /// MIJIN_TEST private test network identifier. Decimal value = 144.
-pub const MIJIN_TEST: NetworkType = NetworkType { _value: 0x90 };
+pub const MIJIN_TEST: NetworkType = NetworkType(0x90);
 
 /// The PUBLIC test network identifier. Decimal value = 184.
-pub const PUBLIC: NetworkType = NetworkType { _value: 0xb8 };
+pub const PUBLIC: NetworkType = NetworkType(0xb8);
 
 /// The PUBLIC_TEST test network identifier. Decimal value = 168.
-pub const PUBLIC_TEST: NetworkType = NetworkType { _value: 0xa8 };
+pub const PUBLIC_TEST: NetworkType = NetworkType(0xa8);
 
 /// The PRIVATE test network identifier. Decimal value = 200.
-pub const PRIVATE: NetworkType = NetworkType { _value: 0xc8 };
+pub const PRIVATE: NetworkType = NetworkType(0xc8);
 
 /// The PRIVATE_TEST test network identifier. Decimal value = 176.
-pub const PRIVATE_TEST: NetworkType = NetworkType { _value: 0xb0 };
+pub const PRIVATE_TEST: NetworkType = NetworkType(0xb0);
 
-pub const ALIAS_ADDRESS: NetworkType = NetworkType { _value: 0x91 };
+pub const ALIAS_ADDRESS: NetworkType = NetworkType(0x91);
 
-pub const NOT_SUPPORTED_NET: NetworkType = NetworkType { _value: 0 };
+pub const NOT_SUPPORTED_NET: NetworkType = NetworkType(0);
 
-pub struct NetworkType { _value: u8 }
+#[derive(Default, Debug, PartialEq, Serialize, Deserialize)]// we derive Default in order to use the clear() method in Drop
+pub struct NetworkType(pub(crate) u8);
 
 impl NetworkType {
     pub fn from_string(network_type: &str) -> Result<NetworkType, ModelError> {
@@ -55,8 +59,8 @@ impl NetworkType {
     }
 }
 
-impl std::fmt::Display for NetworkType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "NetworkType: {}", self._value)
+impl Display for NetworkType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
