@@ -35,7 +35,8 @@ impl<C: hyper::client::Connect>BlockRoutesApi for BlockRoutesApiClient<C> {
     fn get_block_by_height(&self, height: i64) -> Box<dyn Future<Item = crate::models::BlockInfoDto, Error = Error<serde_json::Value>>> {
         let mut req = __internal_request::Request::new(hyper::Method::Get, "/block/{height}".to_string())
         ;
-        req = req.with_path_param("height".to_string(), height.to_string());
+        let altura :i64 = 1;
+        req = req.with_path_param("height".to_string(), altura.to_string());
 
         req.execute(self.configuration.borrow())
     }

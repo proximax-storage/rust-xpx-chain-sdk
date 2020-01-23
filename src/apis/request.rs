@@ -49,8 +49,8 @@ impl Request {
     pub fn new(method: hyper::Method, path: String) -> Self {
         Request {
             auth: Auth::None,
-            method: method,
-            path: path,
+            method,
+            path,
             query_params: HashMap::new(),
             path_params: HashMap::new(),
             form_params: HashMap::new(),

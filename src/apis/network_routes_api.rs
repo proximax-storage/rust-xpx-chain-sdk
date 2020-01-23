@@ -28,7 +28,7 @@ pub trait NetworkRoutesApi {
 
 impl<C: hyper::client::Connect>NetworkRoutesApi for NetworkRoutesApiClient<C> {
     fn get_network_type(&self, ) -> Box<dyn Future<Item = crate::models::NetworkTypeDto, Error = Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/network".to_string())
+        let req = __internal_request::Request::new(hyper::Method::Get, "/network".to_string())
         ;
 
         req.execute(self.configuration.borrow())

@@ -1,8 +1,19 @@
 [package]
 name = "rust-xpx-chain-sdk"
-version = "0.0.1"
+version = "1.0.0-pre.1"
+readme = "README.md"
+license = "apache"
 authors = ["Eleazar Garrido <eleazar.garrido@proximax.io>"]
 homepage = "https://www.proximax.io"
+repository = "https://github.com/proximax-storage/rust-xpx-chain-sdk"
+documentation = "https://github.com/proximax-storage/rust-xpx-chain-sdk/wiki"
+keywords = ["blockchain", "sdk"]
+categories = ["sdk"]
+exclude = [ ".gitignore" ]
+
+[lib]
+name = "xpx_chain_sdk"
+crate-type = ["lib"]
 
 [dependencies]
 serde = "^1.0"
@@ -11,7 +22,7 @@ serde_json = "^1.0"
 url = "1.5"
 hyper = "~0.11"
 serde_yaml = "0.7"
-base64 = "~0.7.0"
+base64 = "0.7.0"
 futures = "0.1.23"
 
 [dev-dependencies]

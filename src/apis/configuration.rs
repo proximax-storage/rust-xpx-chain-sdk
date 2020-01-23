@@ -22,7 +22,7 @@ impl<C: hyper::client::Connect> Configuration<C> {
         Configuration {
             base_path: "http://localhost:3000".to_owned(),
             user_agent: Some("ProximaX/0.0.1/rust".to_owned()),
-            client: client,
+            client,
             basic_auth: None,
             oauth_access_token: None,
             api_key: None,

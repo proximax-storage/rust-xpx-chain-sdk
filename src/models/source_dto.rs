@@ -1,7 +1,4 @@
 /// SourceDto : The transaction that triggered the receipt.
-
-
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SourceDto {
     /// The transaction index within the block.

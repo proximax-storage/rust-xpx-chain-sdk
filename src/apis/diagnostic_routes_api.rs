@@ -29,14 +29,14 @@ pub trait DiagnosticRoutesApi {
 
 impl<C: hyper::client::Connect>DiagnosticRoutesApi for DiagnosticRoutesApiClient<C> {
     fn get_diagnostic_storage(&self, ) -> Box<dyn Future<Item = crate::models::StorageInfoDto, Error = Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/diagnostic/storage".to_string())
+        let req = __internal_request::Request::new(hyper::Method::Get, "/diagnostic/storage".to_string())
         ;
 
         req.execute(self.configuration.borrow())
     }
 
     fn get_server_info(&self, ) -> Box<dyn Future<Item = crate::models::ServerDto, Error = Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/diagnostic/server".to_string())
+        let req = __internal_request::Request::new(hyper::Method::Get, "/diagnostic/server".to_string())
         ;
 
         req.execute(self.configuration.borrow())

@@ -26,4 +26,25 @@ impl StatementsDto {
     }
 }
 
+/// TransactionStatementDto : The collection of receipts related to a transaction.
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct TransactionStatementDto {
+    #[serde(rename = "height")]
+    pub height: Vec<i32>,
+    #[serde(rename = "source")]
+    pub source: crate::models::SourceDto,
+    /// The array of receipts.
+    #[serde(rename = "receipts")]
+    pub receipts: Vec<String>,
+}
 
+impl TransactionStatementDto {
+    /// The collection of receipts related to a transaction.
+    pub fn new(height: Vec<i32>, source: crate::models::SourceDto, receipts: Vec<String>) -> TransactionStatementDto {
+        TransactionStatementDto {
+            height,
+            source,
+            receipts,
+        }
+    }
+}

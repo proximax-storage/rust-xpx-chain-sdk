@@ -1,7 +1,4 @@
 /// ArtifactExpiryReceiptDto : An artifact namespace or mosaic expired.
-
-
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArtifactExpiryReceiptDto {
     /// The version of the receipt.
@@ -19,6 +16,20 @@ impl ArtifactExpiryReceiptDto {
         ArtifactExpiryReceiptDto {
             version,
             _type,
+            artifact_id,
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct ArtifactExpiryReceiptDtoAllOf {
+    #[serde(rename = "artifactId")]
+    pub artifact_id: Vec<i32>,
+}
+
+impl ArtifactExpiryReceiptDtoAllOf {
+    pub fn new(artifact_id: Vec<i32>) -> ArtifactExpiryReceiptDtoAllOf {
+        ArtifactExpiryReceiptDtoAllOf {
             artifact_id,
         }
     }

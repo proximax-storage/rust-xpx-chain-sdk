@@ -29,14 +29,14 @@ pub trait ChainRoutesApi {
 
 impl<C: hyper::client::Connect>ChainRoutesApi for ChainRoutesApiClient<C> {
     fn get_blockchain_height(&self, ) -> Box<dyn Future<Item = crate::models::HeightInfoDto, Error = Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/chain/height".to_string())
+        let req = __internal_request::Request::new(hyper::Method::Get, "/chain/height".to_string())
         ;
 
         req.execute(self.configuration.borrow())
     }
 
     fn get_blockchain_score(&self, ) -> Box<dyn Future<Item = crate::models::BlockchainScoreDto, Error = Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/chain/score".to_string())
+        let req = __internal_request::Request::new(hyper::Method::Get, "/chain/score".to_string())
         ;
 
         req.execute(self.configuration.borrow())
