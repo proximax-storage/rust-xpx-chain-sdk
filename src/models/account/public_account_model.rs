@@ -6,6 +6,7 @@ pub struct PublicAccount {
     /// Retrieves the `Address` of this public account.
     #[serde(rename = "address")]
     pub address: Address,
+    /// Retrieves the public key of this public account.
     #[serde(rename = "publicKey")]
     pub public_key: String,
 }
