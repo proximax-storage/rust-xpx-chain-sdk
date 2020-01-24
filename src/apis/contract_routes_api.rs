@@ -24,7 +24,7 @@ impl<C: hyper::client::Connect> ContractRoutesApiClient<C> {
 
 pub trait ContractRoutesApi {
     fn get_account_contract(&self, public_key: &str) -> Box<dyn Future<Item=Vec<crate::models::contract::ContractInfoDto>, Error=Error<serde_json::Value>>>;
-//    fn get_account_contracts(&self, public_keys: Option<crate::models::account::PublicKeys>) -> Box<dyn Future<Item=Vec<crate::models::contract::ContractInfoDto>, Error=Error<serde_json::Value>>>;
+    //    fn get_account_contracts(&self, public_keys: Option<crate::models::account::PublicKeys>) -> Box<dyn Future<Item=Vec<crate::models::contract::ContractInfoDto>, Error=Error<serde_json::Value>>>;
     fn get_contract(&self, contract_id: &str) -> Box<dyn Future<Item=crate::models::contract::ContractInfoDto, Error=Error<serde_json::Value>>>;
     fn get_contracts(&self, account_ids: crate::models::account::AccountIds) -> Box<dyn Future<Item=Vec<crate::models::contract::ContractInfoDto>, Error=Error<serde_json::Value>>>;
 }

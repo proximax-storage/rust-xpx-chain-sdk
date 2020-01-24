@@ -1,5 +1,5 @@
 use core::fmt;
-use core::fmt::{Display, Debug};
+use core::fmt::{Debug, Display};
 
 use models::errors_model::InternalError;
 use models::errors_model::ModelError;

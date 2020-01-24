@@ -25,7 +25,7 @@ impl<C: hyper::client::Connect> BlockRoutesApiClient<C> {
 pub trait BlockRoutesApi {
     fn get_block_by_height(&self, height: i64) -> Box<dyn Future<Item=crate::models::blockchain::BlockInfoDto, Error=Error<serde_json::Value>>>;
     fn get_block_receipts(&self, height: i64) -> Box<dyn Future<Item=crate::models::StatementsDto, Error=Error<serde_json::Value>>>;
-//    fn get_block_transactions(&self, height: i64, page_size: Option<i32>, id: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>>;
+    //    fn get_block_transactions(&self, height: i64, page_size: Option<i32>, id: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>>;
     fn get_blocks_by_height_with_limit(&self, height: i64, limit: i32) -> Box<dyn Future<Item=Vec<crate::models::blockchain::BlockInfoDto>, Error=Error<serde_json::Value>>>;
     fn get_merkle_receipts(&self, height: i64, hash: &str) -> Box<dyn Future<Item=crate::models::MerkleProofInfoDto, Error=Error<serde_json::Value>>>;
     fn get_merkle_transaction(&self, height: i64, hash: &str) -> Box<dyn Future<Item=crate::models::MerkleProofInfoDto, Error=Error<serde_json::Value>>>;

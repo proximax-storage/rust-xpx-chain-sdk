@@ -1,5 +1,5 @@
+use models::{InternalError, ModelError};
 use models::account::Address;
-use models::{ModelError, InternalError};
 
 /// The `PublicAccount` account structure contains account's `Address` and public key.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -23,14 +23,18 @@ impl PublicAccount {
         }
     }
 
-    /// Verifies a signature.
+    /// Verify a signature on a message with this `PublicAccount` public key.
+    ///
+    /// # Return
+    ///
+    /// Returns `Ok(())` if the signature is valid, and `Err` otherwise.
     pub fn verify_sign(&self, data: &str, signature: &str) -> Result<(), ModelError> {
-       if ::models::account::HASH512_LENGTH != (signature.len() / 2) {
-           return  Err(ModelError(InternalError::InvalidSignatureLenError))
+        if ::models::account::HASH512_LENGTH != (signature.len() / 2) {
+            return Err(ModelError(InternalError::InvalidSignatureLenError));
         };
 
         if !::models::account::is_hex(signature) {
-            return  Err(ModelError(InternalError::InvalidSignatureHexError))
+            return Err(ModelError(InternalError::InvalidSignatureHexError));
         };
 
         let sig_byte: Vec<u8> = hex::decode(signature).unwrap();

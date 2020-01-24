@@ -1,11 +1,11 @@
 extern crate base32;
 extern crate hex;
+extern crate regex;
 extern crate ripemd160;
 extern crate sha3;
-extern crate regex;
 
-use self::regex::Regex;
 use self::base32::Alphabet::RFC4648;
+use self::regex::Regex;
 use self::ripemd160::{Digest, Ripemd160};
 use self::sha3::Sha3_256;
 
