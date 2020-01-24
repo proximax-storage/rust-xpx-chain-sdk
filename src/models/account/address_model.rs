@@ -80,6 +80,7 @@ impl Address {
     }
 }
 
+
 impl core::fmt::Display for Address {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "{} {}", &self.network_type, &self.address)
@@ -88,6 +89,6 @@ impl core::fmt::Display for Address {
 
 impl core::fmt::Debug for Address {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Address{{ {:?}, address: {:?} }}", &self.network_type, &self.address)
+        write!(f, "Address {{ {:?}, address: {:?} }}", &self.network_type, &self.address)
     }
 }

@@ -25,7 +25,7 @@ impl<C: hyper::client::Connect> BlockRoutesApiClient<C> {
 pub trait BlockRoutesApi {
     fn get_block_by_height(&self, height: i64) -> Box<dyn Future<Item=crate::models::blockchain::BlockInfoDto, Error=Error<serde_json::Value>>>;
     fn get_block_receipts(&self, height: i64) -> Box<dyn Future<Item=crate::models::StatementsDto, Error=Error<serde_json::Value>>>;
-    fn get_block_transactions(&self, height: i64, page_size: Option<i32>, id: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>>;
+//    fn get_block_transactions(&self, height: i64, page_size: Option<i32>, id: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>>;
     fn get_blocks_by_height_with_limit(&self, height: i64, limit: i32) -> Box<dyn Future<Item=Vec<crate::models::blockchain::BlockInfoDto>, Error=Error<serde_json::Value>>>;
     fn get_merkle_receipts(&self, height: i64, hash: &str) -> Box<dyn Future<Item=crate::models::MerkleProofInfoDto, Error=Error<serde_json::Value>>>;
     fn get_merkle_transaction(&self, height: i64, hash: &str) -> Box<dyn Future<Item=crate::models::MerkleProofInfoDto, Error=Error<serde_json::Value>>>;
@@ -49,19 +49,19 @@ impl<C: hyper::client::Connect> BlockRoutesApi for BlockRoutesApiClient<C> {
         req.execute(self.configuration.borrow())
     }
 
-    fn get_block_transactions(&self, height: i64, page_size: Option<i32>, id: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/block/{height}/transactions".to_string())
-            ;
-        if let Some(ref s) = page_size {
-            req = req.with_query_param("pageSize".to_string(), s.to_string());
-        }
-        if let Some(ref s) = id {
-            req = req.with_query_param("id".to_string(), s.to_string());
-        }
-        req = req.with_path_param("height".to_string(), height.to_string());
-
-        req.execute(self.configuration.borrow())
-    }
+//    fn get_block_transactions(&self, height: i64, page_size: Option<i32>, id: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>> {
+//        let mut req = __internal_request::Request::new(hyper::Method::Get, "/block/{height}/transactions".to_string())
+//            ;
+//        if let Some(ref s) = page_size {
+//            req = req.with_query_param("pageSize".to_string(), s.to_string());
+//        }
+//        if let Some(ref s) = id {
+//            req = req.with_query_param("id".to_string(), s.to_string());
+//        }
+//        req = req.with_path_param("height".to_string(), height.to_string());
+//
+//        req.execute(self.configuration.borrow())
+//    }
 
     fn get_blocks_by_height_with_limit(&self, height: i64, limit: i32) -> Box<dyn Future<Item=Vec<crate::models::blockchain::BlockInfoDto>, Error=Error<serde_json::Value>>> {
         let mut req = __internal_request::Request::new(hyper::Method::Get, "/blocks/{height}/limit/{limit}".to_string())
