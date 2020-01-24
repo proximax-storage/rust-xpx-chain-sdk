@@ -2,6 +2,7 @@ pub use self::account_dto::*;
 pub use self::account_model::*;
 pub use self::address_dto::*;
 pub use self::address_model::*;
+pub use self::internal::*;
 pub use self::public_key::*;
 
 pub mod internal;

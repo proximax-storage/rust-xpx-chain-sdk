@@ -10,15 +10,8 @@ use core::fmt::Display;
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
 pub(crate) enum InternalError {
     NetworkTypeError,
-    /// An error in the length of bytes handed to a constructor.
-    ///
-    /// To use this, pass a string specifying the `name` of the type which is
-    /// returning the error, and the `length` in bytes which its constructor
-    /// expects.
-    BytesLengthError {
-        name: &'static str,
-        length: usize,
-    },
+
+    InvalidAddressError,
 }
 
 impl Display for InternalError {
@@ -26,8 +19,8 @@ impl Display for InternalError {
         match *self {
             InternalError::NetworkTypeError
             => write!(f, "Network type is unknown"),
-            InternalError::BytesLengthError { name: n, length: l }
-            => write!(f, "{} must be {} bytes in length", n, l),
+            InternalError::InvalidAddressError
+            => write!(f, "Wrong address"),
         }
     }
 }

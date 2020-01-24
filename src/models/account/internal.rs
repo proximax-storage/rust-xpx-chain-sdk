@@ -1,14 +1,14 @@
 extern crate base32;
-extern crate sha3;
 extern crate hex;
 extern crate ripemd160;
+extern crate sha3;
 
-use self::sha3::Sha3_256;
 use self::base32::Alphabet::RFC4648;
-use self::ripemd160::{Ripemd160, Digest};
+use self::ripemd160::{Digest, Ripemd160};
+use self::sha3::Sha3_256;
 
-pub fn from_public_key(public_key: &str, version: u8) -> String {
-    let pk: Vec<u8> = public_key.as_bytes().iter().cloned().collect();
+pub fn public_key_to_address(public_key: &str, version: u8) -> String {
+    let pk: Vec<u8> = hex::decode(public_key).unwrap();
 
     // step 1: sha3 hash of the public key
     let sha3_public_key_hash = Sha3_256::digest(pk.as_slice());
@@ -27,10 +27,10 @@ pub fn from_public_key(public_key: &str, version: u8) -> String {
     let concat_step_three_and_step_six = [&version_prefixed_ripemd160hash[..],
         &step_three_checksum[..]].concat();
 
-    let algo = base32::encode(RFC4648 { padding: true },
-                              concat_step_three_and_step_six.as_slice());
+    let res = base32::encode(RFC4648 { padding: true },
+                             concat_step_three_and_step_six.as_slice());
 
-    String::from(algo)
+    String::from(res)
 }
 
 fn generate_checksum(vec: &Vec<u8>) -> Box<[u8]> {

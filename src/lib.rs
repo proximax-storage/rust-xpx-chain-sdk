@@ -12,6 +12,7 @@ extern crate serde_json;
 extern crate url;
 extern crate xpx_crypto;
 extern crate core;
+extern crate base32;
 
 pub mod apis;
 pub mod models;
