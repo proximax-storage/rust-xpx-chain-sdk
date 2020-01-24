@@ -1,5 +1,5 @@
 use core::fmt;
-use core::fmt::Display;
+use core::fmt::{Display, Debug};
 
 use models::errors_model::InternalError;
 use models::errors_model::ModelError;
@@ -26,7 +26,7 @@ pub const ALIAS_ADDRESS: NetworkType = NetworkType(0x91);
 
 pub const NOT_SUPPORTED_NET: NetworkType = NetworkType(0);
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]// we derive Default in order to use the clear() method in Drop
+#[derive(Clone, Default, PartialEq, Serialize, Deserialize)]// we derive Default in order to use the clear() method in Drop
 pub struct NetworkType(pub(crate) u8);
 
 impl NetworkType {
@@ -62,5 +62,11 @@ impl NetworkType {
 impl Display for NetworkType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl Debug for NetworkType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "networkType: {}", self.0)
     }
 }

@@ -1,12 +1,12 @@
-use std::borrow::Cow;
-use std::collections::HashMap;
-
 use futures;
 use futures::{Future, Stream};
 use hyper;
 use hyper::header::UserAgent;
 use serde;
 use serde_json;
+
+use std::borrow::Cow;
+use std::collections::HashMap;
 
 use super::{configuration, Error};
 
@@ -88,11 +88,6 @@ impl Request {
 
     pub fn returns_nothing(mut self) -> Self {
         self.no_return_type = true;
-        self
-    }
-
-    pub fn with_auth(mut self, auth: Auth) -> Self {
-        self.auth = auth;
         self
     }
 

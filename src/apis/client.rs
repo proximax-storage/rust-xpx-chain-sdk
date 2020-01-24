@@ -1,6 +1,6 @@
-use std::rc::Rc;
-
 use hyper;
+
+use std::rc::Rc;
 
 use super::configuration::Configuration;
 

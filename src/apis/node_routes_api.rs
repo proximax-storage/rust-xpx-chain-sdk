@@ -1,11 +1,11 @@
+use futures::Future;
+use hyper;
+use serde_json;
+
 use std::borrow::Borrow;
 #[allow(unused_imports)]
 use std::option::Option;
 use std::rc::Rc;
-
-use futures::Future;
-use hyper;
-use serde_json;
 
 use super::{configuration, Error};
 use super::request as __internal_request;

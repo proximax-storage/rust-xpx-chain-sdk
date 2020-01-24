@@ -1,7 +1,9 @@
-use base32::Alphabet::RFC4648;
+extern crate base32;
 
 use models::{InternalError, ModelError};
 use models::network::*;
+
+use self::base32::Alphabet::RFC4648;
 
 const PREFIX_MIJIN: char = 'M';
 const PREFIX_MIJIN_TEST: char = 'S';
@@ -14,7 +16,7 @@ const EMPTY_STRING: &str = "";
 const REGEX_DASH: &str = "-";
 
 /// The `Address` structure describes an address with its network.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Serialize, Deserialize)]
 pub struct Address {
     /// The address in hexadecimal.
     #[serde(rename = "address")]
@@ -80,6 +82,12 @@ impl Address {
 
 impl core::fmt::Display for Address {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "networkType: {}, address: {}", self.network_type, self.address)
+        write!(f, "{} {}", &self.network_type, &self.address)
+    }
+}
+
+impl core::fmt::Debug for Address {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "Address{{ {:?}, address: {:?} }}", &self.network_type, &self.address)
     }
 }
