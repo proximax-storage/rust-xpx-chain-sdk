@@ -5,26 +5,6 @@
 use core::fmt;
 use core::fmt::Display;
 
-/// Internal errors.  Most application-level developers will likely not
-/// need to pay any attention to these.
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
-pub(crate) enum InternalError {
-    NetworkTypeError,
-
-    InvalidAddressError,
-}
-
-impl Display for InternalError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match *self {
-            InternalError::NetworkTypeError
-            => write!(f, "Network type is unknown"),
-            InternalError::InvalidAddressError
-            => write!(f, "Wrong address"),
-        }
-    }
-}
-
 impl ::failure::Fail for InternalError {}
 
 #[derive(Clone, Copy, Eq, PartialEq, Hash, Debug)]
@@ -39,5 +19,40 @@ impl Display for ModelError {
 impl ::failure::Fail for ModelError {
     fn cause(&self) -> Option<&dyn (::failure::Fail)> {
         Some(&self.0)
+    }
+}
+
+/// Internal errors.  Most application-level developers will likely not
+/// need to pay any attention to these.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+pub(crate) enum InternalError {
+    NetworkTypeError,
+    InvalidAddressError,
+    InvalidSignatureLenError,
+    InvalidSignatureHexError,
+    VerifyError,
+}
+
+impl Display for InternalError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match *self {
+            InternalError::NetworkTypeError
+            => write!(f, "Network type is unknown"),
+            InternalError::InvalidAddressError
+            => write!(f, "Wrong address"),
+            InternalError::InvalidSignatureLenError
+            => write!(f, "Signature length is incorrect"),
+            InternalError::InvalidSignatureHexError
+            => write!(f, "Signature must be hexadecimal"),
+            InternalError::VerifyError
+            => write!(f, "Verification equation was not satisfied"),
+        }
+    }
+}
+
+impl<'a> From<&'a xpx_crypto::SignatureError> for ModelError {
+    /// Derive this public key from its corresponding `ExpandedSecretKey`.
+    fn from(expanded_model_error: &xpx_crypto::SignatureError) -> ModelError {
+        ModelError(InternalError::VerifyError)
     }
 }

@@ -2,10 +2,24 @@ extern crate base32;
 extern crate hex;
 extern crate ripemd160;
 extern crate sha3;
+extern crate regex;
 
+use self::regex::Regex;
 use self::base32::Alphabet::RFC4648;
 use self::ripemd160::{Digest, Ripemd160};
 use self::sha3::Sha3_256;
+
+pub static HASH512_LENGTH: usize = 64;
+
+pub fn is_hex(input: &str) -> bool {
+    if input == "" {
+        return false;
+    }
+
+    let re = Regex::new(r"^[a-fA-F0-9]+$").unwrap();
+
+    re.is_match(input)
+}
 
 pub fn public_key_to_address(public_key: &str, version: u8) -> String {
     let pk: Vec<u8> = hex::decode(public_key).unwrap();
