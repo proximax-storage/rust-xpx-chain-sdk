@@ -1,6 +1,6 @@
 [package]
 name = "rust-xpx-chain-sdk"
-version = "1.0.0-pre.1"
+version = "0.1.0"
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["Eleazar Garrido <eleazar.garrido@proximax.io>"]

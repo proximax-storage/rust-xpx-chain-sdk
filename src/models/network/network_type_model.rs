@@ -26,7 +26,7 @@ pub const ALIAS_ADDRESS: NetworkType = NetworkType(0x91);
 
 pub const NOT_SUPPORTED_NET: NetworkType = NetworkType(0);
 
-#[derive(Clone, Default, PartialEq, Serialize, Deserialize)]// we derive Default in order to use the clear() method in Drop
+#[derive(Clone, Default, PartialEq, Serialize, Deserialize, Copy)]// we derive Default in order to use the clear() method in Drop
 pub struct NetworkType(pub(crate) u8);
 
 impl NetworkType {

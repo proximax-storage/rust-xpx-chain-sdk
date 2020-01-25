@@ -22,13 +22,13 @@ pub struct Address {
     #[serde(rename = "address")]
     pub address: String,
     #[serde(rename = "networkType")]
-    pub network_type: crate::models::network::NetworkType,
+    pub network_type: NetworkType,
 }
 
 impl Address {
     /// Creates an `Address` from a given public_key string for the given `NetworkType`.
-    pub fn from_public_key(public_key: &str, network_type: crate::models::network::NetworkType) -> Address {
-        let _address = ::models::account::public_key_to_address(public_key, network_type.0);
+    pub fn from_public_key(public_key: &str, network_type: NetworkType) -> Address {
+        let _address = ::models::account::public_key_to_address(public_key, network_type);
 
         Address {
             address: _address,

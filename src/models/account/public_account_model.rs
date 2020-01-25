@@ -15,7 +15,7 @@ pub struct PublicAccount {
 impl PublicAccount {
     /// Create a `PublicAccount` from a public key for the given `NetworkType`.
     pub fn from_public_key(public_key: &str, network_type: crate::models::network::NetworkType) -> PublicAccount {
-        let _address = ::models::account::public_key_to_address(public_key, network_type.0);
+        let _address = ::models::account::public_key_to_address(public_key, network_type);
 
         PublicAccount {
             address: Address::from_public_key(public_key, network_type),

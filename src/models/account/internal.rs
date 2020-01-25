@@ -8,6 +8,7 @@ use self::base32::Alphabet::RFC4648;
 use self::regex::Regex;
 use self::ripemd160::{Digest, Ripemd160};
 use self::sha3::Sha3_256;
+use models::network::NetworkType;
 
 pub static HASH512_LENGTH: usize = 64;
 
@@ -21,7 +22,7 @@ pub fn is_hex(input: &str) -> bool {
     re.is_match(input)
 }
 
-pub fn public_key_to_address(public_key: &str, version: u8) -> String {
+pub fn public_key_to_address(public_key: &str, version: NetworkType) -> String {
     let pk: Vec<u8> = hex::decode(public_key).unwrap();
 
     // step 1: sha3 hash of the public key
@@ -32,7 +33,7 @@ pub fn public_key_to_address(public_key: &str, version: u8) -> String {
         sha3_public_key_hash.as_slice());
 
     // step 3: add version byte in front of (2)
-    let version_prefixed_ripemd160hash = [&[version], &ripemd160step_one_hash[..]].concat(); // ripemd160step_one_hash.to_vec();
+    let version_prefixed_ripemd160hash = [&[version.0], &ripemd160step_one_hash[..]].concat(); // ripemd160step_one_hash.to_vec();
 
     // step 4: get the checksum of (3)
     let step_three_checksum = generate_checksum(&version_prefixed_ripemd160hash);

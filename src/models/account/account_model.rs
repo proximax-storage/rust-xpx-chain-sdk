@@ -13,7 +13,7 @@ pub struct Account {
 
 impl Account {
     /// Create a `Account` from a private key for the given `NetworkType`.
-    pub fn from_private_key(private_key: &str, network_type: crate::models::network::NetworkType) -> Result<Account, Box<std::error::Error>> {
+    pub fn from_private_key(private_key: &str, network_type: crate::models::network::NetworkType) -> Result<Account, Box<dyn std::error::Error>> {
         let sk_hex = hex::decode(private_key)?;
 
         let secret_key = ::xpx_crypto::SecretKey::from_bytes(&sk_hex).unwrap();
