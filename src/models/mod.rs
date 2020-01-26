@@ -21,6 +21,7 @@ pub use self::secret_proof_dto::*;
 pub use self::server_dto::*;
 pub use self::source_dto::*;
 pub use self::statements_dto::*;
+pub use self::uint_64::*;
 pub use self::upgrade_dto::*;
 pub use self::verifiable_entity_dto::*;
 
@@ -61,6 +62,7 @@ pub mod merkle_proof_info_dto;
 pub mod server_dto;
 pub mod source_dto;
 pub mod statements_dto;
+pub mod uint_64;
 pub mod upgrade_dto;
 pub mod verifiable_entity_dto;
 
