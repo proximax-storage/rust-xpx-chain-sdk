@@ -3,7 +3,7 @@ use core::convert::TryFrom;
 use futures::future::result;
 use hex::encode;
 
-pub(crate) fn u32_to_array_of_u8(value: i32) -> [u8; 4] {
+pub(crate) fn u32_to_array_of_u8(value: u32) -> [u8; 4] {
     let mut buf = [0u8; 4];
 
     buf[0] = (value) as u8;
@@ -13,7 +13,7 @@ pub(crate) fn u32_to_array_of_u8(value: i32) -> [u8; 4] {
     return buf;
 }
 
-pub(crate) fn array_of_u8_to_u32(bytes: [u8; 4]) -> i32 {
+pub(crate) fn array_of_u8_to_i32(bytes: [u8; 4]) -> i32 {
     let mut lower: i32 = (bytes[3] & 0xff) as i32;
 
     lower <<= 8;

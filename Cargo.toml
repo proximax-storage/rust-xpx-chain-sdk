@@ -31,6 +31,10 @@ ripemd160 = "0.8.0"
 hex = "^0.3"
 regex = "1"
 
+[dependencies.rand]
+version = "0.6"
+default-features = false
+
 [dependencies.failure]
 version = "^0.1.1"
 default-features = false

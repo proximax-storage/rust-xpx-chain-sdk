@@ -1,5 +1,5 @@
 use core::{fmt, ptr};
-use models::utils::{array_of_u8_to_u32, u32_to_array_of_u8, slice_to_array_of_u8};
+use models::utils::{u32_to_array_of_u8, slice_to_array_of_u8, array_of_u8_to_i32};
 
 /// Represents a 64-bit unsigned integer.
 ///
@@ -65,9 +65,9 @@ impl Uint64 {
     pub fn to_int_array(&self) -> [i32; 2] {
         let bytes = &self.to_bytes();
 
-        let higher: i32 = array_of_u8_to_u32(slice_to_array_of_u8(&bytes[4..]));
+        let higher: i32 = array_of_u8_to_i32(slice_to_array_of_u8(&bytes[4..]));
 
-        let lower: i32 = array_of_u8_to_u32(slice_to_array_of_u8(&bytes[..4]));
+        let lower: i32 = array_of_u8_to_i32(slice_to_array_of_u8(&bytes[..4]));
 
         return [lower, higher];
     }
