@@ -31,6 +31,8 @@ pub(crate) enum InternalError {
     InvalidSignatureLenError,
     InvalidSignatureHexError,
     VerifyError,
+    HexEmptyError,
+    InvalidHex,
 }
 
 impl Display for InternalError {
@@ -46,6 +48,10 @@ impl Display for InternalError {
             => write!(f, "Signature must be hexadecimal"),
             InternalError::VerifyError
             => write!(f, "Verification equation was not satisfied"),
+            InternalError::HexEmptyError
+            => write!(f, "The hex string must not be empty"),
+            InternalError::InvalidHex
+            => write!(f, "Invalid Hex string"),
         }
     }
 }
