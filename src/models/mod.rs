@@ -9,6 +9,7 @@ pub use self::entity_dto::*;
 pub use self::errors_model::*;
 pub use self::field_dto::*;
 pub use self::hash_lock_dto::*;
+pub use self::id_model::*;
 pub use self::merkle_path_item::*;
 pub use self::merkle_proof_info::*;
 pub use self::merkle_proof_info_dto::*;
@@ -22,6 +23,7 @@ pub use self::server_dto::*;
 pub use self::source_dto::*;
 pub use self::statements_dto::*;
 pub use self::uint_64::*;
+
 pub use self::upgrade_dto::*;
 pub use self::verifiable_entity_dto::*;
 
@@ -37,6 +39,7 @@ pub mod namespace;
 pub mod network;
 pub mod node;
 pub mod storage;
+pub mod utils;
 pub mod transaction;
 
 pub mod aggregate_transaction_dto;
@@ -47,6 +50,7 @@ pub mod communication_timestamps;
 pub mod config_dto;
 pub mod errors_model;
 pub mod hash_lock_dto;
+pub mod id_model;
 pub mod metadata_dto;
 pub mod receipt_dto;
 pub mod resolution_dto;
