@@ -10,6 +10,13 @@ impl ::failure::Fail for InternalError {}
 #[derive(Clone, Copy, Eq, PartialEq, Hash, Debug)]
 pub struct ModelError(pub(crate) InternalError);
 
+/// Creates `ModelError` with the default parameters.
+impl Default for ModelError {
+    fn default() -> Self {
+        ModelError { 0: InternalError::DefaultError }
+    }
+}
+
 impl Display for ModelError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.0)
@@ -33,6 +40,8 @@ pub(crate) enum InternalError {
     VerifyError,
     HexEmptyError,
     InvalidHex,
+    InvalidXpxMaxValue,
+    DefaultError,
 }
 
 impl Display for InternalError {
@@ -52,6 +61,10 @@ impl Display for InternalError {
             => write!(f, "The hex string must not be empty"),
             InternalError::InvalidHex
             => write!(f, "Invalid Hex string"),
+            InternalError::InvalidXpxMaxValue
+            => write!(f, "Maximum xpx value"),
+            InternalError::DefaultError
+            => write!(f, ""),
         }
     }
 }

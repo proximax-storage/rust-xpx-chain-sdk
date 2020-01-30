@@ -2,12 +2,31 @@ extern crate byteorder;
 extern crate sha3;
 
 use models::account::PublicAccount;
-use models::mosaic::MosaicNonce;
 use models::namespace::NAMESPACE_BIT;
-use models::Uint64;
+use models::{Uint64, ModelError, InternalError};
 use models::utils::array_u8_to_u64;
 
+use super::{Mosaic, MosaicId, MosaicNonce};
+
 use self::sha3::{Digest, Sha3_256};
+
+pub(crate) static XPX_MOSAIC_ID: &MosaicId = &MosaicId(Uint64(992621218088430050));
+
+static GET_SUPPLY_MUTABLE: u8 = 0x01;
+
+static GET_TRANSFERABLE: u8 = 0x02;
+
+pub(crate) static XPX_DIVISIBILITY: u64 = 1000000;
+
+pub(crate) static XPX_MAX_VALUE: u64 = XPX_MAX_RELATIVE_VALUE * XPX_DIVISIBILITY;
+
+pub(crate) static XPX_MAX_RELATIVE_VALUE: u64 = 9000000000;
+
+enum MosaicSupplyType { Decrease, Increase }
+
+pub(crate) fn has_bits(number: Uint64, bits: Uint64) -> bool {
+    number & bits == bits
+}
 
 pub(crate) fn generate_mosaic_id(nonce: MosaicNonce, owner_public_id: PublicAccount) -> Uint64 {
     let mut hash = Sha3_256::default();
@@ -24,3 +43,4 @@ pub(crate) fn generate_mosaic_id(nonce: MosaicNonce, owner_public_id: PublicAcco
 
     Uint64(array_u8_to_u64(&mut hash_to_array.as_slice()) ^ NAMESPACE_BIT)
 }
+

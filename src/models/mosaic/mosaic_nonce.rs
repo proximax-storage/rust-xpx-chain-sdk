@@ -3,8 +3,8 @@ extern crate rand;
 
 use hex::FromHex;
 
-use models::{InternalError, ModelError, Uint64};
-use models::utils::{array_u8_to_u32, u32_to_array_u8, vec_u8_to_hex};
+use models::{InternalError, ModelError};
+use models::utils::{array_u8_to_u32, is_hex, u32_to_array_u8, vec_u8_to_hex};
 
 use self::rand::RngCore;
 use self::rand::rngs::OsRng;
@@ -27,7 +27,7 @@ impl MosaicNonce {
             return Err(ModelError(InternalError::HexEmptyError));
         }
 
-        if !::models::account::is_hex(string_hex) {
+        if !is_hex(string_hex) {
             return Err(ModelError(InternalError::InvalidHex));
         };
 

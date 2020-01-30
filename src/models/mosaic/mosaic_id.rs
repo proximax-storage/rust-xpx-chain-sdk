@@ -1,11 +1,13 @@
 use core::fmt;
 
-use models::*;
+use models::{Id, InternalError, ModelError, Uint64};
 use models::account::PublicAccount;
-use models::mosaic::{generate_mosaic_id, MosaicNonce};
+use models::utils::utils_hex::is_hex;
 
-/// The `Account` account structure contains account's `PublicAccount` and private key.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+use super::{generate_mosaic_id, MosaicNonce};
+
+/// The `MosaicId` id structure describes mosaic id.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicId(pub(crate) Uint64);
 
 impl MosaicId {
@@ -20,7 +22,7 @@ impl MosaicId {
             return Err(ModelError(InternalError::HexEmptyError));
         }
 
-        if !::models::account::is_hex(string_hex) {
+        if !is_hex(string_hex) {
             return Err(ModelError(InternalError::InvalidHex));
         };
 
@@ -65,5 +67,3 @@ impl fmt::Display for MosaicId {
         write!(f, "{:X}", self.0)
     }
 }
-
-

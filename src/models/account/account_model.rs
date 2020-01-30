@@ -1,5 +1,6 @@
-use models::account::PublicAccount;
 use models::utils::vec_u8_to_hex;
+
+use super::PublicAccount;
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
 #[derive(Debug)]

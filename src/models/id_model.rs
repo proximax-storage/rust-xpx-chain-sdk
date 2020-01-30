@@ -1,7 +1,7 @@
 use core::fmt;
 
 /// An `trait` identifier used to define mosaic_id and namespaceId.
-pub trait Id {
+pub trait Id: fmt::Display + fmt::Debug {
     fn to_bytes(&self) -> [u8; 8];
 
     fn to_hex(&self) -> String;

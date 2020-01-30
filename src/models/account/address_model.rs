@@ -28,7 +28,7 @@ pub struct Address {
 impl Address {
     /// Creates an `Address` from a given public_key string for the given `NetworkType`.
     pub fn from_public_key(public_key: &str, network_type: NetworkType) -> Address {
-        let _address = ::models::account::public_key_to_address(public_key, network_type);
+        let _address = super::public_key_to_address(public_key, network_type);
 
         Address {
             address: _address,

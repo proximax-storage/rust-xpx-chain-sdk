@@ -1,5 +1,7 @@
 use models::{InternalError, ModelError};
-use models::account::Address;
+use models::utils::is_hex;
+
+use super::Address;
 
 /// The `PublicAccount` account structure contains account's `Address` and public key.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -15,7 +17,7 @@ pub struct PublicAccount {
 impl PublicAccount {
     /// Create a `PublicAccount` from a public key for the given `NetworkType`.
     pub fn from_public_key(public_key: &str, network_type: crate::models::network::NetworkType) -> PublicAccount {
-        let _address = ::models::account::public_key_to_address(public_key, network_type);
+        let _address = super::public_key_to_address(public_key, network_type);
 
         PublicAccount {
             address: Address::from_public_key(public_key, network_type),
@@ -29,11 +31,11 @@ impl PublicAccount {
     ///
     /// Returns `Ok(())` if the signature is valid, and `Err` otherwise.
     pub fn verify_sign(&self, data: &str, signature: &str) -> Result<(), ModelError> {
-        if ::models::account::HASH512_LENGTH != (signature.len() / 2) {
+        if super::HASH512_LENGTH != (signature.len() / 2) {
             return Err(ModelError(InternalError::InvalidSignatureLenError));
         };
 
-        if !::models::account::is_hex(signature) {
+        if !is_hex(signature) {
             return Err(ModelError(InternalError::InvalidSignatureHexError));
         };
 

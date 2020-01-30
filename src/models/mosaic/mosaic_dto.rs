@@ -8,8 +8,8 @@ pub enum MosaicDirectionEnum {
     _1,
 }
 
-/// MosaicPropertyIdEnum : The mosaic propery id means: * 0 - MosaicFlags * 1 - Divisibility * 2 - Duration
-/// The mosaic propery id means: * 0 - MosaicFlags * 1 - Divisibility * 2 - Duration
+/// MosaicPropertyIdEnum : The mosaic propery id means: * 0 - MosaicFlags * 1 - divisibility * 2 - Duration
+/// The mosaic propery id means: * 0 - MosaicFlags * 1 - divisibility * 2 - Duration
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum MosaicPropertyIdEnum {
     #[serde(rename = "0")]

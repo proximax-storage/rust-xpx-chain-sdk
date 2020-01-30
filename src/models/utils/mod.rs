@@ -1,4 +1,7 @@
-pub use self::bytes_utils::*;
+pub use self::utils_hex::*;
+pub use self::utils_bytes::*;
 
-pub mod bytes_utils;
+pub mod utils_bytes;
+pub mod utils_hex;
+
 
