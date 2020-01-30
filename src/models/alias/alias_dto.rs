@@ -2,7 +2,7 @@
 pub struct AliasDto {
     #[serde(rename = "type")]
     pub _type: crate::models::alias::AliasTypeEnum,
-    #[serde(rename = "mosaicId", skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "mosaic_id", skip_serializing_if = "Option::is_none")]
     pub mosaic_id: Option<Vec<i32>>,
     /// The aliased address in hexadecimal.
     #[serde(rename = "address", skip_serializing_if = "Option::is_none")]
@@ -90,7 +90,7 @@ pub struct MosaicAliasTransactionBodyDto {
     pub alias_action: crate::models::alias::AliasActionEnum,
     #[serde(rename = "namespaceId")]
     pub namespace_id: Vec<i32>,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
 }
 
@@ -126,7 +126,7 @@ pub struct MosaicAliasTransactionDto {
     pub alias_action: crate::models::alias::AliasActionEnum,
     #[serde(rename = "namespaceId")]
     pub namespace_id: Vec<i32>,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
 }
 
@@ -203,7 +203,7 @@ pub struct EmbeddedMosaicAliasTransactionDto {
     pub alias_action: crate::models::alias::AliasActionEnum,
     #[serde(rename = "namespaceId")]
     pub namespace_id: Vec<i32>,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
 }
 

@@ -9,7 +9,7 @@ pub struct BalanceChangeReceiptDto {
     /// The target account public key.
     #[serde(rename = "account")]
     pub account: String,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
     pub amount: Vec<i32>,
@@ -33,7 +33,7 @@ pub struct BalanceChangeReceiptDtoAllOf {
     /// The target account public key.
     #[serde(rename = "account")]
     pub account: String,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
     pub amount: Vec<i32>,
@@ -63,7 +63,7 @@ pub struct BalanceTransferReceiptDto {
     /// The public key of the recipient.
     #[serde(rename = "recipient")]
     pub recipient: String,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
     pub amount: Vec<i32>,
@@ -91,7 +91,7 @@ pub struct BalanceTransferReceiptDtoAllOf {
     /// The public key of the recipient.
     #[serde(rename = "recipient")]
     pub recipient: String,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
     pub amount: Vec<i32>,

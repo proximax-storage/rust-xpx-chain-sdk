@@ -2,7 +2,7 @@ use core::{fmt, mem};
 
 use byteorder::{BigEndian, WriteBytesExt};
 
-use models::utils::{array_u8_to_u32, u64_to_array_u8};
+use models::utils::u64_to_array_u8;
 
 /// Represents a 64-bit unsigned integer.
 ///

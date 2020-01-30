@@ -56,9 +56,9 @@ impl<C: hyper::client::Connect> MetadataRoutesApi for MetadataRoutesApiClient<C>
     }
 
     fn get_mosaic_metadata(&self, mosaic_id: &str) -> Box<dyn Future<Item=crate::models::mosaic::MosaicMetadataInfoDto, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/mosaic/{mosaicId}/metadata".to_string())
+        let mut req = __internal_request::Request::new(hyper::Method::Get, "/mosaic/{mosaic_id}/metadata".to_string())
             ;
-        req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_string());
+        req = req.with_path_param("mosaic_id".to_string(), mosaic_id.to_string());
 
         req.execute(self.configuration.borrow())
     }

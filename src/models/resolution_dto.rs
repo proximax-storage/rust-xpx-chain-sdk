@@ -15,7 +15,7 @@ impl ResolutionEntryDto {
     }
 }
 
-/// ResolutionStatementDto : A resolution statement keeps the relation between a namespace alias used in a transaction and the real address or mosaicId.
+/// ResolutionStatementDto : A resolution statement keeps the relation between a namespace alias used in a transaction and the real address or mosaic_id.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ResolutionStatementDto {
     #[serde(rename = "height")]
@@ -28,7 +28,7 @@ pub struct ResolutionStatementDto {
 }
 
 impl ResolutionStatementDto {
-    /// A resolution statement keeps the relation between a namespace alias used in a transaction and the real address or mosaicId.
+    /// A resolution statement keeps the relation between a namespace alias used in a transaction and the real address or mosaic_id.
     pub fn new(height: Vec<i32>, unresolved: Vec<i32>, resolution_entries: Vec<crate::models::ResolutionEntryDto>) -> ResolutionStatementDto {
         ResolutionStatementDto {
             height,

@@ -2,7 +2,7 @@
 pub struct SecretLockTransactionBodyDto {
     #[serde(rename = "duration")]
     pub duration: Vec<i32>,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
     pub amount: Vec<i32>,
@@ -49,7 +49,7 @@ pub struct SecretLockTransactionDto {
     pub deadline: Vec<i32>,
     #[serde(rename = "duration")]
     pub duration: Vec<i32>,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
     pub amount: Vec<i32>,
@@ -99,7 +99,7 @@ pub struct EmbeddedSecretLockTransactionDto {
     pub deadline: Vec<i32>,
     #[serde(rename = "duration")]
     pub duration: Vec<i32>,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
     pub amount: Vec<i32>,

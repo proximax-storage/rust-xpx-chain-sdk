@@ -58,7 +58,7 @@ pub struct InflationReceiptDto {
     pub version: i32,
     #[serde(rename = "type")]
     pub _type: crate::models::ReceiptTypeEnum,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
     pub amount: Vec<i32>,
@@ -78,7 +78,7 @@ impl InflationReceiptDto {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct InflationReceiptDtoAllOf {
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
     pub amount: Vec<i32>,

@@ -107,7 +107,7 @@ impl MosaicMetadataBodyDto {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicDefinitionDto {
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "supply")]
     pub supply: Vec<i32>,
@@ -233,7 +233,7 @@ impl MosaicMetadataTransactionDto {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicNamesDto {
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     /// The mosaic linked namespace names.
     #[serde(rename = "names")]
@@ -268,7 +268,7 @@ impl MosaicPropertyDto {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicSupplyChangeTransactionBodyDto {
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "direction")]
     pub direction: crate::models::mosaic::MosaicDirectionEnum,
@@ -304,7 +304,7 @@ pub struct MosaicSupplyChangeTransactionDto {
     pub max_fee: Vec<i32>,
     #[serde(rename = "deadline")]
     pub deadline: Vec<i32>,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "direction")]
     pub direction: crate::models::mosaic::MosaicDirectionEnum,
@@ -334,7 +334,7 @@ pub struct MosaicDefinitionTransactionBodyDto {
     /// Random nonce used to generate the mosaic id.
     #[serde(rename = "mosaicNonce")]
     pub mosaic_nonce: i32,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "properties")]
     pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
@@ -371,7 +371,7 @@ pub struct MosaicDefinitionTransactionDto {
     /// Random nonce used to generate the mosaic id.
     #[serde(rename = "mosaicNonce")]
     pub mosaic_nonce: i32,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "properties")]
     pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
@@ -411,7 +411,7 @@ pub struct EmbeddedMosaicDefinitionTransactionDto {
     /// Random nonce used to generate the mosaic id.
     #[serde(rename = "mosaicNonce")]
     pub mosaic_nonce: i32,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "properties")]
     pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
@@ -484,7 +484,7 @@ pub struct EmbeddedMosaicSupplyChangeTransactionDto {
     pub max_fee: Vec<i32>,
     #[serde(rename = "deadline")]
     pub deadline: Vec<i32>,
-    #[serde(rename = "mosaicId")]
+    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "direction")]
     pub direction: crate::models::mosaic::MosaicDirectionEnum,

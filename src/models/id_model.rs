@@ -1,18 +1,18 @@
-/// An `trait` identifier used to define mosaicId and namespaceId.
-pub trait Id {
-    /// 64-bit unsigned integer id.
-//    fn value(&self) -> Uint64;
+use core::fmt;
 
+/// An `trait` identifier used to define mosaic_id and namespaceId.
+pub trait Id {
     fn to_bytes(&self) -> [u8; 8];
 
     fn to_hex(&self) -> String;
 
     fn to_int_array(&self) -> [u32; 2];
 
-//    fn from_u64(value: u64) -> String;
-//
-//    fn from_hex(value: &str) -> String;
-//
-//    fn from_ints(value: [u8; 2]) -> String;
+    fn eq(&self, other: &Id) -> bool;
 }
 
+impl<'a> PartialEq for &'a Id {
+    fn eq(&self, other: &Self) -> bool {
+        &self.to_bytes() == &other.to_bytes()
+    }
+}
