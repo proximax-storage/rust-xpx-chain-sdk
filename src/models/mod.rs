@@ -23,7 +23,6 @@ pub use self::server_dto::*;
 pub use self::source_dto::*;
 pub use self::statements_dto::*;
 pub use self::uint_64::*;
-
 pub use self::upgrade_dto::*;
 pub use self::verifiable_entity_dto::*;
 

@@ -7,7 +7,7 @@ pub trait Id {
 
     fn to_hex(&self) -> String;
 
-    fn to_int_array(&self) -> [i32; 2];
+    fn to_int_array(&self) -> [u32; 2];
 
 //    fn from_u64(value: u64) -> String;
 //

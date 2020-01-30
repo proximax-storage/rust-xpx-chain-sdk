@@ -61,4 +61,13 @@ impl PublicAccount {
             Err(ModelError::from(&verify.unwrap_err()))
         }
     }
+
+    pub fn to_array(&self) -> [u8; 32] {
+        let mut array = [0; 32];
+        let public_key_to_bytes = hex::decode(&self.public_key).unwrap();
+
+        array.copy_from_slice(&public_key_to_bytes);
+
+        return array;
+    }
 }

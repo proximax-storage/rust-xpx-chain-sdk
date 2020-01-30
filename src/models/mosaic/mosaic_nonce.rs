@@ -1,12 +1,13 @@
 extern crate hex;
 extern crate rand;
+
 use hex::FromHex;
 
 use models::{InternalError, ModelError, Uint64};
-use models::utils::{array_of_u8_to_hex_string, u32_to_array_of_u8, array_of_u8_to_i32};
+use models::utils::{array_u8_to_u32, u32_to_array_u8, vec_u8_to_hex};
 
-use self::rand::rngs::OsRng;
 use self::rand::RngCore;
+use self::rand::rngs::OsRng;
 
 const NONCE_SIZE: usize = 4;
 
@@ -30,38 +31,37 @@ impl MosaicNonce {
             return Err(ModelError(InternalError::InvalidHex));
         };
 
-        let decoded = <[u8; NONCE_SIZE]>::from_hex(string_hex).unwrap();
+        let mut decoded = <[u8; NONCE_SIZE]>::from_hex(string_hex).unwrap();
+
+        decoded.reverse();
 
         Ok(MosaicNonce(decoded))
     }
 
     /// Creates a random `MosaicNonce`.
     pub fn random() -> MosaicNonce {
-
         let mut rng = match OsRng::new() {
             Ok(g) => g,
             Err(e) => panic!("Failed to obtain OS RNG: {}", e)
         };
 
-        let num:u32 = rng.next_u32();
+        let num: u32 = rng.next_u32();
 
-        MosaicNonce(u32_to_array_of_u8(num))
-    }
-
-    /// Creates a `MosaicNonce` from a `Uint64` value.
-    pub fn from_uint64(uint64: Uint64) -> MosaicNonce {
-        let int_array = uint64.to_int_array();
-        let lower = int_array[0] as u32;
-        MosaicNonce(u32_to_array_of_u8(lower))
+        MosaicNonce(u32_to_array_u8(num))
     }
 
     /// Converts the `MosaicNonce` to a hex string.
     pub fn to_hex(&self) -> String {
-        array_of_u8_to_hex_string(self.0.to_vec())
+        vec_u8_to_hex(self.0.to_vec())
     }
 
-    /// Converts the `MosaicNonce` to a i32.
+    /// Converts the `MosaicNonce` to a u32.
     pub fn to_u32(&self) -> u32 {
-        array_of_u8_to_i32(self.0) as u32
+        array_u8_to_u32(self.0)
+    }
+
+    /// Converts the `MosaicNonce` to a array u8.
+    pub fn to_array(&self) -> [u8; 4] {
+        self.0
     }
 }

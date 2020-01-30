@@ -1,10 +1,12 @@
 use core::fmt;
 
 use models::*;
+use models::account::PublicAccount;
+use models::mosaic::{generate_mosaic_id, MosaicNonce};
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicId(pub(crate) Uint64);
-
 
 impl MosaicId {
     /// Creates a new `MosaicId` from a `Uint64`.
@@ -26,13 +28,14 @@ impl MosaicId {
     }
 
     /// Creates a new `MosaicId` from a pair of 32-bit integers.
-    pub fn from_ints(lower: i32, higher: i32) -> MosaicId {
+    pub fn from_ints(lower: u32, higher: u32) -> MosaicId {
         MosaicId(Uint64::from_ints(lower, higher))
     }
 
-    /// Creates a new `MosaicId` from a given osaicNonce and owner's public account.
-    pub fn from_nonce(lower: i32, higher: i32) -> MosaicId {
-        MosaicId(Uint64::from_ints(lower, higher))
+    /// Creates a new `MosaicId` from a given `MosaicNonce` and owner's `PublicAccount`.
+    pub fn from_nonce_and_owner(nonce: MosaicNonce, owner_public_id: PublicAccount) -> MosaicId {
+        let id = generate_mosaic_id(nonce, owner_public_id);
+        MosaicId(id)
     }
 }
 
@@ -47,7 +50,7 @@ impl Id for MosaicId {
         id.to_hex()
     }
 
-    fn to_int_array(&self) -> [i32; 2] {
+    fn to_int_array(&self) -> [u32; 2] {
         let id = &self.0;
         id.to_int_array()
     }

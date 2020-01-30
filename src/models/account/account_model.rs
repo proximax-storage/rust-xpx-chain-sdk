@@ -1,4 +1,5 @@
 use models::account::PublicAccount;
+use models::utils::vec_u8_to_hex;
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
 #[derive(Debug)]
@@ -22,7 +23,7 @@ impl Account {
 
         let public_key_bytes = key_pair.public.as_bytes();
 
-        let public_key_hex = hex::encode(public_key_bytes);
+        let public_key_hex = vec_u8_to_hex(public_key_bytes.to_vec());
 
         let public_account = PublicAccount::from_public_key(&public_key_hex, network_type);
 
@@ -36,7 +37,7 @@ impl Account {
     pub fn sign_data(&self, data: &[u8]) -> String {
         let sig = &self.key_pair.sign(data).to_bytes()[..];
 
-        return hex::encode(sig);
+        return vec_u8_to_hex(sig.to_vec());
     }
 
     /// Creates a new encrypted message with this account as a sender.
