@@ -1,9 +1,9 @@
-use core::{mem, fmt};
+use ::core::{fmt, mem};
 
-use byteorder::{BigEndian, WriteBytesExt};
+use ::byteorder::{BigEndian, WriteBytesExt};
+use ::failure::_core::ops::BitAnd;
 
-use models::utils::u64_to_array_u8;
-use failure::_core::ops::BitAnd;
+use crate::models::utils::u64_to_array_u8;
 
 /// Represents a 64-bit unsigned integer.
 ///
@@ -14,7 +14,6 @@ use failure::_core::ops::BitAnd;
 pub struct Uint64(pub(crate) u64);
 
 impl Uint64 {
-
     pub fn new(u: u64) -> Uint64 {
         Uint64(u)
     }

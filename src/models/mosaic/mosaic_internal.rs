@@ -1,14 +1,12 @@
-extern crate byteorder;
-extern crate sha3;
+use sha3::{Digest, Sha3_256};
 
-use models::account::PublicAccount;
-use models::namespace::NAMESPACE_BIT;
-use models::{Uint64, ModelError, InternalError};
-use models::utils::array_u8_to_u64;
+use crate::models::{{account::PublicAccount},
+                    namespace::NAMESPACE_BIT,
+                    Uint64,
+                    utils::array_u8_to_u64,
+};
 
-use super::{Mosaic, MosaicId, MosaicNonce};
-
-use self::sha3::{Digest, Sha3_256};
+use super::{MosaicId, MosaicNonce};
 
 pub(crate) static XPX_MOSAIC_ID: &MosaicId = &MosaicId(Uint64(992621218088430050));
 

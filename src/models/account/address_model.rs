@@ -1,9 +1,6 @@
-extern crate base32;
+use ::base32::Alphabet::RFC4648;
 
-use models::{InternalError, ModelError};
-use models::network::*;
-
-use self::base32::Alphabet::RFC4648;
+use crate::models::{InternalError, ModelError, network::*};
 
 const PREFIX_MIJIN: char = 'M';
 const PREFIX_MIJIN_TEST: char = 'S';

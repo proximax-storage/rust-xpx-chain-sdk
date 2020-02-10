@@ -1,4 +1,4 @@
-use core::fmt;
+use ::core::fmt;
 
 /// An `trait` identifier used to define mosaic_id and namespaceId.
 pub trait Id: fmt::Display + fmt::Debug {
@@ -8,10 +8,10 @@ pub trait Id: fmt::Display + fmt::Debug {
 
     fn to_int_array(&self) -> [u32; 2];
 
-    fn eq(&self, other: &Id) -> bool;
+    fn eq(&self, other: &dyn Id) -> bool;
 }
 
-impl<'a> PartialEq for &'a Id {
+impl<'a> PartialEq for &'a dyn Id {
     fn eq(&self, other: &Self) -> bool {
         &self.to_bytes() == &other.to_bytes()
     }

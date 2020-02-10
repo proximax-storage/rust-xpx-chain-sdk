@@ -1,8 +1,7 @@
-use core::fmt;
-use core::fmt::{Debug, Display};
+use ::core::fmt;
+use ::core::fmt::{Debug, Display};
 
-use models::errors_model::InternalError;
-use models::errors_model::ModelError;
+use crate::models::errors_model::{InternalError, ModelError};
 
 /// MIJIN private network identifier. Decimal value = 96.
 pub const MIJIN: NetworkType = NetworkType(0x60);

@@ -1,8 +1,11 @@
-use core::fmt;
+use ::core::fmt;
 
-use models::{Id, InternalError, ModelError, Uint64};
-use models::account::PublicAccount;
-use models::utils::utils_hex::is_hex;
+use crate::models::{
+    {Id, InternalError, ModelError},
+    account::PublicAccount,
+    Uint64,
+    utils::utils_hex::is_hex,
+};
 
 use super::{generate_mosaic_id, MosaicNonce};
 
@@ -57,7 +60,7 @@ impl Id for MosaicId {
         id.to_int_array()
     }
 
-    fn eq(&self, other: &Id) -> bool {
+    fn eq(&self, other: &dyn Id) -> bool {
         &self.to_bytes() == &other.to_bytes()
     }
 }

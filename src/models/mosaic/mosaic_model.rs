@@ -1,10 +1,8 @@
-use core::fmt;
+use ::core::fmt;
 
-use models::{Id, InternalError, ModelError, Uint64};
+use crate::models::{Id, ModelError, Uint64};
 
-use super::mosaic_internal::{XPX_MAX_VALUE, XPX_MOSAIC_ID, XPX_MAX_RELATIVE_VALUE, XPX_DIVISIBILITY};
-use super::{MosaicId};
-use serde::export::fmt::format;
+use super::mosaic_internal::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE, XPX_MOSAIC_ID};
 
 /// A `Mosaic` describes an instance of a `Mosaic` definition.
 /// Mosaics can be transferred by means of a transfer transaction.
@@ -13,7 +11,7 @@ use serde::export::fmt::format;
 pub struct Mosaic<'a> {
     /// The mosaic id. This can either be of type `MosaicId` or `NamespaceId`.
 //    #[serde(rename = "ID")]
-    pub id: &'a (Id + 'a),
+    pub id: &'a (dyn Id + 'a),
     /// The mosaic amount.
 //    #[serde(rename = "amount")]
     pub amount: Uint64,
@@ -24,13 +22,13 @@ impl<'a> Mosaic<'a> {
     ///
     /// The quantity is always given in smallest units for the mosaic. For example, if it has a
     /// divisibility of 3 the quantity is given in millis.
-    pub fn new(id: &'a Id, amount: Uint64) -> Mosaic<'a> {
+    pub fn new(id: &'a dyn Id, amount: Uint64) -> Mosaic<'a> {
         Mosaic { id, amount }
     }
 
     pub fn xpx(amount: u64) -> Mosaic<'a> {
         if amount > XPX_MAX_VALUE {
-           let err = format!("Maximum xpx value must be {}", XPX_MAX_VALUE);
+            let err = format!("Maximum xpx value must be {}", XPX_MAX_VALUE);
             return Err(ModelError::default()).expect(&err);
         }
 
@@ -44,6 +42,10 @@ impl<'a> Mosaic<'a> {
         }
 
         Mosaic::xpx(amount * XPX_DIVISIBILITY)
+    }
+
+    fn get_id(&'a self) -> &'a dyn Id {
+        &*self.id
     }
 }
 

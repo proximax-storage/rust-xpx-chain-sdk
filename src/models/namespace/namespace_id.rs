@@ -1,11 +1,8 @@
-use core::fmt;
-
-use models::*;
-use models::account::PublicAccount;
+use crate::models::*;
 
 /// The `NamespaceId` id structure describes namespace id.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct NamespaceId{
+pub struct NamespaceId {
     #[serde(rename = "id")]
     pub id: Uint64,
     /// The full name can be empty when the namespace id is created using only the `Uint64` id.

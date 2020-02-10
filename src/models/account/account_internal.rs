@@ -1,15 +1,8 @@
-extern crate base32;
-extern crate hex;
-extern crate regex;
-extern crate ripemd160;
-extern crate sha3;
+use ::base32::Alphabet::RFC4648;
+use ::ripemd160::{Digest, Ripemd160};
+use ::sha3::Sha3_256;
 
-use models::network::NetworkType;
-
-use self::base32::Alphabet::RFC4648;
-use self::regex::Regex;
-use self::ripemd160::{Digest, Ripemd160};
-use self::sha3::Sha3_256;
+use crate::models::network::NetworkType;
 
 pub static HASH512_LENGTH: usize = 64;
 

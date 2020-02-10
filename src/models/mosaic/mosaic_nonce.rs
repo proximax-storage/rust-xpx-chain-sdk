@@ -1,13 +1,11 @@
-extern crate hex;
-extern crate rand;
+use ::hex::FromHex;
+use ::rand::RngCore;
+use ::rand::rngs::OsRng;
 
-use hex::FromHex;
-
-use models::{InternalError, ModelError};
-use models::utils::{array_u8_to_u32, is_hex, u32_to_array_u8, vec_u8_to_hex};
-
-use self::rand::RngCore;
-use self::rand::rngs::OsRng;
+use crate::models::{
+    {InternalError, ModelError},
+    utils::{array_u8_to_u32, is_hex, u32_to_array_u8, vec_u8_to_hex},
+};
 
 const NONCE_SIZE: usize = 4;
 

@@ -1,5 +1,4 @@
-use models::{InternalError, ModelError};
-use models::utils::is_hex;
+use crate::models::{InternalError, ModelError, utils::is_hex};
 
 use super::Address;
 

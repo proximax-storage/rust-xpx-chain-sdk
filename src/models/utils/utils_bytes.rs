@@ -1,7 +1,7 @@
-use core::mem;
+use ::core::mem;
 
-use byteorder::{LittleEndian, WriteBytesExt};
-use hex::encode;
+use ::byteorder::{LittleEndian, WriteBytesExt};
+use ::hex::encode;
 
 pub(crate) fn u32_to_array_u8(value: u32) -> [u8; 4] {
     let mut buf = [0u8; mem::size_of::<u32>()];

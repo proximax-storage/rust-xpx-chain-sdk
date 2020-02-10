@@ -1,4 +1,4 @@
-use models::utils::vec_u8_to_hex;
+use crate::models::utils::vec_u8_to_hex;
 
 use super::PublicAccount;
 

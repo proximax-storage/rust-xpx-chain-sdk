@@ -1,5 +1,4 @@
-use models::account::PublicAccount;
-use models::Uint64;
+use crate::models::{account::PublicAccount, Uint64};
 
 use super::{MosaicFlags, MosaicId};
 
