@@ -38,7 +38,7 @@ byteorder = "1"
 async-trait = "0.1.24"
 bytes = { version = "0.5", features = ["serde"] }
 
-more-asserts = "0.2.1"
+#more-asserts = "0.2.1"
 
 [dependencies.rand]
 version = "0.6"

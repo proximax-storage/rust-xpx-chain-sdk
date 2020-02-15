@@ -18,6 +18,7 @@ pub enum Error<T> {
     Hyper(hyper::Error),
     Serde(serde_json::Error),
     ApiError(ApiError<T>),
+    Failure(failure::Error),
 }
 
 #[derive(Debug)]
@@ -56,6 +57,12 @@ impl<T> From<hyper::Error> for Error<T> {
 impl<T> From<serde_json::Error> for Error<T> {
     fn from(e: serde_json::Error) -> Self {
         return Error::Serde(e);
+    }
+}
+
+impl<T> From<failure::Error> for Error<T> {
+    fn from(e: failure::Error) -> Self {
+        return Error::Failure(e);
     }
 }
 

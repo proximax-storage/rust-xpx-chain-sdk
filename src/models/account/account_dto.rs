@@ -1,8 +1,8 @@
 use ::std::ptr::null;
 
 use crate::models::account::{AccountInfo, AccountLinkTypeEnum, Address};
-use crate::models::mosaic::MosaicDto;
-use crate::models::Uint64Dto;
+use crate::models::mosaic::{Mosaic, MosaicDto, MosaicId};
+use crate::models::{Uint64Dto, Uint64};
 use crate::Result;
 
 /// AccountPropertiesModificationTypeEnum : The account properties modification type: * 0 - Add property. * 1 - Remove property.
@@ -41,24 +41,18 @@ pub enum AccountPropertyTypeEnum {
 pub struct AccountMetaDto {}
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct AccountDto {
     /// The account unique address in hexadecimal. 
-    #[serde(rename = "address")]
     pub address: String,
-    #[serde(rename = "address_height")]
     pub address_height: Uint64Dto,
     /// The public key of an account can be used to verify signatures of the account. Only accounts that have already published a transaction have a public key assigned to the account. Otherwise, the field is null. 
-    #[serde(rename = "public_key")]
     pub public_key: String,
-    #[serde(rename = "public_key_height")]
     pub public_key_height: Uint64Dto,
     /// The list of mosaics the account owns. The amount is represented in absolute amount. Thus a balance of 123456789 for a mosaic with divisibility 6 (absolute) means the account owns 123.456789 instead. 
-    #[serde(rename = "mosaics")]
     pub mosaics: Vec<MosaicDto>,
-    #[serde(rename = "accountType")]
     pub account_type: u8,
     /// The public key of a linked account. The linked account can use|provide balance for delegated harvesting. 
-    #[serde(rename = "linkedAccountKey")]
     pub linked_account_key: String,
 }
 
@@ -84,22 +78,31 @@ impl AccountIds {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AccountInfoDto {
     #[serde(rename = "meta")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default)]
-    pub meta: Option<crate::models::account::AccountMetaDto>,
+    pub meta: crate::models::account::AccountMetaDto,
     #[serde(rename = "account")]
     pub account: crate::models::account::AccountDto,
 }
 
 impl AccountInfoDto {
-    pub fn to_struct(&self) -> Result<AccountInfo> {
+    pub fn to_struct(&mut self) -> Result<AccountInfo> {
         let dto = &self.account;
         let add = Address::from_encoded(&dto.clone().address)?;
         let acc_type = AccountLinkTypeEnum::nem(dto.clone().account_type);
+        let mut mosaics: Vec<Mosaic> = Vec::with_capacity(dto.clone().mosaics.len());
+        for i in dto.clone().mosaics {
+            let mosaic = i;
+            mosaics.push(mosaic.to_struct());
+        }
 
-        Ok(AccountInfo::new(add, dto.clone().address_height.to_struct(),
-                            dto.clone().public_key, dto.public_key_height.to_struct(),
-                            acc_type))
+        Ok(AccountInfo::new(
+            add,
+            dto.clone().address_height.to_struct(),
+            dto.clone().public_key,
+            dto.public_key_height.to_struct(),
+            acc_type,
+            mosaics,
+        )
+        )
     }
 }
 

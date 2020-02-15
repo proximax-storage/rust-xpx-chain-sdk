@@ -2,8 +2,6 @@
 extern crate erased_serde;
 #[macro_use]
 extern crate failure;
-#[macro_use]
-extern crate more_asserts;
 extern crate regex;
 #[macro_use]
 extern crate serde_derive;
