@@ -3,26 +3,15 @@ extern crate url;
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use ::hyper;
-use ::serde;
-use failure::_core::pin::Pin;
-use futures::{Future, TryFutureExt};
 use hyper::{Body, Client, http, StatusCode};
-use hyper::body::to_bytes as concat;
-use hyper::client::connect::Connect;
 use hyper::header::{CONTENT_TYPE, USER_AGENT};
-//use std::error::Error;
 use serde::Serializer;
 use serde_json;
 
 use crate::apis::{AccountRoutesApiClient, Error, SiriusError};
-use crate::apis::configuration::ApiClient;
-
-use super::configuration;
+use crate::apis::sirius_client::ApiClient;
 
 use self::url::form_urlencoded;
-
-//use hyper::header::{USER_AGENT, CONTENT_LENGTH, CONTENT_TYPE};
 
 pub(crate) struct Request {
     method: hyper::Method,
@@ -167,6 +156,7 @@ impl Request {
             _ => {
                 let body = hyper::body::to_bytes(resp).await?;
 
+//                println!("{:?}", body);
                 let res: U = serde_json::from_slice(&body)?;
 
                 Ok(res)

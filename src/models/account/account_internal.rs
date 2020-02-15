@@ -6,6 +6,17 @@ use crate::models::network::NetworkType;
 
 pub static HASH512_LENGTH: usize = 64;
 
+/// AccountPropertiesModificationTypeEnum :
+/// The account properties modification type: * 0 - Add property. * 1 - Remove property.
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub enum AccountPropertiesModificationTypeEnum {
+    #[serde(rename = "0")]
+    _0,
+    #[serde(rename = "1")]
+    _1,
+
+}
+
 pub fn public_key_to_address(public_key: &str, version: NetworkType) -> String {
     let pk: Vec<u8> = hex::decode(public_key).unwrap();
 

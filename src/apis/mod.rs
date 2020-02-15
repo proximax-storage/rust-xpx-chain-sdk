@@ -1,6 +1,7 @@
 use hyper;
 use serde;
 use serde_json;
+use serde_json::Value;
 
 pub use self::account_routes_api::AccountRoutesApiClient;
 
@@ -68,8 +69,9 @@ impl<T> From<failure::Error> for Error<T> {
 
 mod request;
 mod account_routes_api;
-//mod block_routes_api;
+mod block_routes_api;
 //mod chain_routes_api;
 
-pub mod configuration;
-pub mod client;
+pub mod sirius_client;
+
+type Result<T> = std::result::Result<T, Error<Value>>;
