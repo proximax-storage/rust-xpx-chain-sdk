@@ -1,181 +1,50 @@
+#[allow(unused_imports)]
+use core::option::Option;
+use std::borrow::Borrow;
+use std::fmt::{Debug, Display};
+use std::rc::Rc;
+use std::result::Result;
+use std::sync::Arc;
+
+use ::async_trait::*;
+use failure::_core::pin::Pin;
+
 use futures::Future;
 use hyper;
-use serde_json;
+use hyper::client::connect::Connect;
+use serde_json::Value;
 
-use std::borrow::Borrow;
-#[allow(unused_imports)]
-use std::option::Option;
-use std::rc::Rc;
+use crate::apis::configuration::ApiClient;
+use crate::apis::Error;
+use crate::models::account::{AccountInfoDto, AccountInfo};
 
-use super::{configuration, Error};
+use super::configuration;
 use super::request as __internal_request;
 
-pub struct AccountRoutesApiClient<C: hyper::client::Connect> {
-    configuration: Rc<configuration::Configuration<C>>,
+#[derive(Debug, Clone)]
+pub struct AccountRoutesApiClient<C: hyper::client::connect::Connect> {
+    client: Arc<ApiClient<C>>,
 }
 
-impl<C: hyper::client::Connect> AccountRoutesApiClient<C> {
-    pub fn new(configuration: Rc<configuration::Configuration<C>>) -> AccountRoutesApiClient<C> {
+impl<C: hyper::client::connect::Connect> AccountRoutesApiClient<C> where C: Clone {
+    pub fn new(client: Arc<ApiClient<C>>) -> AccountRoutesApiClient<C> {
+        let clone = client.clone();
+
         AccountRoutesApiClient {
-            configuration,
+            client: clone,
         }
     }
 }
 
-pub trait AccountRoutesApi {
-    fn get_account_info(&self, account_id: &str) -> Box<dyn Future<Item=crate::models::account::AccountInfoDto, Error=Error<serde_json::Value>>>;
-    fn get_account_multisig(&self, account_id: &str) -> Box<dyn Future<Item=crate::models::multisig::MultisigAccountInfoDto, Error=Error<serde_json::Value>>>;
-    fn get_account_multisig_graph(&self, account_id: &str) -> Box<dyn Future<Item=Vec<crate::models::multisig::MultisigAccountGraphInfoDto>, Error=Error<serde_json::Value>>>;
-    fn get_account_properties(&self, account_id: &str) -> Box<dyn Future<Item=crate::models::account::AccountPropertiesInfoDto, Error=Error<serde_json::Value>>>;
-    fn get_account_properties_from_accounts(&self, account_ids: crate::models::account::AccountIds) -> Box<dyn Future<Item=Vec<crate::models::account::AccountPropertiesInfoDto>, Error=Error<serde_json::Value>>>;
-    fn get_accounts_info(&self, account_ids: crate::models::account::AccountIds) -> Box<dyn Future<Item=Vec<crate::models::account::AccountInfoDto>, Error=Error<serde_json::Value>>>;
-    fn get_accounts_names(&self, account_ids: crate::models::account::AccountIds) -> Box<dyn Future<Item=Vec<crate::models::account::AccountNamesDto>, Error=Error<serde_json::Value>>>;
-    fn incoming_transactions(&self, public_key: &str, page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>>;
-    fn outgoing_transactions(&self, public_key: &str, page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>>;
-    fn partial_transactions(&self, public_key: &str, page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>>;
-    fn transactions(&self, public_key: &str, page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>>;
-    fn unconfirmed_transactions(&self, public_key: &str, page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>>;
-}
+impl<C: hyper::client::connect::Connect> AccountRoutesApiClient<C>
+    where
+        C: Clone + Send + Sync + Debug + 'static
+{
+    pub async fn get_account_info(self, account_id: &str) -> Result<AccountInfo, Error<Value>> {
+        let mut req = __internal_request::Request::new(hyper::Method::GET, "/account/{accountId}".to_string());
 
-impl<C: hyper::client::Connect> AccountRoutesApi for AccountRoutesApiClient<C> {
-    fn get_account_info(&self, account_id: &str) -> Box<dyn Future<Item=crate::models::account::AccountInfoDto, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/account/{accountId}".to_string())
-            ;
         req = req.with_path_param("accountId".to_string(), account_id.to_string());
 
-        req.execute(self.configuration.borrow())
-    }
-
-    fn get_account_multisig(&self, account_id: &str) -> Box<dyn Future<Item=crate::models::multisig::MultisigAccountInfoDto, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/account/{accountId}/multisig".to_string())
-            ;
-        req = req.with_path_param("accountId".to_string(), account_id.to_string());
-
-        req.execute(self.configuration.borrow())
-    }
-
-    fn get_account_multisig_graph(&self, account_id: &str) -> Box<dyn Future<Item=Vec<crate::models::multisig::MultisigAccountGraphInfoDto>, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/account/{accountId}/multisig/graph".to_string())
-            ;
-        req = req.with_path_param("accountId".to_string(), account_id.to_string());
-
-        req.execute(self.configuration.borrow())
-    }
-
-    fn get_account_properties(&self, account_id: &str) -> Box<dyn Future<Item=crate::models::account::AccountPropertiesInfoDto, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/account/{accountId}/properties/".to_string())
-            ;
-        req = req.with_path_param("accountId".to_string(), account_id.to_string());
-
-        req.execute(self.configuration.borrow())
-    }
-
-    fn get_account_properties_from_accounts(&self, account_ids: crate::models::account::AccountIds) -> Box<dyn Future<Item=Vec<crate::models::account::AccountPropertiesInfoDto>, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Post, "/account/properties".to_string())
-            ;
-        req = req.with_body_param(account_ids);
-
-        req.execute(self.configuration.borrow())
-    }
-
-    fn get_accounts_info(&self, account_ids: crate::models::account::AccountIds) -> Box<dyn Future<Item=Vec<crate::models::account::AccountInfoDto>, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Post, "/account".to_string())
-            ;
-        req = req.with_body_param(account_ids);
-
-        req.execute(self.configuration.borrow())
-    }
-
-    fn get_accounts_names(&self, account_ids: crate::models::account::AccountIds) -> Box<dyn Future<Item=Vec<crate::models::account::AccountNamesDto>, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Post, "/account/names".to_string())
-            ;
-        req = req.with_body_param(account_ids);
-
-        req.execute(self.configuration.borrow())
-    }
-
-    fn incoming_transactions(&self, public_key: &str, page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/account/{publicKey}/transactions/incoming".to_string())
-            ;
-        if let Some(ref s) = page_size {
-            req = req.with_query_param("pageSize".to_string(), s.to_string());
-        }
-        if let Some(ref s) = id {
-            req = req.with_query_param("id".to_string(), s.to_string());
-        }
-        if let Some(ref s) = ordering {
-            req = req.with_query_param("ordering".to_string(), s.to_string());
-        }
-        req = req.with_path_param("publicKey".to_string(), public_key.to_string());
-
-        req.execute(self.configuration.borrow())
-    }
-
-    fn outgoing_transactions(&self, public_key: &str, page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/account/{publicKey}/transactions/outgoing".to_string())
-            ;
-        if let Some(ref s) = page_size {
-            req = req.with_query_param("pageSize".to_string(), s.to_string());
-        }
-        if let Some(ref s) = id {
-            req = req.with_query_param("id".to_string(), s.to_string());
-        }
-        if let Some(ref s) = ordering {
-            req = req.with_query_param("ordering".to_string(), s.to_string());
-        }
-        req = req.with_path_param("publicKey".to_string(), public_key.to_string());
-
-        req.execute(self.configuration.borrow())
-    }
-
-    fn partial_transactions(&self, public_key: &str, page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/account/{publicKey}/transactions/partial".to_string())
-            ;
-        if let Some(ref s) = page_size {
-            req = req.with_query_param("pageSize".to_string(), s.to_string());
-        }
-        if let Some(ref s) = id {
-            req = req.with_query_param("id".to_string(), s.to_string());
-        }
-        if let Some(ref s) = ordering {
-            req = req.with_query_param("ordering".to_string(), s.to_string());
-        }
-        req = req.with_path_param("publicKey".to_string(), public_key.to_string());
-
-        req.execute(self.configuration.borrow())
-    }
-
-    fn transactions(&self, public_key: &str, page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/account/{publicKey}/transactions".to_string())
-            ;
-        if let Some(ref s) = page_size {
-            req = req.with_query_param("pageSize".to_string(), s.to_string());
-        }
-        if let Some(ref s) = id {
-            req = req.with_query_param("id".to_string(), s.to_string());
-        }
-        if let Some(ref s) = ordering {
-            req = req.with_query_param("ordering".to_string(), s.to_string());
-        }
-        req = req.with_path_param("publicKey".to_string(), public_key.to_string());
-
-        req.execute(self.configuration.borrow())
-    }
-
-    fn unconfirmed_transactions(&self, public_key: &str, page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Box<dyn Future<Item=Vec<crate::models::transaction::TransactionInfoDto>, Error=Error<serde_json::Value>>> {
-        let mut req = __internal_request::Request::new(hyper::Method::Get, "/account/{publicKey}/transactions/unconfirmed".to_string())
-            ;
-        if let Some(ref s) = page_size {
-            req = req.with_query_param("pageSize".to_string(), s.to_string());
-        }
-        if let Some(ref s) = id {
-            req = req.with_query_param("id".to_string(), s.to_string());
-        }
-        if let Some(ref s) = ordering {
-            req = req.with_query_param("ordering".to_string(), s.to_string());
-        }
-        req = req.with_path_param("publicKey".to_string(), public_key.to_string());
-
-        req.execute(self.configuration.borrow())
+       req.execute(self.client).await
     }
 }

@@ -1,7 +1,7 @@
 use ::core::fmt;
 use ::core::fmt::{Debug, Display};
 
-use crate::models::errors_model::{InternalError, ModelError};
+use crate::Result;
 
 /// MIJIN private network identifier. Decimal value = 96.
 pub const MIJIN: NetworkType = NetworkType(0x60);
@@ -25,11 +25,16 @@ pub const ALIAS_ADDRESS: NetworkType = NetworkType(0x91);
 
 pub const NOT_SUPPORTED_NET: NetworkType = NetworkType(0);
 
-#[derive(Clone, Default, PartialEq, Serialize, Deserialize, Copy)]// we derive Default in order to use the clear() method in Drop
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Copy)]// we derive Default in order to use the clear() method in Drop
 pub struct NetworkType(pub(crate) u8);
 
 impl NetworkType {
-    pub fn from_string(network_type: &str) -> Result<NetworkType, ModelError> {
+    pub fn from_string(network_type: &str) -> Result<NetworkType> {
+        ensure!(
+            !network_type.is_empty(),
+            "network_type string is empty."
+         );
+
         match network_type {
             "MIJIN" => Ok(MIJIN),
             "MIJIN_TEST" => Ok(MIJIN_TEST),
@@ -38,13 +43,11 @@ impl NetworkType {
             "PRIVATE" => Ok(PRIVATE),
             "PRIVATE_TEST" => Ok(PRIVATE_TEST),
             "ALIAS_ADDRESS" => Ok(ALIAS_ADDRESS),
-            _ => Err(ModelError(InternalError::NetworkTypeError))
+            _ => Err(format_err!("Network type is unknown"))
         }
     }
-}
 
-impl NetworkType {
-    pub fn from_int(network_type: u8) -> Result<NetworkType, ModelError> {
+    pub fn from_int(network_type: u8) -> Result<NetworkType> {
         match network_type {
             0x60 => Ok(MIJIN),
             0x90 => Ok(MIJIN_TEST),
@@ -53,7 +56,20 @@ impl NetworkType {
             0xc8 => Ok(PRIVATE),
             0xb0 => Ok(PRIVATE_TEST),
             0x91 => Ok(ALIAS_ADDRESS),
-            _ => Err(ModelError(InternalError::NetworkTypeError))
+            _ => Err(format_err!("Network type is unknown"))
+        }
+    }
+
+    pub fn to_string(self) -> &'static str {
+        match self {
+            MIJIN => "MIJIN",
+            MIJIN_TEST => "MIJIN_TEST",
+            PUBLIC => "PUBLIC",
+            PUBLIC_TEST => "PUBLIC_TEST",
+            PRIVATE => "PRIVATE",
+            PRIVATE_TEST => "PRIVATE_TEST",
+            ALIAS_ADDRESS => "ALIAS_ADDRESS",
+            _ => "NOT_SUPPORTED_NET"
         }
     }
 }
@@ -61,11 +77,5 @@ impl NetworkType {
 impl Display for NetworkType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
-    }
-}
-
-impl Debug for NetworkType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "networkType: {}", self.0)
     }
 }

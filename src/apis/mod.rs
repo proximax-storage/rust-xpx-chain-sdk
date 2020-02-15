@@ -2,23 +2,19 @@ use hyper;
 use serde;
 use serde_json;
 
-pub use self::account_routes_api::{AccountRoutesApi, AccountRoutesApiClient};
-pub use self::block_routes_api::{BlockRoutesApi, BlockRoutesApiClient};
-pub use self::chain_routes_api::{ChainRoutesApi, ChainRoutesApiClient};
-pub use self::config_routes_api::{ConfigRoutesApi, ConfigRoutesApiClient};
-pub use self::contract_routes_api::{ContractRoutesApi, ContractRoutesApiClient};
-pub use self::diagnostic_routes_api::{DiagnosticRoutesApi, DiagnosticRoutesApiClient};
-pub use self::metadata_routes_api::{MetadataRoutesApi, MetadataRoutesApiClient};
-pub use self::mosaic_routes_api::{MosaicRoutesApi, MosaicRoutesApiClient};
-pub use self::namespace_routes_api::{NamespaceRoutesApi, NamespaceRoutesApiClient};
-pub use self::network_routes_api::{NetworkRoutesApi, NetworkRoutesApiClient};
-pub use self::node_routes_api::{NodeRoutesApi, NodeRoutesApiClient};
-pub use self::transaction_routes_api::{TransactionRoutesApi, TransactionRoutesApiClient};
-pub use self::upgrade_routes_api::{UpgradeRoutesApi, UpgradeRoutesApiClient};
+pub use self::account_routes_api::AccountRoutesApiClient;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SiriusError {
+    pub code: String,
+    pub message: String,
+}
 
 #[derive(Debug)]
 pub enum Error<T> {
-    UriError(hyper::error::UriError),
+    SiriusError(SiriusError),
+    UriError(hyper::http::uri::InvalidUri),
     Hyper(hyper::Error),
     Serde(serde_json::Error),
     ApiError(ApiError<T>),
@@ -64,32 +60,9 @@ impl<T> From<serde_json::Error> for Error<T> {
 }
 
 mod request;
-
 mod account_routes_api;
-
-mod block_routes_api;
-
-mod chain_routes_api;
-
-mod config_routes_api;
-
-mod contract_routes_api;
-
-mod diagnostic_routes_api;
-
-mod metadata_routes_api;
-
-mod mosaic_routes_api;
-
-mod namespace_routes_api;
-
-mod network_routes_api;
-
-mod node_routes_api;
-
-mod transaction_routes_api;
-
-mod upgrade_routes_api;
+//mod block_routes_api;
+//mod chain_routes_api;
 
 pub mod configuration;
 pub mod client;

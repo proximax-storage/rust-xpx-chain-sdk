@@ -3,8 +3,11 @@ use ::rand::RngCore;
 use ::rand::rngs::OsRng;
 
 use crate::models::{
-    {InternalError, ModelError},
-    utils::{array_u8_to_u32, is_hex, u32_to_array_u8, vec_u8_to_hex},
+    utils::{
+        array_u8_to_u32,
+        is_hex, u32_to_array_u8,
+        vec_u8_to_hex
+    },
 };
 
 const NONCE_SIZE: usize = 4;
@@ -20,14 +23,16 @@ impl MosaicNonce {
     }
 
     /// Creates a new `MosaicNonce` from a hex string.
-    pub fn from_hex(string_hex: &str) -> Result<MosaicNonce, ModelError> {
-        if string_hex.is_empty() {
-            return Err(ModelError(InternalError::HexEmptyError));
-        }
+    pub fn from_hex(string_hex: &str) -> crate::Result<MosaicNonce> {
+        ensure!(
+            !string_hex.is_empty(),
+            "The hex string must not be empty."
+         );
 
-        if !is_hex(string_hex) {
-            return Err(ModelError(InternalError::InvalidHex));
-        };
+        ensure!(
+            is_hex(string_hex),
+            "Invalid hex string."
+        );
 
         let mut decoded = <[u8; NONCE_SIZE]>::from_hex(string_hex).unwrap();
 

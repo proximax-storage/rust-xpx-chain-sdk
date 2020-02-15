@@ -1,7 +1,7 @@
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct NodeInfoDto {
     /// The public key used to identify the node.
-    #[serde(rename = "publicKey")]
+    #[serde(rename = "public_key")]
     pub public_key: String,
     /// The port used for the communication.
     #[serde(rename = "port")]

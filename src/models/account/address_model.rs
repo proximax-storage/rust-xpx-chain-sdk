@@ -1,6 +1,8 @@
 use ::base32::Alphabet::RFC4648;
 
-use crate::models::{InternalError, ModelError, network::*};
+use crate::models::network::*;
+use crate::models::utils::is_hex;
+use crate::Result;
 
 const PREFIX_MIJIN: char = 'M';
 const PREFIX_MIJIN_TEST: char = 'S';
@@ -13,12 +15,11 @@ const EMPTY_STRING: &str = "";
 const REGEX_DASH: &str = "-";
 
 /// The `Address` structure describes an address with its network.
-#[derive(Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Address {
     /// The address in hexadecimal.
-    #[serde(rename = "address")]
     pub address: String,
-    #[serde(rename = "networkType")]
     pub network_type: NetworkType,
 }
 
@@ -37,8 +38,17 @@ impl Address {
     ///
     /// A raw address string looks like:
     /// VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU or VAWOEO-WTABXR-7O3ZAK-2XNA5G-IBNE6P-ZIXDAF-DWBU
-    pub fn from_raw(raw_address: &str) -> Result<Address, ModelError> {
+    pub fn from_raw(raw_address: &str) -> Result<Address> {
+        ensure!(
+            !raw_address.is_empty(),
+            "raw address is empty."
+         );
+
         let _address = raw_address.trim().to_uppercase().replace(REGEX_DASH, EMPTY_STRING);
+        ensure!(
+            _address.len() == 40,
+            "Invalid len raw address."
+         );
 
         match _address.chars().next().unwrap() {
             PREFIX_MIJIN => Ok(Address { address: _address, network_type: MIJIN }),
@@ -47,13 +57,28 @@ impl Address {
             PREFIX_PUBLIC_TEST => Ok(Address { address: _address, network_type: PUBLIC_TEST }),
             PREFIX_PRIVATE => Ok(Address { address: _address, network_type: PRIVATE }),
             PREFIX_PRIVATE_TEST => Ok(Address { address: _address, network_type: PRIVATE_TEST }),
-            _ => Err(ModelError(InternalError::InvalidAddressError))
+            _ => Err(format_err!("Wrong address"))
         }
     }
 
     /// Create an `Address` from the given encoded address.
-    pub fn from_encoded(encoded: &str) -> Result<Address, ModelError> {
-        let _encoded_to_bytes = hex::decode(encoded).unwrap();
+    pub fn from_encoded(encoded: &str) -> Result<Address> {
+        ensure!(
+            !encoded.is_empty(),
+            "address encoded string is empty."
+         );
+
+        ensure!(
+            encoded.len() == 50,
+            "Invalid len address encoded string."
+         );
+
+        ensure!(
+            is_hex(encoded),
+            "Invalid hex address encoded string."
+            );
+
+        let _encoded_to_bytes = hex::decode(encoded)?;
 
         let _address = base32::encode(RFC4648 { padding: true }, _encoded_to_bytes.as_slice());
 
@@ -77,15 +102,11 @@ impl Address {
     }
 }
 
-
 impl core::fmt::Display for Address {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "{} {}", &self.network_type, &self.address)
-    }
-}
-
-impl core::fmt::Debug for Address {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Address {{ {:?}, address: {:?} }}", &self.network_type, &self.address)
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
     }
 }

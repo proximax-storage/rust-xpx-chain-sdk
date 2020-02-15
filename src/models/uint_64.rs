@@ -5,6 +5,15 @@ use ::failure::_core::ops::BitAnd;
 
 use crate::models::utils::u64_to_array_u8;
 
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]// we derive Default in order to use the clear() method in Drop
+pub struct Uint64Dto([u32; 2]);
+
+impl Uint64Dto {
+    pub fn to_struct(&self) -> Uint64 {
+        Uint64::from_ints(self.0[0], self.0[1])
+    }
+}
+
 /// Represents a 64-bit unsigned integer.
 ///
 /// This class uses Dart's native number type `u64` and has a value check for big integers.

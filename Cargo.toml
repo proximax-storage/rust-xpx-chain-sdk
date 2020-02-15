@@ -20,21 +20,25 @@ crate-type = ["lib"]
 serde = "^1.0"
 serde_derive = "^1.0"
 serde_json = "^1.0"
+serde_yaml = "0.7"
+erased-serde = "0.3"
+
 rust-xpx-crypto = { path = "../rust-xpx-crypto" }
 
 url = "2.1"
 hyper = "0.13"
 tokio = { version = "0.2", features = ["macros"] }
-serde_yaml = "0.7"
 base64 = "0.7.0"
-futures = "0.3"
+futures = "0.3.4"
 base32 = "0.4.0"
 ripemd160 = "0.8.0"
 hex = "^0.3"
 regex = "1"
 byteorder = "1"
-async-trait = "0.1"
+async-trait = "0.1.24"
 bytes = { version = "0.5", features = ["serde"] }
+
+more-asserts = "0.2.1"
 
 [dependencies.rand]
 version = "0.6"
@@ -42,7 +46,6 @@ default-features = false
 
 [dependencies.failure]
 version = "0.1"
-default-features = false
 
 [dependencies.sha3]
 version = "^0.8"

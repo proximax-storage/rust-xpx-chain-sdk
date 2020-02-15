@@ -1,16 +1,16 @@
 use ::core::fmt;
 
-use crate::models::{
-    {Id, InternalError, ModelError},
+use crate::models::{Id,
     account::PublicAccount,
     Uint64,
     utils::utils_hex::is_hex,
 };
 
 use super::{generate_mosaic_id, MosaicNonce};
+use serde::{Serialize, Serializer};
 
 /// The `MosaicId` id structure describes mosaic id.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct MosaicId(pub(crate) Uint64);
 
 impl MosaicId {
@@ -20,16 +20,18 @@ impl MosaicId {
     }
 
     /// Creates a new `MosaicId` from a hex string.
-    pub fn from_hex(string_hex: &str) -> Result<MosaicId, ModelError> {
-        if string_hex.is_empty() {
-            return Err(ModelError(InternalError::HexEmptyError));
-        }
+    pub fn from_hex(string_hex: &str) -> crate::Result<MosaicId> {
+        ensure!(
+            !string_hex.is_empty(),
+            "The hex string must not be empty."
+         );
 
-        if !is_hex(string_hex) {
-            return Err(ModelError(InternalError::InvalidHex));
-        };
+        ensure!(
+            is_hex(string_hex),
+            "Invalid hex string."
+            );
 
-        Ok(MosaicId(Uint64::from_hex(string_hex).unwrap()))
+        Ok(MosaicId(Uint64::from_hex(string_hex)?))
     }
 
     /// Creates a new `MosaicId` from a pair of 32-bit integers.
@@ -55,6 +57,10 @@ impl Id for MosaicId {
         id.to_hex()
     }
 
+    fn to_uint64(&self) -> Uint64 {
+        self.0
+    }
+
     fn to_int_array(&self) -> [u32; 2] {
         let id = &self.0;
         id.to_int_array()
@@ -68,5 +74,14 @@ impl Id for MosaicId {
 impl fmt::Display for MosaicId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:X}", self.0)
+    }
+}
+
+impl Serialize for MosaicId {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+    {
+        serializer.serialize_str(&self.to_hex())
     }
 }

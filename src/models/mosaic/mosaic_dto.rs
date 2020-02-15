@@ -1,3 +1,5 @@
+use crate::models::Uint64Dto;
+
 /// MosaicDirectionEnum : The supply modification direction: * 0  - Decrease. * 1  - Increase.
 /// The supply modification direction: * 0  - Decrease. * 1  - Increase.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -21,24 +23,15 @@ pub enum MosaicPropertyIdEnum {
 
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicDto {
     #[serde(rename = "id")]
-    pub id: Vec<i32>,
+    pub id: Uint64Dto,
     #[serde(rename = "amount")]
-    pub amount: Vec<i32>,
+    pub amount: Uint64Dto,
 }
 
-impl MosaicDto {
-    pub fn new(id: Vec<i32>, amount: Vec<i32>) -> MosaicDto {
-        MosaicDto {
-            id,
-            amount,
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicIds {
     /// The array of mosaic identifiers.
     #[serde(rename = "mosaicIds", skip_serializing_if = "Option::is_none")]

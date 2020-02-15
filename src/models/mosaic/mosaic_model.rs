@@ -1,19 +1,22 @@
 use ::core::fmt;
 
-use crate::models::{Id, ModelError, Uint64};
+use crate::models::{Id, Uint64};
 
-use super::mosaic_internal::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE, XPX_MOSAIC_ID};
+use super::mosaic_internal::{
+    XPX_DIVISIBILITY,
+    XPX_MAX_RELATIVE_VALUE,
+    XPX_MAX_VALUE,
+    XPX_MOSAIC_ID
+};
 
 /// A `Mosaic` describes an instance of a `Mosaic` definition.
 /// Mosaics can be transferred by means of a transfer transaction.
-#[derive(Debug, Clone, PartialEq)]
-//#[derive(PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Mosaic<'a> {
     /// The mosaic id. This can either be of type `MosaicId` or `NamespaceId`.
-//    #[serde(rename = "ID")]
     pub id: &'a (dyn Id + 'a),
     /// The mosaic amount.
-//    #[serde(rename = "amount")]
     pub amount: Uint64,
 }
 
@@ -27,19 +30,19 @@ impl<'a> Mosaic<'a> {
     }
 
     pub fn xpx(amount: u64) -> Mosaic<'a> {
-        if amount > XPX_MAX_VALUE {
-            let err = format!("Maximum xpx value must be {}", XPX_MAX_VALUE);
-            return Err(ModelError::default()).expect(&err);
-        }
+        assert_le!(
+            amount, XPX_MAX_VALUE,
+            "Maximum xpx value must be {}", XPX_MAX_VALUE
+        );
 
         Mosaic { id: XPX_MOSAIC_ID, amount: Uint64::new(amount) }
     }
 
     pub fn xpx_relative(amount: u64) -> Mosaic<'a> {
-        if amount > XPX_MAX_RELATIVE_VALUE {
-            let err = format!("Maximum xpx relative value must be {}", XPX_MAX_VALUE);
-            return Err(ModelError::default()).expect(&err);
-        }
+        assert_le!(
+            amount, XPX_MAX_RELATIVE_VALUE,
+            "Maximum xpx relative value must be {}", XPX_MAX_RELATIVE_VALUE
+        );
 
         Mosaic::xpx(amount * XPX_DIVISIBILITY)
     }
@@ -50,7 +53,10 @@ impl<'a> Mosaic<'a> {
 }
 
 impl fmt::Display for Mosaic<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}, {}", &self.id, &self.amount.0)
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
     }
 }

@@ -1,24 +1,38 @@
-use crate::models::utils::vec_u8_to_hex;
+use crate::models::utils::{is_hex, vec_u8_to_hex};
+use crate::Result;
 
 use super::PublicAccount;
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Account {
     /// The keyPair containing the public and private key of this account.
-//    #[serde(rename = "keyPair")]
     pub key_pair: xpx_crypto::Keypair,
     /// The public account of this account.
-//    #[serde(rename = "public_account")]
     pub public_account: PublicAccount,
 }
 
 impl Account {
     /// Create a `Account` from a private key for the given `NetworkType`.
-    pub fn from_private_key(private_key: &str, network_type: crate::models::network::NetworkType) -> Result<Account, Box<dyn std::error::Error>> {
+    pub fn from_private_key(private_key: &str, network_type: crate::models::network::NetworkType) -> Result<Account> {
+        ensure!(
+            !private_key.is_empty(),
+            "private_key string is empty."
+         );
+
+        ensure!(
+            private_key.len() == 64,
+            "Invalid len private_key."
+         );
+
+        ensure!(
+            is_hex(private_key),
+            "Invalid hex private_key string."
+            );
+
         let sk_hex = hex::decode(private_key)?;
 
-        let secret_key = ::xpx_crypto::SecretKey::from_bytes(&sk_hex).unwrap();
+        let secret_key = ::xpx_crypto::SecretKey::from_bytes(&sk_hex)?;
 
         let key_pair = ::xpx_crypto::Keypair::from_private_key(secret_key);
 
@@ -26,7 +40,7 @@ impl Account {
 
         let public_key_hex = vec_u8_to_hex(public_key_bytes.to_vec());
 
-        let public_account = PublicAccount::from_public_key(&public_key_hex, network_type);
+        let public_account = PublicAccount::from_public_key(&public_key_hex, network_type)?;
 
         Ok(Account {
             key_pair,

@@ -1,17 +1,9 @@
-/// AccountLinkTypeEnum : The account link types: * 0 -  Unlinked. Account is not linked to another account. * 1 -  Main. Account is a balance-holding account that is linked to a remote harvester account. * 2 -  Remote. Account is a remote harvester account that is linked to a balance-holding account. * 3 -  Remote_Unlinked. Account is a remote harvester eligible account that is unlinked.
-/// The account link types: * 0 -  Unlinked. Account is not linked to another account. * 1 -  Main. Account is a balance-holding account that is linked to a remote harvester account. * 2 -  Remote. Account is a remote harvester account that is linked to a balance-holding account. * 3 -  Remote_Unlinked. Account is a remote harvester eligible account that is unlinked.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub enum AccountLinkTypeEnum {
-    #[serde(rename = "0")]
-    _0,
-    #[serde(rename = "1")]
-    _1,
-    #[serde(rename = "2")]
-    _2,
-    #[serde(rename = "3")]
-    _3,
+use ::std::ptr::null;
 
-}
+use crate::models::account::{AccountInfo, AccountLinkTypeEnum, Address};
+use crate::models::mosaic::MosaicDto;
+use crate::models::Uint64Dto;
+use crate::Result;
 
 /// AccountPropertiesModificationTypeEnum : The account properties modification type: * 0 - Add property. * 1 - Remove property.
 /// The account properties modification type: * 0 - Add property. * 1 - Remove property.
@@ -46,65 +38,28 @@ pub enum AccountPropertyTypeEnum {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct AccountMetaDto {
-    #[serde(rename = "height")]
-    pub height: Vec<i32>,
-    #[serde(rename = "hash")]
-    pub hash: String,
-    #[serde(rename = "merkleComponentHash")]
-    pub merkle_component_hash: String,
-    #[serde(rename = "index")]
-    pub index: i32,
-    #[serde(rename = "id")]
-    pub id: String,
-}
+pub struct AccountMetaDto {}
 
-impl AccountMetaDto {
-    pub fn new(height: Vec<i32>, hash: String, merkle_component_hash: String, index: i32, id: String) -> AccountMetaDto {
-        AccountMetaDto {
-            height,
-            hash,
-            merkle_component_hash,
-            index,
-            id,
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct AccountDto {
     /// The account unique address in hexadecimal. 
     #[serde(rename = "address")]
     pub address: String,
-    #[serde(rename = "addressHeight")]
-    pub address_height: Vec<i32>,
+    #[serde(rename = "address_height")]
+    pub address_height: Uint64Dto,
     /// The public key of an account can be used to verify signatures of the account. Only accounts that have already published a transaction have a public key assigned to the account. Otherwise, the field is null. 
-    #[serde(rename = "publicKey")]
+    #[serde(rename = "public_key")]
     pub public_key: String,
-    #[serde(rename = "publicKeyHeight")]
-    pub public_key_height: Vec<i32>,
+    #[serde(rename = "public_key_height")]
+    pub public_key_height: Uint64Dto,
     /// The list of mosaics the account owns. The amount is represented in absolute amount. Thus a balance of 123456789 for a mosaic with divisibility 6 (absolute) means the account owns 123.456789 instead. 
     #[serde(rename = "mosaics")]
-    pub mosaics: Vec<crate::models::mosaic::MosaicDto>,
+    pub mosaics: Vec<MosaicDto>,
     #[serde(rename = "accountType")]
-    pub account_type: crate::models::account::AccountLinkTypeEnum,
+    pub account_type: u8,
     /// The public key of a linked account. The linked account can use|provide balance for delegated harvesting. 
     #[serde(rename = "linkedAccountKey")]
     pub linked_account_key: String,
-}
-
-impl AccountDto {
-    pub fn new(address: String, address_height: Vec<i32>, public_key: String, public_key_height: Vec<i32>, mosaics: Vec<crate::models::mosaic::MosaicDto>, account_type: crate::models::account::AccountLinkTypeEnum, linked_account_key: String) -> AccountDto {
-        AccountDto {
-            address,
-            address_height,
-            public_key,
-            public_key_height,
-            mosaics,
-            account_type,
-            linked_account_key,
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -129,17 +84,22 @@ impl AccountIds {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AccountInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::account::AccountMetaDto,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    pub meta: Option<crate::models::account::AccountMetaDto>,
     #[serde(rename = "account")]
     pub account: crate::models::account::AccountDto,
 }
 
 impl AccountInfoDto {
-    pub fn new(meta: crate::models::account::AccountMetaDto, account: crate::models::account::AccountDto) -> AccountInfoDto {
-        AccountInfoDto {
-            meta,
-            account,
-        }
+    pub fn to_struct(&self) -> Result<AccountInfo> {
+        let dto = &self.account;
+        let add = Address::from_encoded(&dto.clone().address)?;
+        let acc_type = AccountLinkTypeEnum::nem(dto.clone().account_type);
+
+        Ok(AccountInfo::new(add, dto.clone().address_height.to_struct(),
+                            dto.clone().public_key, dto.public_key_height.to_struct(),
+                            acc_type))
     }
 }
 
