@@ -37,8 +37,7 @@ regex = "1"
 byteorder = "1"
 async-trait = "0.1.24"
 bytes = { version = "0.5", features = ["serde"] }
-
-#more-asserts = "0.2.1"
+chrono = "0.4.10"
 
 [dependencies.rand]
 version = "0.6"

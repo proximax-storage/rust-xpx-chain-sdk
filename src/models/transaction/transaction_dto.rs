@@ -80,13 +80,13 @@ impl TransactionIds {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::transaction::TransactionMetaDto,
+    pub meta: TransactionMetaDto,
     #[serde(rename = "transaction")]
     pub transaction: crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto,
 }
 
 impl TransactionInfoDto {
-    pub fn new(meta: crate::models::transaction::TransactionMetaDto, transaction: crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto) -> TransactionInfoDto {
+    pub fn new(meta: TransactionMetaDto, transaction: crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto) -> TransactionInfoDto {
         TransactionInfoDto {
             meta,
             transaction,
@@ -259,13 +259,13 @@ impl EmbeddedTransactionDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmbeddedTransactionInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::transaction::EmbeddedTransactionMetaDto,
+    pub meta: EmbeddedTransactionMetaDto,
     #[serde(rename = "transaction")]
     pub transaction: crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto,
 }
 
 impl EmbeddedTransactionInfoDto {
-    pub fn new(meta: crate::models::transaction::EmbeddedTransactionMetaDto, transaction: crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto) -> EmbeddedTransactionInfoDto {
+    pub fn new(meta: EmbeddedTransactionMetaDto, transaction: crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto) -> EmbeddedTransactionInfoDto {
         EmbeddedTransactionInfoDto {
             meta,
             transaction,
