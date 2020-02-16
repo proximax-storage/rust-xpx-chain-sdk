@@ -28,7 +28,6 @@ pub struct Timestamp(SystemTime);
 impl Timestamp {
     /// returns new timestamp from passed milliseconds value
     pub fn new(milliseconds: i64) -> Self {
-        println!("{:?}", TIMESTAMP_NEMESIS_BLOCK_MILLISECONDS);
         // Creates a new SystemTime from the specified number of whole seconds
         Timestamp(UNIX_EPOCH + Duration::from_nanos((milliseconds * MILLISECONDS) as u64))
     }

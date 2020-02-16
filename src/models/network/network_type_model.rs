@@ -9,13 +9,13 @@ pub const MIJIN: NetworkType = NetworkType(0x60);
 /// MIJIN_TEST private test network identifier. Decimal value = 144.
 pub const MIJIN_TEST: NetworkType = NetworkType(0x90);
 
-/// The PUBLIC test network identifier. Decimal value = 184.
+/// The PUBLIC network identifier. Decimal value = 184.
 pub const PUBLIC: NetworkType = NetworkType(0xb8);
 
 /// The PUBLIC_TEST test network identifier. Decimal value = 168.
 pub const PUBLIC_TEST: NetworkType = NetworkType(0xa8);
 
-/// The PRIVATE test network identifier. Decimal value = 200.
+/// The PRIVATE network identifier. Decimal value = 200.
 pub const PRIVATE: NetworkType = NetworkType(0xc8);
 
 /// The PRIVATE_TEST test network identifier. Decimal value = 176.

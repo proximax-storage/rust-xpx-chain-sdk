@@ -1,6 +1,8 @@
 pub(crate) use self::account_dto::*;
 pub use self::account_info::*;
 use self::account_internal::*;
+pub use self::account_internal::EMPTY_PUBLIC_KEY;
+
 pub use self::account_model::*;
 pub use self::account_type::*;
 pub use self::address_model::*;

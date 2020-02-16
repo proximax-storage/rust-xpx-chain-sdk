@@ -1,16 +1,18 @@
+use crate::models::Uint64;
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AliasDto {
     #[serde(rename = "type")]
-    pub _type: crate::models::alias::AliasTypeEnum,
+    pub _type: u16,
     #[serde(rename = "mosaic_id", skip_serializing_if = "Option::is_none")]
-    pub mosaic_id: Option<Vec<i32>>,
+    pub mosaic_id: Option<Uint64>,
     /// The aliased address in hexadecimal.
     #[serde(rename = "address", skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
 }
 
 impl AliasDto {
-    pub fn new(_type: crate::models::alias::AliasTypeEnum) -> AliasDto {
+    pub fn new(_type: u16) -> AliasDto {
         AliasDto {
             _type,
             mosaic_id: None,

@@ -4,11 +4,11 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 use hyper::{Body, Client, http, StatusCode};
-use hyper::header::{CONTENT_TYPE, USER_AGENT};
+use hyper::header::{CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT};
 use serde::Serializer;
 use serde_json;
 
-use crate::apis::{AccountRoutesApiClient, Error, SiriusError};
+use crate::apis::error::{Error, SiriusError};
 use crate::apis::sirius_client::ApiClient;
 
 use self::url::form_urlencoded;
@@ -74,7 +74,6 @@ impl Request {
             C: hyper::client::connect::Connect + Send + Clone + Sync + 'static,
             for<'de> U: serde::Deserialize<'de>,
     {
-//        let mut query_string = ::url::form_urlencoded::Serializer::new("".to_owned());
 
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.
@@ -91,17 +90,19 @@ impl Request {
             raw_headers.insert(k, v);
         }
 
-//        for (key, val) in self.query_params {
-//            query_string.append_pair(&key, &val);
-//        }
+        let mut query_string = ::url::form_urlencoded::Serializer::new("".to_owned());
+
+        for (key, val) in self.query_params {
+            query_string.append_pair(&key, &val);
+        }
 
         let mut uri_str = format!("{}{}", api.base_path, path);
 
-//        let query_string_str = query_string.finish();
-//        if query_string_str != "" {
-//            uri_str += "?";
-//            uri_str += &query_string_str;
-//        }
+        let query_string_str = query_string.finish();
+        if query_string_str != "" {
+            uri_str += "?";
+            uri_str += &query_string_str;
+        }
 
         let uri: hyper::Uri = match uri_str.parse()
         {
@@ -110,6 +111,7 @@ impl Request {
             }
             Ok(u) => u,
         };
+        println!("{:?}", uri);
 
         let mut req = hyper::Request::builder()
             .method(self.method)
@@ -123,43 +125,42 @@ impl Request {
             }
 
             req_headers.extend(headers);
-
+//
 //            for (key, val) in raw_headers {
-//                req_headers.append(key, hyper::http::HeaderValue::from_str(val.borrow()).unwrap());
+//                req_headers.append(key, hyper::http::HeaderValue::from_str(&val).unwrap());
 //            }
-        }
 
-        req.headers_mut().insert(CONTENT_TYPE, "application/json".parse().unwrap());
+            req.headers_mut().insert(CONTENT_TYPE, "application/json".parse().unwrap());
 
-//        if let Some(body) = self.serialized_body {
-//            req.headers_mut().insert(CONTENT_TYPE, "application/json".parse().unwrap());
-//            req.headers_mut().insert(CONTENT_LENGTH, body.len().into() );
-//            req.into_body();
-//        }
-
-        let no_ret_type = self.no_return_type;
-
-        let mut resp = api.client.request(req).await?;
-
-        let status = resp.status_mut();
-
-        match *status {
-            StatusCode::NOT_FOUND => {
-                let body = hyper::body::to_bytes(resp).await?;
-
-                let _err: SiriusError = serde_json::from_slice(&body).unwrap();
-
-                let _resp_err: Result<U, _> = Result::Err(Error::SiriusError(_err));
-
-                return _resp_err;
+            if let Some(body) = self.serialized_body {
+                req.headers_mut().insert(CONTENT_TYPE, "application/json".parse().unwrap());
+                req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
+//                req.into_body();
             }
-            _ => {
-                let body = hyper::body::to_bytes(resp).await?;
 
-//                println!("{:?}", body);
-                let res: U = serde_json::from_slice(&body)?;
+            let no_ret_type = self.no_return_type;
 
-                Ok(res)
+            let mut resp = api.client.request(req).await?;
+
+            let status = resp.status_mut();
+
+            match *status {
+                StatusCode::NOT_FOUND => {
+                    let body = hyper::body::to_bytes(resp).await?;
+
+                    let _err: SiriusError = serde_json::from_slice(&body).unwrap();
+
+                    let _resp_err: Result<U, _> = Result::Err(Error::SiriusError(_err));
+
+                    return _resp_err;
+                }
+                _ => {
+                    let body = hyper::body::to_bytes(resp).await?;
+
+                    let res: U = serde_json::from_slice(&body)?;
+
+                    Ok(res)
+                }
             }
         }
     }

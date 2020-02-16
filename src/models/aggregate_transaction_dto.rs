@@ -1,3 +1,5 @@
+use super::transaction::EmbeddedTransactionInfoDto;
+
 /// AggregateTransactionDto : Transaction that combines multiple transactions together.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AggregateTransactionDto {
@@ -21,7 +23,7 @@ pub struct AggregateTransactionDto {
     pub cosignatures: Vec<crate::models::multisig::CosignatureDto>,
     /// The array of transactions initiated by different accounts.
     #[serde(rename = "transactions")]
-    pub transactions: Vec<crate::models::transaction::EmbeddedTransactionInfoDto>,
+    pub transactions: Vec<EmbeddedTransactionInfoDto>,
 }
 
 impl AggregateTransactionDto {

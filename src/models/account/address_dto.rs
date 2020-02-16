@@ -46,9 +46,9 @@ struct AddressMetadataTransactionDto {
     /// * 0x98 (TEST_NET) - PUBLIC test network.
     /// * 0x60 (MIJIN) - PRIVATE network.
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: u16,
+    version: i32,
     #[serde(rename = "type")]
-    _type: u8,
+    _type: u16,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     /// The address in hexadecimal.
@@ -67,9 +67,9 @@ struct EmbeddedAddressMetadataTransactionDto {
     /// * 0x98 (TEST_NET) - PUBLIC test network.
     /// * 0x60 (MIJIN) - PRIVATE network.
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: u16,
+    version: i32,
     #[serde(rename = "type")]
-    _type: u8,
+    _type: u16,
     max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
     deadline: Uint64Dto,

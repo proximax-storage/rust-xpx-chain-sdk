@@ -110,9 +110,9 @@ struct AccountLinkTransactionDto {
     /// * 0x98 (TEST_NET) - PUBLIC test network.
     /// * 0x60 (MIJIN) - PRIVATE network.
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: u16,
+    version: i32,
     #[serde(rename = "type")]
-    _type: u8,
+    _type: u16,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     /// The public key of the remote account.
@@ -148,7 +148,7 @@ struct AccountPropertiesInfoDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct AccountPropertiesModificationDto {
     #[serde(rename = "type")]
-    _type: u8,
+    _type: u16,
     /// The address, transaction type or mosaic id to filter.
     #[serde(rename = "values")]
     values: Uint64Dto,
@@ -176,9 +176,9 @@ struct AccountPropertiesTransactionDto {
     /// * 0x98 (TEST_NET) - PUBLIC test network.
     /// * 0x60 (MIJIN) - PRIVATE network.
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: u16,
+    version: i32,
     #[serde(rename = "type")]
-    _type: u8,
+    _type: u16,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     property_type: u32,
@@ -204,9 +204,9 @@ struct EmbeddedAccountLinkTransactionDto {
     /// * 0x98 (TEST_NET) - PUBLIC test network.
     /// * 0x60 (MIJIN) - PRIVATE network.
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: u16,
+    version: i32,
     #[serde(rename = "type")]
-    _type: u8,
+    _type: u16,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     /// The public key of the remote account.
@@ -224,9 +224,9 @@ struct EmbeddedAccountPropertiesTransactionDto {
     /// * 0x98 (TEST_NET) - PUBLIC test network.
     /// * 0x60 (MIJIN) - PRIVATE network.
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: u16,
+    version: i32,
     #[serde(rename = "type")]
-    _type: u8,
+    _type: u16,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     property_type: u8,

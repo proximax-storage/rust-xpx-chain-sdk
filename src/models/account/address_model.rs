@@ -15,7 +15,7 @@ const EMPTY_STRING: &str = "";
 const REGEX_DASH: &str = "-";
 
 /// The `Address` structure describes an address with its network.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Address {
     /// The address in hexadecimal.

@@ -4,9 +4,8 @@ use std::sync::Arc;
 
 use hyper::client::connect::Connect;
 
-use crate::apis::block_routes_api::BlockRoutesApiClient;
-
 use super::account_routes_api::AccountRoutesApiClient;
+use super::block_routes_api::BlockRoutesApiClient;
 
 #[derive(Clone)]
 pub struct SiriusClient<C: hyper::client::connect::Connect> {

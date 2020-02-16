@@ -6,6 +6,8 @@ use crate::models::network::NetworkType;
 
 pub static HASH512_LENGTH: usize = 64;
 
+pub static EMPTY_PUBLIC_KEY: &str = "0000000000000000000000000000000000000000000000000000000000000000";
+
 /// AccountPropertiesModificationTypeEnum :
 /// The account properties modification type: * 0 - Add property. * 1 - Remove property.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

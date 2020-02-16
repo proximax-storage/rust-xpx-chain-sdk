@@ -4,7 +4,7 @@ use crate::Result;
 use super::Address;
 
 /// The `PublicAccount` account structure contains account's `Address` and public key.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PublicAccount {
     /// Retrieves the `Address` of this public account.
@@ -90,3 +90,10 @@ impl core::fmt::Display for PublicAccount {
         )
     }
 }
+//
+///// Creates `MosaicFlags` with the default parameters.
+//impl Default for MosaicFlags {
+//    fn default() -> Self {
+//        MosaicFlags { supply_mutable: true, transferable: true, divisibility: false }
+//    }
+//}
