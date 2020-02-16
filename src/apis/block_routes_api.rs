@@ -2,7 +2,6 @@ use std::fmt::Debug;
 use std::sync::Arc;
 
 use hyper::client::connect::Connect;
-use serde_json;
 
 use crate::apis::sirius_client::ApiClient;
 use crate::models::blockchain::block_model::BlockInfo;
@@ -31,6 +30,8 @@ impl<C: Connect> BlockRoutesApiClient<C>
         C: Clone + Send + Sync + Debug + 'static
 {
     pub async fn get_block_by_height(self, height: u64) -> super::Result<BlockInfo> {
+        assert_ne!(height, 0, "Block height should not be zero.");
+
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/block/{height}".to_string(),
@@ -92,20 +93,20 @@ impl<C: Connect> BlockRoutesApiClient<C>
         }
         req = req.with_path_param("height".to_string(), height.to_string());
 
-        let dto: super::Result<Vec<TransactionInfoDto>> = req.execute(self.client).await;
+        let _dto: super::Result<Vec<TransactionInfoDto>> = req.execute(self.client).await;
 
         unimplemented!()
     }
 
-    pub async fn get_blockchain_height(self, height: i64) -> super::Result<()> {
+    pub async fn get_blockchain_height(self) -> super::Result<()> {
         unimplemented!()
     }
 
-    pub async fn get_blockchain_score(self, height: i64) -> super::Result<()> {
+    pub async fn get_blockchain_score(self) -> super::Result<()> {
         unimplemented!()
     }
 
-    pub async fn get_blockchain_storage(self, height: i64) -> super::Result<()> {
+    pub async fn get_blockchain_storage(self) -> super::Result<()> {
         unimplemented!()
     }
 }

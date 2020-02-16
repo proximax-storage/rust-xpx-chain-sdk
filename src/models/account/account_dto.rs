@@ -1,7 +1,5 @@
-use ::std::ptr::null;
-
 use crate::models::account::{AccountInfo, AccountLinkTypeEnum, Address};
-use crate::models::mosaic::{Mosaic, MosaicDto, MosaicId};
+use crate::models::mosaic::{Mosaic, MosaicDto};
 use crate::models::Uint64Dto;
 use crate::Result;
 

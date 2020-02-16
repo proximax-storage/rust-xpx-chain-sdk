@@ -90,10 +90,3 @@ impl core::fmt::Display for PublicAccount {
         )
     }
 }
-//
-///// Creates `MosaicFlags` with the default parameters.
-//impl Default for MosaicFlags {
-//    fn default() -> Self {
-//        MosaicFlags { supply_mutable: true, transferable: true, divisibility: false }
-//    }
-//}

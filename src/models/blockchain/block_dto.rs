@@ -6,7 +6,6 @@ use crate::models::Uint64Dto;
 use crate::Result;
 
 use super::block_model::BlockInfo;
-use super::Uint64;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

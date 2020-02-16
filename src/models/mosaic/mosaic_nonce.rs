@@ -6,7 +6,7 @@ use crate::models::{
     utils::{
         array_u8_to_u32,
         is_hex, u32_to_array_u8,
-        vec_u8_to_hex
+        vec_u8_to_hex,
     },
 };
 

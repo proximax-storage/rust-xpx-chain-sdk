@@ -1,8 +1,9 @@
 use ::core::fmt;
+
 use crate::models::Uint64;
 
 /// An `trait` identifier used to define mosaic_id and namespaceId.
-pub trait Id:  Sync + erased_serde::Serialize
+pub trait Id: Sync + erased_serde::Serialize
     where
         Self: fmt::Debug,
 {
@@ -25,7 +26,7 @@ impl<'a> PartialEq for &'a dyn Id {
     }
 }
 
-impl fmt::Display for Id {
+impl fmt::Display for dyn Id {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.to_hex())
     }

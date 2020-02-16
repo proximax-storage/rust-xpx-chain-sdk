@@ -1,13 +1,14 @@
 use ::core::fmt;
 
-use crate::models::{Id,
-    account::PublicAccount,
-    Uint64,
-    utils::utils_hex::is_hex,
+use serde::{Serialize, Serializer};
+
+use crate::models::{account::PublicAccount,
+                    Id,
+                    Uint64,
+                    utils::utils_hex::is_hex,
 };
 
 use super::{generate_mosaic_id, MosaicNonce};
-use serde::{Serialize, Serializer};
 
 /// The `MosaicId` id structure describes mosaic id.
 #[derive(Debug, Clone, PartialEq, Deserialize)]

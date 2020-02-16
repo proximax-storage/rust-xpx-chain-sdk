@@ -8,8 +8,6 @@ use crate::models::{{account::PublicAccount},
 
 use super::{MosaicId, MosaicNonce};
 
-pub(crate) static XPX_MOSAIC_ID: &MosaicId = &MosaicId(Uint64(992621218088430050));
-
 static GET_SUPPLY_MUTABLE: u8 = 0x01;
 
 static GET_TRANSFERABLE: u8 = 0x02;

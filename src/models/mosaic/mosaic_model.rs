@@ -1,12 +1,12 @@
 use ::core::fmt;
 
 use crate::models::{Id, Uint64};
+use crate::models::mosaic::MosaicId;
 
 use super::mosaic_internal::{
     XPX_DIVISIBILITY,
     XPX_MAX_RELATIVE_VALUE,
     XPX_MAX_VALUE,
-    XPX_MOSAIC_ID
 };
 
 /// A `Mosaic` describes an instance of a `Mosaic` definition.
@@ -29,23 +29,25 @@ impl Mosaic {
         Mosaic { id, amount }
     }
 
-//    pub fn xpx(amount: u64) -> Mosaic {
-//        assert_le!(
-//            amount, XPX_MAX_VALUE,
-//            "Maximum xpx value must be {}", XPX_MAX_VALUE
-//        );
-//
-//        Mosaic { id: XPX_MOSAIC_ID, amount: Uint64::new(amount) }
-//    }
+    pub fn xpx(amount: u64) -> Mosaic {
+        assert_ne!(
+            amount, XPX_MAX_VALUE,
+            "Maximum xpx value must be {}", XPX_MAX_VALUE
+        );
 
-//    pub fn xpx_relative(amount: u64) -> Mosaic<'a> {
-//        assert_le!(
-//            amount, XPX_MAX_RELATIVE_VALUE,
-//            "Maximum xpx relative value must be {}", XPX_MAX_RELATIVE_VALUE
-//        );
-//
-//        Mosaic::xpx(amount * XPX_DIVISIBILITY)
-//    }
+        let xpx_mosaic_id: Box<MosaicId> = Box::new(MosaicId(Uint64(992621218088430050)));
+
+        Mosaic { id: xpx_mosaic_id, amount: Uint64::new(amount) }
+    }
+
+    pub fn xpx_relative(amount: u64) -> Mosaic {
+        assert_ne!(
+            amount, XPX_MAX_RELATIVE_VALUE,
+            "Maximum xpx relative value must be {}", XPX_MAX_RELATIVE_VALUE
+        );
+
+        Mosaic::xpx(amount * XPX_DIVISIBILITY)
+    }
 
     fn get_id<'a>(&'a self) -> &'a dyn Id {
         &*self.id

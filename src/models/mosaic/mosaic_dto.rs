@@ -1,5 +1,5 @@
-use crate::models::{Uint64Dto, Id, Uint64};
 use crate::models::mosaic::{Mosaic, MosaicId};
+use crate::models::Uint64Dto;
 
 /// MosaicDirectionEnum : The supply modification direction: * 0  - Decrease. * 1  - Increase.
 /// The supply modification direction: * 0  - Decrease. * 1  - Increase.
@@ -36,12 +36,12 @@ impl MosaicDto {
     pub fn new(id: Uint64Dto, amount: Uint64Dto) -> Self {
         MosaicDto {
             id,
-            amount
+            amount,
         }
     }
 
     pub fn to_struct(&self) -> Mosaic {
-        let mosaic_id  = Box::new(MosaicId::from_uin64(self.id.to_struct()));
+        let mosaic_id = Box::new(MosaicId::from_uin64(self.id.to_struct()));
         let amount = self.amount.to_struct();
         Mosaic::new(mosaic_id, amount)
     }

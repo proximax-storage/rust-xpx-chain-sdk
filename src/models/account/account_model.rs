@@ -48,6 +48,10 @@ impl Account {
         })
     }
 
+    pub fn to_private_key(&self) -> String {
+        return vec_u8_to_hex(self.key_pair.secret.to_bytes().to_vec());
+    }
+
     /// Signs raw data.
     pub fn sign_data(&self, data: &[u8]) -> String {
         let sig = &self.key_pair.sign(data).to_bytes()[..];
@@ -73,5 +77,14 @@ impl Account {
     /// Sign aggregate signature transaction.
     pub fn sign_cosignature_transaction(&self) {
         todo!();
+    }
+}
+
+impl core::fmt::Display for Account {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(&self.public_account).unwrap_or_default()
+        )
     }
 }

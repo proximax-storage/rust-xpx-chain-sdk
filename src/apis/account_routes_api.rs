@@ -1,9 +1,7 @@
-use std::fmt::{Debug, Display};
+use std::fmt::Debug;
 use std::sync::Arc;
 
 use hyper::client::connect::Connect;
-use serde::Deserialize;
-use serde_json::Value;
 
 use crate::apis::sirius_client::ApiClient;
 use crate::models::account::{AccountInfo, AccountInfoDto};

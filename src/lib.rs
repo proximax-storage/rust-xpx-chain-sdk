@@ -1,3 +1,4 @@
+extern crate chrono;
 #[macro_use]
 extern crate erased_serde;
 #[macro_use]
@@ -11,7 +12,6 @@ extern crate serde_json;
 extern crate std;
 extern crate url;
 extern crate xpx_crypto;
-extern crate chrono;
 
 pub mod apis;
 pub mod models;
