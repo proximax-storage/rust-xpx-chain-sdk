@@ -105,9 +105,5 @@ impl<C: Connect> BlockRoutesApiClient<C>
     pub async fn get_blockchain_score(self) -> super::Result<()> {
         unimplemented!()
     }
-
-    pub async fn get_blockchain_storage(self) -> super::Result<()> {
-        unimplemented!()
-    }
 }
 

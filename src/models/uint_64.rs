@@ -19,7 +19,7 @@ impl Uint64Dto {
 /// This class uses Dart's native number type `u64` and has a value check for big integers.
 /// `u64` will be translated correctly into JavaScript (supported by dart2js).
 /// Value range is 0 through 18446744073709551615.
-#[derive(Clone, Copy, PartialEq, Serialize, Deserialize)]// we derive Default in order to use the clear() method in Drop
+#[derive(Default, Clone, Copy, PartialEq, Serialize, Deserialize)]// we derive Default in order to use the clear() method in Drop
 pub struct Uint64(pub(crate) u64);
 
 impl Uint64 {

@@ -1,41 +1,52 @@
-//use futures::Future;
-//use hyper;
-//use serde_json;
-//use std::rc::Rc;
-//
-//
-//use super::{configuration, Error};
-//use super::request as __internal_request;
+use std::fmt::Debug;
+use std::sync::Arc;
 
-//pub struct ChainRoutesApiClient<C: hyper::client::connect::Connect> {
-//    configuration: Rc<configuration::Configuration<C>>,
-//}
-//
-//impl<C: hyper::client::connect::Connect> ChainRoutesApiClient<C> {
-//    pub fn new(configuration: Rc<configuration::Configuration<C>>) -> ChainRoutesApiClient<C> {
-//        ChainRoutesApiClient {
-//            configuration,
-//        }
-//    }
-//}
-//
-//pub trait ChainRoutesApi {
-//    fn get_blockchain_height(&self) -> Box<dyn Future<Item=crate::models::blockchain::HeightInfoDto, Error=Error<serde_json::Value>>>;
-//    fn get_blockchain_score(&self) -> Box<dyn Future<Item=crate::models::blockchain::BlockchainScoreDto, Error=Error<serde_json::Value>>>;
-//}
-//
-//impl<C: hyper::client::connect::Connect> ChainRoutesApi for ChainRoutesApiClient<C> {
-//    fn get_blockchain_height(&self) -> Box<dyn Future<Item=crate::models::blockchain::HeightInfoDto, Error=Error<serde_json::Value>>> {
-//        let req = __internal_request::Request::new(hyper::Method::Get, "/chain/height".to_string())
-//            ;
-//
-//        req.execute(&self.configuration)
-//    }
-//
-//    fn get_blockchain_score(&self) -> Box<dyn Future<Item=crate::models::blockchain::BlockchainScoreDto, Error=Error<serde_json::Value>>> {
-//        let req = __internal_request::Request::new(hyper::Method::GET, "/chain/score".to_string())
-//            ;
-//
-//        req.execute(self.configuration)
-//    }
-//}
+use hyper::client::connect::Connect;
+
+use crate::apis::sirius_client::ApiClient;
+use crate::models::blockchain::{BlockchainScoreDto, HeightInfoDto};
+
+use super::request as __internal_request;
+
+#[derive(Debug, Clone)]
+pub struct ChainRoutesApiClient<C: Connect> {
+    client: Arc<ApiClient<C>>,
+}
+
+impl<C: Connect> ChainRoutesApiClient<C> {
+    pub fn new(client: Arc<ApiClient<C>>) -> ChainRoutesApiClient<C> {
+        let clone = client.clone();
+
+        ChainRoutesApiClient {
+            client: clone,
+        }
+    }
+}
+
+impl<C: Connect> ChainRoutesApiClient<C> where
+    C: Clone + Send + Sync + Debug + 'static
+{
+    pub async fn get_blockchain_height(self) -> super::Result<()> {
+        let req = __internal_request::Request::new(
+            hyper::Method::GET,
+            "/chain/height".to_string(),
+        );
+
+        let dto: super::Result<HeightInfoDto> = req.execute(self.client).await;
+        unimplemented!();
+    }
+
+    pub async fn get_blockchain_score(self) -> super::Result<()> {
+        let req = __internal_request::Request::new(
+            hyper::Method::GET,
+            "/chain/score".to_string(),
+        );
+
+        let dto: super::Result<BlockchainScoreDto> = req.execute(self.client).await;
+        unimplemented!();
+    }
+
+    pub async fn get_blockchain_storage(self) -> super::Result<()> {
+        unimplemented!()
+    }
+}

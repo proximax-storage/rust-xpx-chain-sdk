@@ -20,7 +20,6 @@ fn main() {
     let address = Address::from_public_key(public_key, network_type);
     println!("Address From PublicKey: {}\n", address);
 
-
     let message = "ProximaX Limited";
 
     let sig = account.sign_data(message.as_ref());
