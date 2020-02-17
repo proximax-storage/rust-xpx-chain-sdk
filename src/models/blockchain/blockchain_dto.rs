@@ -1,4 +1,4 @@
-use crate::models::blockchain::block_model::{HeightInfo, BlockchainScore};
+use crate::models::blockchain::{HeightInfo, BlockchainScore};
 use crate::models::Uint64Dto;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

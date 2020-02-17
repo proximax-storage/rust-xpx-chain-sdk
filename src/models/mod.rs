@@ -35,7 +35,6 @@ pub mod multisig;
 pub mod namespace;
 pub mod network;
 pub mod node;
-pub mod storage;
 pub mod utils;
 pub mod transaction;
 

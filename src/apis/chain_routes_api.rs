@@ -4,10 +4,15 @@ use std::sync::Arc;
 use hyper::client::connect::Connect;
 
 use crate::apis::sirius_client::ApiClient;
-use crate::models::blockchain::{BlockchainScoreDto, HeightInfoDto};
+use crate::models::blockchain::{
+    BlockchainScoreDto,
+    HeightInfoDto,
+    StorageInfo,
+    HeightInfo,
+    BlockchainScore
+};
 
 use super::request as __internal_request;
-use crate::models::blockchain::block_model::{HeightInfo, BlockchainScore};
 
 #[derive(Debug, Clone)]
 pub struct ChainRoutesApiClient<C: Connect> {
@@ -48,7 +53,12 @@ impl<C: Connect> ChainRoutesApiClient<C> where
         Ok(dto.unwrap().to_struct())
     }
 
-    pub async fn get_blockchain_storage(self) -> super::Result<()> {
-        unimplemented!()
+    pub async fn get_blockchain_storage(self) -> super::Result<StorageInfo> {
+        let req = __internal_request::Request::new(
+            hyper::Method::GET,
+            "/diagnostic/storage".to_string(),
+        );
+
+        req.execute(self.client).await
     }
 }
