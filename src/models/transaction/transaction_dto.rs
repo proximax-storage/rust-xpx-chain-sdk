@@ -1,4 +1,6 @@
 use crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto;
+use crate::models::mosaic::MosaicDto;
+use crate::models::message::MessageDto;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionDto {
@@ -170,13 +172,13 @@ pub struct TransferTransactionBodyDto {
     pub recipient: String,
     /// The array of mosaics sent to the recipient. If the most significant bit of byte 0 is set, a namespaceId (alias) is used instead of a instead of a mosaic_id corresponds to a mosaic_id.
     #[serde(rename = "mosaics")]
-    pub mosaics: Vec<crate::models::mosaic::MosaicDto>,
+    pub mosaics: Vec<MosaicDto>,
     #[serde(rename = "message")]
-    pub message: crate::models::message::MessageDto,
+    pub message: MessageDto,
 }
 
 impl TransferTransactionBodyDto {
-    pub fn new(recipient: String, mosaics: Vec<crate::models::mosaic::MosaicDto>, message: crate::models::message::MessageDto) -> TransferTransactionBodyDto {
+    pub fn new(recipient: String, mosaics: Vec<MosaicDto>, message: MessageDto) -> TransferTransactionBodyDto {
         TransferTransactionBodyDto {
             recipient,
             mosaics,
