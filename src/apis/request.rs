@@ -109,11 +109,16 @@ impl Request {
             Ok(u) => u,
         };
 
-        println!("{:?}", uri);
+        let mut req_body = Body::empty();
+
+        if let Some(body) = self.serialized_body.clone() {
+            req_body =  Body::from(body);
+        }
+
         let mut req = hyper::Request::builder()
             .method(self.method)
             .uri(uri)
-            .body(Body::empty())
+            .body(req_body)
             .expect("request builder");
         {
             let req_headers = req.headers_mut();
@@ -132,7 +137,6 @@ impl Request {
             if let Some(body) = self.serialized_body {
                 req.headers_mut().insert(CONTENT_TYPE, "application/json".parse().unwrap());
                 req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
-//                req.into_body();
             }
 
 //            let no_ret_type = self.no_return_type;

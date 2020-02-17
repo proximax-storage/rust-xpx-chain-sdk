@@ -66,9 +66,19 @@ impl fmt::Display for Mosaic {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize)]
 pub struct MosaicIds {
     /// The array of mosaic identifiers.
-    #[serde(rename = "mosaicIds", skip_serializing_if = "Option::is_none")]
-    pub mosaic_ids: Option<Vec<String>>,
+    #[serde(rename = "mosaicIds")]
+    pub mosaic_ids: Vec<String>,
+}
+
+impl From<Vec<MosaicId>> for MosaicIds {
+    fn from(e: Vec<MosaicId>) -> Self {
+        let mut ids = MosaicIds::default();
+        for m in e {
+            ids.mosaic_ids.push(m.to_hex())
+        }
+        return ids;
+    }
 }
