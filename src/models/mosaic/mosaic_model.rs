@@ -82,3 +82,26 @@ impl From<Vec<MosaicId>> for MosaicIds {
         return ids;
     }
 }
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MosaicNames {
+   pub mosaic_id: MosaicId,
+    /// The mosaic linked namespace names.
+   pub names: Vec<String>,
+}
+
+impl MosaicNames {
+    pub fn new(mosaic_id: MosaicId, names: Vec<String>) -> Self {
+        MosaicNames{ mosaic_id, names }
+    }
+}
+
+impl fmt::Display for MosaicNames {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
+    }
+}

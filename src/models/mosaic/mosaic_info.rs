@@ -35,7 +35,6 @@ impl MosaicInfo {
         revision: usize,
         properties: MosaicProperties,
     ) -> Self {
-
         MosaicInfo {
             mosaic_id,
             supply,
@@ -52,9 +51,7 @@ impl MosaicInfo {
     }
 
     /// Returns the mosaic transferability.
-    pub fn is_transferable(&self) -> bool {
-        self.properties.transferable
-    }
+    pub fn is_transferable(&self) -> bool { self.properties.transferable }
 }
 
 impl fmt::Display for MosaicInfo {

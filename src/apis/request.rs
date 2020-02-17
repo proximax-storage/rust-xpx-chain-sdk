@@ -14,9 +14,7 @@ pub(crate) struct Request {
     method: hyper::Method,
     path: String,
     query_params: HashMap<String, String>,
-    no_return_type: bool,
     path_params: HashMap<String, String>,
-    form_params: HashMap<String, String>,
     header_params: HashMap<String, String>,
     // TODO: multiple body params are possible technically, but not supported here.
     serialized_body: Option<String>,
@@ -29,10 +27,8 @@ impl Request {
             path,
             query_params: HashMap::new(),
             path_params: HashMap::new(),
-            form_params: HashMap::new(),
             header_params: HashMap::new(),
             serialized_body: None,
-            no_return_type: false,
         }
     }
 
@@ -53,16 +49,6 @@ impl Request {
 
     pub fn with_path_param(mut self, basename: String, param: String) -> Self {
         self.path_params.insert(basename, param);
-        self
-    }
-
-    pub fn with_form_param(mut self, basename: String, param: String) -> Self {
-        self.form_params.insert(basename, param);
-        self
-    }
-
-    pub fn returns_nothing(mut self) -> Self {
-        self.no_return_type = true;
         self
     }
 
@@ -112,7 +98,7 @@ impl Request {
         let mut req_body = Body::empty();
 
         if let Some(body) = self.serialized_body.clone() {
-            req_body =  Body::from(body);
+            req_body = Body::from(body);
         }
 
         let mut req = hyper::Request::builder()
@@ -123,7 +109,10 @@ impl Request {
         {
             let req_headers = req.headers_mut();
             if let Some(ref user_agent) = api.user_agent {
-                req_headers.insert(USER_AGENT, user_agent.clone().parse().unwrap());
+                req_headers.insert(USER_AGENT, user_agent.clone().parse()
+                    .map_err(|_err| {
+                        Error::Failure(format_err!("{}", _err))
+                    })?);
             }
 
             req_headers.extend(headers);
@@ -132,14 +121,14 @@ impl Request {
 //                req_headers.append(key, hyper::http::HeaderValue::from_str(&val).unwrap());
 //            }
 
-            req.headers_mut().insert(CONTENT_TYPE, "application/json".parse().unwrap());
-
             if let Some(body) = self.serialized_body {
-                req.headers_mut().insert(CONTENT_TYPE, "application/json".parse().unwrap());
+                req.headers_mut().insert(CONTENT_TYPE, "application/json".parse()
+                    .map_err(|_err| {
+                        Error::Failure(format_err!("{}", _err))
+                    })?);
+
                 req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
             }
-
-//            let no_ret_type = self.no_return_type;
 
             let mut resp = api.client.request(req).await?;
 
@@ -149,7 +138,7 @@ impl Request {
                 StatusCode::NOT_FOUND => {
                     let body = hyper::body::to_bytes(resp).await?;
 
-                    let _err: SiriusError = serde_json::from_slice(&body).unwrap();
+                    let _err: SiriusError = serde_json::from_slice(&body)?;
 
                     let _resp_err: Result<U, _> = Result::Err(Error::SiriusError(_err));
 

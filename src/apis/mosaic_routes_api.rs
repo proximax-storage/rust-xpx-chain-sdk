@@ -6,7 +6,7 @@ use hyper::client::connect::Connect;
 
 use super::request as __internal_request;
 use crate::apis::sirius_client::ApiClient;
-use crate::models::mosaic::{MosaicInfo, MosaicInfoDto, MosaicIds, Mosaic, MosaicId};
+use crate::models::mosaic::{MosaicInfo, MosaicInfoDto, MosaicIds, Mosaic, MosaicId, MosaicNamesDto, MosaicNames};
 use crate::models::Id;
 
 #[derive(Debug, Clone)]
@@ -40,8 +40,8 @@ impl<C: Connect> MosaicRoutesApiClient<C> where
         Ok(dto?.to_struct()?)
     }
 
-    pub async fn get_mosaics_info(self, mosaics_id: Vec<MosaicId>) -> super::Result<Vec<MosaicInfo>> {
-        let mosaics_ids = MosaicIds::from(mosaics_id);
+    pub async fn get_mosaics_info(self, mosaic_ids: Vec<MosaicId>) -> super::Result<Vec<MosaicInfo>> {
+        let mosaics_ids = MosaicIds::from(mosaic_ids);
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/mosaic".to_string()
@@ -60,14 +60,24 @@ impl<C: Connect> MosaicRoutesApiClient<C> where
         Ok(mosaics_info)
     }
 
-    pub async fn get_mosaics_names(self, mosaic_ids: MosaicIds) -> super::Result<()> {
+    pub async fn get_mosaics_names(self, mosaic_ids: Vec<MosaicId>) -> super::Result<Vec<MosaicNames>> {
+        let mosaics_ids = MosaicIds::from(mosaic_ids);
+
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/mosaic/names".to_string()
         );
 
-        req = req.with_body_param(mosaic_ids);
+        req = req.with_body_param(mosaics_ids);
 
-        req.execute(self.client).await
+        let dto: Vec<MosaicNamesDto> = req.execute(self.client).await?;
+
+        let mut mosaics_names: Vec<MosaicNames> = Vec::with_capacity(dto.len());
+        for i in dto {
+            let mosaic_name = i;
+            mosaics_names.push(mosaic_name.to_struct());
+        }
+
+        Ok(mosaics_names)
     }
 }

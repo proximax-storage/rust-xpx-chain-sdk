@@ -1,5 +1,5 @@
 use crate::models::{uint_64::Uint64Dto, Uint64};
-use crate::models::mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE};
+use crate::models::mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE, MosaicNames};
 use crate::Result;
 use crate::models::mosaic::mosaic_internal::{MosaicPropertyId, has_bits};
 use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
@@ -156,8 +156,15 @@ pub(crate) struct MosaicMetadataTransactionDto {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicNamesDto {
     mosaic_id: Uint64Dto,
-    /// The mosaic linked namespace names.
     names: Vec<String>,
+}
+
+impl MosaicNamesDto{
+    pub fn to_struct(&self) -> MosaicNames {
+        MosaicNames::new(
+            MosaicId::from(self.mosaic_id.to_struct()),
+            (self.names).to_owned())
+    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
