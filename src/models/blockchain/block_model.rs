@@ -121,3 +121,20 @@ impl<'a> core::fmt::Display for HeightInfo {
         )
     }
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BlockchainScore {
+    #[serde(rename = "scoreHigh")]
+    pub score_high: Uint64,
+    #[serde(rename = "scoreLow")]
+    pub score_low: Uint64,
+}
+
+impl<'a> core::fmt::Display for BlockchainScore {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
+    }
+}

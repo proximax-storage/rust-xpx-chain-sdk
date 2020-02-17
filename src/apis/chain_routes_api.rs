@@ -7,7 +7,7 @@ use crate::apis::sirius_client::ApiClient;
 use crate::models::blockchain::{BlockchainScoreDto, HeightInfoDto};
 
 use super::request as __internal_request;
-use crate::models::blockchain::block_model::HeightInfo;
+use crate::models::blockchain::block_model::{HeightInfo, BlockchainScore};
 
 #[derive(Debug, Clone)]
 pub struct ChainRoutesApiClient<C: Connect> {
@@ -37,14 +37,15 @@ impl<C: Connect> ChainRoutesApiClient<C> where
         Ok(dto.unwrap().to_struct())
     }
 
-    pub async fn get_blockchain_score(self) -> super::Result<()> {
+    pub async fn get_blockchain_score(self) -> super::Result<BlockchainScore> {
         let req = __internal_request::Request::new(
             hyper::Method::GET,
             "/chain/score".to_string(),
         );
 
         let dto: super::Result<BlockchainScoreDto> = req.execute(self.client).await;
-        unimplemented!();
+
+        Ok(dto.unwrap().to_struct())
     }
 
     pub async fn get_blockchain_storage(self) -> super::Result<()> {

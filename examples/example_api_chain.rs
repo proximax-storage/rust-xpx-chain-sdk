@@ -13,7 +13,13 @@ async fn main() {
 
     let blockchain_height = client.clone().chain.get_blockchain_height().await;
     match blockchain_height {
-        Ok(resp) => println!("{:?}", resp),
+        Ok(resp) => println!("{}", resp),
+        Err(err) => eprintln!("{:?}", err),
+    }
+
+    let blockchain_score = client.clone().chain.get_blockchain_score().await;
+    match blockchain_score {
+        Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{:?}", err),
     }
 }
