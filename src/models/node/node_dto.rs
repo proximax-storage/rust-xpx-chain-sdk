@@ -1,8 +1,8 @@
-use crate::models::{Uint64Dto, Uint64};
+use crate::models::{Uint64, Uint64Dto};
 use crate::models::node::NodeTime;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct NodeTimeDto {
+pub(crate) struct NodeTimeDto {
     #[serde(rename = "communicationTimestamps")]
     communication_timestamps: CommunicationTimestampsDto,
 }
@@ -18,12 +18,12 @@ struct CommunicationTimestampsDto {
 impl NodeTimeDto {
     pub(crate) fn to_struct(&self) -> NodeTime {
         let mut send = Uint64::default();
-        if let Some(value) =  &self.communication_timestamps.send_timestamp {
+        if let Some(value) = &self.communication_timestamps.send_timestamp {
             send = value.to_struct();
         };
 
         let mut receive = Uint64::default();
-        if let Some(value) =  &self.communication_timestamps.receive_timestamp {
+        if let Some(value) = &self.communication_timestamps.receive_timestamp {
             receive = value.to_struct();
         };
 

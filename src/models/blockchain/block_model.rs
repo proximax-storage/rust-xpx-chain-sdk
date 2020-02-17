@@ -3,7 +3,7 @@ use crate::models::network::NetworkType;
 use crate::models::transaction::deadline::Timestamp;
 use crate::models::transaction::transaction_internal::EntityVersion;
 
-use super::Uint64;
+pub(crate) use crate::models::Uint64;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -99,6 +99,21 @@ impl BlockInfo {
 }
 
 impl<'a> core::fmt::Display for BlockInfo {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
+    }
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct HeightInfo {
+    #[serde(rename = "height")]
+    pub height: Uint64,
+}
+
+impl<'a> core::fmt::Display for HeightInfo {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f, "{}",

@@ -97,13 +97,5 @@ impl<C: Connect> BlockRoutesApiClient<C>
 
         unimplemented!()
     }
-
-    pub async fn get_blockchain_height(self) -> super::Result<()> {
-        unimplemented!()
-    }
-
-    pub async fn get_blockchain_score(self) -> super::Result<()> {
-        unimplemented!()
-    }
 }
 

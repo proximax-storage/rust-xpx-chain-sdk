@@ -1,7 +1,5 @@
-pub(crate) use crate::models::Uint64;
-
-pub use self::block_dto::*;
-pub use self::blockchain_dto::*;
+pub(crate) use self::block_dto::*;
+pub(crate) use self::blockchain_dto::*;
 
 mod block_dto;
 mod blockchain_dto;

@@ -109,6 +109,7 @@ impl Request {
             Ok(u) => u,
         };
 
+        println!("{:?}", uri);
         let mut req = hyper::Request::builder()
             .method(self.method)
             .uri(uri)
@@ -121,7 +122,7 @@ impl Request {
             }
 
             req_headers.extend(headers);
-//
+
 //            for (key, val) in raw_headers {
 //                req_headers.append(key, hyper::http::HeaderValue::from_str(&val).unwrap());
 //            }
