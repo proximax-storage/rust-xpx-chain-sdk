@@ -1,15 +1,18 @@
-use crate::models::*;
-
-/// The `NamespaceId` id structure describes namespace id.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct NamespaceId {
-    #[serde(rename = "id")]
-    pub id: Uint64,
-    /// The full name can be empty when the namespace id is created using only the `Uint64` id.
-    #[serde(rename = "fullName")]
-    pub full_name: String,
-}
-
+//use crate::models::*;
+//use crate::models::mosaic::MosaicNonce;
+//use std::fmt;
+//use serde::{Serialize, Serializer};
+//
+///// The `NamespaceId` id structure describes namespace id.
+//#[derive(Debug, Clone, PartialEq, Deserialize)]
+//pub struct NamespaceId {
+//    #[serde(rename = "id")]
+//    pub id: Uint64,
+//    /// The full name can be empty when the namespace id is created using only the `Uint64` id.
+//    #[serde(rename = "fullName")]
+//    pub full_name: String,
+//}
+//
 //impl NamespaceId {
 //    /// Creates a new `NamespaceId` from a `Uint64`.
 //    pub fn from_uin64(uin64: Uint64) -> NamespaceId {
@@ -34,11 +37,6 @@ pub struct NamespaceId {
 //        NamespaceId(Uint64::from_ints(lower, higher))
 //    }
 //
-//    /// Creates a new `NamespaceId` from a given `MosaicNonce` and owner's `PublicAccount`.
-//    pub fn from_nonce_and_owner(nonce: MosaicNonce, owner_public_id: PublicAccount) -> NamespaceId {
-//        let id = generate_mosaic_id(nonce, owner_public_id);
-//        NamespaceId(id)
-//    }
 //}
 //
 //impl Id for NamespaceId {
@@ -50,6 +48,10 @@ pub struct NamespaceId {
 //    fn to_hex(&self) -> String {
 //        let id = &self.0;
 //        id.to_hex()
+//    }
+//
+//    fn to_uint64(&self) -> Uint64 {
+//        self.0
 //    }
 //
 //    fn to_int_array(&self) -> [u32; 2] {
@@ -65,5 +67,14 @@ pub struct NamespaceId {
 //impl fmt::Display for NamespaceId {
 //    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 //        write!(f, "{:X}", self.0)
+//    }
+//}
+//
+//impl Serialize for NamespaceId {
+//    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+//        where
+//            S: Serializer,
+//    {
+//        serializer.serialize_str(&self.to_hex())
 //    }
 //}

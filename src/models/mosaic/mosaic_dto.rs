@@ -1,28 +1,8 @@
-use crate::models::mosaic::{Mosaic, MosaicId};
-use crate::models::Uint64Dto;
-
-/// MosaicDirectionEnum : The supply modification direction: * 0  - Decrease. * 1  - Increase.
-/// The supply modification direction: * 0  - Decrease. * 1  - Increase.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub enum MosaicDirectionEnum {
-    #[serde(rename = "0")]
-    _0,
-    #[serde(rename = "1")]
-    _1,
-}
-
-/// MosaicPropertyIdEnum : The mosaic propery id means: * 0 - MosaicFlags * 1 - divisibility * 2 - Duration
-/// The mosaic propery id means: * 0 - MosaicFlags * 1 - divisibility * 2 - Duration
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub enum MosaicPropertyIdEnum {
-    #[serde(rename = "0")]
-    _0,
-    #[serde(rename = "1")]
-    _1,
-    #[serde(rename = "2")]
-    _2,
-
-}
+use crate::models::{MetadataModificationDto, Uint64Dto, Uint64};
+use crate::models::mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE};
+use crate::Result;
+use crate::models::mosaic::mosaic_internal::{MosaicPropertyId, has_bits};
+use chrono::format::Item::Error;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicDto {
@@ -33,15 +13,8 @@ pub struct MosaicDto {
 }
 
 impl MosaicDto {
-    pub fn new(id: Uint64Dto, amount: Uint64Dto) -> Self {
-        MosaicDto {
-            id,
-            amount,
-        }
-    }
-
     pub fn to_struct(&self) -> Mosaic {
-        let mosaic_id = Box::new(MosaicId::from_uin64(self.id.to_struct()));
+        let mosaic_id = Box::new(MosaicId::from(self.id.to_struct()));
         let amount = self.amount.to_struct();
         Mosaic::new(mosaic_id, amount)
     }
@@ -63,49 +36,77 @@ impl MosaicIds {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct MosaicInfoDto {
+pub(crate) struct MosaicInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::mosaic::MosaicMetaDto,
+    meta: MosaicMetaDto,
     #[serde(rename = "mosaic")]
-    pub mosaic: crate::models::mosaic::MosaicDefinitionDto,
+    mosaic: MosaicDefinitionDto,
 }
 
 impl MosaicInfoDto {
-    pub fn new(meta: crate::models::mosaic::MosaicMetaDto, mosaic: crate::models::mosaic::MosaicDefinitionDto) -> MosaicInfoDto {
-        MosaicInfoDto {
-            meta,
-            mosaic,
-        }
+    pub fn to_struct(&self) -> Result<MosaicInfo> {
+        ensure!(
+            self.mosaic.properties.len() > 0,
+            "mosaic Properties is not valid."
+         );
+
+        let mosaic_id = MosaicId::from(self.mosaic.mosaic_id.to_struct());
+
+        let properties =  Self::mosaic_properties(&self.mosaic.properties)?;
+
+        Ok(MosaicInfo::new(
+            mosaic_id,
+            self.mosaic.supply.to_struct(),
+            self.mosaic.height.to_struct(),
+            (&self.mosaic.owner).parse()?,
+            self.mosaic.revision,
+            properties,
+        ))
+    }
+
+    fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> Result<MosaicProperties> {
+        let mut flags: Uint64  = Uint64::default();
+        let mut divisibility: u8 = 0;
+        let mut duration: Uint64 = Uint64::default();
+
+
+        for property  in dto {
+            match property.id {
+                0 => flags = property.value.to_struct(),
+                1 => divisibility = property.value.to_struct().0 as u8,
+                2 => duration = property.value.to_struct(),
+                _ => bail!("Unknown Property Id")
+            }
+        };
+
+        MosaicProperties::new(
+            has_bits(flags, SUPPLY_MUTABLE),
+            has_bits(flags, TRANSFERABLE),
+            divisibility,
+            duration,
+        )
     }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct MosaicMetaDto {
+struct MosaicMetaDto {
     #[serde(rename = "id")]
-    pub id: String,
-}
-
-impl MosaicMetaDto {
-    pub fn new(id: String) -> MosaicMetaDto {
-        MosaicMetaDto {
-            id,
-        }
-    }
+    id: String,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicMetadataBodyDto {
     #[serde(rename = "metadataId")]
-    pub metadata_id: Vec<i32>,
+    pub metadata_id: Uint64Dto,
     #[serde(rename = "metadataType")]
-    pub metadata_type: crate::models::MetadataTypeEnum,
+    pub metadata_type: u16,
     /// The array of metadata modifications.
     #[serde(rename = "modifications")]
-    pub modifications: Vec<crate::models::MetadataModificationDto>,
+    pub modifications: Vec<MetadataModificationDto>,
 }
 
 impl MosaicMetadataBodyDto {
-    pub fn new(metadata_id: Vec<i32>, metadata_type: crate::models::MetadataTypeEnum, modifications: Vec<crate::models::MetadataModificationDto>) -> MosaicMetadataBodyDto {
+    pub fn new(metadata_id: Uint64Dto, metadata_type: u16, modifications: Vec<MetadataModificationDto>) -> MosaicMetadataBodyDto {
         MosaicMetadataBodyDto {
             metadata_id,
             metadata_type,
@@ -115,34 +116,14 @@ impl MosaicMetadataBodyDto {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct MosaicDefinitionDto {
-    #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
-    #[serde(rename = "supply")]
-    pub supply: Vec<i32>,
-    #[serde(rename = "height")]
-    pub height: Vec<i32>,
-    /// The public key of the mosaic owner.
-    #[serde(rename = "owner")]
-    pub owner: String,
-    /// The number of definitions for the same mosaic.
-    #[serde(rename = "revision")]
-    pub revision: i32,
-    #[serde(rename = "properties")]
-    pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
-}
-
-impl MosaicDefinitionDto {
-    pub fn new(mosaic_id: Vec<i32>, supply: Vec<i32>, height: Vec<i32>, owner: String, revision: i32, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> MosaicDefinitionDto {
-        MosaicDefinitionDto {
-            mosaic_id,
-            supply,
-            height,
-            owner,
-            revision,
-            properties,
-        }
-    }
+#[serde(rename_all = "camelCase")]
+pub(crate) struct MosaicDefinitionDto {
+    mosaic_id: Uint64Dto,
+    supply: Uint64Dto,
+    height: Uint64Dto,
+    owner: String,
+    revision: usize,
+    properties: Vec<MosaicPropertyDto>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -152,11 +133,11 @@ pub struct MosaicMetadataDto {
     #[serde(rename = "fields")]
     pub fields: Vec<crate::models::FieldDto>,
     #[serde(rename = "metadataId")]
-    pub metadata_id: Vec<i32>,
+    pub metadata_id: Uint64Dto,
 }
 
 impl MosaicMetadataDto {
-    pub fn new(metadata_type: i32, fields: Vec<crate::models::FieldDto>, metadata_id: Vec<i32>) -> MosaicMetadataDto {
+    pub fn new(metadata_type: i32, fields: Vec<crate::models::FieldDto>, metadata_id: Uint64Dto) -> MosaicMetadataDto {
         MosaicMetadataDto {
             metadata_type,
             fields,
@@ -170,11 +151,11 @@ pub struct MosaicMetadataDtoAllOf {
     #[serde(rename = "metadataType", skip_serializing_if = "Option::is_none")]
     pub metadata_type: Option<i32>,
     #[serde(rename = "metadataId")]
-    pub metadata_id: Vec<i32>,
+    pub metadata_id: Uint64Dto,
 }
 
 impl MosaicMetadataDtoAllOf {
-    pub fn new(metadata_id: Vec<i32>) -> MosaicMetadataDtoAllOf {
+    pub fn new(metadata_id: Uint64Dto) -> MosaicMetadataDtoAllOf {
         MosaicMetadataDtoAllOf {
             metadata_type: None,
             metadata_id,
@@ -185,11 +166,11 @@ impl MosaicMetadataDtoAllOf {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicMetadataInfoDto {
     #[serde(rename = "metadata")]
-    pub metadata: crate::models::mosaic::MosaicMetadataDto,
+    pub metadata: MosaicMetadataDto,
 }
 
 impl MosaicMetadataInfoDto {
-    pub fn new(metadata: crate::models::mosaic::MosaicMetadataDto) -> MosaicMetadataInfoDto {
+    pub fn new(metadata: MosaicMetadataDto) -> MosaicMetadataInfoDto {
         MosaicMetadataInfoDto {
             metadata,
         }
@@ -211,11 +192,11 @@ pub struct MosaicMetadataTransactionDto {
     #[serde(rename = "type")]
     pub _type: crate::models::EntityTypeEnum,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "metadataId")]
-    pub metadata_id: Vec<i32>,
+    pub metadata_id: Uint64Dto,
     #[serde(rename = "metadataType")]
     pub metadata_type: crate::models::MetadataTypeEnum,
     /// The array of metadata modifications.
@@ -225,7 +206,7 @@ pub struct MosaicMetadataTransactionDto {
 
 impl MosaicMetadataTransactionDto {
     /// Transaction that addes metadata to mosaic.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, metadata_id: Vec<i32>, metadata_type: crate::models::MetadataTypeEnum, modifications: Vec<crate::models::MetadataModificationDto>) -> MosaicMetadataTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Uint64Dto, deadline: Uint64Dto, metadata_id: Uint64Dto, metadata_type: crate::models::MetadataTypeEnum, modifications: Vec<crate::models::MetadataModificationDto>) -> MosaicMetadataTransactionDto {
         MosaicMetadataTransactionDto {
             signature,
             signer,
@@ -243,14 +224,14 @@ impl MosaicMetadataTransactionDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicNamesDto {
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
     /// The mosaic linked namespace names.
     #[serde(rename = "names")]
     pub names: Vec<String>,
 }
 
 impl MosaicNamesDto {
-    pub fn new(mosaic_id: Vec<i32>, names: Vec<String>) -> MosaicNamesDto {
+    pub fn new(mosaic_id: Uint64Dto, names: Vec<String>) -> MosaicNamesDto {
         MosaicNamesDto {
             mosaic_id,
             names,
@@ -260,33 +241,22 @@ impl MosaicNamesDto {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicPropertyDto {
-    #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
-    pub id: Option<crate::models::mosaic::MosaicPropertyIdEnum>,
-    #[serde(rename = "value", skip_serializing_if = "Option::is_none")]
-    pub value: Option<Vec<i32>>,
-}
-
-impl MosaicPropertyDto {
-    pub fn new() -> MosaicPropertyDto {
-        MosaicPropertyDto {
-            id: None,
-            value: None,
-        }
-    }
+    pub id: u8,
+    pub value: Uint64Dto,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicSupplyChangeTransactionBodyDto {
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
     #[serde(rename = "direction")]
-    pub direction: crate::models::mosaic::MosaicDirectionEnum,
+    pub direction: u8,
     #[serde(rename = "delta")]
-    pub delta: Vec<i32>,
+    pub delta: Uint64Dto,
 }
 
 impl MosaicSupplyChangeTransactionBodyDto {
-    pub fn new(mosaic_id: Vec<i32>, direction: crate::models::mosaic::MosaicDirectionEnum, delta: Vec<i32>) -> MosaicSupplyChangeTransactionBodyDto {
+    pub fn new(mosaic_id: Uint64Dto, direction: u8, delta: Uint64Dto) -> MosaicSupplyChangeTransactionBodyDto {
         MosaicSupplyChangeTransactionBodyDto {
             mosaic_id,
             direction,
@@ -308,22 +278,22 @@ pub struct MosaicSupplyChangeTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: u8,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
     #[serde(rename = "direction")]
-    pub direction: crate::models::mosaic::MosaicDirectionEnum,
+    pub direction: u8,
     #[serde(rename = "delta")]
-    pub delta: Vec<i32>,
+    pub delta: Uint64Dto,
 }
 
 impl MosaicSupplyChangeTransactionDto {
     /// Transaction to increase or decrease a mosaic’s supply.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_id: Vec<i32>, direction: crate::models::mosaic::MosaicDirectionEnum, delta: Vec<i32>) -> MosaicSupplyChangeTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: u8, max_fee: Uint64Dto, deadline: Uint64Dto, mosaic_id: Uint64Dto, direction: u8, delta: Uint64Dto) -> MosaicSupplyChangeTransactionDto {
         MosaicSupplyChangeTransactionDto {
             signature,
             signer,
@@ -344,13 +314,13 @@ pub struct MosaicDefinitionTransactionBodyDto {
     #[serde(rename = "mosaicNonce")]
     pub mosaic_nonce: i32,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
     #[serde(rename = "properties")]
-    pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
+    pub properties: Vec<MosaicPropertyDto>,
 }
 
 impl MosaicDefinitionTransactionBodyDto {
-    pub fn new(mosaic_nonce: i32, mosaic_id: Vec<i32>, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> MosaicDefinitionTransactionBodyDto {
+    pub fn new(mosaic_nonce: i32, mosaic_id: Uint64Dto, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> MosaicDefinitionTransactionBodyDto {
         MosaicDefinitionTransactionBodyDto {
             mosaic_nonce,
             mosaic_id,
@@ -374,21 +344,21 @@ pub struct MosaicDefinitionTransactionDto {
     #[serde(rename = "type")]
     pub _type: crate::models::EntityTypeEnum,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     /// Random nonce used to generate the mosaic id.
     #[serde(rename = "mosaicNonce")]
     pub mosaic_nonce: i32,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
     #[serde(rename = "properties")]
     pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
 }
 
 impl MosaicDefinitionTransactionDto {
     /// Transaction that creates a new mosaic.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_nonce: i32, mosaic_id: Vec<i32>, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> MosaicDefinitionTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Uint64Dto, deadline: Uint64Dto, mosaic_nonce: i32, mosaic_id: Uint64Dto, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> MosaicDefinitionTransactionDto {
         MosaicDefinitionTransactionDto {
             signature,
             signer,
@@ -414,20 +384,20 @@ pub struct EmbeddedMosaicDefinitionTransactionDto {
     #[serde(rename = "type")]
     pub _type: crate::models::EntityTypeEnum,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     /// Random nonce used to generate the mosaic id.
     #[serde(rename = "mosaicNonce")]
     pub mosaic_nonce: i32,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
     #[serde(rename = "properties")]
     pub properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
 }
 
 impl EmbeddedMosaicDefinitionTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_nonce: i32, mosaic_id: Vec<i32>, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> EmbeddedMosaicDefinitionTransactionDto {
+    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Uint64Dto, deadline: Uint64Dto, mosaic_nonce: i32, mosaic_id: Uint64Dto, properties: Vec<crate::models::mosaic::MosaicPropertyDto>) -> EmbeddedMosaicDefinitionTransactionDto {
         EmbeddedMosaicDefinitionTransactionDto {
             signer,
             version,
@@ -452,11 +422,11 @@ pub struct EmbeddedMosaicMetadataTransactionDto {
     #[serde(rename = "type")]
     pub _type: crate::models::EntityTypeEnum,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "metadataId")]
-    pub metadata_id: Vec<i32>,
+    pub metadata_id: Uint64Dto,
     #[serde(rename = "metadataType")]
     pub metadata_type: crate::models::MetadataTypeEnum,
     /// The array of metadata modifications.
@@ -465,7 +435,7 @@ pub struct EmbeddedMosaicMetadataTransactionDto {
 }
 
 impl EmbeddedMosaicMetadataTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, metadata_id: Vec<i32>, metadata_type: crate::models::MetadataTypeEnum, modifications: Vec<crate::models::MetadataModificationDto>) -> EmbeddedMosaicMetadataTransactionDto {
+    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Uint64Dto, deadline: Uint64Dto, metadata_id: Uint64Dto, metadata_type: crate::models::MetadataTypeEnum, modifications: Vec<crate::models::MetadataModificationDto>) -> EmbeddedMosaicMetadataTransactionDto {
         EmbeddedMosaicMetadataTransactionDto {
             signer,
             version,
@@ -488,21 +458,21 @@ pub struct EmbeddedMosaicSupplyChangeTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: u8,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
     #[serde(rename = "direction")]
-    pub direction: crate::models::mosaic::MosaicDirectionEnum,
+    pub direction: u8,
     #[serde(rename = "delta")]
-    pub delta: Vec<i32>,
+    pub delta: Uint64Dto,
 }
 
 impl EmbeddedMosaicSupplyChangeTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, mosaic_id: Vec<i32>, direction: crate::models::mosaic::MosaicDirectionEnum, delta: Vec<i32>) -> EmbeddedMosaicSupplyChangeTransactionDto {
+    pub fn new(signer: String, version: i32, _type: u8, max_fee: Uint64Dto, deadline: Uint64Dto, mosaic_id: Uint64Dto, direction: u8, delta: Uint64Dto) -> EmbeddedMosaicSupplyChangeTransactionDto {
         EmbeddedMosaicSupplyChangeTransactionDto {
             signer,
             version,

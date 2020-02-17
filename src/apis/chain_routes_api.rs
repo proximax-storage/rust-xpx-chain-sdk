@@ -39,7 +39,7 @@ impl<C: Connect> ChainRoutesApiClient<C> where
         );
         let dto: super::Result<HeightInfoDto> = req.execute(self.client).await;
 
-        Ok(dto.unwrap().to_struct())
+        Ok(dto?.to_struct())
     }
 
     pub async fn get_blockchain_score(self) -> super::Result<BlockchainScore> {
@@ -50,7 +50,7 @@ impl<C: Connect> ChainRoutesApiClient<C> where
 
         let dto: super::Result<BlockchainScoreDto> = req.execute(self.client).await;
 
-        Ok(dto.unwrap().to_struct())
+        Ok(dto?.to_struct())
     }
 
     pub async fn get_blockchain_storage(self) -> super::Result<StorageInfo> {

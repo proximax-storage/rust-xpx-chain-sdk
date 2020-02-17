@@ -11,13 +11,13 @@ use crate::models::{account::PublicAccount,
 use super::{generate_mosaic_id, MosaicNonce};
 
 /// The `MosaicId` id structure describes mosaic id.
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Deserialize)]
 pub struct MosaicId(pub(crate) Uint64);
 
 impl MosaicId {
     /// Creates a new `MosaicId` from a `Uint64`.
-    pub fn from_uin64(uin64: Uint64) -> MosaicId {
-        MosaicId(uin64)
+    pub fn new(value: u64) -> MosaicId {
+        MosaicId(Uint64::new(value))
     }
 
     /// Creates a new `MosaicId` from a hex string.
@@ -84,5 +84,11 @@ impl Serialize for MosaicId {
             S: Serializer,
     {
         serializer.serialize_str(&self.to_hex())
+    }
+}
+
+impl From<Uint64> for MosaicId {
+    fn from(e: Uint64) -> Self {
+        return MosaicId(e);
     }
 }

@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SiriusError {
@@ -59,3 +61,4 @@ impl<T> From<failure::Error> for Error<T> {
         return Error::Failure(e);
     }
 }
+

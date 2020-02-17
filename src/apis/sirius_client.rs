@@ -8,6 +8,7 @@ use crate::apis::node_routes_api::NodeRoutesApiClient;
 
 use super::account_routes_api::AccountRoutesApiClient;
 use super::block_routes_api::BlockRoutesApiClient;
+use crate::apis::mosaic_routes_api::MosaicRoutesApiClient;
 
 #[derive(Clone)]
 pub struct SiriusClient<C: hyper::client::connect::Connect> {
@@ -15,6 +16,7 @@ pub struct SiriusClient<C: hyper::client::connect::Connect> {
     pub block: Box<BlockRoutesApiClient<C>>,
     pub chain: Box<ChainRoutesApiClient<C>>,
     pub node: Box<NodeRoutesApiClient<C>>,
+    pub mosaic: Box<MosaicRoutesApiClient<C>>,
 }
 
 impl<C: hyper::client::connect::Connect> SiriusClient<C> where
@@ -33,6 +35,7 @@ impl<C: hyper::client::connect::Connect> SiriusClient<C> where
             block: Box::new(BlockRoutesApiClient::new(rc.clone())),
             chain: Box::new(ChainRoutesApiClient::new(rc.clone())),
             node: Box::new(NodeRoutesApiClient::new(rc.clone())),
+            mosaic: Box::new(MosaicRoutesApiClient::new(rc.clone())),
         })
     }
 }

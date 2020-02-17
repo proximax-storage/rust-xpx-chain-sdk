@@ -41,6 +41,6 @@ impl<C: Connect> NodeRoutesApiClient<C> where
 
         let dto: super::Result<NodeTimeDto> = req.execute(self.client).await;
 
-        Ok(dto.unwrap().to_struct())
+        Ok(dto?.to_struct())
     }
 }

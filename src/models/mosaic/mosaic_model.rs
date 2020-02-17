@@ -9,6 +9,9 @@ use super::mosaic_internal::{
     XPX_MAX_VALUE,
 };
 
+pub(crate) const SUPPLY_MUTABLE: u8 = 0x01;
+pub(crate) const TRANSFERABLE: u8 = 0x02;
+
 /// A `Mosaic` describes an instance of a `Mosaic` definition.
 /// Mosaics can be transferred by means of a transfer transaction.
 #[derive(Debug, Serialize)]

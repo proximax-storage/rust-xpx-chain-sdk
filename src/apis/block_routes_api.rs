@@ -40,7 +40,7 @@ impl<C: Connect> BlockRoutesApiClient<C>
 
         let dto: super::Result<BlockInfoDto> = req.execute(self.client).await;
 
-        Ok(dto.unwrap().to_struct()?)
+        Ok(dto?.to_struct()?)
     }
 
     pub async fn get_blocks_by_height_with_limit(

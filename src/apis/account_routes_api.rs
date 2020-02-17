@@ -42,6 +42,6 @@ impl<C: Connect> AccountRoutesApiClient<C>
 
         let dto: super::Result<AccountInfoDto> = req.execute(self.client).await;
 
-        Ok(dto.unwrap().to_struct()?)
+        Ok(dto?.to_struct()?)
     }
 }
