@@ -1,3 +1,6 @@
+use crate::models::entity_dto::EntityType;
+use crate::models::uint_64::Uint64Dto;
+
 use super::transaction::EmbeddedTransactionInfoDto;
 
 /// AggregateTransactionDto : Transaction that combines multiple transactions together.
@@ -13,11 +16,11 @@ pub struct AggregateTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     /// An array of transaction cosignatures.
     #[serde(rename = "cosignatures")]
     pub cosignatures: Vec<crate::models::multisig::CosignatureDto>,
@@ -28,7 +31,7 @@ pub struct AggregateTransactionDto {
 
 impl AggregateTransactionDto {
     /// Transaction that combines multiple transactions together.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, cosignatures: Vec<crate::models::multisig::CosignatureDto>, transactions: Vec<crate::models::transaction::EmbeddedTransactionInfoDto>) -> AggregateTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, cosignatures: Vec<crate::models::multisig::CosignatureDto>, transactions: Vec<crate::models::transaction::EmbeddedTransactionInfoDto>) -> AggregateTransactionDto {
         AggregateTransactionDto {
             signature,
             signer,

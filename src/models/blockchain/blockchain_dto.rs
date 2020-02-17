@@ -1,5 +1,7 @@
 use crate::models::blockchain::{BlockchainScore, HeightInfo};
-use crate::models::Uint64Dto;
+use crate::models::uint_64::Uint64Dto;
+use crate::models::upgrade_dto::UpgradeDto;
+use crate::models::entity_dto::EntityType;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct HeightInfoDto {
@@ -35,13 +37,13 @@ impl BlockchainScoreDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct BlockchainUpgradeBodyDto {
     #[serde(rename = "upgradePeriod")]
-    upgrade_period: Vec<i32>,
+    upgrade_period: Uint64Dto,
     #[serde(rename = "newBlockChainVersion")]
-    new_block_chain_version: Vec<i32>,
+    new_block_chain_version: Uint64Dto,
 }
 
 impl BlockchainUpgradeBodyDto {
-    pub fn new(upgrade_period: Vec<i32>, new_block_chain_version: Vec<i32>) -> BlockchainUpgradeBodyDto {
+    pub fn new(upgrade_period: Uint64Dto, new_block_chain_version: Uint64Dto) -> BlockchainUpgradeBodyDto {
         BlockchainUpgradeBodyDto {
             upgrade_period,
             new_block_chain_version,
@@ -52,11 +54,11 @@ impl BlockchainUpgradeBodyDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct BlockchainUpgradeDto {
     #[serde(rename = "blockchainUpgrade")]
-    blockchain_upgrade: crate::models::UpgradeDto,
+    blockchain_upgrade: UpgradeDto,
 }
 
 impl BlockchainUpgradeDto {
-    pub fn new(blockchain_upgrade: crate::models::UpgradeDto) -> BlockchainUpgradeDto {
+    pub fn new(blockchain_upgrade: UpgradeDto) -> BlockchainUpgradeDto {
         BlockchainUpgradeDto {
             blockchain_upgrade,
         }
@@ -76,20 +78,20 @@ pub(crate) struct BlockchainUpgradeTransactionDto {
     #[serde(rename = "version")]
     version: i32,
     #[serde(rename = "type")]
-    _type: crate::models::EntityTypeEnum,
+    _type: EntityType,
     #[serde(rename = "max_fee")]
-    max_fee: Vec<i32>,
+    max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    deadline: Vec<i32>,
+    deadline: Uint64Dto,
     #[serde(rename = "upgradePeriod")]
-    upgrade_period: Vec<i32>,
+    upgrade_period: Uint64Dto,
     #[serde(rename = "newBlockChainVersion")]
-    new_block_chain_version: Vec<i32>,
+    new_block_chain_version: Uint64Dto,
 }
 
 impl BlockchainUpgradeTransactionDto {
     /// Transaction that change version of blockchain.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, upgrade_period: Vec<i32>, new_block_chain_version: Vec<i32>) -> BlockchainUpgradeTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, upgrade_period: Uint64Dto, new_block_chain_version: Uint64Dto) -> BlockchainUpgradeTransactionDto {
         BlockchainUpgradeTransactionDto {
             signature,
             signer,
@@ -112,19 +114,19 @@ pub struct EmbeddedBlockchainUpgradeTransactionDto {
     #[serde(rename = "version")]
     version: i32,
     #[serde(rename = "type")]
-    _type: crate::models::EntityTypeEnum,
+    _type: EntityType,
     #[serde(rename = "max_fee")]
-    max_fee: Vec<i32>,
+    max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    deadline: Vec<i32>,
+    deadline: Uint64Dto,
     #[serde(rename = "upgradePeriod")]
-    upgrade_period: Vec<i32>,
+    upgrade_period: Uint64Dto,
     #[serde(rename = "newBlockChainVersion")]
-    new_block_chain_version: Vec<i32>,
+    new_block_chain_version: Uint64Dto,
 }
 
 impl EmbeddedBlockchainUpgradeTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, upgrade_period: Vec<i32>, new_block_chain_version: Vec<i32>) -> EmbeddedBlockchainUpgradeTransactionDto {
+    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, upgrade_period: Uint64Dto, new_block_chain_version: Uint64Dto) -> EmbeddedBlockchainUpgradeTransactionDto {
         EmbeddedBlockchainUpgradeTransactionDto {
             signer,
             version,

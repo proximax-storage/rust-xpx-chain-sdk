@@ -1,4 +1,6 @@
-use crate::models::Uint64;
+use crate::models::{Uint64, uint_64::Uint64Dto};
+use crate::models::entity_dto::EntityType;
+use crate::models::alias::AliasActionEnum;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AliasDto {
@@ -24,16 +26,16 @@ impl AliasDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AddressAliasTransactionBodyDto {
     #[serde(rename = "aliasAction")]
-    pub alias_action: crate::models::alias::AliasActionEnum,
+    pub alias_action: AliasActionEnum,
     #[serde(rename = "namespaceId")]
-    pub namespace_id: Vec<i32>,
+    pub namespace_id: Uint64Dto,
     /// The aliased address in hexadecimal.
     #[serde(rename = "address")]
     pub address: String,
 }
 
 impl AddressAliasTransactionBodyDto {
-    pub fn new(alias_action: crate::models::alias::AliasActionEnum, namespace_id: Vec<i32>, address: String) -> AddressAliasTransactionBodyDto {
+    pub fn new(alias_action: AliasActionEnum, namespace_id: Uint64Dto, address: String) -> AddressAliasTransactionBodyDto {
         AddressAliasTransactionBodyDto {
             alias_action,
             namespace_id,
@@ -55,15 +57,15 @@ pub struct AddressAliasTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "aliasAction")]
-    pub alias_action: crate::models::alias::AliasActionEnum,
+    pub alias_action: AliasActionEnum,
     #[serde(rename = "namespaceId")]
-    pub namespace_id: Vec<i32>,
+    pub namespace_id: Uint64Dto,
     /// The aliased address in hexadecimal.
     #[serde(rename = "address")]
     pub address: String,
@@ -71,7 +73,7 @@ pub struct AddressAliasTransactionDto {
 
 impl AddressAliasTransactionDto {
     /// Transaction that attaches a namespace to an account.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, alias_action: crate::models::alias::AliasActionEnum, namespace_id: Vec<i32>, address: String) -> AddressAliasTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, alias_action: crate::models::alias::AliasActionEnum, namespace_id: Uint64Dto, address: String) -> AddressAliasTransactionDto {
         AddressAliasTransactionDto {
             signature,
             signer,
@@ -89,15 +91,15 @@ impl AddressAliasTransactionDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MosaicAliasTransactionBodyDto {
     #[serde(rename = "aliasAction")]
-    pub alias_action: crate::models::alias::AliasActionEnum,
+    pub alias_action: AliasActionEnum,
     #[serde(rename = "namespaceId")]
-    pub namespace_id: Vec<i32>,
+    pub namespace_id: Uint64Dto,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
 }
 
 impl MosaicAliasTransactionBodyDto {
-    pub fn new(alias_action: crate::models::alias::AliasActionEnum, namespace_id: Vec<i32>, mosaic_id: Vec<i32>) -> MosaicAliasTransactionBodyDto {
+    pub fn new(alias_action: AliasActionEnum, namespace_id: Uint64Dto, mosaic_id: Uint64Dto) -> MosaicAliasTransactionBodyDto {
         MosaicAliasTransactionBodyDto {
             alias_action,
             namespace_id,
@@ -119,22 +121,22 @@ pub struct MosaicAliasTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "aliasAction")]
-    pub alias_action: crate::models::alias::AliasActionEnum,
+    pub alias_action: AliasActionEnum,
     #[serde(rename = "namespaceId")]
-    pub namespace_id: Vec<i32>,
+    pub namespace_id: Uint64Dto,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
 }
 
 impl MosaicAliasTransactionDto {
     /// Transaction that attaches a namespace to a mosaic.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, alias_action: crate::models::alias::AliasActionEnum, namespace_id: Vec<i32>, mosaic_id: Vec<i32>) -> MosaicAliasTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, alias_action: crate::models::alias::AliasActionEnum, namespace_id: Uint64Dto, mosaic_id: Uint64Dto) -> MosaicAliasTransactionDto {
         MosaicAliasTransactionDto {
             signature,
             signer,
@@ -158,22 +160,22 @@ pub struct EmbeddedAddressAliasTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "aliasAction")]
-    pub alias_action: crate::models::alias::AliasActionEnum,
+    pub alias_action: AliasActionEnum,
     #[serde(rename = "namespaceId")]
-    pub namespace_id: Vec<i32>,
+    pub namespace_id: Uint64Dto,
     /// The aliased address in hexadecimal.
     #[serde(rename = "address")]
     pub address: String,
 }
 
 impl EmbeddedAddressAliasTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, alias_action: crate::models::alias::AliasActionEnum, namespace_id: Vec<i32>, address: String) -> EmbeddedAddressAliasTransactionDto {
+    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, alias_action: crate::models::alias::AliasActionEnum, namespace_id: Uint64Dto, address: String) -> EmbeddedAddressAliasTransactionDto {
         EmbeddedAddressAliasTransactionDto {
             signer,
             version,
@@ -191,26 +193,26 @@ impl EmbeddedAddressAliasTransactionDto {
 pub struct EmbeddedMosaicAliasTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
-    pub signer: String,
+    signer: String,
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
-    pub version: i32,
+    version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    deadline: Uint64Dto,
     #[serde(rename = "aliasAction")]
-    pub alias_action: crate::models::alias::AliasActionEnum,
+    alias_action: AliasActionEnum,
     #[serde(rename = "namespaceId")]
-    pub namespace_id: Vec<i32>,
+    namespace_id: Uint64Dto,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    mosaic_id: Uint64Dto,
 }
 
 impl EmbeddedMosaicAliasTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, alias_action: crate::models::alias::AliasActionEnum, namespace_id: Vec<i32>, mosaic_id: Vec<i32>) -> EmbeddedMosaicAliasTransactionDto {
+    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, alias_action: crate::models::alias::AliasActionEnum, namespace_id: Uint64Dto, mosaic_id: Uint64Dto) -> EmbeddedMosaicAliasTransactionDto {
         EmbeddedMosaicAliasTransactionDto {
             signer,
             version,

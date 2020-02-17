@@ -1,6 +1,6 @@
 use crate::models::account::{AccountInfo, AccountLinkTypeEnum, Address};
 use crate::models::mosaic::{Mosaic, MosaicDto};
-use crate::models::Uint64Dto;
+use crate::models::uint_64::Uint64Dto;
 use crate::Result;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

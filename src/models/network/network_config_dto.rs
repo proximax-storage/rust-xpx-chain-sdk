@@ -1,11 +1,15 @@
+use crate::models::config_dto::ConfigDto;
+use crate::models::entity_dto::EntityType;
+use crate::models::uint_64::Uint64Dto;
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct NetworkConfigDto {
     #[serde(rename = "networkConfig")]
-    pub network_config: crate::models::ConfigDto,
+    pub network_config: ConfigDto,
 }
 
 impl NetworkConfigDto {
-    pub fn new(network_config: crate::models::ConfigDto) -> NetworkConfigDto {
+    pub fn new(network_config: ConfigDto) -> NetworkConfigDto {
         NetworkConfigDto {
             network_config,
         }
@@ -15,7 +19,7 @@ impl NetworkConfigDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct NetworkConfigBodyDto {
     #[serde(rename = "applyHeightDelta")]
-    pub apply_height_delta: Vec<i32>,
+    pub apply_height_delta: Uint64Dto,
     /// Network config like a raw text.
     #[serde(rename = "networkConfig")]
     pub network_config: String,
@@ -25,7 +29,7 @@ pub struct NetworkConfigBodyDto {
 }
 
 impl NetworkConfigBodyDto {
-    pub fn new(apply_height_delta: Vec<i32>, network_config: String, supported_entity_versions: String) -> NetworkConfigBodyDto {
+    pub fn new(apply_height_delta: Uint64Dto, network_config: String, supported_entity_versions: String) -> NetworkConfigBodyDto {
         NetworkConfigBodyDto {
             apply_height_delta,
             network_config,
@@ -47,13 +51,13 @@ pub struct NetworkConfigTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "applyHeightDelta")]
-    pub apply_height_delta: Vec<i32>,
+    pub apply_height_delta: Uint64Dto,
     /// Network config like a raw text.
     #[serde(rename = "networkConfig")]
     pub network_config: String,
@@ -64,7 +68,7 @@ pub struct NetworkConfigTransactionDto {
 
 impl NetworkConfigTransactionDto {
     /// Transaction that updates config.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, apply_height_delta: Vec<i32>, network_config: String, supported_entity_versions: String) -> NetworkConfigTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, apply_height_delta: Uint64Dto, network_config: String, supported_entity_versions: String) -> NetworkConfigTransactionDto {
         NetworkConfigTransactionDto {
             signature,
             signer,
@@ -88,13 +92,13 @@ pub struct EmbeddedNetworkConfigTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "applyHeightDelta")]
-    pub apply_height_delta: Vec<i32>,
+    pub apply_height_delta: Uint64Dto,
     /// Network config like a raw text.
     #[serde(rename = "networkConfig")]
     pub network_config: String,
@@ -104,7 +108,7 @@ pub struct EmbeddedNetworkConfigTransactionDto {
 }
 
 impl EmbeddedNetworkConfigTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, apply_height_delta: Vec<i32>, network_config: String, supported_entity_versions: String) -> EmbeddedNetworkConfigTransactionDto {
+    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, apply_height_delta: Uint64Dto, network_config: String, supported_entity_versions: String) -> EmbeddedNetworkConfigTransactionDto {
         EmbeddedNetworkConfigTransactionDto {
             signer,
             version,

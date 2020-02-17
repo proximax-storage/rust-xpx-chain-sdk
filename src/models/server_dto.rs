@@ -1,11 +1,11 @@
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServerDto {
     #[serde(rename = "serverInfo")]
-    pub server_info: crate::models::ServerInfoDto,
+    pub server_info: ServerInfoDto,
 }
 
 impl ServerDto {
-    pub fn new(server_info: crate::models::ServerInfoDto) -> ServerDto {
+    pub fn new(server_info: ServerInfoDto) -> ServerDto {
         ServerDto {
             server_info,
         }

@@ -109,7 +109,7 @@ impl Request {
             Ok(u) => u,
         };
 
-//        println!("{:?}", uri);
+        println!("{:?}", uri);
         let mut req = hyper::Request::builder()
             .method(self.method)
             .uri(uri)

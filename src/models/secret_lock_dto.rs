@@ -1,13 +1,17 @@
+use crate::models::entity_dto::EntityType;
+use crate::models::hash_lock_dto::HashAlgorithmEnum;
+use crate::models::uint_64::Uint64Dto;
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SecretLockTransactionBodyDto {
     #[serde(rename = "duration")]
-    pub duration: Vec<i32>,
+    pub duration: Uint64Dto,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
     #[serde(rename = "amount")]
-    pub amount: Vec<i32>,
+    pub amount: Uint64Dto,
     #[serde(rename = "hashAlgorithm")]
-    pub hash_algorithm: crate::models::HashAlgorithmEnum,
+    pub hash_algorithm: HashAlgorithmEnum,
     /// The proof hashed.
     #[serde(rename = "secret")]
     pub secret: String,
@@ -17,7 +21,7 @@ pub struct SecretLockTransactionBodyDto {
 }
 
 impl SecretLockTransactionBodyDto {
-    pub fn new(duration: Vec<i32>, mosaic_id: Vec<i32>, amount: Vec<i32>, hash_algorithm: crate::models::HashAlgorithmEnum, secret: String, recipient: String) -> SecretLockTransactionBodyDto {
+    pub fn new(duration: Uint64Dto, mosaic_id: Uint64Dto, amount: Uint64Dto, hash_algorithm: HashAlgorithmEnum, secret: String, recipient: String) -> SecretLockTransactionBodyDto {
         SecretLockTransactionBodyDto {
             duration,
             mosaic_id,
@@ -42,19 +46,19 @@ pub struct SecretLockTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "duration")]
-    pub duration: Vec<i32>,
+    pub duration: Uint64Dto,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
     #[serde(rename = "amount")]
-    pub amount: Vec<i32>,
+    pub amount: Uint64Dto,
     #[serde(rename = "hashAlgorithm")]
-    pub hash_algorithm: crate::models::HashAlgorithmEnum,
+    pub hash_algorithm: HashAlgorithmEnum,
     /// The proof hashed.
     #[serde(rename = "secret")]
     pub secret: String,
@@ -65,7 +69,7 @@ pub struct SecretLockTransactionDto {
 
 impl SecretLockTransactionDto {
     /// Transaction that sends mosaics to a recipient if the proof used is revealed. If the duration is reached, the locked funds go back to the sender of the transaction.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, duration: Vec<i32>, mosaic_id: Vec<i32>, amount: Vec<i32>, hash_algorithm: crate::models::HashAlgorithmEnum, secret: String, recipient: String) -> SecretLockTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, duration: Uint64Dto, mosaic_id: Uint64Dto, amount: Uint64Dto, hash_algorithm: HashAlgorithmEnum, secret: String, recipient: String) -> SecretLockTransactionDto {
         SecretLockTransactionDto {
             signature,
             signer,
@@ -92,19 +96,19 @@ pub struct EmbeddedSecretLockTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     #[serde(rename = "duration")]
-    pub duration: Vec<i32>,
+    pub duration: Uint64Dto,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    pub mosaic_id: Uint64Dto,
     #[serde(rename = "amount")]
-    pub amount: Vec<i32>,
+    pub amount: Uint64Dto,
     #[serde(rename = "hashAlgorithm")]
-    pub hash_algorithm: crate::models::HashAlgorithmEnum,
+    pub hash_algorithm: HashAlgorithmEnum,
     /// The proof hashed.
     #[serde(rename = "secret")]
     pub secret: String,
@@ -114,7 +118,7 @@ pub struct EmbeddedSecretLockTransactionDto {
 }
 
 impl EmbeddedSecretLockTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, duration: Vec<i32>, mosaic_id: Vec<i32>, amount: Vec<i32>, hash_algorithm: crate::models::HashAlgorithmEnum, secret: String, recipient: String) -> EmbeddedSecretLockTransactionDto {
+    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, duration: Uint64Dto, mosaic_id: Uint64Dto, amount: Uint64Dto, hash_algorithm: HashAlgorithmEnum, secret: String, recipient: String) -> EmbeddedSecretLockTransactionDto {
         EmbeddedSecretLockTransactionDto {
             signer,
             version,

@@ -1,3 +1,7 @@
+use crate::models::entity_dto::EntityType;
+use crate::models::uint_64::Uint64Dto;
+use crate::models::multisig::CosignatoryModificationDto;
+
 /// MultisigModificationTypeEnum : The type of the modification: * 0 - Add cosignatory. * 1 - Remove cosignatory.
 /// The type of the modification: * 0 - Add cosignatory. * 1 - Remove cosignatory.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -112,11 +116,11 @@ pub struct ModifyMultisigAccountTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     /// The number of signatures needed to remove a cosignatory. If we are modifying an existing multisig account, this indicates the relative change of the minimum cosignatories.
     #[serde(rename = "minRemovalDelta")]
     pub min_removal_delta: i32,
@@ -125,12 +129,12 @@ pub struct ModifyMultisigAccountTransactionDto {
     pub min_approval_delta: i32,
     /// The array of cosignatory accounts to add or delete.
     #[serde(rename = "modifications")]
-    pub modifications: Vec<crate::models::multisig::CosignatoryModificationDto>,
+    pub modifications: Vec<CosignatoryModificationDto>,
 }
 
 impl ModifyMultisigAccountTransactionDto {
     /// Transaction that creates or modifies a multisig account.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, min_removal_delta: i32, min_approval_delta: i32, modifications: Vec<crate::models::multisig::CosignatoryModificationDto>) -> ModifyMultisigAccountTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, min_removal_delta: i32, min_approval_delta: i32, modifications: Vec<crate::models::multisig::CosignatoryModificationDto>) -> ModifyMultisigAccountTransactionDto {
         ModifyMultisigAccountTransactionDto {
             signature,
             signer,
@@ -154,11 +158,11 @@ pub struct EmbeddedModifyMultisigAccountTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     /// The number of signatures needed to remove a cosignatory. If we are modifying an existing multisig account, this indicates the relative change of the minimum cosignatories.
     #[serde(rename = "minRemovalDelta")]
     pub min_removal_delta: i32,
@@ -167,11 +171,11 @@ pub struct EmbeddedModifyMultisigAccountTransactionDto {
     pub min_approval_delta: i32,
     /// The array of cosignatory accounts to add or delete.
     #[serde(rename = "modifications")]
-    pub modifications: Vec<crate::models::multisig::CosignatoryModificationDto>,
+    pub modifications: Vec<CosignatoryModificationDto>,
 }
 
 impl EmbeddedModifyMultisigAccountTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, min_removal_delta: i32, min_approval_delta: i32, modifications: Vec<crate::models::multisig::CosignatoryModificationDto>) -> EmbeddedModifyMultisigAccountTransactionDto {
+    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, min_removal_delta: i32, min_approval_delta: i32, modifications: Vec<crate::models::multisig::CosignatoryModificationDto>) -> EmbeddedModifyMultisigAccountTransactionDto {
         EmbeddedModifyMultisigAccountTransactionDto {
             signer,
             version,

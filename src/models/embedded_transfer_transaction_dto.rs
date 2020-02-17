@@ -1,3 +1,6 @@
+use crate::models::entity_dto::EntityType;
+use crate::models::uint_64::Uint64Dto;
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmbeddedTransferTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
@@ -7,11 +10,11 @@ pub struct EmbeddedTransferTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     /// If the bit 0 of byte 0 is not set (like in 0x90), then it is a regular address. Else (e.g. 0x91) it represents a namespace id which starts at byte 1.
     #[serde(rename = "recipient")]
     pub recipient: String,
@@ -23,7 +26,7 @@ pub struct EmbeddedTransferTransactionDto {
 }
 
 impl EmbeddedTransferTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, recipient: String, mosaics: Vec<crate::models::mosaic::MosaicDto>, message: crate::models::message::MessageDto) -> EmbeddedTransferTransactionDto {
+    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, recipient: String, mosaics: Vec<crate::models::mosaic::MosaicDto>, message: crate::models::message::MessageDto) -> EmbeddedTransferTransactionDto {
         EmbeddedTransferTransactionDto {
             signer,
             version,

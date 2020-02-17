@@ -1,4 +1,4 @@
-use crate::models::{Uint64, Uint64Dto};
+use crate::models::{Uint64, uint_64::Uint64Dto};
 use crate::models::node::NodeTime;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

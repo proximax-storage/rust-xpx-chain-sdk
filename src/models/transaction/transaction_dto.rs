@@ -1,6 +1,8 @@
 use crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto;
 use crate::models::mosaic::MosaicDto;
 use crate::models::message::MessageDto;
+use crate::models::uint_64::Uint64Dto;
+use crate::models::entity_dto::EntityType;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionDto {
@@ -14,15 +16,15 @@ pub struct TransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
 }
 
 impl TransactionDto {
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>) -> TransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto) -> TransactionDto {
         TransactionDto {
             signature,
             signer,
@@ -37,13 +39,13 @@ impl TransactionDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionBodyDto {
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
 }
 
 impl TransactionBodyDto {
-    pub fn new(max_fee: Vec<i32>, deadline: Vec<i32>) -> TransactionBodyDto {
+    pub fn new(max_fee: Uint64Dto, deadline: Uint64Dto) -> TransactionBodyDto {
         TransactionBodyDto {
             max_fee,
             deadline,
@@ -101,7 +103,7 @@ impl TransactionInfoDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionMetaDto {
     #[serde(rename = "height")]
-    pub height: Vec<i32>,
+    pub height: Uint64Dto,
     #[serde(rename = "hash")]
     pub hash: String,
     #[serde(rename = "merkleComponentHash")]
@@ -113,7 +115,7 @@ pub struct TransactionMetaDto {
 }
 
 impl TransactionMetaDto {
-    pub fn new(height: Vec<i32>, hash: String, merkle_component_hash: String, index: i32, id: String) -> TransactionMetaDto {
+    pub fn new(height: Uint64Dto, hash: String, merkle_component_hash: String, index: i32, id: String) -> TransactionMetaDto {
         TransactionMetaDto {
             height,
             hash,
@@ -148,9 +150,9 @@ pub struct TransactionStatusDto {
     #[serde(rename = "hash", skip_serializing_if = "Option::is_none")]
     pub hash: Option<String>,
     #[serde(rename = "deadline", skip_serializing_if = "Option::is_none")]
-    pub deadline: Option<Vec<i32>>,
+    pub deadline: Option<Uint64Dto>,
     #[serde(rename = "height", skip_serializing_if = "Option::is_none")]
-    pub height: Option<Vec<i32>>,
+    pub height: Option<Uint64Dto>,
 }
 
 impl TransactionStatusDto {
@@ -200,11 +202,11 @@ pub struct TransferTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
     /// If the bit 0 of byte 0 is not set (like in 0x90), then it is a regular address. Else (e.g. 0x91) it represents a namespace id which starts at byte 1.
     #[serde(rename = "recipient")]
     pub recipient: String,
@@ -217,7 +219,7 @@ pub struct TransferTransactionDto {
 
 impl TransferTransactionDto {
     /// Transaction that transfers mosaics and messages to another account.
-    pub fn new(signature: String, signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>, recipient: String, mosaics: Vec<crate::models::mosaic::MosaicDto>, message: crate::models::message::MessageDto) -> TransferTransactionDto {
+    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, recipient: String, mosaics: Vec<crate::models::mosaic::MosaicDto>, message: crate::models::message::MessageDto) -> TransferTransactionDto {
         TransferTransactionDto {
             signature,
             signer,
@@ -241,15 +243,15 @@ pub struct EmbeddedTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: crate::models::EntityTypeEnum,
+    pub _type: EntityType,
     #[serde(rename = "max_fee")]
-    pub max_fee: Vec<i32>,
+    pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
-    pub deadline: Vec<i32>,
+    pub deadline: Uint64Dto,
 }
 
 impl EmbeddedTransactionDto {
-    pub fn new(signer: String, version: i32, _type: crate::models::EntityTypeEnum, max_fee: Vec<i32>, deadline: Vec<i32>) -> EmbeddedTransactionDto {
+    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto) -> EmbeddedTransactionDto {
         EmbeddedTransactionDto {
             signer,
             version,
@@ -280,7 +282,7 @@ impl EmbeddedTransactionInfoDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmbeddedTransactionMetaDto {
     #[serde(rename = "height")]
-    pub height: Vec<i32>,
+    pub height: Uint64Dto,
     #[serde(rename = "hash")]
     pub hash: String,
     #[serde(rename = "merkleComponentHash")]
@@ -292,7 +294,7 @@ pub struct EmbeddedTransactionMetaDto {
 }
 
 impl EmbeddedTransactionMetaDto {
-    pub fn new(height: Vec<i32>, hash: String, merkle_component_hash: String, index: i32, id: String) -> EmbeddedTransactionMetaDto {
+    pub fn new(height: Uint64Dto, hash: String, merkle_component_hash: String, index: i32, id: String) -> EmbeddedTransactionMetaDto {
         EmbeddedTransactionMetaDto {
             height,
             hash,

@@ -1,7 +1,10 @@
-use crate::models::{MetadataModificationDto, Uint64Dto, Uint64};
+use crate::models::{uint_64::Uint64Dto, Uint64};
 use crate::models::mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE};
 use crate::Result;
 use crate::models::mosaic::mosaic_internal::{MosaicPropertyId, has_bits};
+use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
+use crate::models::field_dto::FieldDto;
+use crate::models::entity_dto::EntityType;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicDto {
@@ -111,7 +114,7 @@ pub(crate) struct MosaicDefinitionDto {
 #[serde(rename_all = "camelCase")]
 pub struct MosaicMetadataDto {
     pub metadata_type: i32,
-    pub fields: Vec<crate::models::FieldDto>,
+    pub fields: Vec<FieldDto>,
     pub metadata_id: Uint64Dto,
 }
 
@@ -140,13 +143,13 @@ pub(crate) struct MosaicMetadataTransactionDto {
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     version: i32,
     #[serde(rename = "type")]
-    _type: crate::models::EntityTypeEnum,
+    _type: EntityType,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     metadata_id: Uint64Dto,
-    metadata_type: crate::models::MetadataTypeEnum,
+    metadata_type: MetadataTypeEnum,
     /// The array of metadata modifications.
-    modifications: Vec<crate::models::MetadataModificationDto>,
+    modifications: Vec<MetadataModificationDto>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -210,13 +213,13 @@ pub(crate) struct MosaicDefinitionTransactionDto {
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     version: i32,
     #[serde(rename = "type")]
-    _type: crate::models::EntityTypeEnum,
+    _type: EntityType,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     /// Random nonce used to generate the mosaic id.
     mosaic_nonce: i32,
     mosaic_id: Uint64Dto,
-    properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
+    properties: Vec<MosaicPropertyDto>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -227,13 +230,13 @@ pub(crate) struct EmbeddedMosaicDefinitionTransactionDto {
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     version: i32,
     #[serde(rename = "type")]
-    _type: crate::models::EntityTypeEnum,
+    _type: EntityType,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     /// Random nonce used to generate the mosaic id.
     mosaic_nonce: i32,
     mosaic_id: Uint64Dto,
-    properties: Vec<crate::models::mosaic::MosaicPropertyDto>,
+    properties: Vec<MosaicPropertyDto>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -244,13 +247,13 @@ pub(crate) struct EmbeddedMosaicMetadataTransactionDto {
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     version: i32,
     #[serde(rename = "type")]
-    _type: crate::models::EntityTypeEnum,
+    _type: EntityType,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     metadata_id: Uint64Dto,
-    metadata_type: crate::models::MetadataTypeEnum,
+    metadata_type: MetadataTypeEnum,
     /// The array of metadata modifications.
-    modifications: Vec<crate::models::MetadataModificationDto>,
+    modifications: Vec<MetadataModificationDto>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

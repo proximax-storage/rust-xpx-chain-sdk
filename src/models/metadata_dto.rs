@@ -1,3 +1,5 @@
+use crate::models::field_dto::FieldDto;
+
 /// MetadataModificationTypeEnum : The type of the metadata modification: * 0 - Add metadata. * 1 - Remove metadata.
 /// The type of the metadata modification: * 0 - Add metadata. * 1 - Remove metadata.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -25,11 +27,11 @@ pub struct MetadataDto {
     #[serde(rename = "metadataType")]
     pub metadata_type: i32,
     #[serde(rename = "fields")]
-    pub fields: Vec<crate::models::FieldDto>,
+    pub fields: Vec<FieldDto>,
 }
 
 impl MetadataDto {
-    pub fn new(metadata_type: i32, fields: Vec<crate::models::FieldDto>) -> MetadataDto {
+    pub fn new(metadata_type: i32, fields: Vec<FieldDto>) -> MetadataDto {
         MetadataDto {
             metadata_type,
             fields,
@@ -54,7 +56,7 @@ impl MetadataIds {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MetadataModificationDto {
     #[serde(rename = "modificationType")]
-    pub modification_type: crate::models::MetadataModificationTypeEnum,
+    pub modification_type: MetadataModificationTypeEnum,
     /// The key of metadata modification.
     #[serde(rename = "key")]
     pub key: String,
@@ -64,7 +66,7 @@ pub struct MetadataModificationDto {
 }
 
 impl MetadataModificationDto {
-    pub fn new(modification_type: crate::models::MetadataModificationTypeEnum, key: String, value: String) -> MetadataModificationDto {
+    pub fn new(modification_type: MetadataModificationTypeEnum, key: String, value: String) -> MetadataModificationDto {
         MetadataModificationDto {
             modification_type,
             key,
