@@ -4,9 +4,9 @@ use std::sync::Arc;
 use hyper::client::connect::Connect;
 
 use crate::apis::sirius_client::ApiClient;
+use crate::models::node::{NodeInfo, NodeTime, NodeTimeDto};
 
 use super::request as __internal_request;
-use crate::models::node::{NodeInfo, NodeTime, NodeTimeDto};
 
 #[derive(Debug, Clone)]
 pub struct NodeRoutesApiClient<C: Connect> {

@@ -5,11 +5,11 @@ use hyper::client::connect::Connect;
 
 use crate::apis::sirius_client::ApiClient;
 use crate::models::blockchain::{
+    BlockchainScore,
     BlockchainScoreDto,
+    HeightInfo,
     HeightInfoDto,
     StorageInfo,
-    HeightInfo,
-    BlockchainScore
 };
 
 use super::request as __internal_request;
@@ -35,7 +35,7 @@ impl<C: Connect> ChainRoutesApiClient<C> where
     pub async fn get_blockchain_height(self) -> super::Result<HeightInfo> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
-            "/chain/height".to_string()
+            "/chain/height".to_string(),
         );
         let dto: super::Result<HeightInfoDto> = req.execute(self.client).await;
 

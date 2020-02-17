@@ -1,4 +1,4 @@
-use crate::models::blockchain::{HeightInfo, BlockchainScore};
+use crate::models::blockchain::{BlockchainScore, HeightInfo};
 use crate::models::Uint64Dto;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -27,7 +27,7 @@ impl BlockchainScoreDto {
     pub fn to_struct(&self) -> BlockchainScore {
         BlockchainScore {
             score_high: self.score_high.to_struct(),
-            score_low: self.score_low.to_struct()
+            score_low: self.score_low.to_struct(),
         }
     }
 }

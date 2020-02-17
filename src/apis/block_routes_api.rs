@@ -4,7 +4,7 @@ use std::sync::Arc;
 use hyper::client::connect::Connect;
 
 use crate::apis::sirius_client::ApiClient;
-use crate::models::blockchain::{BlockInfo,BlockInfoDto};
+use crate::models::blockchain::{BlockInfo, BlockInfoDto};
 use crate::models::transaction::TransactionInfoDto;
 
 use super::request as __internal_request;
