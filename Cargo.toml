@@ -28,27 +28,27 @@ rust-xpx-crypto = { path = "../rust-xpx-crypto" }
 url = "2.1"
 hyper = "0.13"
 tokio = { version = "0.2", features = ["macros"] }
-base64 = "0.7.0"
-futures = "0.3.4"
-base32 = "0.4.0"
-ripemd160 = "0.8.0"
+
 hex = "^0.3"
 regex = "1"
 byteorder = "1"
-async-trait = "0.1.24"
-bytes = { version = "0.5", features = ["serde"] }
 chrono = "0.4.10"
+base64 = "0.7.0"
+base32 = "0.4.0"
+ripemd160 = "0.8.0"
+
+bytes = { version = "0.5", features = ["serde"] }
 
 [dependencies.rand]
 version = "0.6"
 default-features = false
 
-[dependencies.failure]
-version = "0.1"
-
 [dependencies.sha3]
 version = "^0.8"
 default-features = false
+
+[dependencies.failure]
+version = "0.1"
 
 [dev-dependencies]
 #tokio = "*"

@@ -23,7 +23,7 @@ async fn main() {
         Err(err) => eprintln!("{:?}", err),
     }
 
-    let blockchain_storage = client.clone().chain.get_blockchain_storage().await;
+    let blockchain_storage = client.chain.get_blockchain_storage().await;
     match blockchain_storage {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{:?}", err),
