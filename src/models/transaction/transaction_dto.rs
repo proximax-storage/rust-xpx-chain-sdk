@@ -1,8 +1,8 @@
 use crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto;
-use crate::models::mosaic::MosaicDto;
-use crate::models::message::MessageDto;
-use crate::models::uint_64::Uint64Dto;
 use crate::models::entity_dto::EntityType;
+use crate::models::message::MessageDto;
+use crate::models::mosaic::MosaicDto;
+use crate::models::uint_64::Uint64Dto;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionDto {
@@ -84,75 +84,35 @@ impl TransactionIds {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct TransactionInfoDto {
+pub(crate) struct TransactionInfoDto {
     #[serde(rename = "meta")]
-    pub meta: TransactionMetaDto,
+    meta: TransactionMetaDto,
     #[serde(rename = "transaction")]
-    pub transaction: EmbeddedBlockchainUpgradeTransactionDto,
-}
-
-impl TransactionInfoDto {
-    pub fn new(meta: TransactionMetaDto, transaction: EmbeddedBlockchainUpgradeTransactionDto) -> TransactionInfoDto {
-        TransactionInfoDto {
-            meta,
-            transaction,
-        }
-    }
+    transaction: EmbeddedBlockchainUpgradeTransactionDto,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct TransactionMetaDto {
-    #[serde(rename = "height")]
-    pub height: Uint64Dto,
-    #[serde(rename = "hash")]
-    pub hash: String,
-    #[serde(rename = "merkleComponentHash")]
-    pub merkle_component_hash: String,
-    #[serde(rename = "index")]
-    pub index: i32,
-    #[serde(rename = "id")]
-    pub id: String,
-}
-
-impl TransactionMetaDto {
-    pub fn new(height: Uint64Dto, hash: String, merkle_component_hash: String, index: i32, id: String) -> TransactionMetaDto {
-        TransactionMetaDto {
-            height,
-            hash,
-            merkle_component_hash,
-            index,
-            id,
-        }
-    }
+#[serde(rename_all = "camelCase")]
+pub(crate) struct TransactionMetaDto {
+    height: Uint64Dto,
+    hash: String,
+    merkle_component_hash: String,
+    index: u32,
+    id: String,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct TransactionPayload {
-    /// The transaction payload.
-    #[serde(rename = "payload", skip_serializing_if = "Option::is_none")]
-    pub payload: Option<String>,
-}
-
-impl TransactionPayload {
-    pub fn new() -> TransactionPayload {
-        TransactionPayload {
-            payload: None,
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct TransactionStatusDto {
+struct TransactionStatusDto {
     #[serde(rename = "group", skip_serializing_if = "Option::is_none")]
-    pub group: Option<String>,
+    group: Option<String>,
     #[serde(rename = "status")]
-    pub status: String,
+    status: String,
     #[serde(rename = "hash", skip_serializing_if = "Option::is_none")]
-    pub hash: Option<String>,
+    hash: Option<String>,
     #[serde(rename = "deadline", skip_serializing_if = "Option::is_none")]
-    pub deadline: Option<Uint64Dto>,
+    deadline: Option<Uint64Dto>,
     #[serde(rename = "height", skip_serializing_if = "Option::is_none")]
-    pub height: Option<Uint64Dto>,
+    height: Option<Uint64Dto>,
 }
 
 impl TransactionStatusDto {
