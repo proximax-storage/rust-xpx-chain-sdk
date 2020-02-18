@@ -16,7 +16,7 @@ fn main() {
 
     let private_key = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
 
-    let _account = Account::from_private_key(private_key, network_type).unwrap();
+    let account = Account::from_private_key(private_key, network_type).unwrap();
 
     let recipient = Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap();
 
@@ -32,8 +32,8 @@ fn main() {
 
     match transfer {
         Ok(mut resp) => {
-           resp.to_aggregate(_account.public_account);
-            println!("{}", resp.generate_bytes())
+            let sig = account.sign();
+            println!("{}", resp)
         },
         Err(err) => eprintln!("{:?}", err),
     }

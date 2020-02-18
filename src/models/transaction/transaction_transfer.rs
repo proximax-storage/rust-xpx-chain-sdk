@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::models::account::{Address, PublicAccount};
+use crate::models::account::{Address, PublicAccount, Account};
 use crate::models::message::Message;
 use crate::models::mosaic::Mosaic;
 use crate::models::network::NetworkType;
@@ -96,6 +96,10 @@ impl Transaction for TransferTransaction {
     }
 
     fn has_missing_signatures(&self) -> bool {
+        unimplemented!()
+    }
+
+    fn sign_with(&self, account: Account, generation_hash: String) {
         unimplemented!()
     }
 }
