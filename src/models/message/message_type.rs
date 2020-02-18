@@ -4,7 +4,7 @@ use std::fmt;
 pub(crate) const PLAIN_MESSAGE: MessageType = MessageType::PlainMessageType; // 0
 
 /// Secured text or encrypted message.
-static ENCRYPTED_MESSAGE: MessageType = MessageType::SecureMessageType; //
+static ENCRYPTED_MESSAGE: MessageType = MessageType::SecureMessageType; // 1
 
 /// MessageType:
 /// The type of the message:
