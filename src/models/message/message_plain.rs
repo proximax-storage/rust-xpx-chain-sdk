@@ -2,30 +2,29 @@ use crate::models::message::{Message, MessageType, PLAIN_MESSAGE};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlainMessage {
-    message: Message
+    _type: MessageType,
+    pub payload: String,
 }
 
 impl PlainMessage {
     pub fn new(payload: &str) -> Self {
         PlainMessage {
-            message: Message::new(PLAIN_MESSAGE, payload.to_owned())
+            _type: PLAIN_MESSAGE,
+            payload: payload.to_owned(),
         }
-    }
-
-    pub fn payload(&self) -> &str {
-        &self.message.payload
-    }
-
-    pub fn message_type(self) -> MessageType {
-        self.message._type
     }
 
     pub fn empty() -> Self {
         PlainMessage {
-            message: Message::new(
-                MessageType::PlainMessageType,
-                "".to_string())
+            _type: MessageType::PlainMessageType,
+            payload: "".to_string(),
         }
+    }
+}
+
+impl Message for PlainMessage {
+    fn message_type(self) -> MessageType {
+        self._type
     }
 }
 
@@ -33,7 +32,7 @@ impl core::fmt::Display for PlainMessage {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f, "{}",
-            serde_json::to_string_pretty(&self.message).unwrap_or_default()
+            serde_json::to_string_pretty(&self ).unwrap_or_default()
         )
     }
 }

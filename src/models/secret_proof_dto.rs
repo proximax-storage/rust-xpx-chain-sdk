@@ -1,4 +1,3 @@
-use crate::models::entity_dto::EntityType;
 use crate::models::hash_lock_dto::HashAlgorithmEnum;
 use crate::models::uint_64::Uint64Dto;
 
@@ -41,7 +40,7 @@ pub struct SecretProofTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -57,24 +56,6 @@ pub struct SecretProofTransactionDto {
     /// The original random set of bytes.
     #[serde(rename = "proof")]
     pub proof: String,
-}
-
-impl SecretProofTransactionDto {
-    /// Transaction that revealed a proof.
-    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, hash_algorithm: HashAlgorithmEnum, secret: String, proof: String) -> SecretProofTransactionDto {
-        SecretProofTransactionDto {
-            signature,
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            hash_algorithm,
-            secret,
-            recipient: None,
-            proof,
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -86,7 +67,7 @@ pub struct EmbeddedSecretProofTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -103,20 +84,3 @@ pub struct EmbeddedSecretProofTransactionDto {
     #[serde(rename = "proof")]
     pub proof: String,
 }
-
-impl EmbeddedSecretProofTransactionDto {
-    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, hash_algorithm: HashAlgorithmEnum, secret: String, proof: String) -> EmbeddedSecretProofTransactionDto {
-        EmbeddedSecretProofTransactionDto {
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            hash_algorithm,
-            secret,
-            recipient: None,
-            proof,
-        }
-    }
-}
-

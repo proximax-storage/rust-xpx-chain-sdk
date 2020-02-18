@@ -1,7 +1,7 @@
-use crate::models::entity_dto::EntityType;
 use crate::models::uint_64::Uint64Dto;
 
 use super::transaction::EmbeddedTransactionInfoDto;
+use crate::models::multisig::CosignatureDto;
 
 /// AggregateTransactionDto : Transaction that combines multiple transactions together.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -16,50 +16,25 @@ pub struct AggregateTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
     pub deadline: Uint64Dto,
     /// An array of transaction cosignatures.
     #[serde(rename = "cosignatures")]
-    pub cosignatures: Vec<crate::models::multisig::CosignatureDto>,
+    pub cosignatures: Vec<CosignatureDto>,
     /// The array of transactions initiated by different accounts.
     #[serde(rename = "transactions")]
     pub transactions: Vec<EmbeddedTransactionInfoDto>,
-}
-
-impl AggregateTransactionDto {
-    /// Transaction that combines multiple transactions together.
-    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, cosignatures: Vec<crate::models::multisig::CosignatureDto>, transactions: Vec<crate::models::transaction::EmbeddedTransactionInfoDto>) -> AggregateTransactionDto {
-        AggregateTransactionDto {
-            signature,
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            cosignatures,
-            transactions,
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct AggregateTransactionBodyDto {
     /// An array of transaction cosignatures.
     #[serde(rename = "cosignatures")]
-    pub cosignatures: Vec<crate::models::multisig::CosignatureDto>,
+    pub cosignatures: Vec<CosignatureDto>,
     /// The array of transactions initiated by different accounts.
     #[serde(rename = "transactions")]
-    pub transactions: Vec<crate::models::transaction::EmbeddedTransactionInfoDto>,
-}
-
-impl AggregateTransactionBodyDto {
-    pub fn new(cosignatures: Vec<crate::models::multisig::CosignatureDto>, transactions: Vec<crate::models::transaction::EmbeddedTransactionInfoDto>) -> AggregateTransactionBodyDto {
-        AggregateTransactionBodyDto {
-            cosignatures,
-            transactions,
-        }
-    }
+    pub transactions: Vec<EmbeddedTransactionInfoDto>,
 }

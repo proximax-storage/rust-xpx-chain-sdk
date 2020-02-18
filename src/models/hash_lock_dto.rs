@@ -1,4 +1,3 @@
-use crate::models::entity_dto::EntityType;
 use crate::models::mosaic::MosaicDto;
 use crate::models::uint_64::Uint64Dto;
 
@@ -28,16 +27,6 @@ pub struct HashLockTransactionBodyDto {
     pub hash: String,
 }
 
-impl HashLockTransactionBodyDto {
-    pub fn new(mosaic: MosaicDto, duration: MosaicDto, hash: String) -> HashLockTransactionBodyDto {
-        HashLockTransactionBodyDto {
-            mosaic,
-            duration,
-            hash,
-        }
-    }
-}
-
 /// HashLockTransactionDto : Transaction to lock funds before sending an aggregate bonded transaction.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct HashLockTransactionDto {
@@ -51,7 +40,7 @@ pub struct HashLockTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -65,23 +54,6 @@ pub struct HashLockTransactionDto {
     pub hash: String,
 }
 
-impl HashLockTransactionDto {
-    /// Transaction to lock funds before sending an aggregate bonded transaction.
-    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, mosaic: MosaicDto, duration: MosaicDto, hash: String) -> HashLockTransactionDto {
-        HashLockTransactionDto {
-            signature,
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            mosaic,
-            duration,
-            hash,
-        }
-    }
-}
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmbeddedHashLockTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
@@ -91,7 +63,7 @@ pub struct EmbeddedHashLockTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -106,20 +78,4 @@ pub struct EmbeddedHashLockTransactionDto {
     /// The aggregate bonded transaction hash that has to be confirmed before unlocking the mosaics.
     #[serde(rename = "hash")]
     pub hash: String,
-}
-
-impl EmbeddedHashLockTransactionDto {
-    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, signature: String, mosaic: MosaicDto, duration: MosaicDto, hash: String) -> EmbeddedHashLockTransactionDto {
-        EmbeddedHashLockTransactionDto {
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            signature,
-            mosaic,
-            duration,
-            hash,
-        }
-    }
 }

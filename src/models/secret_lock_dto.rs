@@ -1,4 +1,3 @@
-use crate::models::entity_dto::EntityType;
 use crate::models::hash_lock_dto::HashAlgorithmEnum;
 use crate::models::uint_64::Uint64Dto;
 
@@ -20,19 +19,6 @@ pub struct SecretLockTransactionBodyDto {
     pub recipient: String,
 }
 
-impl SecretLockTransactionBodyDto {
-    pub fn new(duration: Uint64Dto, mosaic_id: Uint64Dto, amount: Uint64Dto, hash_algorithm: HashAlgorithmEnum, secret: String, recipient: String) -> SecretLockTransactionBodyDto {
-        SecretLockTransactionBodyDto {
-            duration,
-            mosaic_id,
-            amount,
-            hash_algorithm,
-            secret,
-            recipient,
-        }
-    }
-}
-
 /// SecretLockTransactionDto : Transaction that sends mosaics to a recipient if the proof used is revealed. If the duration is reached, the locked funds go back to the sender of the transaction.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SecretLockTransactionDto {
@@ -46,7 +32,7 @@ pub struct SecretLockTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -65,26 +51,6 @@ pub struct SecretLockTransactionDto {
     /// The address in hexadecimal that will receive the funds once the transaction is unlocked.
     #[serde(rename = "recipient")]
     pub recipient: String,
-}
-
-impl SecretLockTransactionDto {
-    /// Transaction that sends mosaics to a recipient if the proof used is revealed. If the duration is reached, the locked funds go back to the sender of the transaction.
-    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, duration: Uint64Dto, mosaic_id: Uint64Dto, amount: Uint64Dto, hash_algorithm: HashAlgorithmEnum, secret: String, recipient: String) -> SecretLockTransactionDto {
-        SecretLockTransactionDto {
-            signature,
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            duration,
-            mosaic_id,
-            amount,
-            hash_algorithm,
-            secret,
-            recipient,
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -96,7 +62,7 @@ pub struct EmbeddedSecretLockTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -115,22 +81,4 @@ pub struct EmbeddedSecretLockTransactionDto {
     /// The address in hexadecimal that will receive the funds once the transaction is unlocked.
     #[serde(rename = "recipient")]
     pub recipient: String,
-}
-
-impl EmbeddedSecretLockTransactionDto {
-    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, duration: Uint64Dto, mosaic_id: Uint64Dto, amount: Uint64Dto, hash_algorithm: HashAlgorithmEnum, secret: String, recipient: String) -> EmbeddedSecretLockTransactionDto {
-        EmbeddedSecretLockTransactionDto {
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            duration,
-            mosaic_id,
-            amount,
-            hash_algorithm,
-            secret,
-            recipient,
-        }
-    }
 }

@@ -1,5 +1,6 @@
-use crate::models::entity_dto::EntityType;
 use crate::models::uint_64::Uint64Dto;
+use crate::models::message::MessageDto;
+use crate::models::mosaic::MosaicDto;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmbeddedTransferTransactionDto {
@@ -10,7 +11,7 @@ pub struct EmbeddedTransferTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -20,24 +21,9 @@ pub struct EmbeddedTransferTransactionDto {
     pub recipient: String,
     /// The array of mosaics sent to the recipient. If the most significant bit of byte 0 is set, a namespaceId (alias) is used instead of a instead of a mosaic_id corresponds to a mosaic_id.
     #[serde(rename = "mosaics")]
-    pub mosaics: Vec<crate::models::mosaic::MosaicDto>,
+    pub mosaics: Vec<MosaicDto>,
     #[serde(rename = "message")]
-    pub message: crate::models::message::MessageDto,
-}
-
-impl EmbeddedTransferTransactionDto {
-    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, recipient: String, mosaics: Vec<crate::models::mosaic::MosaicDto>, message: crate::models::message::MessageDto) -> EmbeddedTransferTransactionDto {
-        EmbeddedTransferTransactionDto {
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            recipient,
-            mosaics,
-            message,
-        }
-    }
+    pub message: MessageDto,
 }
 
 

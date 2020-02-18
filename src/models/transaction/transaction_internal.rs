@@ -1,5 +1,5 @@
-pub type EntityVersion = u32;
+use crate::models::transaction::EntityVersion;
 
 pub fn extract_version(version: i32) -> EntityVersion {
-    return (version as u32) & 0xFFFFFF;
+    return version & 0xFFFFFF;
 }

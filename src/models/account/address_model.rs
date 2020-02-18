@@ -100,7 +100,12 @@ impl Address {
         res += &self.address[&self.address.len() - 4..];
         return res;
     }
-}
+
+    pub fn is_empty(&self) -> bool {
+        self.address.is_empty() && self.network_type == NOT_SUPPORTED_NET
+    }
+
+    }
 
 impl core::fmt::Display for Address {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {

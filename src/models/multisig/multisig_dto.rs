@@ -1,4 +1,3 @@
-use crate::models::entity_dto::EntityType;
 use crate::models::uint_64::Uint64Dto;
 use crate::models::multisig::CosignatoryModificationDto;
 
@@ -116,7 +115,7 @@ pub struct ModifyMultisigAccountTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -130,23 +129,6 @@ pub struct ModifyMultisigAccountTransactionDto {
     /// The array of cosignatory accounts to add or delete.
     #[serde(rename = "modifications")]
     pub modifications: Vec<CosignatoryModificationDto>,
-}
-
-impl ModifyMultisigAccountTransactionDto {
-    /// Transaction that creates or modifies a multisig account.
-    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, min_removal_delta: i32, min_approval_delta: i32, modifications: Vec<crate::models::multisig::CosignatoryModificationDto>) -> ModifyMultisigAccountTransactionDto {
-        ModifyMultisigAccountTransactionDto {
-            signature,
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            min_removal_delta,
-            min_approval_delta,
-            modifications,
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -158,7 +140,7 @@ pub struct EmbeddedModifyMultisigAccountTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -172,19 +154,4 @@ pub struct EmbeddedModifyMultisigAccountTransactionDto {
     /// The array of cosignatory accounts to add or delete.
     #[serde(rename = "modifications")]
     pub modifications: Vec<CosignatoryModificationDto>,
-}
-
-impl EmbeddedModifyMultisigAccountTransactionDto {
-    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, min_removal_delta: i32, min_approval_delta: i32, modifications: Vec<crate::models::multisig::CosignatoryModificationDto>) -> EmbeddedModifyMultisigAccountTransactionDto {
-        EmbeddedModifyMultisigAccountTransactionDto {
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            min_removal_delta,
-            min_approval_delta,
-            modifications,
-        }
-    }
 }

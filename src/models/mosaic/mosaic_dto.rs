@@ -4,7 +4,6 @@ use crate::Result;
 use crate::models::mosaic::mosaic_internal::{MosaicPropertyId, has_bits};
 use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
 use crate::models::field_dto::FieldDto;
-use crate::models::entity_dto::EntityType;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicDto {
@@ -143,7 +142,7 @@ pub(crate) struct MosaicMetadataTransactionDto {
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     version: i32,
     #[serde(rename = "type")]
-    _type: EntityType,
+    _type: u16,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     metadata_id: Uint64Dto,
@@ -220,7 +219,7 @@ pub(crate) struct MosaicDefinitionTransactionDto {
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     version: i32,
     #[serde(rename = "type")]
-    _type: EntityType,
+    _type: u16,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     /// Random nonce used to generate the mosaic id.
@@ -237,7 +236,7 @@ pub(crate) struct EmbeddedMosaicDefinitionTransactionDto {
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     version: i32,
     #[serde(rename = "type")]
-    _type: EntityType,
+    _type: u16,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     /// Random nonce used to generate the mosaic id.
@@ -254,7 +253,7 @@ pub(crate) struct EmbeddedMosaicMetadataTransactionDto {
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     version: i32,
     #[serde(rename = "type")]
-    _type: EntityType,
+    _type: u16,
     max_fee: Uint64Dto,
     deadline: Uint64Dto,
     metadata_id: Uint64Dto,

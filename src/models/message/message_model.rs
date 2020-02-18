@@ -1,20 +1,18 @@
+use std::fmt;
+
 use crate::models::message::MessageType;
 
-/// An abstract 'Message' class that serves as the base class of all message types.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub(crate) struct Message {
-    #[serde(rename = "type")]
-    pub(crate) _type: MessageType,
-    /// The message content in hexadecimal.
-    #[serde(rename = "payload")]
-    pub(crate) payload: String,
+pub trait Message: Sync + erased_serde::Serialize
+    where
+        Self: fmt::Debug,
+{
+    fn message_type(self) -> MessageType;
 }
 
-impl Message {
-    pub(crate) fn new(_type: MessageType, payload: String) -> Self {
-        Message {
-            _type,
-            payload,
-        }
+serialize_trait_object!(Message);
+
+impl fmt::Display for dyn Message {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self)
     }
 }

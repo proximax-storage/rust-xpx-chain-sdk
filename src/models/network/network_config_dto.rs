@@ -1,19 +1,10 @@
 use crate::models::config_dto::ConfigDto;
-use crate::models::entity_dto::EntityType;
 use crate::models::uint_64::Uint64Dto;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct NetworkConfigDto {
     #[serde(rename = "networkConfig")]
     pub network_config: ConfigDto,
-}
-
-impl NetworkConfigDto {
-    pub fn new(network_config: ConfigDto) -> NetworkConfigDto {
-        NetworkConfigDto {
-            network_config,
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -51,7 +42,7 @@ pub struct NetworkConfigTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -64,23 +55,6 @@ pub struct NetworkConfigTransactionDto {
     /// Allowed versions of transaction in json format.
     #[serde(rename = "supportedEntityVersions")]
     pub supported_entity_versions: String,
-}
-
-impl NetworkConfigTransactionDto {
-    /// Transaction that updates config.
-    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, apply_height_delta: Uint64Dto, network_config: String, supported_entity_versions: String) -> NetworkConfigTransactionDto {
-        NetworkConfigTransactionDto {
-            signature,
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            apply_height_delta,
-            network_config,
-            supported_entity_versions,
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -92,7 +66,7 @@ pub struct EmbeddedNetworkConfigTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -106,19 +80,3 @@ pub struct EmbeddedNetworkConfigTransactionDto {
     #[serde(rename = "supportedEntityVersions")]
     pub supported_entity_versions: String,
 }
-
-impl EmbeddedNetworkConfigTransactionDto {
-    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, apply_height_delta: Uint64Dto, network_config: String, supported_entity_versions: String) -> EmbeddedNetworkConfigTransactionDto {
-        EmbeddedNetworkConfigTransactionDto {
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            apply_height_delta,
-            network_config,
-            supported_entity_versions,
-        }
-    }
-}
-

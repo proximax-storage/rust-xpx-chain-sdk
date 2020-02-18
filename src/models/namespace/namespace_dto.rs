@@ -1,6 +1,5 @@
 use crate::models::metadata_dto::{MetadataTypeEnum, MetadataModificationDto};
 use crate::models::field_dto::FieldDto;
-use crate::models::entity_dto::EntityType;
 use crate::models::uint_64::Uint64Dto;
 
 /// NamespaceTypeEnum : The namespace type: * 0 -  Root namespace. * 1 -  Subnamespace.
@@ -197,7 +196,7 @@ pub struct NamespaceMetadataTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -209,23 +208,6 @@ pub struct NamespaceMetadataTransactionDto {
     /// The array of metadata modifications.
     #[serde(rename = "modifications")]
     pub modifications: Vec<MetadataModificationDto>,
-}
-
-impl NamespaceMetadataTransactionDto {
-    /// Transaction that addes metadata to namespace.
-    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, metadata_id: Uint64Dto, metadata_type: MetadataTypeEnum, modifications: Vec<MetadataModificationDto>) -> NamespaceMetadataTransactionDto {
-        NamespaceMetadataTransactionDto {
-            signature,
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            metadata_id,
-            metadata_type,
-            modifications,
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -286,7 +268,7 @@ pub struct RegisterNamespaceTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -304,25 +286,6 @@ pub struct RegisterNamespaceTransactionDto {
     pub parent_id: Uint64Dto,
 }
 
-impl RegisterNamespaceTransactionDto {
-    /// Transaction that creates or renew a namespace.
-    pub fn new(signature: String, signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, namespace_type: crate::models::namespace::NamespaceTypeEnum, duration: Uint64Dto, namespace_id: Uint64Dto, name: String, parent_id: Uint64Dto) -> RegisterNamespaceTransactionDto {
-        RegisterNamespaceTransactionDto {
-            signature,
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            namespace_type,
-            duration,
-            namespace_id,
-            name,
-            parent_id,
-        }
-    }
-}
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmbeddedNamespaceMetadataTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
@@ -332,7 +295,7 @@ pub struct EmbeddedNamespaceMetadataTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -346,21 +309,6 @@ pub struct EmbeddedNamespaceMetadataTransactionDto {
     pub modifications: Vec<MetadataModificationDto>,
 }
 
-impl EmbeddedNamespaceMetadataTransactionDto {
-    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, metadata_id: Uint64Dto, metadata_type: MetadataTypeEnum, modifications: Vec<MetadataModificationDto>) -> EmbeddedNamespaceMetadataTransactionDto {
-        EmbeddedNamespaceMetadataTransactionDto {
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            metadata_id,
-            metadata_type,
-            modifications,
-        }
-    }
-}
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmbeddedRegisterNamespaceTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
@@ -370,7 +318,7 @@ pub struct EmbeddedRegisterNamespaceTransactionDto {
     #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
-    pub _type: EntityType,
+    pub _type: u16,
     #[serde(rename = "max_fee")]
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
@@ -387,21 +335,3 @@ pub struct EmbeddedRegisterNamespaceTransactionDto {
     #[serde(rename = "parentId")]
     pub parent_id: Uint64Dto,
 }
-
-impl EmbeddedRegisterNamespaceTransactionDto {
-    pub fn new(signer: String, version: i32, _type: EntityType, max_fee: Uint64Dto, deadline: Uint64Dto, namespace_type: crate::models::namespace::NamespaceTypeEnum, duration: Uint64Dto, namespace_id: Uint64Dto, name: String, parent_id: Uint64Dto) -> EmbeddedRegisterNamespaceTransactionDto {
-        EmbeddedRegisterNamespaceTransactionDto {
-            signer,
-            version,
-            _type,
-            max_fee,
-            deadline,
-            namespace_type,
-            duration,
-            namespace_id,
-            name,
-            parent_id,
-        }
-    }
-}
-

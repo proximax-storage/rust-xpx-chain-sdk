@@ -84,3 +84,10 @@ impl Serialize for Timestamp {
         serializer.serialize_str(&format!("{}", self))
     }
 }
+
+/// Creates `Deadline` with the default parameters.
+impl Default for Deadline {
+    fn default() -> Self {
+        Deadline::new(1, 0, 0)
+    }
+}
