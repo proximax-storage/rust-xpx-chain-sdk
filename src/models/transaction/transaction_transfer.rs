@@ -4,7 +4,7 @@ use crate::models::account::{Address, PublicAccount, Account};
 use crate::models::message::Message;
 use crate::models::mosaic::Mosaic;
 use crate::models::network::NetworkType;
-use crate::models::transaction::{AbstractTransaction, Transaction, TransactionType, TRANSFER_VERSION};
+use crate::models::transaction::{AbstractTransaction, Transaction, TransactionType, TRANSFER_VERSION, SignedTransaction};
 use crate::models::transaction::deadline::Deadline;
 
 #[derive(Debug, Serialize)]
@@ -99,7 +99,7 @@ impl Transaction for TransferTransaction {
         unimplemented!()
     }
 
-    fn sign_with(&self, account: Account, generation_hash: String) {
+    fn sign_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
         unimplemented!()
     }
 }

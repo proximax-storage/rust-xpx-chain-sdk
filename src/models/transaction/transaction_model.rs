@@ -2,7 +2,7 @@ use std::fmt;
 
 use failure::_core::fmt::Debug;
 
-use crate::models::transaction::AbstractTransaction;
+use crate::models::transaction::{AbstractTransaction, SignedTransaction};
 use crate::models::account::Account;
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -40,7 +40,7 @@ pub trait Transaction: Sync + erased_serde::Serialize
     /// Returns `true` if this transaction has missing signatures.
     fn has_missing_signatures(&self) -> bool;
 
-    fn sign_with(&self, account: Account, generation_hash: String);
+    fn sign_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
 }
 
 serialize_trait_object!(Transaction);

@@ -2,11 +2,11 @@
 #![warn(rust_2018_idioms)]
 
 use xpx_chain_sdk::models::account::{Account, Address};
-use xpx_chain_sdk::models::network::PUBLIC_TEST;
-use xpx_chain_sdk::models::transaction::deadline::Deadline;
-use xpx_chain_sdk::models::transaction::{TransferTransaction, Transaction};
-use xpx_chain_sdk::models::mosaic::Mosaic;
 use xpx_chain_sdk::models::message::PlainMessage;
+use xpx_chain_sdk::models::mosaic::Mosaic;
+use xpx_chain_sdk::models::network::PUBLIC_TEST;
+use xpx_chain_sdk::models::transaction::TransferTransaction;
+use xpx_chain_sdk::models::transaction::deadline::Deadline;
 
 fn main() {
     let network_type = PUBLIC_TEST;
@@ -22,19 +22,22 @@ fn main() {
 
     let message = PlainMessage::new("ProximaX Limited");
 
-    let transfer = TransferTransaction::new(
+    let transfer_transaction = TransferTransaction::new(
         deadline,
         recipient,
         vec![Mosaic::xpx(10)],
         Box::new(message),
-        network_type
+        network_type,
     );
 
-    match transfer {
-        Ok(mut resp) => {
-            let sig = account.sign();
-            println!("{}", resp)
-        },
+    match transfer_transaction {
+        Ok(transfer) => {
+            let sig_transaction = account.sign_transaction(Box::new(transfer), "".to_owned());
+            match sig_transaction {
+                Ok(sig) => println!("{}", sig),
+                Err(err) => eprintln!("{:?}", err),
+            }
+        }
         Err(err) => eprintln!("{:?}", err),
     }
 }

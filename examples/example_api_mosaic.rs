@@ -33,7 +33,7 @@ async fn main() {
             for mosaic in resp {
                 println!("{}", mosaic)
             }
-        },
+        }
         Err(err) => eprintln!("{:?}", err),
     }
 
@@ -45,7 +45,7 @@ async fn main() {
             for mosaic in resp {
                 println!("{}", mosaic)
             }
-        },
+        }
         Err(err) => eprintln!("{:?}", err),
     }
 }

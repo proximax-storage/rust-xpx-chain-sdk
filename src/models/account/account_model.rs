@@ -2,7 +2,7 @@ use crate::models::utils::{is_hex, vec_u8_to_hex};
 use crate::Result;
 
 use super::PublicAccount;
-use crate::models::transaction::Transaction;
+use crate::models::transaction::{Transaction, SignedTransaction};
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
 #[derive(Debug, Clone)]
@@ -54,8 +54,8 @@ impl Account {
     }
 
     /// Signs 'Transaction'.
-    pub fn sign_transaction(&self, tx: Box<dyn Transaction>, generation_hash: String) {
-        return tx.sign_with(Self, generation_hash);
+    pub fn sign_transaction(&self, tx: Box<dyn Transaction>, generation_hash: String) -> crate::Result<SignedTransaction> {
+        tx.sign_with(self.to_owned(), generation_hash)
     }
 
     /// Signs raw data.
