@@ -1,9 +1,10 @@
 use std::fmt;
 
 use failure::_core::fmt::Debug;
+use xpx_crypto::Keypair;
 
-use crate::models::transaction::{AbstractTransaction, SignedTransaction};
 use crate::models::account::Account;
+use crate::models::transaction::{AbstractTransaction, SignedTransaction};
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct TransactionPayload {
@@ -40,7 +41,11 @@ pub trait Transaction: Sync + erased_serde::Serialize
     /// Returns `true` if this transaction has missing signatures.
     fn has_missing_signatures(&self) -> bool;
 
-    fn sign_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
+    /// Serialize and sign 'Transaction' with the given 'Account' and network generationHash and
+    /// create a new SignedTransaction.
+    fn sign_transaction_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
+
+    fn sign(&self, key_pair: Keypair, generation_hash: String) -> String;
 }
 
 serialize_trait_object!(Transaction);

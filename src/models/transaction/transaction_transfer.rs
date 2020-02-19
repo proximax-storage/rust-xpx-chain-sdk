@@ -1,11 +1,27 @@
 use std::fmt;
 
-use crate::models::account::{Address, PublicAccount, Account};
-use crate::models::message::Message;
+use hyper::service::service_fn;
+use xpx_crypto::Keypair;
+
+use crate::fb;
+use crate::models::account::{Account, Address, PublicAccount};
+use crate::models::message::{Message, PlainMessage};
 use crate::models::mosaic::Mosaic;
 use crate::models::network::NetworkType;
-use crate::models::transaction::{AbstractTransaction, Transaction, TransactionType, TRANSFER_VERSION, SignedTransaction};
-use crate::models::transaction::deadline::Deadline;
+
+use super::{
+    AbstractTransaction,
+    deadline::Deadline,
+    SignedTransaction,
+    Transaction,
+    TransactionType,
+    TRANSFER_VERSION,
+};
+use super::buffer::sisrius::buffers;
+use std::borrow::Borrow;
+use fb::FlatBufferBuilder;
+use crate::models::consts::{TRANSFER_HEADER_SIZE, MOSAIC_ID_SIZE, AMOUNT_SIZE};
+use crate::models::transaction::buffer::sisrius::buffers::MosaicBuffer;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -41,6 +57,7 @@ impl TransferTransaction {
 
         let abs_tx = AbstractTransaction {
             transaction_info: None,
+            network_type,
             signature: "".to_string(),
             signer: Default::default(),
             version: TRANSFER_VERSION,
@@ -55,6 +72,10 @@ impl TransferTransaction {
             mosaics,
             message,
         })
+    }
+
+    pub fn message_size(&self) -> usize {
+        self.message.payload_to_bytes().len() + 1
     }
 
     pub fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -80,11 +101,68 @@ impl Transaction for TransferTransaction {
     }
 
     fn size(&self) -> usize {
-        unimplemented!()
+        TRANSFER_HEADER_SIZE + ((MOSAIC_ID_SIZE + AMOUNT_SIZE) * self.mosaics.len()) + self.message_size()
     }
 
-    fn generate_bytes(&self) -> Vec<u8> {
-        unimplemented!()
+    fn generate_bytes<'a>(&self) -> Vec<u8> {
+        /// Build up a serialized buffer algorithmically.
+        /// Initialize it with a capacity of 0 bytes.
+        let mut _builder = fb::FlatBufferBuilder::new();
+
+        /// Create mosaics
+        let ml = self.mosaics.len();
+
+        let mut mosaics_buffer: Vec<fb::WIPOffset<MosaicBuffer<'a>>> = Vec::with_capacity(ml);
+
+        for mosaic in &self.mosaics {
+            let mosaic_id = _builder.create_vector(&mosaic.id.to_int_array());
+            let mosaic_amount = _builder.create_vector(&mosaic.amount.to_int_array());
+
+            let mut mosaic_buffer = buffers::MosaicBufferBuilder::new(&mut _builder);
+            mosaic_buffer.add_id(mosaic_id);
+            mosaic_buffer.add_amount(mosaic_amount);
+
+            mosaics_buffer.push(mosaic_buffer.finish());
+        };
+
+        /// Create message;
+        let payload_vec = _builder.create_vector_direct(self.message.payload_to_bytes());
+
+        let mut message_buffer = buffers::MessageBufferBuilder::new(&mut _builder);
+        message_buffer.add_type_(self.message.message_type().get_value());
+        message_buffer.add_payload(payload_vec);
+        let message_vec = message_buffer.finish();
+
+        let recipient= self.recipient.to_decode();
+
+        let recipient_vec = _builder.create_vector_direct(&recipient);
+
+        let mosaic_vec = _builder.create_vector(&mosaics_buffer);
+
+        let abs_vector = &self.abs_transaction.generate_vector(&mut _builder);
+
+        let mut txn_builder =
+            buffers::TransferTransactionBufferBuilder::new(&mut _builder);
+
+        txn_builder.add_size_(self.size() as u32);
+        txn_builder.add_signature(fb::WIPOffset::new(*abs_vector.get("signatureV").unwrap()));
+        txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
+        txn_builder.add_version(*abs_vector.get("versionV").unwrap());
+        txn_builder.add_type_(self.abs_transaction.transaction_type.get_value());
+        txn_builder.add_max_fee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
+        txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
+        txn_builder.add_recipient(recipient_vec);
+        txn_builder.add_num_mosaics(ml as u8);
+        txn_builder.add_message_size(self.message_size() as u16);
+        txn_builder.add_message(message_vec);
+        txn_builder.add_mosaics(fb::WIPOffset::new(*mosaic_vec));
+        let t = txn_builder.finish();
+
+        _builder.finish(t, None);
+
+        let buf = _builder.finished_data();
+
+        buf.to_vec()
     }
 
     fn generate_embedded_bytes(&self) -> Vec<u8> {
@@ -99,8 +177,17 @@ impl Transaction for TransferTransaction {
         unimplemented!()
     }
 
-    fn sign_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
-        unimplemented!()
+    fn sign_transaction_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
+        let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
+
+        let tx_signed = self.sign(key_pair, generation_hash);
+
+        Ok(SignedTransaction::new())
+    }
+
+    fn sign(&self, key_pair: Keypair, generation_hash: String) -> String {
+        let bytes: Vec<u8> = self.generate_bytes();
+        String::new()
     }
 }
 

@@ -4,12 +4,13 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use chrono::Local;
 use chrono::prelude::DateTime;
 use serde::{Serialize, Serializer};
+use crate::models::Uint64;
 
 /// It is Friday, 01 April 2016 00:00:00 +0000 UTC (1459468800000 milliseconds since the epoch time).
 static TIMESTAMP_NEMESIS_BLOCK_MILLISECONDS: i64 = 1459468800 * 1000;
 static MILLISECONDS: i64 = 1000000;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct BlockchainTimestamp(i64);
 
 impl BlockchainTimestamp {
@@ -21,9 +22,13 @@ impl BlockchainTimestamp {
     pub fn to_timestamp(&self) -> Timestamp {
         Timestamp::new(self.0 + TIMESTAMP_NEMESIS_BLOCK_MILLISECONDS)
     }
+
+    pub fn to_uint64(&self) -> Uint64 {
+        Uint64::new(self.0 as u64)
+    }
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct Timestamp(SystemTime);
 
 impl Timestamp {
@@ -49,7 +54,7 @@ impl core::fmt::Display for Timestamp {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Deadline(Timestamp);
 
 impl Deadline {
@@ -59,6 +64,10 @@ impl Deadline {
         let _minute: u64 = minute as u64 * 60;
 
         Deadline(Timestamp(time_now.add(Duration::from_secs(_hour + _minute + second))))
+    }
+
+    pub fn to_blockchain_timestamp(&self) -> BlockchainTimestamp {
+        self.0.to_blockchain_timestamp()
     }
 }
 

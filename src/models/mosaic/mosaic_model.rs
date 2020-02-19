@@ -38,7 +38,7 @@ impl Mosaic {
             "Maximum xpx value must be {}", XPX_MAX_VALUE
         );
 
-        let xpx_mosaic_id: Box<MosaicId> = Box::new(MosaicId(Uint64(992621218088430050)));
+        let xpx_mosaic_id: Box<MosaicId> = Box::new(MosaicId(Uint64(13833723942089965046)));
 
         Mosaic { id: xpx_mosaic_id, amount: Uint64::new(amount) }
     }

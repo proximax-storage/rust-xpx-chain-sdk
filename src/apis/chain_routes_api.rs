@@ -33,7 +33,7 @@ impl<C: Connect> ChainRoutesApiClient<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
     pub async fn get_blockchain_height(self) -> super::Result<HeightInfo> {
-        let mut req = __internal_request::Request::new(
+        let req = __internal_request::Request::new(
             hyper::Method::GET,
             "/chain/height".to_string(),
         );

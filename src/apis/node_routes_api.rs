@@ -27,7 +27,7 @@ impl<C: Connect> NodeRoutesApiClient<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
     pub async fn get_node_info(self) -> super::Result<NodeInfo> {
-        let mut req = __internal_request::Request::new(
+        let req = __internal_request::Request::new(
             hyper::Method::GET,
             "/node/info".to_string());
 
@@ -35,7 +35,7 @@ impl<C: Connect> NodeRoutesApiClient<C> where
     }
 
     pub async fn get_node_time(self) -> super::Result<NodeTime> {
-        let mut req = __internal_request::Request::new(
+        let req = __internal_request::Request::new(
             hyper::Method::GET,
             "/node/time".to_string());
 

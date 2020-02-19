@@ -105,6 +105,10 @@ impl Address {
         self.address.is_empty() && self.network_type == NOT_SUPPORTED_NET
     }
 
+    pub fn to_decode(&self) -> Vec<u8> {
+        base32::decode(RFC4648{ padding: true }, &self.address).unwrap()
+    }
+
     }
 
 impl core::fmt::Display for Address {

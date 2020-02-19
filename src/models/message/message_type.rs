@@ -30,6 +30,13 @@ impl MessageType {
             _ => bail!("unknown message type")
         }
     }
+
+    pub fn get_value(&self) -> u8 {
+        match &self {
+            MessageType::PlainMessageType => 0x00,
+            MessageType::SecureMessageType => 0x01,
+        }
+    }
 }
 
 impl fmt::Display for MessageType {

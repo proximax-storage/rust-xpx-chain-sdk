@@ -1,4 +1,5 @@
 use crate::models::message::{Message, MessageType, PLAIN_MESSAGE};
+use std::borrow::Borrow;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlainMessage {
@@ -23,8 +24,12 @@ impl PlainMessage {
 }
 
 impl Message for PlainMessage {
-    fn message_type(self) -> MessageType {
-        self._type
+    fn message_type(&self) -> &MessageType {
+        &self._type.borrow()
+    }
+
+    fn payload_to_bytes(&self) -> &[u8] {
+        self.payload.as_bytes()
     }
 }
 

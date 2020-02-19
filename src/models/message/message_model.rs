@@ -6,7 +6,9 @@ pub trait Message: Sync + erased_serde::Serialize
     where
         Self: fmt::Debug,
 {
-    fn message_type(self) -> MessageType;
+    fn message_type(&self) -> &MessageType;
+
+    fn payload_to_bytes(&self) -> &[u8];
 }
 
 serialize_trait_object!(Message);

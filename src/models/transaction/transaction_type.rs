@@ -22,7 +22,7 @@
 /// * 0x414C (16716 decimal) - Account Link Transaction.
 /// * 0x8043 (32835 decimal) - Nemesis block.
 /// * 0x8143 (33091 decimal) - Regular block.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[repr(u16)]
 pub enum TransactionType {
     #[serde(rename = "16728")]
@@ -72,7 +72,11 @@ pub enum TransactionType {
     #[serde(rename = "33091")]
     Block = 0x8143,
 }
-
+impl TransactionType {
+    pub fn get_value(&self) -> u16 {
+        0x4154
+    }
+}
 pub(crate) type EntityVersion = i32;
 
 pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;

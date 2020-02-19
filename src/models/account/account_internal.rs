@@ -77,7 +77,7 @@ fn generate_checksum(vec: &Vec<u8>) -> Box<[u8]> {
     // step 1: sha3 hash of (input
     let sha3step_three_hash = Sha3_256::digest(vec.as_slice());
 
-    // step 2: get the first numChecksumBytes bytes of (1)
+    // step 2: get the first NUM_CHECKSUM_BYTES bytes of (1)
     let p = &sha3step_three_hash[0..4];
 
     return Box::from(p.to_vec());
