@@ -1,0 +1,24 @@
+namespace Sirius.Buffers;
+
+table MosaicProperty {
+    mosaicPropertyId:ubyte;
+    value:[uint];
+}
+
+table MosaicDefinitionTransactionBuffer {
+    size: uint;
+    signature: [ubyte];
+    signer: [ubyte];
+    version: uint;
+    type: ushort;
+    max_fee: [uint];
+    deadline:[uint];
+    mosaicNonce:uint;
+    mosaicId:[uint];
+    numOptionalProperties:ubyte;
+    flags:ubyte;
+    divisibility:ubyte;
+    optionalProperties: [MosaicProperty];
+}
+
+root_type MosaicDefinitionTransactionBuffer;

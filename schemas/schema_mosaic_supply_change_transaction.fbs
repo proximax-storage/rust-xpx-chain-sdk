@@ -1,0 +1,16 @@
+namespace Sirius.Buffers;
+
+table MosaicSupplyChangeTransactionBuffer {
+    size: uint;
+    signature: [ubyte];
+    signer: [ubyte];
+    version: uint;
+    type: ushort;
+    max_fee: [uint];
+    deadline:[uint];
+    mosaicId:[uint];
+    direction:ubyte;
+    delta:[uint];
+}
+
+root_type MosaicSupplyChangeTransactionBuffer;

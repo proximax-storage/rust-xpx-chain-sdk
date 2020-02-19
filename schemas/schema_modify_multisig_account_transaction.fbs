@@ -1,0 +1,22 @@
+namespace Sirius.Buffers;
+
+table CosignatoryModificationBuffer {
+    type: ubyte;
+    cosignatoryPublicKey: [ubyte];
+}
+
+table ModifyMultisigAccountTransactionBuffer {
+    size: uint;
+    signature: [ubyte];
+    signer: [ubyte];
+    version: uint;
+    type: ushort;
+    max_fee: [uint];
+    deadline:[uint];
+    minRemovalDelta: byte;
+    minApprovalDelta: byte;
+    numModifications: ubyte;
+    modifications: [CosignatoryModificationBuffer];
+}
+
+root_type ModifyMultisigAccountTransactionBuffer;

@@ -1,0 +1,18 @@
+namespace Sirius.Buffers;
+
+table RegisterNamespaceTransactionBuffer {
+    size: uint;
+    signature: [ubyte];
+    signer: [ubyte];
+    version: uint;
+    type: ushort;
+    max_fee: [uint];
+    deadline:[uint];
+    namespaceType:ubyte;
+    durationParentId:[uint];
+    namespaceId:[uint];
+    namespaceNameSize:ubyte;
+    namespaceName:string;
+}
+
+root_type RegisterNamespaceTransactionBuffer;
