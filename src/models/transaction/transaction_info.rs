@@ -1,12 +1,15 @@
+use std::collections::HashMap;
+
+use fb::FlatBufferBuilder;
+
 use crate::models::account::PublicAccount;
+use crate::models::consts::{SIGNATURE_SIZE, SIGNER_SIZE};
+use crate::models::network::network_internal::extract_network_type;
+use crate::models::network::NetworkType;
 use crate::models::transaction::{deadline::Deadline, TransactionType};
 use crate::models::transaction::EntityVersion;
 use crate::models::Uint64;
-use fb::FlatBufferBuilder;
-use std::collections::HashMap;
-use crate::models::network::NetworkType;
-use crate::models::network::network_internal::extract_network_type;
-use crate::models::consts::{SIGNATURE_SIZE, SIGNER_SIZE};
+
 use super::buffer::sisrius::buffers;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -108,12 +111,12 @@ impl AbstractTransaction {
 
         data.insert("feeV", builder.create_vector(&self.max_fee.to_int_array()).value());
 
-        return data
+        return data;
     }
     pub fn build_vector(&self, builder: &mut FlatBufferBuilder,
-                        vector: &HashMap<&str, fb::UOffsetT>
+                        vector: &HashMap<&str, fb::UOffsetT>,
     ) {
-    let mut transaction = buffers::TransferTransactionBufferBuilder::new( builder);
+        let mut transaction = buffers::TransferTransactionBufferBuilder::new(builder);
         transaction.add_signature(fb::WIPOffset::new(*vector.get("signatureV").unwrap()));
         transaction.add_signer(fb::WIPOffset::new(*vector.get("signerV").unwrap()));
         transaction.add_version(*vector.get("versionV").unwrap());
@@ -121,7 +124,6 @@ impl AbstractTransaction {
         transaction.add_max_fee(fb::WIPOffset::new(*vector.get("feeV").unwrap()));
         transaction.add_deadline(fb::WIPOffset::new(*vector.get("deadlineV").unwrap()));
     }
-
 }
 
 impl core::fmt::Display for AbstractTransaction {

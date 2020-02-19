@@ -4,6 +4,7 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use chrono::Local;
 use chrono::prelude::DateTime;
 use serde::{Serialize, Serializer};
+
 use crate::models::Uint64;
 
 /// It is Friday, 01 April 2016 00:00:00 +0000 UTC (1459468800000 milliseconds since the epoch time).

@@ -5,7 +5,6 @@ use std::mem;
 
 use self::flatbuffers::EndianScalar;
 
-
 #[allow(unused_imports, dead_code)]
 pub mod sisrius {
     use std::cmp::Ordering;

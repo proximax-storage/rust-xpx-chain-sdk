@@ -1,13 +1,15 @@
-use std::fmt;
+use ::std::fmt;
 
 use hyper::service::service_fn;
 use xpx_crypto::Keypair;
 
 use crate::fb;
 use crate::models::account::{Account, Address, PublicAccount};
+use crate::models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE};
 use crate::models::message::{Message, PlainMessage};
 use crate::models::mosaic::Mosaic;
 use crate::models::network::NetworkType;
+use crate::models::transaction::buffer::sisrius::buffers::MosaicBuffer;
 
 use super::{
     AbstractTransaction,
@@ -18,10 +20,6 @@ use super::{
     TRANSFER_VERSION,
 };
 use super::buffer::sisrius::buffers;
-use std::borrow::Borrow;
-use fb::FlatBufferBuilder;
-use crate::models::consts::{TRANSFER_HEADER_SIZE, MOSAIC_ID_SIZE, AMOUNT_SIZE};
-use crate::models::transaction::buffer::sisrius::buffers::MosaicBuffer;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -133,7 +131,7 @@ impl Transaction for TransferTransaction {
         message_buffer.add_payload(payload_vec);
         let message_vec = message_buffer.finish();
 
-        let recipient= self.recipient.to_decode();
+        let recipient = self.recipient.to_decode();
 
         let recipient_vec = _builder.create_vector_direct(&recipient);
 
@@ -157,7 +155,6 @@ impl Transaction for TransferTransaction {
         txn_builder.add_message(message_vec);
         txn_builder.add_mosaics(fb::WIPOffset::new(*mosaic_vec));
         let t = txn_builder.finish();
-
         _builder.finish(t, None);
 
         let buf = _builder.finished_data();

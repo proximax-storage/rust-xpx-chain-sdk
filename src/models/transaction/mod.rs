@@ -15,5 +15,7 @@ pub mod transaction_info;
 pub mod transaction_type;
 pub mod signed_transaction;
 mod buffer;
+mod schema;
+
 
 
