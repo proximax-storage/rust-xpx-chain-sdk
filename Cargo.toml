@@ -36,6 +36,7 @@ chrono = "0.4.10"
 base64 = "0.7.0"
 base32 = "0.4.0"
 ripemd160 = "0.8.0"
+flatbuffers = "0.6.1"
 
 bytes = { version = "0.5", features = ["serde"] }
 
