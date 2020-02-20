@@ -1,14 +1,15 @@
-use std::fmt;
-use std::fmt::Debug;
-use std::sync::Arc;
+use ::std::fmt::Debug;
+use ::std::sync::Arc;
 
-use hyper::client::connect::Connect;
+use hyper::{client::connect::Connect, Method};
 
-use crate::apis::sirius_client::ApiClient;
-use crate::models::account::{AccountInfo, AccountInfoDto};
-use crate::models::transaction::{SignedTransaction, TransactionStatus, TransactionStatusDto};
+use crate::{
+    apis::sirius_client::ApiClient,
+    models::account::{AccountInfo, AccountInfoDto},
+    models::transaction::{SignedTransaction, TransactionStatus, TransactionStatusDto},
+};
 
-use super::request as __internal_request;
+use super::{request as __internal_request, Result};
 
 #[derive(Clone)]
 pub struct TransactionRoutesApiClient<C: Connect> {
@@ -28,22 +29,22 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
 impl<C: Connect> TransactionRoutesApiClient<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
-    pub async fn get_transaction_status(self, hash: &str) -> super::Result<TransactionStatus> {
+    pub async fn get_transaction_status(self, hash: &str) -> Result<TransactionStatus> {
         let mut req = __internal_request::Request::new(
-            hyper::Method::GET,
+            Method::GET,
             "/transaction/{hash}/status".to_string(),
         );
 
         req = req.with_path_param("hash".to_string(), hash.to_string());
 
-        let dto: super::Result<TransactionStatusDto> = req.execute(self.client).await;
+        let dto: Result<TransactionStatusDto> = req.execute(self.client).await;
 
         Ok(dto?.to_struct())
     }
 
-    pub async fn announce_transaction(self, transaction_payload: &SignedTransaction) -> super::Result<AnnounceTransactionInfo> {
+    pub async fn announce_transaction(self, transaction_payload: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
         let mut req = __internal_request::Request::new(
-            hyper::Method::PUT,
+            Method::PUT,
             "/transaction".to_string(),
         );
 

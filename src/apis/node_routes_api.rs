@@ -1,12 +1,18 @@
 use std::fmt::Debug;
 use std::sync::Arc;
 
-use hyper::client::connect::Connect;
+use hyper::{client::connect::Connect, Method};
 
-use crate::apis::sirius_client::ApiClient;
-use crate::models::node::{NodeInfo, NodeTime, NodeTimeDto};
+use crate::{
+    apis::sirius_client::ApiClient,
+    models::node::{
+        NodeInfo,
+        NodeTime,
+        NodeTimeDto,
+    },
+};
 
-use super::request as __internal_request;
+use super::{request as __internal_request, Result};
 
 #[derive(Debug, Clone)]
 pub struct NodeRoutesApiClient<C: Connect> {
@@ -24,20 +30,20 @@ impl<C: Connect> NodeRoutesApiClient<C> {
 impl<C: Connect> NodeRoutesApiClient<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
-    pub async fn get_node_info(self) -> super::Result<NodeInfo> {
+    pub async fn get_node_info(self) -> Result<NodeInfo> {
         let req = __internal_request::Request::new(
-            hyper::Method::GET,
+            Method::GET,
             "/node/info".to_string());
 
         req.execute(self.client).await
     }
 
-    pub async fn get_node_time(self) -> super::Result<NodeTime> {
+    pub async fn get_node_time(self) -> Result<NodeTime> {
         let req = __internal_request::Request::new(
-            hyper::Method::GET,
+            Method::GET,
             "/node/time".to_string());
 
-        let dto: super::Result<NodeTimeDto> = req.execute(self.client).await;
+        let dto: Result<NodeTimeDto> = req.execute(self.client).await;
 
         Ok(dto?.to_struct())
     }

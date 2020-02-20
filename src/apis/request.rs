@@ -1,14 +1,23 @@
 extern crate url;
 
-use std::collections::HashMap;
-use std::sync::Arc;
+use ::std::collections::HashMap;
+use ::std::sync::Arc;
 
-use hyper::{Body, StatusCode};
-use hyper::header::{CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT};
+use hyper::{
+    Body,
+    header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT},
+    StatusCode,
+    Uri};
+
 use serde_json;
 
-use crate::apis::error::{Error, SiriusError};
-use crate::apis::sirius_client::ApiClient;
+use crate::apis::{
+    error::{
+        Error,
+        SiriusError,
+    },
+    sirius_client::ApiClient,
+};
 
 pub(crate) struct Request {
     method: hyper::Method,
@@ -61,7 +70,7 @@ impl Request {
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.
         let mut raw_headers = HashMap::new();
-        let headers: hyper::header::HeaderMap = hyper::header::HeaderMap::new();
+        let headers: HeaderMap = HeaderMap::new();
 
         let mut path = self.path;
         for (k, v) in self.path_params {
@@ -87,7 +96,7 @@ impl Request {
             uri_str += &query_string_str;
         }
 
-        let uri: hyper::Uri = match uri_str.parse()
+        let uri: Uri = match uri_str.parse()
         {
             Err(e) => {
                 return Err(Error::UriError(e));

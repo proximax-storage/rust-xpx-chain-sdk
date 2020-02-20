@@ -16,7 +16,6 @@ pub mod utils;
 pub mod transaction;
 
 pub mod aggregate_transaction_dto;
-pub mod announce_transaction_info_dto;
 pub mod artifact_expiry_receipt_dto;
 pub mod balance_change_receipt_dto;
 pub mod config_dto;

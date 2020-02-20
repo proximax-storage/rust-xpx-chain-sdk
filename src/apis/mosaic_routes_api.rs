@@ -1,13 +1,25 @@
-use std::fmt::Debug;
-use std::sync::Arc;
+use ::std::fmt::Debug;
+use ::std::sync::Arc;
 
-use hyper::client::connect::Connect;
+use hyper::{client::connect::Connect, Method};
 
-use crate::apis::sirius_client::ApiClient;
-use crate::models::Id;
-use crate::models::mosaic::{Mosaic, MosaicId, MosaicIds, MosaicInfo, MosaicInfoDto, MosaicNames, MosaicNamesDto};
+use crate::{
+    apis::sirius_client::ApiClient,
+    models::{
+        Id,
+        mosaic::{
+            Mosaic,
+            MosaicId,
+            MosaicIds,
+            MosaicInfo,
+            MosaicInfoDto,
+            MosaicNames,
+            MosaicNamesDto,
+        },
+    },
+};
 
-use super::request as __internal_request;
+use super::{request as __internal_request, Result};
 
 #[derive(Debug, Clone)]
 pub struct MosaicRoutesApiClient<C: Connect> {
@@ -25,23 +37,23 @@ impl<C: Connect> MosaicRoutesApiClient<C> {
 impl<C: Connect> MosaicRoutesApiClient<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
-    pub async fn get_mosaic_info(self, mosaic_id: MosaicId) -> super::Result<MosaicInfo> {
+    pub async fn get_mosaic_info(self, mosaic_id: MosaicId) -> Result<MosaicInfo> {
         let mut req = __internal_request::Request::new(
-            hyper::Method::GET,
+            Method::GET,
             "/mosaic/{mosaicId}".to_string(),
         );
 
         req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_string());
 
-        let dto: super::Result<MosaicInfoDto> = req.execute(self.client).await;
+        let dto: Result<MosaicInfoDto> = req.execute(self.client).await;
 
         Ok(dto?.to_struct()?)
     }
 
-    pub async fn get_mosaics_info(self, mosaic_ids: Vec<MosaicId>) -> super::Result<Vec<MosaicInfo>> {
+    pub async fn get_mosaics_info(self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicInfo>> {
         let mosaics_ids = MosaicIds::from(mosaic_ids);
         let mut req = __internal_request::Request::new(
-            hyper::Method::POST,
+            Method::POST,
             "/mosaic".to_string(),
         );
 
@@ -58,11 +70,11 @@ impl<C: Connect> MosaicRoutesApiClient<C> where
         Ok(mosaics_info)
     }
 
-    pub async fn get_mosaics_names(self, mosaic_ids: Vec<MosaicId>) -> super::Result<Vec<MosaicNames>> {
+    pub async fn get_mosaics_names(self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicNames>> {
         let mosaics_ids = MosaicIds::from(mosaic_ids);
 
         let mut req = __internal_request::Request::new(
-            hyper::Method::POST,
+            Method::POST,
             "/mosaic/names".to_string(),
         );
 

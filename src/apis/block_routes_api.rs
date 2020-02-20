@@ -1,13 +1,18 @@
-use std::fmt::Debug;
-use std::sync::Arc;
+use ::std::fmt::Debug;
+use ::std::sync::Arc;
 
-use hyper::client::connect::Connect;
+use hyper::{client::connect::Connect, Method};
 
-use crate::apis::sirius_client::ApiClient;
-use crate::models::blockchain::{BlockInfo, BlockInfoDto};
-use crate::models::transaction::TransactionInfoDto;
+use crate::models::{
+    blockchain::{BlockInfo, BlockInfoDto},
+    transaction::TransactionInfoDto,
+};
 
-use super::request as __internal_request;
+use super::{
+    request as __internal_request,
+    Result,
+    sirius_client::ApiClient,
+};
 
 #[derive(Debug, Clone)]
 pub struct BlockRoutesApiClient<C: Connect> {
@@ -26,23 +31,23 @@ impl<C: Connect> BlockRoutesApiClient<C>
     where
         C: Clone + Send + Sync + Debug + 'static
 {
-    pub async fn get_block_by_height(self, height: u64) -> super::Result<BlockInfo> {
+    pub async fn get_block_by_height(self, height: u64) -> Result<BlockInfo> {
         assert_ne!(height, 0, "Block height should not be zero.");
 
         let mut req = __internal_request::Request::new(
-            hyper::Method::GET,
+            Method::GET,
             "/block/{height}".to_string(),
         );
 
         req = req.with_path_param("height".to_string(), height.to_string());
 
-        let dto: super::Result<BlockInfoDto> = req.execute(self.client).await;
+        let dto: Result<BlockInfoDto> = req.execute(self.client).await;
 
         Ok(dto?.to_struct()?)
     }
 
     pub async fn get_blocks_by_height_with_limit(
-        self, height: u64, mut limit: i32) -> super::Result<Vec<BlockInfo>> {
+        self, height: u64, mut limit: i32) -> Result<Vec<BlockInfo>> {
         assert_ne!(height, 0, "Block height should not be zero.");
 
         assert_ne!(limit, 0, "Limit should not be zero.");
@@ -56,7 +61,7 @@ impl<C: Connect> BlockRoutesApiClient<C>
         }
 
         let mut req = __internal_request::Request::new(
-            hyper::Method::GET,
+            Method::GET,
             "/blocks/{height}/limit/{limit}".to_string(),
         );
 
@@ -76,9 +81,9 @@ impl<C: Connect> BlockRoutesApiClient<C>
     }
 
     pub async fn get_block_transactions(
-        self, height: u64, page_size: Option<i32>, id: Option<&str>) -> super::Result<()> {
+        self, height: u64, page_size: Option<i32>, id: Option<&str>) -> Result<()> {
         let mut req = __internal_request::Request::new(
-            hyper::Method::GET,
+            Method::GET,
             "/block/{height}/transactions".to_string(),
         );
 
@@ -90,7 +95,7 @@ impl<C: Connect> BlockRoutesApiClient<C>
         }
         req = req.with_path_param("height".to_string(), height.to_string());
 
-        let _dto: super::Result<Vec<TransactionInfoDto>> = req.execute(self.client).await;
+        let _dto: Result<Vec<TransactionInfoDto>> = req.execute(self.client).await;
 
         unimplemented!()
     }

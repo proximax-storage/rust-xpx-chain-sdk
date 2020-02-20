@@ -1,19 +1,19 @@
-use std::fmt::Debug;
-use std::sync::Arc;
+use ::std::fmt::Debug;
+use ::std::sync::Arc;
 
-use hyper::Client;
-use hyper::client::connect::Connect;
+use hyper::{Client, client::connect::Connect};
 
-use crate::apis::chain_routes_api::ChainRoutesApiClient;
-use crate::apis::mosaic_routes_api::MosaicRoutesApiClient;
-use crate::apis::node_routes_api::NodeRoutesApiClient;
-use crate::apis::transaction_routes_api::TransactionRoutesApiClient;
-
-use super::account_routes_api::AccountRoutesApiClient;
-use super::block_routes_api::BlockRoutesApiClient;
+use super::{
+    account_routes_api::AccountRoutesApiClient,
+    block_routes_api::BlockRoutesApiClient,
+    chain_routes_api::ChainRoutesApiClient,
+    mosaic_routes_api::MosaicRoutesApiClient,
+    node_routes_api::NodeRoutesApiClient,
+    transaction_routes_api::TransactionRoutesApiClient,
+};
 
 #[derive(Clone)]
-pub struct SiriusClient<C: hyper::client::connect::Connect> {
+pub struct SiriusClient<C: Connect> {
     pub account: Box<AccountRoutesApiClient<C>>,
     pub block: Box<BlockRoutesApiClient<C>>,
     pub chain: Box<ChainRoutesApiClient<C>>,
@@ -22,10 +22,10 @@ pub struct SiriusClient<C: hyper::client::connect::Connect> {
     pub transaction: Box<TransactionRoutesApiClient<C>>,
 }
 
-impl<C: hyper::client::connect::Connect> SiriusClient<C> where
+impl<C: Connect> SiriusClient<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
-    pub fn new(url: &'static str, client: hyper::client::Client<C>) -> Box<Self>
+    pub fn new(url: &'static str, client: Client<C>) -> Box<Self>
         where
             C: Clone + Send + Sync + Debug + 'static
     {
@@ -45,17 +45,17 @@ impl<C: hyper::client::connect::Connect> SiriusClient<C> where
 }
 
 #[derive(Debug)]
-pub struct ApiClient<C: hyper::client::connect::Connect> {
+pub struct ApiClient<C: Connect> {
     pub base_path: &'static str,
-    pub client: hyper::client::Client<C>,
+    pub client: Client<C>,
     pub user_agent: Option<String>,
 }
 
-impl<C: hyper::client::connect::Connect> ApiClient<C>
+impl<C: Connect> ApiClient<C>
     where
         C: Send + Sync,
 {
-    pub fn from_url(url: &'static str, client: hyper::client::Client<C>) -> Self
+    pub fn from_url(url: &'static str, client: Client<C>) -> Self
         where
             C: Connect + Clone,
     {

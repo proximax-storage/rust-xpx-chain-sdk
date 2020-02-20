@@ -2,8 +2,6 @@ use ::serde_json::Value;
 
 use self::error::Error;
 
-//pub(super) use self::sirius_client::ApiClient;
-
 mod error;
 mod request;
 mod account_routes_api;
