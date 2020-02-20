@@ -12,6 +12,7 @@ use hyper::Client;
 
 #[tokio::main]
 async fn main() {
+
     let node = "http://bctestnetswap.xpxsirius.io:3000";
 
     let client = SiriusClient::new(node, Client::new());
@@ -32,7 +33,7 @@ async fn main() {
     let  transfer_transaction = TransferTransaction::new(
         deadline,
         recipient,
-        vec![Mosaic::xpx_relative(20)],
+        vec![Mosaic::xpx(1)],
         Box::new(message),
         network_type,
     );
@@ -54,10 +55,10 @@ async fn main() {
         }
     };
 
-    println!("Hash: {}", sig_tx.clone().hash);
+    println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
+    println!("Hash: \t\t{}", sig_tx.clone().hash.to_uppercase());
 
-    let response = client.transaction.announce_transaction(
-        &sig_tx).await;
+    let response = client.transaction.announce_transaction(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

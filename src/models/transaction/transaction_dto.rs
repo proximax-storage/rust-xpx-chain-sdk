@@ -2,6 +2,9 @@ use crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto;
 use crate::models::message::MessageDto;
 use crate::models::mosaic::MosaicDto;
 use crate::models::uint_64::Uint64Dto;
+use crate::models::transaction::{TransactionStatus, deadline};
+use crate::models::transaction::deadline::{Deadline, BlockchainTimestamp};
+use chrono::format::Numeric::Timestamp;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionDto {
@@ -71,7 +74,8 @@ pub(crate) struct TransactionMetaDto {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-struct TransactionStatusDto {
+#[serde(rename_all = "camelCase")]
+pub struct TransactionStatusDto {
     #[serde(rename = "group", skip_serializing_if = "Option::is_none")]
     group: Option<String>,
     #[serde(rename = "status")]
@@ -85,14 +89,23 @@ struct TransactionStatusDto {
 }
 
 impl TransactionStatusDto {
-    pub fn new(status: String) -> TransactionStatusDto {
-        TransactionStatusDto {
-            group: None,
-            status,
-            hash: None,
-            deadline: None,
-            height: None,
-        }
+    pub fn to_struct(&self) -> TransactionStatus {
+        let dto = &self.to_owned();
+
+        let deadline = loop {
+            match &dto.deadline {
+                Some(d) => break BlockchainTimestamp::new(d.to_struct().0 as i64),
+                _ => {}
+            }
+        };
+
+        TransactionStatus::new(
+            dto.group.clone().unwrap(),
+            dto.status.clone(),
+            dto.hash.clone().unwrap(),
+            Deadline::from(deadline),
+            dto.height.clone().unwrap().to_struct(),
+        )
     }
 }
 

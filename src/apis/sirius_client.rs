@@ -10,6 +10,7 @@ use crate::apis::node_routes_api::NodeRoutesApiClient;
 use super::account_routes_api::AccountRoutesApiClient;
 use super::block_routes_api::BlockRoutesApiClient;
 use crate::apis::transaction_routes_api::TransactionRoutesApiClient;
+use hyper::Client;
 
 #[derive(Clone)]
 pub struct SiriusClient<C: hyper::client::connect::Connect> {

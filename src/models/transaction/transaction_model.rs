@@ -5,21 +5,8 @@ use xpx_crypto::Keypair;
 
 use crate::models::account::Account;
 use crate::models::transaction::{AbstractTransaction, SignedTransaction, TransactionType};
-
-#[derive(Debug, PartialEq, Serialize)]
-pub struct TransactionPayload {
-    /// The transaction payload.
-    #[serde(rename = "payload", skip_serializing_if = "Option::is_none")]
-    pub payload: Option<String>,
-}
-
-impl TransactionPayload {
-    pub fn new() -> TransactionPayload {
-        TransactionPayload {
-            payload: None,
-        }
-    }
-}
+use crate::models::transaction::deadline::{Deadline, Timestamp};
+use crate::models::Uint64;
 
 pub trait Transaction: Sync + erased_serde::Serialize
     where
@@ -57,6 +44,36 @@ impl<'a> PartialEq for &'a dyn Transaction {
 }
 
 impl fmt::Display for dyn Transaction {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+               serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TransactionStatus {
+    pub group: String,
+    pub status: String,
+    pub hash: String,
+    pub deadline: Deadline,
+    pub height: Uint64,
+}
+impl TransactionStatus {
+    pub fn new(group: String, status: String, hash: String, deadline: Deadline, height: Uint64,) -> Self {
+
+        TransactionStatus{
+            group,
+            status,
+            hash,
+            deadline,
+            height
+        }
+    }
+}
+
+impl fmt::Display for TransactionStatus {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}",
                serde_json::to_string_pretty(&self).unwrap_or_default()
