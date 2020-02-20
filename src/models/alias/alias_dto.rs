@@ -12,7 +12,7 @@ pub struct AliasDto {
 }
 
 impl AliasDto {
-    pub fn new(_type: u16) -> AliasDto {
+    pub fn new(_type: u16) -> Self {
         AliasDto {
             _type,
             mosaic_id: None,

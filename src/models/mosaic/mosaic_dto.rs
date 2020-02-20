@@ -1,9 +1,9 @@
-use crate::models::{uint_64::Uint64Dto, Uint64};
-use crate::models::mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE, MosaicNames};
-use crate::Result;
-use crate::models::mosaic::mosaic_internal::{MosaicPropertyId, has_bits};
-use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
+use crate::models::{Uint64, uint_64::Uint64Dto};
 use crate::models::field_dto::FieldDto;
+use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
+use crate::models::mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE};
+use crate::models::mosaic::mosaic_internal::{has_bits, MosaicPropertyId};
+use crate::Result;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicDto {
@@ -38,7 +38,7 @@ impl MosaicInfoDto {
 
         let mosaic_id = MosaicId::from(self.mosaic.mosaic_id.to_struct());
 
-        let properties =  Self::mosaic_properties(&self.mosaic.properties)?;
+        let properties = Self::mosaic_properties(&self.mosaic.properties)?;
 
         Ok(MosaicInfo::new(
             mosaic_id,
@@ -51,11 +51,11 @@ impl MosaicInfoDto {
     }
 
     fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> Result<MosaicProperties> {
-        let mut flags: Uint64  = Uint64::default();
+        let mut flags: Uint64 = Uint64::default();
         let mut divisibility: u8 = 0;
         let mut duration: Uint64 = Uint64::default();
 
-        for property  in dto {
+        for property in dto {
             match property.id {
                 0 => flags = property.value.to_struct(),
                 1 => divisibility = property.value.to_struct().0 as u8,
@@ -158,7 +158,7 @@ pub(crate) struct MosaicNamesDto {
     names: Vec<String>,
 }
 
-impl MosaicNamesDto{
+impl MosaicNamesDto {
     pub fn to_struct(&self) -> MosaicNames {
         MosaicNames::new(
             MosaicId::from(self.mosaic_id.to_struct()),

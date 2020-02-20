@@ -6,7 +6,7 @@ pub struct VerifiableEntityDto {
 }
 
 impl VerifiableEntityDto {
-    pub fn new(signature: String) -> VerifiableEntityDto {
+    pub fn new(signature: String) -> Self {
         VerifiableEntityDto {
             signature,
         }

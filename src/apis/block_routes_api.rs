@@ -15,11 +15,9 @@ pub struct BlockRoutesApiClient<C: Connect> {
 }
 
 impl<C: Connect> BlockRoutesApiClient<C> {
-    pub fn new(client: Arc<ApiClient<C>>) -> BlockRoutesApiClient<C> {
-        let clone = client.clone();
-
+    pub fn new(client: Arc<ApiClient<C>>) -> Self {
         BlockRoutesApiClient {
-            client: clone,
+            client,
         }
     }
 }

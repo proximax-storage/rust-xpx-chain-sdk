@@ -9,7 +9,7 @@ pub struct ConfigDto {
 }
 
 impl ConfigDto {
-    pub fn new(height: Vec<i32>, network_config: String, supported_entity_versions: String) -> ConfigDto {
+    pub fn new(height: Vec<i32>, network_config: String, supported_entity_versions: String) -> Self {
         ConfigDto {
             height,
             network_config,

@@ -9,7 +9,7 @@ pub struct MerkleProofInfoDto {
 }
 
 impl MerkleProofInfoDto {
-    pub fn new(payload: MerkleProofInfo, _type: String) -> MerkleProofInfoDto {
+    pub fn new(payload: MerkleProofInfo, _type: String) -> Self {
         MerkleProofInfoDto {
             payload,
             _type,

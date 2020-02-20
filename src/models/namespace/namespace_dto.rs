@@ -1,5 +1,5 @@
-use crate::models::metadata_dto::{MetadataTypeEnum, MetadataModificationDto};
 use crate::models::field_dto::FieldDto;
+use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
 use crate::models::uint_64::Uint64Dto;
 
 /// NamespaceTypeEnum : The namespace type: * 0 -  Root namespace. * 1 -  Subnamespace.

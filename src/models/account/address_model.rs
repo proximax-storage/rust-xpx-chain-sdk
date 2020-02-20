@@ -106,10 +106,9 @@ impl Address {
     }
 
     pub fn to_decode(&self) -> Vec<u8> {
-        base32::decode(RFC4648{ padding: true }, &self.address).unwrap()
+        base32::decode(RFC4648 { padding: true }, &self.address).unwrap()
     }
-
-    }
+}
 
 impl core::fmt::Display for Address {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {

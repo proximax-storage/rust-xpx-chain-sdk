@@ -60,15 +60,15 @@ pub struct TransactionStatus {
     pub deadline: Deadline,
     pub height: Uint64,
 }
-impl TransactionStatus {
-    pub fn new(group: String, status: String, hash: String, deadline: Deadline, height: Uint64,) -> Self {
 
-        TransactionStatus{
+impl TransactionStatus {
+    pub fn new(group: String, status: String, hash: String, deadline: Deadline, height: Uint64) -> Self {
+        TransactionStatus {
             group,
             status,
             hash,
             deadline,
-            height
+            height,
         }
     }
 }

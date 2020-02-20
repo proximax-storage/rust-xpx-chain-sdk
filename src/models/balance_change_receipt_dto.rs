@@ -20,7 +20,7 @@ pub struct BalanceChangeReceiptDto {
 
 impl BalanceChangeReceiptDto {
     /// The invisible state change changed an account balance.
-    pub fn new(version: i32, _type: ReceiptTypeEnum, account: String, mosaic_id: Uint64Dto, amount: Uint64Dto) -> BalanceChangeReceiptDto {
+    pub fn new(version: i32, _type: ReceiptTypeEnum, account: String, mosaic_id: Uint64Dto, amount: Uint64Dto) -> Self {
         BalanceChangeReceiptDto {
             version,
             _type,

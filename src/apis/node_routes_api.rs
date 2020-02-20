@@ -14,11 +14,9 @@ pub struct NodeRoutesApiClient<C: Connect> {
 }
 
 impl<C: Connect> NodeRoutesApiClient<C> {
-    pub fn new(client: Arc<ApiClient<C>>) -> NodeRoutesApiClient<C> {
-        let clone = client.clone();
-
+    pub fn new(client: Arc<ApiClient<C>>) -> Self {
         NodeRoutesApiClient {
-            client: clone,
+            client,
         }
     }
 }

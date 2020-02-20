@@ -1,18 +1,18 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
+use hyper::Client;
+
+use xpx_chain_sdk::apis::sirius_client::SiriusClient;
 use xpx_chain_sdk::models::account::{Account, Address};
 use xpx_chain_sdk::models::message::PlainMessage;
 use xpx_chain_sdk::models::mosaic::Mosaic;
 use xpx_chain_sdk::models::network::PUBLIC_TEST;
-use xpx_chain_sdk::models::transaction::TransferTransaction;
 use xpx_chain_sdk::models::transaction::deadline::Deadline;
-use xpx_chain_sdk::apis::sirius_client::SiriusClient;
-use hyper::Client;
+use xpx_chain_sdk::models::transaction::TransferTransaction;
 
 #[tokio::main]
 async fn main() {
-
     let node = "http://bctestnetswap.xpxsirius.io:3000";
 
     let client = SiriusClient::new(node, Client::new());
@@ -30,7 +30,7 @@ async fn main() {
 
     let message = PlainMessage::new("Transfer From ProximaX Rust SDK");
 
-    let  transfer_transaction = TransferTransaction::new(
+    let transfer_transaction = TransferTransaction::new(
         deadline,
         recipient,
         vec![Mosaic::xpx(1)],
@@ -49,8 +49,8 @@ async fn main() {
         transfer_tx, "56D112C98F7A7E34D1AEDC4BD01BC06CA2276DD546A93E36690B785E82439CA9".to_owned());
 
     let sig_tx = loop {
-        match  &sig_transaction {
-            Ok(sig) => break sig ,
+        match &sig_transaction {
+            Ok(sig) => break sig,
             Err(err) => eprintln!("SIG_ERROR: {:?}", err),
         }
     };

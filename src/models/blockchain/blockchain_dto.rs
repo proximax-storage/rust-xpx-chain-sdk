@@ -42,7 +42,7 @@ pub(crate) struct BlockchainUpgradeBodyDto {
 }
 
 impl BlockchainUpgradeBodyDto {
-    pub fn new(upgrade_period: Uint64Dto, new_block_chain_version: Uint64Dto) -> BlockchainUpgradeBodyDto {
+    pub fn new(upgrade_period: Uint64Dto, new_block_chain_version: Uint64Dto) -> Self {
         BlockchainUpgradeBodyDto {
             upgrade_period,
             new_block_chain_version,
@@ -57,7 +57,7 @@ pub(crate) struct BlockchainUpgradeDto {
 }
 
 impl BlockchainUpgradeDto {
-    pub fn new(blockchain_upgrade: UpgradeDto) -> BlockchainUpgradeDto {
+    pub fn new(blockchain_upgrade: UpgradeDto) -> Self {
         BlockchainUpgradeDto {
             blockchain_upgrade,
         }

@@ -5,7 +5,7 @@ pub struct ServerDto {
 }
 
 impl ServerDto {
-    pub fn new(server_info: ServerInfoDto) -> ServerDto {
+    pub fn new(server_info: ServerInfoDto) -> Self {
         ServerDto {
             server_info,
         }
@@ -23,7 +23,7 @@ pub struct ServerInfoDto {
 }
 
 impl ServerInfoDto {
-    pub fn new(rest_version: String, sdk_version: String) -> ServerInfoDto {
+    pub fn new(rest_version: String, sdk_version: String) -> Self {
         ServerInfoDto {
             rest_version,
             sdk_version,

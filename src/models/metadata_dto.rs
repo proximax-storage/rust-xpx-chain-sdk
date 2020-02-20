@@ -31,7 +31,7 @@ pub struct MetadataDto {
 }
 
 impl MetadataDto {
-    pub fn new(metadata_type: i32, fields: Vec<FieldDto>) -> MetadataDto {
+    pub fn new(metadata_type: i32, fields: Vec<FieldDto>) -> Self {
         MetadataDto {
             metadata_type,
             fields,
@@ -46,7 +46,7 @@ pub struct MetadataIds {
 }
 
 impl MetadataIds {
-    pub fn new() -> MetadataIds {
+    pub fn new() -> Self {
         MetadataIds {
             metadata_ids: None,
         }
@@ -66,7 +66,7 @@ pub struct MetadataModificationDto {
 }
 
 impl MetadataModificationDto {
-    pub fn new(modification_type: MetadataModificationTypeEnum, key: String, value: String) -> MetadataModificationDto {
+    pub fn new(modification_type: MetadataModificationTypeEnum, key: String, value: String) -> Self {
         MetadataModificationDto {
             modification_type,
             key,

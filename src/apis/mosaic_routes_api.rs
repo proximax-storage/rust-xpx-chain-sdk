@@ -15,11 +15,9 @@ pub struct MosaicRoutesApiClient<C: Connect> {
 }
 
 impl<C: Connect> MosaicRoutesApiClient<C> {
-    pub fn new(client: Arc<ApiClient<C>>) -> MosaicRoutesApiClient<C> {
-        let clone = client.clone();
-
+    pub fn new(client: Arc<ApiClient<C>>) -> Self {
         MosaicRoutesApiClient {
-            client: clone,
+            client,
         }
     }
 }

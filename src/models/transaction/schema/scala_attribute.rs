@@ -15,7 +15,7 @@ impl ScalarAttribute {
             abs_schema_attribute: AbstractSchemaAttribute {
                 name: name.parse().unwrap()
             },
-            size
+            size,
         }
     }
 }

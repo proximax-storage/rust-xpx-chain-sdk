@@ -8,7 +8,7 @@ pub struct MerkleProofInfo {
 }
 
 impl MerkleProofInfo {
-    pub fn new() -> MerkleProofInfo {
+    pub fn new() -> Self {
         MerkleProofInfo {
             merkle_path: None,
         }

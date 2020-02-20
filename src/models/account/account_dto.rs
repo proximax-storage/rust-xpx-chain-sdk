@@ -9,7 +9,6 @@ struct AccountMetaDto {}
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct AccountDto {
-    /// The account unique address in hexadecimal. 
     address: String,
     address_height: Uint64Dto,
     /// The public key of an account can be used to verify signatures of the account. Only accounts that have already published a transaction have a public key assigned to the account. Otherwise, the field is null. 

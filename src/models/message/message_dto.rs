@@ -7,7 +7,7 @@ pub struct MessageDto {
 }
 
 impl MessageDto {
-    pub fn new(_type: u8, payload: String) -> MessageDto {
+    pub fn new(_type: u8, payload: String) -> Self {
         MessageDto {
             _type,
             payload,

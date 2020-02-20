@@ -7,7 +7,7 @@ pub struct MerklePathItem {
 }
 
 impl MerklePathItem {
-    pub fn new() -> MerklePathItem {
+    pub fn new() -> Self {
         MerklePathItem {
             position: None,
             hash: None,

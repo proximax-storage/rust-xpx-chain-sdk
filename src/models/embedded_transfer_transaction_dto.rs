@@ -1,6 +1,6 @@
-use crate::models::uint_64::Uint64Dto;
 use crate::models::message::MessageDto;
 use crate::models::mosaic::MosaicDto;
+use crate::models::uint_64::Uint64Dto;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmbeddedTransferTransactionDto {

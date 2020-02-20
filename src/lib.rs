@@ -3,6 +3,7 @@ extern crate chrono;
 extern crate erased_serde;
 #[macro_use]
 extern crate failure;
+extern crate flatbuffers as fb;
 extern crate regex;
 #[macro_use]
 extern crate serde_derive;
@@ -12,7 +13,6 @@ extern crate serde_json;
 extern crate std;
 extern crate url;
 extern crate xpx_crypto;
-extern crate flatbuffers as fb;
 
 pub mod apis;
 pub mod models;

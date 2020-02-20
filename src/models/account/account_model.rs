@@ -1,8 +1,8 @@
+use crate::models::transaction::{SignedTransaction, Transaction};
 use crate::models::utils::{is_hex, vec_u8_to_hex};
 use crate::Result;
 
 use super::PublicAccount;
-use crate::models::transaction::{Transaction, SignedTransaction};
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
 #[derive(Debug, Clone)]

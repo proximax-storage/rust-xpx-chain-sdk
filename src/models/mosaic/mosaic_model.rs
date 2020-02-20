@@ -86,14 +86,14 @@ impl From<Vec<MosaicId>> for MosaicIds {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicNames {
-   pub mosaic_id: MosaicId,
+    pub mosaic_id: MosaicId,
     /// The mosaic linked namespace names.
-   pub names: Vec<String>,
+    pub names: Vec<String>,
 }
 
 impl MosaicNames {
     pub fn new(mosaic_id: MosaicId, names: Vec<String>) -> Self {
-        MosaicNames{ mosaic_id, names }
+        MosaicNames { mosaic_id, names }
     }
 }
 

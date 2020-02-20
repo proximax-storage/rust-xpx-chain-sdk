@@ -1,5 +1,5 @@
-use crate::models::uint_64::Uint64Dto;
 use crate::models::multisig::CosignatoryModificationDto;
+use crate::models::uint_64::Uint64Dto;
 
 /// MultisigModificationTypeEnum : The type of the modification: * 0 - Add cosignatory. * 1 - Remove cosignatory.
 /// The type of the modification: * 0 - Add cosignatory. * 1 - Remove cosignatory.

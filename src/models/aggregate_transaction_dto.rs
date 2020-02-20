@@ -1,7 +1,7 @@
+use crate::models::multisig::CosignatureDto;
 use crate::models::uint_64::Uint64Dto;
 
 use super::transaction::EmbeddedTransactionInfoDto;
-use crate::models::multisig::CosignatureDto;
 
 /// AggregateTransactionDto : Transaction that combines multiple transactions together.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

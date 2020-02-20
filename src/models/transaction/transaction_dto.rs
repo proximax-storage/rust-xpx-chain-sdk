@@ -1,10 +1,11 @@
+use chrono::format::Numeric::Timestamp;
+
 use crate::models::blockchain::EmbeddedBlockchainUpgradeTransactionDto;
 use crate::models::message::MessageDto;
 use crate::models::mosaic::MosaicDto;
+use crate::models::transaction::{deadline, TransactionStatus};
+use crate::models::transaction::deadline::{BlockchainTimestamp, Deadline};
 use crate::models::uint_64::Uint64Dto;
-use crate::models::transaction::{TransactionStatus, deadline};
-use crate::models::transaction::deadline::{Deadline, BlockchainTimestamp};
-use chrono::format::Numeric::Timestamp;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionDto {
@@ -33,7 +34,7 @@ pub struct TransactionHashes {
 }
 
 impl TransactionHashes {
-    pub fn new() -> TransactionHashes {
+    pub fn new() -> Self {
         TransactionHashes {
             hashes: None,
         }
@@ -48,7 +49,7 @@ pub struct TransactionIds {
 }
 
 impl TransactionIds {
-    pub fn new() -> TransactionIds {
+    pub fn new() -> Self {
         TransactionIds {
             transaction_ids: None,
         }
@@ -122,7 +123,7 @@ pub struct TransferTransactionBodyDto {
 }
 
 impl TransferTransactionBodyDto {
-    pub fn new(recipient: String, mosaics: Vec<MosaicDto>, message: MessageDto) -> TransferTransactionBodyDto {
+    pub fn new(recipient: String, mosaics: Vec<MosaicDto>, message: MessageDto) -> Self {
         TransferTransactionBodyDto {
             recipient,
             mosaics,

@@ -4,25 +4,24 @@ use xpx_crypto::Keypair;
 
 use crate::fb;
 use crate::models::account::{Account, Address, PublicAccount};
-use crate::models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE,
-                            SIZE_SIZE, SIGNER_SIZE, SIGNATURE_SIZE};
+use crate::models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, SIGNATURE_SIZE,
+                            SIGNER_SIZE, SIZE_SIZE, TRANSFER_HEADER_SIZE};
 use crate::models::message::{Message, PlainMessage};
 use crate::models::mosaic::Mosaic;
 use crate::models::network::NetworkType;
+use crate::models::transaction::transaction_internal::sign_transaction;
 
 use super::{
     AbstractTransaction,
+    buffer::sisrius::buffers::MosaicBuffer,
     deadline::Deadline,
+    schema::transfer_transaction_schema,
     SignedTransaction,
     Transaction,
     TransactionType,
     TRANSFER_VERSION,
-    buffer::sisrius::buffers::MosaicBuffer,
-    schema::transfer_transaction_schema
 };
-
 use super::buffer::sisrius::buffers;
-use crate::models::transaction::transaction_internal::sign_transaction;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -162,7 +161,7 @@ impl Transaction for TransferTransaction {
 
         let mut buf = _builder.finished_data();
 
-        transfer_transaction_schema().serialize( &mut Vec::from(buf))
+        transfer_transaction_schema().serialize(&mut Vec::from(buf))
     }
 
     fn generate_embedded_bytes(&self) -> Vec<u8> {

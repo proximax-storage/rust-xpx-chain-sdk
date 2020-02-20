@@ -19,7 +19,7 @@ pub struct ContractDto {
 }
 
 impl ContractDto {
-    pub fn new(multisig: String, multisig_address: String, start: Vec<i32>, duration: Vec<i32>, hash: String, customers: Vec<String>, executors: Vec<String>, verifiers: Vec<String>) -> ContractDto {
+    pub fn new(multisig: String, multisig_address: String, start: Vec<i32>, duration: Vec<i32>, hash: String, customers: Vec<String>, executors: Vec<String>, verifiers: Vec<String>) -> Self {
         ContractDto {
             multisig,
             multisig_address,
@@ -40,7 +40,7 @@ pub struct ContractInfoDto {
 }
 
 impl ContractInfoDto {
-    pub fn new(contract: crate::models::contract::ContractDto) -> ContractInfoDto {
+    pub fn new(contract: crate::models::contract::ContractDto) -> Self {
         ContractInfoDto {
             contract,
         }

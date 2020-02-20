@@ -4,9 +4,9 @@ pub use self::constants::*;
 pub use self::scala_attribute::*;
 pub use self::schema::*;
 pub use self::schema_attribute::*;
+pub use self::schema_common_definition::*;
 pub use self::table_array_attribute::*;
 pub use self::table_attribute::*;
-pub use self::schema_common_definition::*;
 pub use self::transaction_transafer_schema::*;
 
 mod schema;

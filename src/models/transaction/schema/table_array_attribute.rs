@@ -15,14 +15,13 @@ impl TableArrayAttribute {
             abs_schema_attribute: AbstractSchemaAttribute {
                 name: name.parse().unwrap()
             },
-            schema
+            schema,
         }
     }
 }
 
 impl SchemaAttribute for TableArrayAttribute {
     fn serialize(&mut self, buffer: &mut [u8], position: usize, inner_object_position: usize) -> Vec<u8> {
-
         let mut abs = &mut self.abs_schema_attribute;
 
         let mut result_bytes: Vec<u8> = Vec::new();
@@ -31,7 +30,7 @@ impl SchemaAttribute for TableArrayAttribute {
 
         for i in 0..array_length {
             let start_array_position: usize = abs.find_object_array_element_start_position(
-                inner_object_position, position, buffer, i
+                inner_object_position, position, buffer, i,
             );
 
             for j in 0..self.schema.len() {

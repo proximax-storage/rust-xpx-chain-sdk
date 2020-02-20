@@ -14,7 +14,9 @@ pub struct AccountInfo {
     /// The block height when the address was published.
     pub address_height: Uint64,
 
-    /// The public key of the account.
+    /// The public key of an account can be used to verify signatures of the account.
+    /// Only accounts that have already published a transaction have a public key assigned to the account.
+    /// Otherwise, the field is 0000000000000000000000000000000000000000000000000000000000000000.
     pub public_key: String,
 
     /// The block height when the public key was first published.

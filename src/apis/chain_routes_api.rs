@@ -20,11 +20,9 @@ pub struct ChainRoutesApiClient<C: Connect> {
 }
 
 impl<C: Connect> ChainRoutesApiClient<C> {
-    pub fn new(client: Arc<ApiClient<C>>) -> ChainRoutesApiClient<C> {
-        let clone = client.clone();
-
+    pub fn new(client: Arc<ApiClient<C>>) -> Self {
         ChainRoutesApiClient {
-            client: clone,
+            client,
         }
     }
 }

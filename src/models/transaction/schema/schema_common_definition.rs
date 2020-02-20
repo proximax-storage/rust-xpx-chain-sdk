@@ -1,4 +1,4 @@
-use super::{ArrayAttribute, SIZEOF_INT, SIZEOF_SHORT, ScalarAttribute, SIZEOF_BYTE, SchemaAttribute};
+use super::{ArrayAttribute, ScalarAttribute, SchemaAttribute, SIZEOF_BYTE, SIZEOF_INT, SIZEOF_SHORT};
 
 pub fn schema_common_definition() -> Vec<Box<dyn SchemaAttribute>> {
     vec![

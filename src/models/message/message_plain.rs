@@ -1,5 +1,6 @@
-use crate::models::message::{Message, MessageType, PLAIN_MESSAGE};
 use std::borrow::Borrow;
+
+use crate::models::message::{Message, MessageType, PLAIN_MESSAGE};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlainMessage {
@@ -37,7 +38,7 @@ impl core::fmt::Display for PlainMessage {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f, "{}",
-            serde_json::to_string_pretty(&self ).unwrap_or_default()
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }

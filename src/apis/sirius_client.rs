@@ -1,16 +1,16 @@
 use std::fmt::Debug;
 use std::sync::Arc;
 
+use hyper::Client;
 use hyper::client::connect::Connect;
 
 use crate::apis::chain_routes_api::ChainRoutesApiClient;
 use crate::apis::mosaic_routes_api::MosaicRoutesApiClient;
 use crate::apis::node_routes_api::NodeRoutesApiClient;
+use crate::apis::transaction_routes_api::TransactionRoutesApiClient;
 
 use super::account_routes_api::AccountRoutesApiClient;
 use super::block_routes_api::BlockRoutesApiClient;
-use crate::apis::transaction_routes_api::TransactionRoutesApiClient;
-use hyper::Client;
 
 #[derive(Clone)]
 pub struct SiriusClient<C: hyper::client::connect::Connect> {
@@ -20,7 +20,6 @@ pub struct SiriusClient<C: hyper::client::connect::Connect> {
     pub node: Box<NodeRoutesApiClient<C>>,
     pub mosaic: Box<MosaicRoutesApiClient<C>>,
     pub transaction: Box<TransactionRoutesApiClient<C>>,
-
 }
 
 impl<C: hyper::client::connect::Connect> SiriusClient<C> where

@@ -9,7 +9,7 @@ pub struct NetworkTypeDto {
 }
 
 impl NetworkTypeDto {
-    pub fn new(name: String, description: String) -> NetworkTypeDto {
+    pub fn new(name: String, description: String) -> Self {
         NetworkTypeDto {
             name,
             description,

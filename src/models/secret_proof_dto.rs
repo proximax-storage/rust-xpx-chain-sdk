@@ -17,7 +17,7 @@ pub struct SecretProofTransactionBodyDto {
 }
 
 impl SecretProofTransactionBodyDto {
-    pub fn new(hash_algorithm: HashAlgorithmEnum, secret: String, proof: String) -> SecretProofTransactionBodyDto {
+    pub fn new(hash_algorithm: HashAlgorithmEnum, secret: String, proof: String) -> Self {
         SecretProofTransactionBodyDto {
             hash_algorithm,
             secret,

@@ -20,7 +20,7 @@ pub struct NetworkConfigBodyDto {
 }
 
 impl NetworkConfigBodyDto {
-    pub fn new(apply_height_delta: Uint64Dto, network_config: String, supported_entity_versions: String) -> NetworkConfigBodyDto {
+    pub fn new(apply_height_delta: Uint64Dto, network_config: String, supported_entity_versions: String) -> Self {
         NetworkConfigBodyDto {
             apply_height_delta,
             network_config,

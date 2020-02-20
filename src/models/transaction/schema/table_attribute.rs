@@ -15,7 +15,7 @@ impl TableAttribute {
             abs_schema_attribute: AbstractSchemaAttribute {
                 name: name.parse().unwrap()
             },
-            schema
+            schema,
         }
     }
 }

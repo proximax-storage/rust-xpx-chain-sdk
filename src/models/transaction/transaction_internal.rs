@@ -1,12 +1,13 @@
-use crate::models::transaction::{EntityVersion, SignedTransaction, Transaction};
-use xpx_crypto::Keypair;
-use crate::models::account::Account;
-use crate::models::consts::{SIZE_SIZE, SIGNER_SIZE, SIGNATURE_SIZE, HALF_OF_SIGNATURE};
-use crate::models::utils::vec_u8_to_hex;
+use std::rc::Rc;
 
 use ::sha3::Sha3_256;
 use sha3::Digest;
-use std::rc::Rc;
+use xpx_crypto::Keypair;
+
+use crate::models::account::Account;
+use crate::models::consts::{HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE};
+use crate::models::transaction::{EntityVersion, SignedTransaction, Transaction};
+use crate::models::utils::vec_u8_to_hex;
 
 pub fn extract_version(version: i32) -> EntityVersion {
     return version & 0xFFFFFF;
@@ -34,7 +35,7 @@ pub fn sign_transaction(tx: &dyn Transaction, account: Account, generation_hash:
 
     let p_hex = vec_u8_to_hex(tx_vector);
 
-    let hash =  create_transaction_hash(p_hex.clone(), &generation_hash);
+    let hash = create_transaction_hash(p_hex.clone(), &generation_hash);
 
     Ok(SignedTransaction::new(tx.entity_type(), p_hex, hash))
 }
@@ -44,9 +45,9 @@ pub fn create_transaction_hash(p: String, generation_hash: &str) -> String {
 
     let mut sb = Vec::new();
 
-    sb.append(&mut p_bytes[SIZE_SIZE..SIZE_SIZE+HALF_OF_SIGNATURE].to_vec());
+    sb.append(&mut p_bytes[SIZE_SIZE..SIZE_SIZE + HALF_OF_SIGNATURE].to_vec());
 
-    sb.append(&mut p_bytes[SIGNATURE_SIZE+SIZE_SIZE..SIZE_SIZE+SIGNATURE_SIZE+SIGNER_SIZE].to_vec());
+    sb.append(&mut p_bytes[SIGNATURE_SIZE + SIZE_SIZE..SIZE_SIZE + SIGNATURE_SIZE + SIGNER_SIZE].to_vec());
 
     let generation_hash_bytes = hex::decode(generation_hash);
 
