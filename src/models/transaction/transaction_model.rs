@@ -4,7 +4,7 @@ use failure::_core::fmt::Debug;
 use xpx_crypto::Keypair;
 
 use crate::models::account::Account;
-use crate::models::transaction::{AbstractTransaction, SignedTransaction};
+use crate::models::transaction::{AbstractTransaction, SignedTransaction, TransactionType};
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct TransactionPayload {
@@ -45,7 +45,7 @@ pub trait Transaction: Sync + erased_serde::Serialize
     /// create a new SignedTransaction.
     fn sign_transaction_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
 
-    fn sign(&self, key_pair: Keypair, generation_hash: String) -> String;
+    fn entity_type(&self) -> TransactionType;
 }
 
 serialize_trait_object!(Transaction);

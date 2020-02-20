@@ -47,7 +47,7 @@ impl AbstractSchemaAttribute {
                                                            buffer: &[u8], start_position: usize) -> usize {
         let offset = self.offset(inner_object_position, position, buffer);
         let vector = self.vector(inner_object_position + offset, buffer);
-        self.indirect(vector + inner_object_position * 4, buffer)
+        self.indirect(vector + start_position * 4, buffer)
     }
 
     fn read_uint16(&mut self, offset: usize, buffer: &[u8]) -> usize {

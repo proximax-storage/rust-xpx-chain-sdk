@@ -4,14 +4,19 @@ use super::{AbstractSchemaAttribute, SchemaAttribute};
 use super::schema;
 
 #[derive(Debug, Serialize)]
-struct ArrayAttribute {
+pub(crate) struct ArrayAttribute {
     abs_schema_attribute: AbstractSchemaAttribute,
     size: usize,
 }
 
 impl ArrayAttribute {
-    pub fn new(name: String, size: usize) -> Self {
-        ArrayAttribute { abs_schema_attribute: AbstractSchemaAttribute { name }, size }
+    pub fn new(name: &str, size: usize) -> Self {
+        ArrayAttribute {
+            abs_schema_attribute: AbstractSchemaAttribute {
+                name: name.parse().unwrap()
+            },
+            size
+        }
     }
 }
 

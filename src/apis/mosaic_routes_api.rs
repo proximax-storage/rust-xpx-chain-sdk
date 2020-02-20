@@ -3,11 +3,11 @@ use std::sync::Arc;
 
 use hyper::client::connect::Connect;
 
+use crate::apis::sirius_client::ApiClient;
+use crate::models::Id;
+use crate::models::mosaic::{Mosaic, MosaicId, MosaicIds, MosaicInfo, MosaicInfoDto, MosaicNames, MosaicNamesDto};
 
 use super::request as __internal_request;
-use crate::apis::sirius_client::ApiClient;
-use crate::models::mosaic::{MosaicInfo, MosaicInfoDto, MosaicIds, Mosaic, MosaicId, MosaicNamesDto, MosaicNames};
-use crate::models::Id;
 
 #[derive(Debug, Clone)]
 pub struct MosaicRoutesApiClient<C: Connect> {
@@ -30,7 +30,7 @@ impl<C: Connect> MosaicRoutesApiClient<C> where
     pub async fn get_mosaic_info(self, mosaic_id: MosaicId) -> super::Result<MosaicInfo> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
-            "/mosaic/{mosaicId}".to_string()
+            "/mosaic/{mosaicId}".to_string(),
         );
 
         req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_string());
@@ -44,7 +44,7 @@ impl<C: Connect> MosaicRoutesApiClient<C> where
         let mosaics_ids = MosaicIds::from(mosaic_ids);
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
-            "/mosaic".to_string()
+            "/mosaic".to_string(),
         );
 
         req = req.with_body_param(mosaics_ids);
@@ -65,7 +65,7 @@ impl<C: Connect> MosaicRoutesApiClient<C> where
 
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
-            "/mosaic/names".to_string()
+            "/mosaic/names".to_string(),
         );
 
         req = req.with_body_param(mosaics_ids);

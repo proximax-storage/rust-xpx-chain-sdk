@@ -4,14 +4,19 @@ use super::{AbstractSchemaAttribute, SchemaAttribute};
 use super::schema;
 
 #[derive(Debug, Serialize)]
-struct ScalarAttribute {
+pub(crate) struct ScalarAttribute {
     abs_schema_attribute: AbstractSchemaAttribute,
     size: usize,
 }
 
 impl ScalarAttribute {
-    pub fn new(name: String, size: usize) -> Self {
-        ScalarAttribute { abs_schema_attribute: AbstractSchemaAttribute { name }, size }
+    pub fn new(name: &str, size: usize) -> Self {
+        ScalarAttribute {
+            abs_schema_attribute: AbstractSchemaAttribute {
+                name: name.parse().unwrap()
+            },
+            size
+        }
     }
 }
 

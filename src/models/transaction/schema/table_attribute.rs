@@ -4,14 +4,19 @@ use super::{AbstractSchemaAttribute, SchemaAttribute};
 use super::schema;
 
 #[derive(Debug, Serialize)]
-struct TableAttribute {
+pub(crate) struct TableAttribute {
     abs_schema_attribute: AbstractSchemaAttribute,
     schema: Vec<Box<dyn SchemaAttribute>>,
 }
 
 impl TableAttribute {
-    pub fn new(name: String, schema: Vec<Box<dyn SchemaAttribute>>) -> Self {
-        TableAttribute { abs_schema_attribute: AbstractSchemaAttribute { name }, schema }
+    pub fn new(name: &str, schema: Vec<Box<dyn SchemaAttribute>>) -> Self {
+        TableAttribute {
+            abs_schema_attribute: AbstractSchemaAttribute {
+                name: name.parse().unwrap()
+            },
+            schema
+        }
     }
 }
 

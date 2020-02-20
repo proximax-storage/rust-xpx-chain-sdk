@@ -1,4 +1,4 @@
-/// EntityType The entity type:
+/// entity_type The entity type:
 /// * 0x4158 (16728 decimal) - Blockchain Upgrade Transaction.
 /// * 0x4159 (16729 decimal) - Network Config Transaction.
 /// * 0x413D (16701 decimal) - Address Metadata Transaction.

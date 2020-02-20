@@ -14,11 +14,11 @@ impl Schema {
         Schema { definition }
     }
 
-    fn serialize(&mut self, buffer: &mut [u8]) -> Vec<u8> {
+    pub fn serialize(&mut self, buffer: &mut [u8]) -> Vec<u8> {
         let mut result_bytes: Vec<u8> = Vec::new();
 
         for i in 0..self.definition.len() {
-            let mut temp: &Vec<u8> = &self.definition[1].serialize(
+            let mut temp: &Vec<u8> = &self.definition[i].serialize(
                 buffer, 4 + (i * 2), buffer[0] as usize,
             );
             let mut temp = Rc::new(temp);

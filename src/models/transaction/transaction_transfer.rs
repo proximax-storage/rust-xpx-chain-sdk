@@ -1,15 +1,14 @@
 use ::std::fmt;
 
-use hyper::service::service_fn;
 use xpx_crypto::Keypair;
 
 use crate::fb;
 use crate::models::account::{Account, Address, PublicAccount};
-use crate::models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE};
+use crate::models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE,
+                            SIZE_SIZE, SIGNER_SIZE, SIGNATURE_SIZE};
 use crate::models::message::{Message, PlainMessage};
 use crate::models::mosaic::Mosaic;
 use crate::models::network::NetworkType;
-use crate::models::transaction::buffer::sisrius::buffers::MosaicBuffer;
 
 use super::{
     AbstractTransaction,
@@ -18,8 +17,12 @@ use super::{
     Transaction,
     TransactionType,
     TRANSFER_VERSION,
+    buffer::sisrius::buffers::MosaicBuffer,
+    schema::transfer_transaction_schema
 };
+
 use super::buffer::sisrius::buffers;
+use crate::models::transaction::transaction_internal::sign_transaction;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -157,9 +160,9 @@ impl Transaction for TransferTransaction {
         let t = txn_builder.finish();
         _builder.finish(t, None);
 
-        let buf = _builder.finished_data();
+        let mut buf = _builder.finished_data();
 
-        buf.to_vec()
+        transfer_transaction_schema().serialize( &mut Vec::from(buf))
     }
 
     fn generate_embedded_bytes(&self) -> Vec<u8> {
@@ -175,16 +178,11 @@ impl Transaction for TransferTransaction {
     }
 
     fn sign_transaction_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
-        let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
-
-        let tx_signed = self.sign(key_pair, generation_hash);
-
-        Ok(SignedTransaction::new())
+        sign_transaction(self as &dyn Transaction, account, generation_hash)
     }
 
-    fn sign(&self, key_pair: Keypair, generation_hash: String) -> String {
-        let bytes: Vec<u8> = self.generate_bytes();
-        String::new()
+    fn entity_type(&self) -> TransactionType {
+        self.abs_transaction.transaction_type.to_owned()
     }
 }
 
