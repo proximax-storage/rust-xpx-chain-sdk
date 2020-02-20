@@ -8,7 +8,6 @@ use hyper::{
     header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT},
     StatusCode,
     Uri};
-
 use serde_json;
 
 use crate::apis::{
@@ -144,7 +143,15 @@ impl Request {
             let status = resp.status_mut();
 
             match *status {
-                StatusCode::NOT_FOUND => {
+                StatusCode::OK => {
+                    let body = hyper::body::to_bytes(resp).await?;
+
+                    let res: U = serde_json::from_slice(&body)?;
+
+                    Ok(res)
+                }
+
+                _ => {
                     let body = hyper::body::to_bytes(resp).await?;
 
                     let _err: SiriusError = serde_json::from_slice(&body)?;
@@ -152,13 +159,6 @@ impl Request {
                     let _resp_err: Result<U, _> = Result::Err(Error::SiriusError(_err));
 
                     return _resp_err;
-                }
-                _ => {
-                    let body = hyper::body::to_bytes(resp).await?;
-
-                    let res: U = serde_json::from_slice(&body)?;
-
-                    Ok(res)
                 }
             }
         }

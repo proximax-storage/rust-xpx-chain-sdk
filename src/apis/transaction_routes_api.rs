@@ -1,15 +1,28 @@
 use ::std::fmt::Debug;
 use ::std::sync::Arc;
+use std::fmt;
 
 use hyper::{client::connect::Connect, Method};
 
 use crate::{
-    apis::sirius_client::ApiClient,
-    models::account::{AccountInfo, AccountInfoDto},
-    models::transaction::{SignedTransaction, TransactionStatus, TransactionStatusDto},
-};
+    models::{
+        account::{AccountInfo, AccountInfoDto},
+        transaction::{
+            SignedTransaction,
+            Transaction,
+            TransactionHashes,
+            TransactionIds,
+            TransactionStatus,
+            TransactionStatusDto,
+        },
+        utils::is_hex,
+    }};
 
-use super::{request as __internal_request, Result};
+use super::{
+    internal::{valid_hash, valid_vec_hash, valid_vec_len},
+    request as __internal_request,
+    Result,
+    sirius_client::ApiClient};
 
 #[derive(Clone)]
 pub struct TransactionRoutesApiClient<C: Connect> {
@@ -30,6 +43,8 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
     pub async fn get_transaction_status(self, hash: &str) -> Result<TransactionStatus> {
+        valid_hash(hash)?;
+
         let mut req = __internal_request::Request::new(
             Method::GET,
             "/transaction/{hash}/status".to_string(),
@@ -42,6 +57,44 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
         Ok(dto?.to_struct())
     }
 
+    pub async fn get_transactions_statuses(self, transaction_hashes: Vec<&str>) -> Result<(Vec<TransactionStatus>)> {
+        valid_vec_len(&transaction_hashes)?;
+
+        valid_vec_hash(&transaction_hashes)?;
+
+        let hashes = TransactionHashes::from(transaction_hashes);
+
+        let mut req = __internal_request::Request::new(
+            hyper::Method::POST,
+            "/transaction/statuses".to_string(),
+        );
+
+        req = req.with_body_param(hashes);
+
+        let dto: Vec<TransactionStatusDto> = req.execute(self.client).await?;
+
+        let mut statuses: Vec<TransactionStatus> = Vec::with_capacity(dto.len());
+        for i in dto {
+            let statuse = i;
+            statuses.push(statuse.to_struct());
+        }
+
+        Ok(statuses)
+    }
+
+    pub async fn get_transaction(self, transaction_id: &str) -> Result<&dyn Transaction> {
+        let mut req = __internal_request::Request::new(
+            Method::GET,
+            "/transaction/{transactionId}".to_string(),
+        );
+
+        req = req.with_path_param("transactionId".to_string(), transaction_id.to_string());
+
+        unimplemented!()
+
+//        req.execute(self.client).await
+    }
+
     pub async fn announce_transaction(self, transaction_payload: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
         let mut req = __internal_request::Request::new(
             Method::PUT,
@@ -52,48 +105,42 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
 
         req.execute(self.client).await
     }
-//    fn announce_cosignature_transaction(&self, cosignature: crate::models::Cosignature) -> super::Result<AccountInfo> {
-//        let mut req = __internal_request::Request::new(
-//            hyper::Method::PUT,
-//            "/transaction/cosignature".to_string()
-//        );
-//        req = req.with_body_param(cosignature);
-//
-//        req.execute(self.configuration.borrow())
-//    }
 
-//    fn announce_partial_transaction(&self, transaction_payload: crate::models::TransactionPayload) -> Box<dyn Future<Item = crate::models::AnnounceTransactionInfoDto, Error = Error<serde_json::Value>>> {
-//        let mut req = __internal_request::Request::new(hyper::Method::Put, "/transaction/partial".to_string())
-//        ;
-//        req = req.with_body_param(transaction_payload);
-//
-//        req.execute(self.configuration.borrow())
-//    }
+    pub async fn announce_cosignature_transaction(self, cosignature: String) -> Result<AnnounceTransactionInfo> {
+        let mut req = __internal_request::Request::new(
+            Method::PUT,
+            "/transaction/cosignature".to_string(),
+        );
+        req = req.with_body_param(cosignature);
 
-//    fn get_transaction(&self, transaction_id: &str) -> Box<dyn Future<Item = crate::models::TransactionInfoDto, Error = Error<serde_json::Value>>> {
-//        let mut req = __internal_request::Request::new(hyper::Method::Get, "/transaction/{transactionId}".to_string())
-//        ;
-//        req = req.with_path_param("transactionId".to_string(), transaction_id.to_string());
-//
-//        req.execute(self.configuration.borrow())
-//    }
+        unimplemented!()
 
-//
-//    fn get_transactions(&self, transaction_ids: crate::models::TransactionIds) -> Box<dyn Future<Item = Vec<crate::models::TransactionInfoDto>, Error = Error<serde_json::Value>>> {
-//        let mut req = __internal_request::Request::new(hyper::Method::Post, "/transaction".to_string())
-//        ;
-//        req = req.with_body_param(transaction_ids);
-//
-//        req.execute(self.configuration.borrow())
-//    }
-//
-//    fn get_transactions_statuses(&self, transaction_hashes: crate::models::TransactionHashes) -> Box<dyn Future<Item = Vec<crate::models::TransactionStatusDto>, Error = Error<serde_json::Value>>> {
-//        let mut req = __internal_request::Request::new(hyper::Method::Post, "/transaction/statuses".to_string())
-//        ;
-//        req = req.with_body_param(transaction_hashes);
-//
-//        req.execute(self.configuration.borrow())
-//    }
+//        req.execute(self.client).await
+    }
+
+    pub async fn announce_partial_transaction(self, transaction_payload: &SignedTransaction) -> Result<(AnnounceTransactionInfo)> {
+        let mut req = __internal_request::Request::new(
+            Method::PUT,
+            "/transaction/partial".to_string(),
+        );
+
+        req = req.with_body_param(transaction_payload);
+
+        req.execute(self.client).await
+    }
+
+
+    pub async fn get_transactions(self, transaction_ids: Vec<&str>) -> Result<(Vec<&dyn Transaction>)> {
+        let mut req = __internal_request::Request::new(
+            Method::POST,
+            "/transaction".to_string(),
+        );
+
+        req = req.with_body_param(transaction_ids);
+
+        unimplemented!()
+//        req.execute(self.client).await
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -109,3 +156,5 @@ impl fmt::Display for AnnounceTransactionInfo {
         )
     }
 }
+
+

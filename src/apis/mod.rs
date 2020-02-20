@@ -10,6 +10,8 @@ mod chain_routes_api;
 mod node_routes_api;
 mod mosaic_routes_api;
 mod transaction_routes_api;
+mod internal;
+
 
 pub mod sirius_client;
 

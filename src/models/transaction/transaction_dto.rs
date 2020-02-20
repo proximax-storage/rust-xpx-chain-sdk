@@ -27,36 +27,6 @@ pub struct TransactionBodyDto {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct TransactionHashes {
-    /// The array of transaction hashes.
-    #[serde(rename = "hashes", skip_serializing_if = "Option::is_none")]
-    pub hashes: Option<Vec<String>>,
-}
-
-impl TransactionHashes {
-    pub fn new() -> Self {
-        TransactionHashes {
-            hashes: None,
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct TransactionIds {
-    /// The array of transaction ids.
-    #[serde(rename = "transactionIds", skip_serializing_if = "Option::is_none")]
-    pub transaction_ids: Option<Vec<String>>,
-}
-
-impl TransactionIds {
-    pub fn new() -> Self {
-        TransactionIds {
-            transaction_ids: None,
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct TransactionInfoDto {
     #[serde(rename = "meta")]
     meta: TransactionMetaDto,
