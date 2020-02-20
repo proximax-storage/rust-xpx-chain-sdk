@@ -29,30 +29,38 @@ async fn main() {
 
     let message = PlainMessage::new("Transfer From ProximaX Rust SDK");
 
-    let transfer_transaction = TransferTransaction::new(
+    let  transfer_transaction = TransferTransaction::new(
         deadline,
         recipient,
-        vec![Mosaic::xpx_relative(2)],
+        vec![Mosaic::xpx_relative(20)],
         Box::new(message),
         network_type,
     );
 
-    match transfer_transaction {
-        Ok(transfer) => {
-            let sig_transaction = account.sign(
-                Box::new(transfer), "56D112C98F7A7E34D1AEDC4BD01BC06CA2276DD546A93E36690B785E82439CA9".to_owned());
-            match &sig_transaction {
-                Ok(sig) => println!("Hash: {}", sig.clone().hash),
-                Err(err) => eprintln!("SIG_ERROR: {:?}", err),
-            }
-
-            let response = client.transaction.announce_transaction(
-                &sig_transaction.unwrap()).await;
-            match response {
-                Ok(resp) => println!("{}", resp),
-                Err(err) => eprintln!("RESP_ERROR: {:?}", err),
-            }
+    let transfer_tx = loop {
+        match &transfer_transaction {
+            Ok(_transfer) => break _transfer,
+            Err(_e) => eprintln!("{:?}", _e),
         }
-        Err(err) => eprintln!("{:?}", err),
+    };
+
+    let sig_transaction = account.sign(
+        transfer_tx, "56D112C98F7A7E34D1AEDC4BD01BC06CA2276DD546A93E36690B785E82439CA9".to_owned());
+
+    let sig_tx = loop {
+        match  &sig_transaction {
+            Ok(sig) => break sig ,
+            Err(err) => eprintln!("SIG_ERROR: {:?}", err),
+        }
+    };
+
+    println!("Hash: {}", sig_tx.clone().hash);
+
+    let response = client.transaction.announce_transaction(
+        &sig_tx).await;
+
+    match response {
+        Ok(resp) => println!("{}", resp),
+        Err(err) => eprintln!("RESP_ERROR: {:?}", err),
     }
 }
