@@ -33,8 +33,8 @@ impl Mosaic {
     }
 
     pub fn xpx(amount: u64) -> Mosaic {
-        assert_ne!(
-            amount, XPX_MAX_VALUE,
+        assert!(
+            amount <= XPX_MAX_VALUE,
             "Maximum xpx value must be {}", XPX_MAX_VALUE
         );
 
@@ -44,8 +44,8 @@ impl Mosaic {
     }
 
     pub fn xpx_relative(amount: u64) -> Mosaic {
-        assert_ne!(
-            amount, XPX_MAX_RELATIVE_VALUE,
+        assert!(
+            amount <= XPX_MAX_RELATIVE_VALUE,
             "Maximum xpx relative value must be {}", XPX_MAX_RELATIVE_VALUE
         );
 
