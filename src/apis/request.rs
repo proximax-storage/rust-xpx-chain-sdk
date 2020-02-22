@@ -19,6 +19,7 @@ use crate::apis::{
     internally::map_transaction_dto,
     sirius_client::ApiClient,
 };
+use crate::apis::internally::map_transaction_dto_vec;
 
 pub(crate) struct Request {
     method: hyper::Method,
@@ -167,7 +168,9 @@ impl Request {
                         let res: U = serde_json::from_str(&map_dto)?;
                         Ok(res)
                     } else if self.is_transaction_vec {
-                        unimplemented!()
+                        let map_dto_vec = map_transaction_dto_vec(body)?;
+                        let res: U = serde_json::from_str(&map_dto_vec)?;
+                        Ok(res)
                     } else {
                         let res: U = serde_json::from_slice(&body)?;
                         Ok(res)

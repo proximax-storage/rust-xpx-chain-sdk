@@ -102,6 +102,8 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
 
         let version: Box<dyn TransactionDto> = req.execute(self.client).await?;
 
+        println!("{:?}", version);
+
         Ok(())
     }
 

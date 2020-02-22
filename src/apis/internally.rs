@@ -41,39 +41,52 @@ pub(super) fn valid_vec_hash(vector: &Vec<&str>) -> Result<bool> {
     Ok(true)
 }
 
+pub(super) fn map_transaction_dto_vec(mut body: Bytes) -> Result<String> {
+    let value_dto_vec: Value = serde_json::from_slice(&mut body)?;
+
+    let mut value_dto_vec_str = String::new().to_owned();
+    for dto in value_dto_vec.as_object() {
+//        value_dto_vec_str.push_str( &map_transaction_dto(dto)?)
+    }
+
+    Ok(value_dto_vec_str)
+
+}
+
 pub(super) fn map_transaction_dto(mut body: Bytes) -> Result<String> {
-    let v: Value = serde_json::from_slice(&mut body)?;
+    let value_dto: Value = serde_json::from_slice(&mut body)?;
 
     let entity_type = Entity::from(
-        v["transaction"]["type"].as_u64().unwrap()
+        value_dto["transaction"]["type"].as_u64().unwrap()
     );
 
-    let transaction_dto = match entity_type {
-        Entity::AccountLink => r#"{"AccountLinkTransactionInfoDto":{"meta":"#,
-        Entity::AccountRestrictionAddress => r#"{"AccountRestrictionAddressTransactionInfoDto":{"meta":"#,
-        Entity::AccountRestrictionMosaic => r#"{"AccountRestrictionMosaicTransactionInfoDto":{"meta":"#,
-        Entity::AccountRestrictionOperation => r#"{"AccountRestrictionOperationTransactionInfoDto":{"meta":"#,
-        Entity::AddressAlias => r#"{"AddressAliasTransactionInfoDto":{"meta":"#,
-        Entity::AggregateBonded => r#"{"AggregateBondedTransactionInfoDto":{"meta":"#,
-        Entity::AggregateComplete => r#"{"AggregateCompleteTransactionInfoDto":{"meta":"#,
-        Entity::Block => r#"{"BlockTransactionInfoDto":{"meta":"#,
-        Entity::BlockchainUpgrade => r#"{"BlockchainUpgradeTransactionInfoDto":{"meta":"#,
-        Entity::Lock => r#"{"LockTransactionInfoDto":{"meta":"#,
-        Entity::ModifyMultisigAccount => r#"{"ModifyMultisigAccountTransactionInfoDto":{"meta":"#,
-        Entity::MosaicAlias => r#"{"ModifyMultisigAccountTransactionInfoDto":{"meta":"#,
-        Entity::MosaicDefinition => r#"{"MosaicDefinitionTransactionInfoDto":{"meta":"#,
-        Entity::MosaicSupplyChange => r#"{"MosaicSupplyChangeTransactionInfoDto":{"meta":"#,
-        Entity::NamespaceRegistration => r#"{"ModifyMultisigAccountTransactionInfoDto":{"meta":"#,
-        Entity::NemesisBlock => r#"{"NemesisBlockTransactionInfoDto":{"meta":"#,
-        Entity::NetworkConfigEntityType => r#"{"NetworkConfigEntityTypeTransactionInfoDto":{"meta":"#,
-        Entity::SecretLock => r#"{"SecretLockTransactionInfoDto":{"meta":"#,
-        Entity::SecretProof => r#"{"SecretProofTransactionInfoDto":{"meta":"#,
-        Entity::Transfer => r#"{"TransferTransactionInfoDto":{"meta":"#,
+    let entity_dto = match entity_type {
+        Entity::AccountLink => "AccountLink",
+        Entity::AccountRestrictionAddress => "AccountRestrictionAddress",
+        Entity::AccountRestrictionMosaic => "AccountRestrictionMosaic",
+        Entity::AccountRestrictionOperation => "AccountRestrictionOperation",
+        Entity::AddressAlias => "AddressAlias",
+        Entity::AggregateBonded => "AggregateBonded",
+        Entity::AggregateComplete => "AggregateComplete",
+        Entity::Block => "Block",
+        Entity::BlockchainUpgrade => "BlockchainUpgrade",
+        Entity::Lock => "Lock",
+        Entity::ModifyMultisigAccount => "ModifyMultisigAccount",
+        Entity::MosaicAlias => "ModifyMultisigAccount",
+        Entity::MosaicDefinition => "MosaicDefinition",
+        Entity::MosaicSupplyChange => "MosaicSupplyChange",
+        Entity::NamespaceRegistration => "ModifyMultisigAccount",
+        Entity::NemesisBlock => "NemesisBlock:",
+        Entity::NetworkConfigEntityType => "NetworkConfigEntityType",
+        Entity::SecretLock => "SecretLock",
+        Entity::SecretProof => "SecretProof",
+        Entity::Transfer => "Transfer",
         _ => "NotDto"
     };
 
-    Ok(format!("{:?}", body)
-        .trim().replace(&['\\'][..], "")
-        .replace(r#"b"{"meta":"#, transaction_dto)
-        .replace("}}\"", r#"}}}"#))
+    let info_dto = format!("{{\"{}TransactionInfoDto\":{{\"meta\":", entity_dto);
+
+    Ok(format!("{}", value_dto)
+        .replace(r#"{"meta":"#, &info_dto)
+        .replace("}}", r#"}}}"#))
 }
