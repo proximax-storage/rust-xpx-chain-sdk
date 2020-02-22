@@ -18,7 +18,7 @@ use super::{
     schema::transfer_transaction_schema,
     SignedTransaction,
     Transaction,
-    TransactionType,
+    EntityTypeEnum,
     TRANSFER_VERSION,
 };
 use super::buffer::sisrius::buffers;
@@ -61,7 +61,7 @@ impl TransferTransaction {
             signature: "".to_string(),
             signer: Default::default(),
             version: TRANSFER_VERSION,
-            transaction_type: TransactionType::Transfer,
+            transaction_type: EntityTypeEnum::Transfer,
             max_fee: Default::default(),
             deadline,
         };
@@ -180,7 +180,7 @@ impl Transaction for TransferTransaction {
         sign_transaction(self as &dyn Transaction, account, generation_hash)
     }
 
-    fn entity_type(&self) -> TransactionType {
+    fn entity_type(&self) -> EntityTypeEnum {
         self.abs_transaction.transaction_type.to_owned()
     }
 }

@@ -6,7 +6,7 @@ use crate::models::account::PublicAccount;
 use crate::models::consts::{SIGNATURE_SIZE, SIGNER_SIZE};
 use crate::models::network::network_internal::extract_network_type;
 use crate::models::network::NetworkType;
-use crate::models::transaction::{deadline::Deadline, TransactionType};
+use crate::models::transaction::{deadline::Deadline, EntityTypeEnum};
 use crate::models::transaction::EntityVersion;
 use crate::models::Uint64;
 
@@ -31,7 +31,7 @@ pub struct AbstractTransaction {
 
     /// The transaction type.
     #[serde(rename = "type")]
-    pub(crate) transaction_type: TransactionType,
+    pub(crate) transaction_type: EntityTypeEnum,
 
     /// The maximum fee allowed to be spent for this transaction.
     ///
@@ -48,7 +48,7 @@ impl AbstractTransaction {
                signature: String,
                signer: PublicAccount,
                version: EntityVersion,
-               transaction_type: TransactionType,
+               transaction_type: EntityTypeEnum,
                max_fee: Uint64,
                deadline: Deadline,
     ) -> Self {

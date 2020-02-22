@@ -8,6 +8,7 @@ use hyper::{
     header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT},
     StatusCode,
     Uri};
+use serde::Serializer;
 use serde_json;
 
 use crate::apis::{
@@ -15,6 +16,7 @@ use crate::apis::{
         Error,
         SiriusError,
     },
+    internally::map_transaction_dto,
     sirius_client::ApiClient,
 };
 
@@ -26,6 +28,8 @@ pub(crate) struct Request {
     header_params: HashMap<String, String>,
     // TODO: multiple body params are possible technically, but not supported here.
     serialized_body: Option<String>,
+    is_transaction: bool,
+    is_transaction_vec: bool,
 }
 
 impl Request {
@@ -37,6 +41,8 @@ impl Request {
             path_params: HashMap::new(),
             header_params: HashMap::new(),
             serialized_body: None,
+            is_transaction: false,
+            is_transaction_vec: false,
         }
     }
 
@@ -57,6 +63,16 @@ impl Request {
 
     pub fn with_path_param(mut self, basename: String, param: String) -> Self {
         self.path_params.insert(basename, param);
+        self
+    }
+
+    pub fn is_transaction(mut self) -> Self {
+        self.is_transaction = true;
+        self
+    }
+
+    pub fn is_transaction_vec(mut self) -> Self {
+        self.is_transaction_vec = true;
         self
     }
 
@@ -144,15 +160,22 @@ impl Request {
 
             match *status {
                 StatusCode::OK => {
-                    let body = hyper::body::to_bytes(resp).await?;
+                    let mut body = hyper::body::to_bytes(resp).await?;
 
-                    let res: U = serde_json::from_slice(&body)?;
-
-                    Ok(res)
+                    if self.is_transaction {
+                        let map_dto = map_transaction_dto(body)?;
+                        let res: U = serde_json::from_str(&map_dto)?;
+                        Ok(res)
+                    } else if self.is_transaction_vec {
+                        unimplemented!()
+                    } else {
+                        let res: U = serde_json::from_slice(&body)?;
+                        Ok(res)
+                    }
                 }
 
                 _ => {
-                    let body = hyper::body::to_bytes(resp).await?;
+                    let mut body = hyper::body::to_bytes(resp).await?;
 
                     let _err: SiriusError = serde_json::from_slice(&body)?;
 

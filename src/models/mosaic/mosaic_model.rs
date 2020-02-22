@@ -3,7 +3,7 @@ use ::core::fmt;
 use crate::models::{Id, Uint64};
 use crate::models::mosaic::MosaicId;
 
-use super::mosaic_internal::{
+use super::internally::{
     XPX_DIVISIBILITY,
     XPX_MAX_RELATIVE_VALUE,
     XPX_MAX_VALUE,

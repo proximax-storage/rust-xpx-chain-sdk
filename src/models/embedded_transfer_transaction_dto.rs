@@ -2,7 +2,7 @@ use crate::models::message::MessageDto;
 use crate::models::mosaic::MosaicDto;
 use crate::models::uint_64::Uint64Dto;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct EmbeddedTransferTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]

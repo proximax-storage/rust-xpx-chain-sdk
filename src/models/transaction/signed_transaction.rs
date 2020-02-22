@@ -1,13 +1,13 @@
 use crate::models::network::NetworkType;
 
-use super::TransactionType;
+use super::EntityTypeEnum;
 
 /// Used to transfer the transaction data and the signature to a nem server in order to
 /// initiate and broadcast a transaction.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct SignedTransaction {
     /// The transaction type.
-    pub entity_type: TransactionType,
+    pub entity_type: EntityTypeEnum,
 
     /// The serialized transaction data.
     pub payload: String,
@@ -17,7 +17,7 @@ pub struct SignedTransaction {
 }
 
 impl SignedTransaction {
-    pub(crate) fn new(entity_type: TransactionType, payload: String, hash: String) -> Self {
+    pub(crate) fn new(entity_type: EntityTypeEnum, payload: String, hash: String) -> Self {
         SignedTransaction {
             payload,
             hash,

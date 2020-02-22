@@ -1,3 +1,5 @@
+use serde::{Serialize, Serializer};
+
 /// entity_type The entity type:
 /// * 0x4158 (16728 decimal) - Blockchain Upgrade Transaction.
 /// * 0x4159 (16729 decimal) - Network Config Transaction.
@@ -23,8 +25,9 @@
 /// * 0x8043 (32835 decimal) - Nemesis block.
 /// * 0x8143 (33091 decimal) - Regular block.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(from = "u64")]
 #[repr(u16)]
-pub enum TransactionType {
+pub enum EntityTypeEnum {
     #[serde(rename = "16728")]
     BlockchainUpgrade = 0x4158,
     #[serde(rename = "16729")]
@@ -71,27 +74,86 @@ pub enum TransactionType {
     NemesisBlock = 0x8043,
     #[serde(rename = "33091")]
     Block = 0x8143,
+    #[serde(rename = "Unknown")]
+    EntityTypeUnknown
 }
 
-impl TransactionType {
+impl EntityTypeEnum {
     pub fn get_value(&self) -> u16 {
-        0x4154
+        match self {
+            EntityTypeEnum::AccountLink => 0x414C,
+            EntityTypeEnum::AccountRestrictionAddress => 0x4150,
+            EntityTypeEnum::AccountRestrictionMosaic => 0x4250,
+            EntityTypeEnum::AccountRestrictionOperation => 0x4350,
+            EntityTypeEnum::AddressAlias => 0x424E,
+            EntityTypeEnum::AggregateBonded => 0x4241,
+            EntityTypeEnum::AggregateComplete => 0x4141,
+            EntityTypeEnum::Block => 0x8143,
+            EntityTypeEnum::BlockchainUpgrade => 0x4158,
+            EntityTypeEnum::Lock => 0x4148,
+            EntityTypeEnum::ModifyMultisigAccount => 0x4155,
+            EntityTypeEnum::MosaicAlias => 0x434E,
+            EntityTypeEnum::MosaicDefinition => 0x414D,
+            EntityTypeEnum::MosaicSupplyChange => 0x424D,
+            EntityTypeEnum::NamespaceRegistration => 0x414E,
+            EntityTypeEnum::NemesisBlock => 0x8043,
+            EntityTypeEnum::NetworkConfigEntityType => 0x4159,
+            EntityTypeEnum::SecretLock => 0x4152,
+            EntityTypeEnum::SecretProof => 0x4252,
+            EntityTypeEnum::Transfer => 0x4154,
+
+        _ => 0
+        }
+    }
+}
+
+impl From<u64> for EntityTypeEnum {
+    fn from(e: u64) -> Self {
+        return match e {
+            0x4141 => EntityTypeEnum::AggregateComplete,
+            0x4148 => EntityTypeEnum::Lock,
+            0x414C => EntityTypeEnum::AccountLink,
+            0x414D => EntityTypeEnum::MosaicDefinition,
+            0x414E => EntityTypeEnum::NamespaceRegistration,
+            0x4150 => EntityTypeEnum::AccountRestrictionAddress,
+            0x4152 => EntityTypeEnum::SecretLock,
+            0x4154 => EntityTypeEnum::Transfer,
+            0x4155 => EntityTypeEnum::ModifyMultisigAccount,
+            0x4158 => EntityTypeEnum::BlockchainUpgrade,
+            0x4159 => EntityTypeEnum::NetworkConfigEntityType,
+            0x4241 => EntityTypeEnum::AggregateBonded,
+            0x424D => EntityTypeEnum::MosaicSupplyChange,
+            0x424E => EntityTypeEnum::AddressAlias,
+            0x4250 => EntityTypeEnum::AccountRestrictionMosaic,
+            0x4252 => EntityTypeEnum::SecretProof,
+            0x434E => EntityTypeEnum::MosaicAlias,
+            0x4350 => EntityTypeEnum::AccountRestrictionOperation,
+            0x8043 => EntityTypeEnum::NemesisBlock,
+            0x8143 => EntityTypeEnum::Block,
+
+            _ => EntityTypeEnum::EntityTypeUnknown
+        }
+
     }
 }
 
 pub(crate) type EntityVersion = i32;
 
 pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
-pub(crate) const ACCOUNT_PROPERTY_MOSAIC_VERSION: EntityVersion = 1;
 pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
+pub(crate) const ACCOUNT_PROPERTY_MOSAIC_VERSION: EntityVersion = 1;
 pub(crate) const ADDRESS_ALIAS_VERSION: EntityVersion = 1;
+pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 pub(crate) const AGGREGATE_BONDED_VERSION: EntityVersion = 2;
 pub(crate) const AGGREGATE_COMPLETED_VERSION: EntityVersion = 2;
-pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
-pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 1;
-pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
-pub(crate) const NETWORK_CONFIG_VERSION: EntityVersion = 1;
 pub(crate) const BLOCKCHAIN_UPGRADE_VERSION: EntityVersion = 1;
+pub(crate) const DRIVE_FILES_REWARD_VERSION: EntityVersion = 1;
+pub(crate) const DRIVE_FILE_SYSTEM_VERSION: EntityVersion = 1;
+pub(crate) const END_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
+pub(crate) const END_DRIVE_VERSION: EntityVersion = 1;
+pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 1;
+pub(crate) const FILES_DEPOSIT_VERSION: EntityVersion = 1;
+pub(crate) const JOIN_TO_DRIVE_VERSION: EntityVersion = 1;
 pub(crate) const LINK_ACCOUNT_VERSION: EntityVersion = 2;
 pub(crate) const LOCK_VERSION: EntityVersion = 1;
 pub(crate) const METADATA_ADDRESS_VERSION: EntityVersion = 1;
@@ -102,15 +164,12 @@ pub(crate) const MODIFY_MULTISIG_VERSION: EntityVersion = 3;
 pub(crate) const MOSAIC_ALIAS_VERSION: EntityVersion = 1;
 pub(crate) const MOSAIC_DEFINITION_VERSION: EntityVersion = 3;
 pub(crate) const MOSAIC_SUPPLY_CHANGE_VERSION: EntityVersion = 2;
+pub(crate) const NETWORK_CONFIG_VERSION: EntityVersion = 1;
+pub(crate) const PREPARE_DRIVE_VERSION: EntityVersion = 1;
 pub(crate) const REGISTER_NAMESPACE_VERSION: EntityVersion = 2;
+pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 pub(crate) const SECRET_LOCK_VERSION: EntityVersion = 1;
 pub(crate) const SECRET_PROOF_VERSION: EntityVersion = 1;
-pub(crate) const TRANSFER_VERSION: EntityVersion = 3;
-pub(crate) const PREPARE_DRIVE_VERSION: EntityVersion = 1;
-pub(crate) const JOIN_TO_DRIVE_VERSION: EntityVersion = 1;
-pub(crate) const DRIVE_FILE_SYSTEM_VERSION: EntityVersion = 1;
-pub(crate) const FILES_DEPOSIT_VERSION: EntityVersion = 1;
-pub(crate) const END_DRIVE_VERSION: EntityVersion = 1;
-pub(crate) const DRIVE_FILES_REWARD_VERSION: EntityVersion = 1;
 pub(crate) const START_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
-pub(crate) const END_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
+pub(crate) const TRANSFER_VERSION: EntityVersion = 3;
+

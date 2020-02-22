@@ -2,7 +2,7 @@ use crate::models::{Uint64, uint_64::Uint64Dto};
 use crate::models::field_dto::FieldDto;
 use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
 use crate::models::mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE};
-use crate::models::mosaic::mosaic_internal::{has_bits, MosaicPropertyId};
+use crate::models::mosaic::internally::{has_bits, MosaicPropertyId};
 use crate::Result;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

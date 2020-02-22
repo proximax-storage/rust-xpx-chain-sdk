@@ -1,8 +1,15 @@
 use ::std::fmt::Debug;
 use ::std::sync::Arc;
+use std::any::Any;
+use std::borrow::{Borrow, BorrowMut};
 use std::fmt;
+use std::rc::Rc;
 
+use bytes::Buf;
 use hyper::{client::connect::Connect, Method};
+use serde::{de, Deserialize, Deserializer};
+use serde::de::{IntoDeserializer, MapAccess, Unexpected, Visitor};
+use serde::export::PhantomData;
 
 use crate::{
     models::{
@@ -17,9 +24,10 @@ use crate::{
         },
         utils::is_hex,
     }};
+use crate::models::transaction::TransactionDto;
 
 use super::{
-    internal::{valid_hash, valid_vec_hash, valid_vec_len},
+    internally::{valid_hash, valid_vec_hash, valid_vec_len},
     request as __internal_request,
     Result,
     sirius_client::ApiClient};
@@ -40,7 +48,7 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
 }
 
 impl<C: Connect> TransactionRoutesApiClient<C> where
-    C: Clone + Send + Sync + Debug + 'static
+    C: Clone + Send + Sync + Debug + 'static,
 {
     pub async fn get_transaction_status(self, hash: &str) -> Result<TransactionStatus> {
         valid_hash(hash)?;
@@ -82,17 +90,19 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
         Ok(statuses)
     }
 
-    pub async fn get_transaction(self, transaction_id: &str) -> Result<&dyn Transaction> {
+    pub async fn get_transaction(self, transaction_id: &str) -> Result<()>
+    {
         let mut req = __internal_request::Request::new(
             Method::GET,
             "/transaction/{transactionId}".to_string(),
         );
 
-        req = req.with_path_param("transactionId".to_string(), transaction_id.to_string());
+        req = req.with_path_param("transactionId".to_string(), transaction_id.to_string())
+            .is_transaction();
 
-        unimplemented!()
+        let version: Box<dyn TransactionDto> = req.execute(self.client).await?;
 
-//        req.execute(self.client).await
+        Ok(())
     }
 
     pub async fn announce_transaction(self, transaction_payload: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
@@ -129,7 +139,6 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
         req.execute(self.client).await
     }
 
-
     pub async fn get_transactions(self, transaction_ids: Vec<&str>) -> Result<(Vec<&dyn Transaction>)> {
         let mut req = __internal_request::Request::new(
             Method::POST,
@@ -156,5 +165,3 @@ impl fmt::Display for AnnounceTransactionInfo {
         )
     }
 }
-
-

@@ -4,7 +4,7 @@ use failure::_core::fmt::Debug;
 use xpx_crypto::Keypair;
 
 use crate::models::account::Account;
-use crate::models::transaction::{AbstractTransaction, SignedTransaction, TransactionType};
+use crate::models::transaction::{AbstractTransaction, SignedTransaction, EntityTypeEnum};
 use crate::models::transaction::deadline::{Deadline, Timestamp};
 use crate::models::Uint64;
 
@@ -32,7 +32,7 @@ pub trait Transaction: Sync + erased_serde::Serialize
     /// create a new SignedTransaction.
     fn sign_transaction_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
 
-    fn entity_type(&self) -> TransactionType;
+    fn entity_type(&self) -> EntityTypeEnum;
 }
 
 serialize_trait_object!(Transaction);
