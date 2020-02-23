@@ -8,7 +8,6 @@ use hyper::{
     header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT},
     StatusCode,
     Uri};
-use serde::Serializer;
 use serde_json;
 
 use crate::apis::{
@@ -16,10 +15,12 @@ use crate::apis::{
         Error,
         SiriusError,
     },
-    internally::map_transaction_dto,
+    internally::{
+        map_transaction_dto,
+        map_transaction_dto_vec
+    },
     sirius_client::ApiClient,
 };
-use crate::apis::internally::map_transaction_dto_vec;
 
 pub(crate) struct Request {
     method: hyper::Method,
@@ -160,8 +161,8 @@ impl Request {
             let status = resp.status_mut();
 
             match *status {
-                StatusCode::OK => {
-                    let mut body = hyper::body::to_bytes(resp).await?;
+                StatusCode::OK | StatusCode::ACCEPTED => {
+                    let body = hyper::body::to_bytes(resp).await?;
 
                     if self.is_transaction {
                         let map_dto = map_transaction_dto(body)?;
@@ -178,7 +179,7 @@ impl Request {
                 }
 
                 _ => {
-                    let mut body = hyper::body::to_bytes(resp).await?;
+                    let body = hyper::body::to_bytes(resp).await?;
 
                     let _err: SiriusError = serde_json::from_slice(&body)?;
 

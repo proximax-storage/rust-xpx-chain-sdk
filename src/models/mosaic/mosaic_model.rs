@@ -28,22 +28,22 @@ impl Mosaic {
     ///
     /// The quantity is always given in smallest units for the mosaic. For example, if it has a
     /// divisibility of 3 the quantity is given in millis.
-    pub fn new(id: Box<dyn Id + 'static>, amount: Uint64) -> Mosaic {
-        Mosaic { id, amount }
+    pub fn new(id: impl Id + 'static, amount: Uint64) -> Self {
+        Mosaic { id: Box::new(id), amount }
     }
 
-    pub fn xpx(amount: u64) -> Mosaic {
+    pub fn xpx(amount: u64) -> Self {
         assert!(
             amount <= XPX_MAX_VALUE,
             "Maximum xpx value must be {}", XPX_MAX_VALUE
         );
 
-        let xpx_mosaic_id: Box<MosaicId> = Box::new(MosaicId(Uint64(13833723942089965046)));
+        let xpx_mosaic_id = Box::new(MosaicId(Uint64(13833723942089965046)));
 
         Mosaic { id: xpx_mosaic_id, amount: Uint64::new(amount) }
     }
 
-    pub fn xpx_relative(amount: u64) -> Mosaic {
+    pub fn xpx_relative(amount: u64) -> Self {
         assert!(
             amount <= XPX_MAX_RELATIVE_VALUE,
             "Maximum xpx relative value must be {}", XPX_MAX_RELATIVE_VALUE

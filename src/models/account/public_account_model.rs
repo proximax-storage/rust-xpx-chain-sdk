@@ -66,7 +66,7 @@ impl PublicAccount {
         let verify = pk.verify(&data.as_bytes(), &signature);
 
         if verify.is_ok() {
-            Ok((true))
+            Ok(true)
         } else {
             Err(format_err!("{}", verify.unwrap_err()))
         }

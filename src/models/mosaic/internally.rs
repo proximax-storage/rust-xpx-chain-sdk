@@ -6,7 +6,7 @@ use crate::models::{{account::PublicAccount},
                     utils::array_u8_to_u64,
 };
 
-use super::{MosaicId, MosaicNonce};
+use super::MosaicNonce;
 
 static GET_SUPPLY_MUTABLE: u8 = 0x01;
 

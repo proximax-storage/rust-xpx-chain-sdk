@@ -6,9 +6,7 @@ use hyper::{client::connect::Connect, Method};
 use crate::{
     apis::sirius_client::ApiClient,
     models::{
-        Id,
         mosaic::{
-            Mosaic,
             MosaicId,
             MosaicIds,
             MosaicInfo,

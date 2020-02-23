@@ -1,13 +1,14 @@
-use std::rc::Rc;
-
 use ::sha3::Sha3_256;
 use sha3::Digest;
 use xpx_crypto::Keypair;
 
-use crate::models::account::Account;
-use crate::models::consts::{HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE};
-use crate::models::transaction::{EntityVersion, SignedTransaction, Transaction};
-use crate::models::utils::vec_u8_to_hex;
+use crate::models::{
+    account::Account,
+    consts::{HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE},
+    utils::vec_u8_to_hex,
+};
+
+use super::{EntityVersion, SignedTransaction, Transaction};
 
 pub fn extract_version(version: i32) -> EntityVersion {
     return version & 0xFFFFFF;

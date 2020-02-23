@@ -1,9 +1,22 @@
-use crate::models::{Uint64, uint_64::Uint64Dto};
-use crate::models::field_dto::FieldDto;
-use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
-use crate::models::mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE};
-use crate::models::mosaic::internally::{has_bits, MosaicPropertyId};
-use crate::Result;
+use crate::{
+    models::{
+        field_dto::FieldDto,
+        metadata_dto::{MetadataModificationDto, MetadataTypeEnum},
+        Uint64,
+        uint_64::Uint64Dto,
+    },
+    Result,
+};
+
+use super::{
+    internally::has_bits,
+    Mosaic,
+    MosaicId,
+    MosaicInfo,
+    MosaicNames,
+    MosaicProperties, SUPPLY_MUTABLE,
+    TRANSFERABLE,
+};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicDto {
@@ -15,7 +28,7 @@ pub struct MosaicDto {
 
 impl MosaicDto {
     pub fn to_struct(&self) -> Mosaic {
-        let mosaic_id = Box::new(MosaicId::from(self.id.to_struct()));
+        let mosaic_id = MosaicId::from(self.id.to_struct());
         let amount = self.amount.to_struct();
         Mosaic::new(mosaic_id, amount)
     }
@@ -86,16 +99,6 @@ pub(crate) struct MosaicMetadataBodyDto {
     metadata_type: u16,
     /// The array of metadata modifications.
     modifications: Vec<MetadataModificationDto>,
-}
-
-impl MosaicMetadataBodyDto {
-    pub fn new(metadata_id: Uint64Dto, metadata_type: u16, modifications: Vec<MetadataModificationDto>) -> MosaicMetadataBodyDto {
-        MosaicMetadataBodyDto {
-            metadata_id,
-            metadata_type,
-            modifications,
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

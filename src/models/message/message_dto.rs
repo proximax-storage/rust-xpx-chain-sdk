@@ -1,4 +1,6 @@
-#[derive(Debug, Default, Serialize, Deserialize)]
+use crate::models::message::{Message, PlainMessage};
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageDto {
     #[serde(rename = "type")]
     _type: u8,
@@ -7,10 +9,11 @@ pub struct MessageDto {
 }
 
 impl MessageDto {
-    pub fn new(_type: u8, payload: String) -> Self {
-        MessageDto {
-            _type,
-            payload,
+    pub fn to_struct(&self) -> Box<dyn Message> {
+        if self._type == 0 {
+            return Box::new(PlainMessage::new(&self.payload));
+        }else {
+            unimplemented!()
         }
     }
 }

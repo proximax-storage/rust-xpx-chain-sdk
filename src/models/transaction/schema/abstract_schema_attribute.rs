@@ -1,7 +1,4 @@
-use ::byteorder::LittleEndian;
-use byteorder::ByteOrder;
-use bytes::Buf;
-use rand::distributions::uniform::SampleBorrow;
+use ::byteorder::{LittleEndian, ByteOrder};
 
 #[derive(Debug, Serialize)]
 pub(crate) struct AbstractSchemaAttribute {

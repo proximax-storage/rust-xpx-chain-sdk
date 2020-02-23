@@ -1,4 +1,4 @@
-use serde::{Serialize, Serializer};
+use serde::Serialize;
 
 /// entity_type The entity type:
 /// * 0x4158 (16728 decimal) - Blockchain Upgrade Transaction.
@@ -75,7 +75,7 @@ pub enum EntityTypeEnum {
     #[serde(rename = "33091")]
     Block = 0x8143,
     #[serde(rename = "Unknown")]
-    EntityTypeUnknown
+    EntityTypeUnknown,
 }
 
 impl EntityTypeEnum {
@@ -102,7 +102,7 @@ impl EntityTypeEnum {
             EntityTypeEnum::SecretProof => 0x4252,
             EntityTypeEnum::Transfer => 0x4154,
 
-        _ => 0
+            _ => 0
         }
     }
 }
@@ -132,8 +132,7 @@ impl From<u64> for EntityTypeEnum {
             0x8143 => EntityTypeEnum::Block,
 
             _ => EntityTypeEnum::EntityTypeUnknown
-        }
-
+        };
     }
 }
 

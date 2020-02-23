@@ -1,32 +1,35 @@
 use ::std::fmt;
 
-use xpx_crypto::Keypair;
-
 use crate::fb;
-use crate::models::account::{Account, Address, PublicAccount};
-use crate::models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, SIGNATURE_SIZE,
-                            SIGNER_SIZE, SIZE_SIZE, TRANSFER_HEADER_SIZE};
-use crate::models::message::{Message, PlainMessage};
-use crate::models::mosaic::Mosaic;
-use crate::models::network::NetworkType;
-use crate::models::transaction::transaction_internal::sign_transaction;
+use crate::models::{
+    account::{Account, Address, PublicAccount},
+    consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
+    message::Message,
+    mosaic::Mosaic,
+    network::NetworkType,
+};
 
 use super::{
     AbstractTransaction,
     buffer::sisrius::buffers::MosaicBuffer,
     deadline::Deadline,
+    EntityTypeEnum,
+    internal::sign_transaction,
     schema::transfer_transaction_schema,
     SignedTransaction,
     Transaction,
-    EntityTypeEnum,
     TRANSFER_VERSION,
 };
 use super::buffer::sisrius::buffers;
+use failure::_core::any::Any;
+use std::borrow::{BorrowMut, Borrow};
+use crate::models::transaction::TransferTransactionDto;
+use serde_json::Value;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransferTransaction {
-    abs_transaction: AbstractTransaction,
+    pub abs_transaction: AbstractTransaction,
     /// If the bit 0 of byte 0 is not set (like in 0x90), then it is a regular address.
     /// Else (e.g. 0x91) it represents a namespace id which starts at byte 1.
     pub recipient: Address,
@@ -42,7 +45,7 @@ impl TransferTransaction {
         deadline: Deadline,
         recipient: Address,
         mosaics: Vec<Mosaic>,
-        message: Box<dyn Message>,
+        message: impl Message + 'static,
         network_type: NetworkType,
     ) -> crate::Result<TransferTransaction> {
         ensure!(
@@ -54,6 +57,7 @@ impl TransferTransaction {
             mosaics.len() > 0,
             "mosaics must not be empty."
          );
+
 
         let abs_tx = AbstractTransaction {
             transaction_info: None,
@@ -70,7 +74,7 @@ impl TransferTransaction {
             abs_transaction: abs_tx,
             recipient,
             mosaics,
-            message,
+            message: Box::new(message),
         })
     }
 
@@ -105,11 +109,11 @@ impl Transaction for TransferTransaction {
     }
 
     fn generate_bytes<'a>(&self) -> Vec<u8> {
-        /// Build up a serialized buffer algorithmically.
-        /// Initialize it with a capacity of 0 bytes.
+        // Build up a serialized buffer algorithmically.
+        // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
 
-        /// Create mosaics
+        // Create mosaics
         let ml = self.mosaics.len();
 
         let mut mosaics_buffer: Vec<fb::WIPOffset<MosaicBuffer<'a>>> = Vec::with_capacity(ml);
@@ -125,7 +129,7 @@ impl Transaction for TransferTransaction {
             mosaics_buffer.push(mosaic_buffer.finish());
         };
 
-        /// Create message;
+        // Create message;
         let payload_vec = _builder.create_vector_direct(self.message.payload_to_bytes());
 
         let mut message_buffer = buffers::MessageBufferBuilder::new(&mut _builder);
@@ -159,7 +163,7 @@ impl Transaction for TransferTransaction {
         let t = txn_builder.finish();
         _builder.finish(t, None);
 
-        let mut buf = _builder.finished_data();
+        let buf = _builder.finished_data();
 
         transfer_transaction_schema().serialize(&mut Vec::from(buf))
     }
@@ -168,20 +172,29 @@ impl Transaction for TransferTransaction {
         unimplemented!()
     }
 
-    fn serialize(&self) -> String {
-        unimplemented!()
+    fn to_json(&self) -> Value {
+        serde_json::to_value(self).unwrap_or_default()
     }
 
     fn has_missing_signatures(&self) -> bool {
         unimplemented!()
     }
 
-    fn sign_transaction_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
+    fn sign_transaction_with(&self, account: Account, generation_hash: String)
+        -> crate::Result<SignedTransaction> {
         sign_transaction(self as &dyn Transaction, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {
         self.abs_transaction.transaction_type.to_owned()
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
+    fn to_type(&self) -> &Self {
+        self
     }
 }
 
@@ -192,3 +205,10 @@ impl fmt::Display for TransferTransaction {
         )
     }
 }
+//
+//impl From<Value> for TransferTransaction {
+//    fn from(e: Value) -> Self {
+//        let algo: TransferTransaction = serde_json::from_value(e).unwrap();
+//        return algo
+//    }
+//}

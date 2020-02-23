@@ -1,4 +1,3 @@
-
 #[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct TransactionHashes {
     /// The array of transaction hashes.

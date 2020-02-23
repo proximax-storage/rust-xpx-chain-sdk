@@ -1,6 +1,5 @@
+use super::{Message, MessageType, PLAIN_MESSAGE};
 use std::borrow::Borrow;
-
-use crate::models::message::{Message, MessageType, PLAIN_MESSAGE};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlainMessage {

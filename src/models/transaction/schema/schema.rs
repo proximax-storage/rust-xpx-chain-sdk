@@ -1,7 +1,4 @@
-use std::fmt;
 use std::rc::Rc;
-
-use rand::distributions::uniform::SampleBorrow;
 
 use super::SchemaAttribute;
 
@@ -18,10 +15,10 @@ impl Schema {
         let mut result_bytes: Vec<u8> = Vec::new();
 
         for i in 0..self.definition.len() {
-            let mut temp: &Vec<u8> = &self.definition[i].serialize(
+            let temp: &Vec<u8> = &self.definition[i].serialize(
                 buffer, 4 + (i * 2), buffer[0] as usize,
             );
-            let mut temp = Rc::new(temp);
+            let temp = Rc::new(temp);
             result_bytes.append(&mut temp.to_vec());
         }
         result_bytes

@@ -1,7 +1,4 @@
-use std::borrow::Borrow;
-
 use super::{AbstractSchemaAttribute, SchemaAttribute};
-use super::schema;
 
 #[derive(Debug, Serialize)]
 pub(crate) struct TableAttribute {
@@ -22,7 +19,7 @@ impl TableAttribute {
 
 impl SchemaAttribute for TableAttribute {
     fn serialize(&mut self, buffer: &mut [u8], position: usize, inner_object_position: usize) -> Vec<u8> {
-        let mut abs = &mut self.abs_schema_attribute;
+        let abs = &mut self.abs_schema_attribute;
 
         let mut result_bytes: Vec<u8> = Vec::new();
 

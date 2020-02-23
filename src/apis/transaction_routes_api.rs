@@ -1,30 +1,21 @@
 use ::std::fmt::Debug;
 use ::std::sync::Arc;
-use std::any::Any;
-use std::borrow::{Borrow, BorrowMut};
 use std::fmt;
-use std::rc::Rc;
 
-use bytes::Buf;
 use hyper::{client::connect::Connect, Method};
-use serde::{de, Deserialize, Deserializer};
-use serde::de::{IntoDeserializer, MapAccess, Unexpected, Visitor};
-use serde::export::PhantomData;
 
 use crate::{
     models::{
-        account::{AccountInfo, AccountInfoDto},
         transaction::{
             SignedTransaction,
             Transaction,
             TransactionHashes,
-            TransactionIds,
             TransactionStatus,
             TransactionStatusDto,
+            TransactionDto,
+            TransferTransactionInfoDto
         },
-        utils::is_hex,
     }};
-use crate::models::transaction::TransactionDto;
 
 use super::{
     internally::{valid_hash, valid_vec_hash, valid_vec_len},
@@ -65,7 +56,7 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
         Ok(dto?.to_struct())
     }
 
-    pub async fn get_transactions_statuses(self, transaction_hashes: Vec<&str>) -> Result<(Vec<TransactionStatus>)> {
+    pub async fn get_transactions_statuses(self, transaction_hashes: Vec<&str>) -> Result<Vec<TransactionStatus>> {
         valid_vec_len(&transaction_hashes)?;
 
         valid_vec_hash(&transaction_hashes)?;
@@ -90,7 +81,7 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
         Ok(statuses)
     }
 
-    pub async fn get_transaction(self, transaction_id: &str) -> Result<()>
+    pub async fn get_transaction(self, transaction_id: &str) -> Result<Box<dyn Transaction>>
     {
         let mut req = __internal_request::Request::new(
             Method::GET,
@@ -102,9 +93,12 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
 
         let version: Box<dyn TransactionDto> = req.execute(self.client).await?;
 
-        println!("{:?}", version);
+        let b: &TransferTransactionInfoDto = match version.as_any().downcast_ref::<TransferTransactionInfoDto>() {
+            Some(b) => b,
+            None => panic!("&a isn't a B!"),
+        };
 
-        Ok(())
+        Ok(b.to_struct())
     }
 
     pub async fn announce_transaction(self, transaction_payload: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
@@ -130,7 +124,7 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
 //        req.execute(self.client).await
     }
 
-    pub async fn announce_partial_transaction(self, transaction_payload: &SignedTransaction) -> Result<(AnnounceTransactionInfo)> {
+    pub async fn announce_partial_transaction(self, transaction_payload: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
         let mut req = __internal_request::Request::new(
             Method::PUT,
             "/transaction/partial".to_string(),
@@ -141,7 +135,7 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
         req.execute(self.client).await
     }
 
-    pub async fn get_transactions(self, transaction_ids: Vec<&str>) -> Result<(Vec<&dyn Transaction>)> {
+    pub async fn get_transactions(self, transaction_ids: Vec<&str>) -> Result<Vec<&dyn Transaction>> {
         let mut req = __internal_request::Request::new(
             Method::POST,
             "/transaction".to_string(),

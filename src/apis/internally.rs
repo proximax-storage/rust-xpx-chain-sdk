@@ -1,5 +1,3 @@
-use std::any::Any;
-
 use failure::_core::fmt::Debug;
 use hyper::body::Bytes;
 use serde_json::Value;
@@ -41,10 +39,10 @@ pub(super) fn valid_vec_hash(vector: &Vec<&str>) -> Result<bool> {
     Ok(true)
 }
 
-pub(super) fn map_transaction_dto_vec(mut body: Bytes) -> Result<String> {
-    let value_dto_vec: Value = serde_json::from_slice(&mut body)?;
+pub(super) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
+    let value_dto_vec: Value = serde_json::from_slice(&body)?;
 
-    let mut value_dto_vec_str = String::new().to_owned();
+    let value_dto_vec_str = String::new().to_owned();
     for dto in value_dto_vec.as_object() {
 //        value_dto_vec_str.push_str( &map_transaction_dto(dto)?)
     }
@@ -53,8 +51,8 @@ pub(super) fn map_transaction_dto_vec(mut body: Bytes) -> Result<String> {
 
 }
 
-pub(super) fn map_transaction_dto(mut body: Bytes) -> Result<String> {
-    let value_dto: Value = serde_json::from_slice(&mut body)?;
+pub(super) fn map_transaction_dto(body: Bytes) -> Result<String> {
+    let value_dto: Value = serde_json::from_slice(&body)?;
 
     let entity_type = Entity::from(
         value_dto["transaction"]["type"].as_u64().unwrap()

@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::models::{account::PublicAccount, Uint64};
+use crate::models::Uint64;
 
 use super::{MosaicId, MosaicProperties};
 

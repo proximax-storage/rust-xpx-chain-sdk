@@ -1,5 +1,3 @@
-use crate::models::network::NetworkType;
-
 use super::EntityTypeEnum;
 
 /// Used to transfer the transaction data and the signature to a nem server in order to

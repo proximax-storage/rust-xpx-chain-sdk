@@ -41,27 +41,10 @@ pub(crate) struct BlockchainUpgradeBodyDto {
     new_block_chain_version: Uint64Dto,
 }
 
-impl BlockchainUpgradeBodyDto {
-    pub fn new(upgrade_period: Uint64Dto, new_block_chain_version: Uint64Dto) -> Self {
-        BlockchainUpgradeBodyDto {
-            upgrade_period,
-            new_block_chain_version,
-        }
-    }
-}
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct BlockchainUpgradeDto {
     #[serde(rename = "blockchainUpgrade")]
     blockchain_upgrade: UpgradeDto,
-}
-
-impl BlockchainUpgradeDto {
-    pub fn new(blockchain_upgrade: UpgradeDto) -> Self {
-        BlockchainUpgradeDto {
-            blockchain_upgrade,
-        }
-    }
 }
 
 /// BlockchainUpgradeTransactionDto : Transaction that change version of blockchain.

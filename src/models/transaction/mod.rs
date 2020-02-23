@@ -1,16 +1,15 @@
 pub use self::signed_transaction::*;
 pub use self::transaction_dto::*;
+pub use self::transaction_hashes::*;
+pub use self::transaction_ids::*;
 pub use self::transaction_info::*;
-use self::transaction_internal::*;
 pub use self::transaction_model::*;
 pub use self::transaction_transfer::*;
 pub use self::transaction_type::*;
-pub use self::transaction_ids::*;
-pub use self::transaction_hashes::*;
 
 pub mod deadline;
 mod transaction_dto;
-pub(crate) mod transaction_internal;
+pub(crate) mod internal;
 pub mod transaction_transfer;
 pub mod transaction_model;
 pub mod transaction_info;

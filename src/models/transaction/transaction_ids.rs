@@ -1,4 +1,3 @@
-
 #[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct TransactionIds {
     /// The array of transaction ids.

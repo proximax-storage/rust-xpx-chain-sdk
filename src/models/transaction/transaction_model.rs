@@ -1,12 +1,16 @@
-use std::fmt;
+use ::std::{fmt, any::Any};
 
 use failure::_core::fmt::Debug;
-use xpx_crypto::Keypair;
 
-use crate::models::account::Account;
-use crate::models::transaction::{AbstractTransaction, SignedTransaction, EntityTypeEnum};
-use crate::models::transaction::deadline::{Deadline, Timestamp};
-use crate::models::Uint64;
+use crate::models::{account::Account, Uint64};
+
+use super::{
+    deadline::Deadline,
+    AbstractTransaction,
+    EntityTypeEnum,
+    SignedTransaction
+};
+use serde_json::Value;
 
 pub trait Transaction: Sync + erased_serde::Serialize
     where
@@ -23,7 +27,7 @@ pub trait Transaction: Sync + erased_serde::Serialize
     fn generate_embedded_bytes(&self) -> Vec<u8>;
 
     /// Serialize this transaction object.
-    fn serialize(&self) -> String;
+    fn to_json(&self) -> Value;
 
     /// Returns `true` if this transaction has missing signatures.
     fn has_missing_signatures(&self) -> bool;
@@ -33,6 +37,10 @@ pub trait Transaction: Sync + erased_serde::Serialize
     fn sign_transaction_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
 
     fn entity_type(&self) -> EntityTypeEnum;
+
+    fn as_any(&self) -> &dyn Any;
+
+    fn to_type(&self) -> Self ;
 }
 
 serialize_trait_object!(Transaction);
