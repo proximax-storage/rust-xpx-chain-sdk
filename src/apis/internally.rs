@@ -48,7 +48,6 @@ pub(super) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
     }
 
     Ok(value_dto_vec_str)
-
 }
 
 pub(super) fn map_transaction_dto(body: Bytes) -> Result<String> {

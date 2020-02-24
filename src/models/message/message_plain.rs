@@ -1,5 +1,6 @@
+use ::std::borrow::Borrow;
+
 use super::{Message, MessageType, PLAIN_MESSAGE};
-use std::borrow::Borrow;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlainMessage {

@@ -1,17 +1,19 @@
 use ::std::fmt;
 
-use crate::fb;
-use crate::models::{
+use failure::_core::any::Any;
+use serde_json::Value;
+
+use crate::{fb, models::{
     account::{Account, Address, PublicAccount},
     consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
     message::Message,
     mosaic::Mosaic,
     network::NetworkType,
-};
+}};
 
 use super::{
     AbstractTransaction,
-    buffer::sisrius::buffers::MosaicBuffer,
+    buffer::sisrius::buffers,
     deadline::Deadline,
     EntityTypeEnum,
     internal::sign_transaction,
@@ -19,12 +21,8 @@ use super::{
     SignedTransaction,
     Transaction,
     TRANSFER_VERSION,
+    TransferTransactionDto,
 };
-use super::buffer::sisrius::buffers;
-use failure::_core::any::Any;
-use std::borrow::{BorrowMut, Borrow};
-use crate::models::transaction::TransferTransactionDto;
-use serde_json::Value;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -116,7 +114,7 @@ impl Transaction for TransferTransaction {
         // Create mosaics
         let ml = self.mosaics.len();
 
-        let mut mosaics_buffer: Vec<fb::WIPOffset<MosaicBuffer<'a>>> = Vec::with_capacity(ml);
+        let mut mosaics_buffer: Vec<fb::WIPOffset<buffers::MosaicBuffer<'a>>> = Vec::with_capacity(ml);
 
         for mosaic in &self.mosaics {
             let mosaic_id = _builder.create_vector(&mosaic.id.to_int_array());
@@ -181,7 +179,7 @@ impl Transaction for TransferTransaction {
     }
 
     fn sign_transaction_with(&self, account: Account, generation_hash: String)
-        -> crate::Result<SignedTransaction> {
+                             -> crate::Result<SignedTransaction> {
         sign_transaction(self as &dyn Transaction, account, generation_hash)
     }
 
@@ -192,9 +190,11 @@ impl Transaction for TransferTransaction {
     fn as_any(&self) -> &dyn Any {
         self
     }
+}
 
-    fn to_type(&self) -> &Self {
-        self
+impl Into<(String)> for TransferTransaction {
+    fn into(self) -> String {
+        format!("{}", self)
     }
 }
 

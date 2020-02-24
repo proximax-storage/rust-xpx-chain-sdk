@@ -1,27 +1,22 @@
 use ::std::any::Any;
 use ::std::fmt;
-use std::rc::Rc;
 
 use crate::models::{
+    account::{Address, PublicAccount},
     blockchain::EmbeddedBlockchainUpgradeTransactionDto,
-    message::MessageDto,
-    mosaic::MosaicDto,
+    message::{MessageDto, MessageType::PlainMessageType, PlainMessage},
+    mosaic::{Mosaic, MosaicDto},
+    network::network_internal::extract_network_type,
     uint_64::Uint64Dto,
 };
-use crate::models::account::{PublicAccount, Address};
-use crate::models::message::MessageType::PlainMessageType;
-use crate::models::message::PlainMessage;
-use crate::models::network::network_internal::extract_network_type;
-use crate::models::transaction::{AbstractTransaction, EntityTypeEnum, Transaction, TransferTransaction};
-use crate::models::transaction::internal::extract_version;
 
 use super::{
-    deadline::{
+    AbstractTransaction, deadline::{
         BlockchainTimestamp, Deadline,
-    },
+    }, EntityTypeEnum, internal::extract_version, Transaction,
     TransactionStatus,
+    TransferTransaction,
 };
-use crate::models::mosaic::Mosaic;
 
 #[typetag::serde]
 pub trait TransactionDto where
@@ -49,15 +44,15 @@ impl AbstractTransactionDto {
            version: i32,
            _type: u16,
            max_fee: Uint64Dto,
-           deadline: Uint64Dto
+           deadline: Uint64Dto,
     ) -> Self {
-        AbstractTransactionDto{
+        AbstractTransactionDto {
             signature,
             signer,
             version,
             _type,
             max_fee,
-            deadline
+            deadline,
         }
     }
 
@@ -165,7 +160,7 @@ impl TransactionDto for TransferTransactionInfoDto {
         let dto = self.transaction.clone();
 
         let abs = AbstractTransactionDto::new(
-            dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline
+            dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline,
         ).to_struct();
 
 
@@ -181,7 +176,7 @@ impl TransactionDto for TransferTransactionInfoDto {
             abs_transaction: abs,
             recipient,
             mosaics,
-            message: dto.message.to_struct()
+            message: dto.message.to_struct(),
         })
     }
 

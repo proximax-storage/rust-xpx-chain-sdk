@@ -12,7 +12,7 @@ impl MessageDto {
     pub fn to_struct(&self) -> Box<dyn Message> {
         if self._type == 0 {
             return Box::new(PlainMessage::new(&self.payload));
-        }else {
+        } else {
             unimplemented!()
         }
     }

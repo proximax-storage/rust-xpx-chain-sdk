@@ -1,16 +1,16 @@
-use ::std::{fmt, any::Any};
+use ::std::{any::Any, fmt};
 
 use failure::_core::fmt::Debug;
+use serde_json::Value;
 
 use crate::models::{account::Account, Uint64};
 
 use super::{
-    deadline::Deadline,
     AbstractTransaction,
+    deadline::Deadline,
     EntityTypeEnum,
-    SignedTransaction
+    SignedTransaction,
 };
-use serde_json::Value;
 
 pub trait Transaction: Sync + erased_serde::Serialize
     where
@@ -39,8 +39,6 @@ pub trait Transaction: Sync + erased_serde::Serialize
     fn entity_type(&self) -> EntityTypeEnum;
 
     fn as_any(&self) -> &dyn Any;
-
-    fn to_type(&self) -> Self ;
 }
 
 serialize_trait_object!(Transaction);

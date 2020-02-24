@@ -6,8 +6,8 @@ use super::{
     SIZEOF_BYTE,
     SIZEOF_INT,
     SIZEOF_SHORT,
+    table_attribute::TableAttribute,
     TableArrayAttribute,
-    TableAttribute,
 };
 use super::schema_common_definition::schema_common_definition;
 

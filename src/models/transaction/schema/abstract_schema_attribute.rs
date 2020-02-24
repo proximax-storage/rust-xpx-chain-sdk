@@ -1,4 +1,4 @@
-use ::byteorder::{LittleEndian, ByteOrder};
+use ::byteorder::{ByteOrder, LittleEndian};
 
 #[derive(Debug, Serialize)]
 pub(crate) struct AbstractSchemaAttribute {
