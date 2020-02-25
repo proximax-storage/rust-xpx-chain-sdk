@@ -7,6 +7,7 @@ use crate::models::{{account::PublicAccount},
 };
 
 use super::MosaicNonce;
+use crate::models::mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE, MosaicPropertyDto};
 
 static GET_SUPPLY_MUTABLE: u8 = 0x01;
 
@@ -58,3 +59,24 @@ pub(crate) fn generate_mosaic_id(nonce: MosaicNonce, owner_public_id: PublicAcco
     Uint64(array_u8_to_u64(&mut hash_to_array.as_slice()) ^ NAMESPACE_BIT)
 }
 
+pub fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> crate::Result<MosaicProperties> {
+    let mut flags: Uint64 = Uint64::default();
+    let mut divisibility: u8 = 0;
+    let mut duration: Uint64 = Uint64::default();
+
+    for property in dto {
+        match property.id {
+            0 => flags = property.value.to_struct(),
+            1 => divisibility = property.value.to_struct().0 as u8,
+            2 => duration = property.value.to_struct(),
+            _ => bail!("Unknown Property Id")
+        }
+    };
+
+    MosaicProperties::new(
+        has_bits(flags, SUPPLY_MUTABLE),
+        has_bits(flags, TRANSFERABLE),
+        divisibility,
+        duration,
+    )
+}

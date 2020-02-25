@@ -39,12 +39,12 @@ pub struct AbstractTransactionDto {
 }
 
 impl AbstractTransactionDto {
-    fn new(signature: String,
-           signer: String,
-           version: i32,
-           _type: u16,
-           max_fee: Uint64Dto,
-           deadline: Uint64Dto,
+    pub(crate) fn new(signature: String,
+                      signer: String,
+                      version: i32,
+                      _type: u16,
+                      max_fee: Uint64Dto,
+                      deadline: Uint64Dto,
     ) -> Self {
         AbstractTransactionDto {
             signature,
@@ -56,7 +56,7 @@ impl AbstractTransactionDto {
         }
     }
 
-    fn to_struct(&self) -> crate::Result<AbstractTransaction> {
+    pub(crate) fn to_struct(&self) -> crate::Result<AbstractTransaction> {
         let dto = self;
 
         let network_type = extract_network_type(self.version);
@@ -204,22 +204,6 @@ pub struct TransferTransactionDto {
     pub recipient: String,
     pub mosaics: Vec<MosaicDto>,
     pub message: MessageDto,
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmbeddedTransactionDto {
-    /// The public key of the entity signer formatted as hexadecimal.
-    #[serde(rename = "signer")]
-    pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    #[serde(rename = "version")]
-    pub version: i32,
-    #[serde(rename = "type")]
-    pub _type: u16,
-    #[serde(rename = "max_fee")]
-    pub max_fee: Uint64Dto,
-    #[serde(rename = "deadline")]
-    pub deadline: Uint64Dto,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

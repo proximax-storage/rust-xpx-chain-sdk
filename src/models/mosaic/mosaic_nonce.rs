@@ -9,11 +9,13 @@ use crate::models::{
         vec_u8_to_hex,
     },
 };
+use std::fmt;
+use serde::{Serialize, Serializer};
 
 const NONCE_SIZE: usize = 4;
 
 /// The mosaic nonce structure.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct MosaicNonce(pub(crate) [u8; NONCE_SIZE]);
 
 impl MosaicNonce {
@@ -66,5 +68,28 @@ impl MosaicNonce {
     /// Converts the `mosaic_nonce` to a array u8.
     pub fn to_array(&self) -> [u8; 4] {
         self.0
+    }
+}
+
+impl From<u32> for MosaicNonce {
+    fn from(e: u32) -> Self {
+        MosaicNonce::new(u32_to_array_u8(e))
+    }
+}
+
+impl fmt::Display for MosaicNonce {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f, "{}", &self.to_u32()
+        )
+    }
+}
+
+impl Serialize for MosaicNonce {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+    {
+        serializer.serialize_u32(self.to_u32())
     }
 }
