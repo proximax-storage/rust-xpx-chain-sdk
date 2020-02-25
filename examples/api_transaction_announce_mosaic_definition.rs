@@ -5,7 +5,7 @@ use hyper::Client;
 
 use xpx_chain_sdk::apis::sirius_client::SiriusClient;
 use xpx_chain_sdk::models::account::Account;
-use xpx_chain_sdk::models::mosaic::MosaicProperties;
+use xpx_chain_sdk::models::mosaic::{MosaicNonce, MosaicProperties};
 use xpx_chain_sdk::models::network::PUBLIC_TEST;
 use xpx_chain_sdk::models::transaction::{Deadline, MosaicDefinitionTransaction};
 use xpx_chain_sdk::models::Uint64;
@@ -27,7 +27,7 @@ async fn main() {
 
     let mosaic_definition = MosaicDefinitionTransaction::new(
         deadline,
-        123456,
+        MosaicNonce::random(),
         account.public_account.clone(),
         MosaicProperties::new(
             true, true, 4, Uint64::new(0)

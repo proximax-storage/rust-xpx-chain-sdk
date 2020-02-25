@@ -8,12 +8,12 @@ use xpx_chain_sdk::models::account::{Account, Address};
 use xpx_chain_sdk::models::message::PlainMessage;
 use xpx_chain_sdk::models::mosaic::Mosaic;
 use xpx_chain_sdk::models::network::PUBLIC_TEST;
-use xpx_chain_sdk::models::transaction::deadline::Deadline;
+use xpx_chain_sdk::models::transaction::Deadline;
 use xpx_chain_sdk::models::transaction::TransferTransaction;
 
 #[tokio::main]
 async fn main() {
-    let node = "http://bctestnetswap.xpxsirius.io:3000";
+    let node = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
     let client = SiriusClient::new(node, Client::new());
 
@@ -51,7 +51,7 @@ async fn main() {
     let sig_tx = loop {
         match &sig_transaction {
             Ok(sig) => break sig,
-            Err(err) => eprintln!("SIG_ERROR: {:?}", err),
+            Err(err) => eprintln!("{:?}", err),
         }
     };
 
@@ -62,6 +62,6 @@ async fn main() {
 
     match response {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("RESP_ERROR: {:?}", err),
+        Err(err) => eprintln!("{:?}", err),
     }
 }
