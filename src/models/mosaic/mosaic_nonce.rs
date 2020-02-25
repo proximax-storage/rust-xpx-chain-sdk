@@ -17,12 +17,12 @@ const NONCE_SIZE: usize = 4;
 pub struct MosaicNonce(pub(crate) [u8; NONCE_SIZE]);
 
 impl MosaicNonce {
-    /// Creates a new `MosaicNonce` from a `[u8; 4]`.
+    /// Creates a new `mosaic_nonce` from a `[u8; 4]`.
     pub fn new(nonce: [u8; NONCE_SIZE]) -> MosaicNonce {
         MosaicNonce(nonce)
     }
 
-    /// Creates a new `MosaicNonce` from a hex string.
+    /// Creates a new `mosaic_nonce` from a hex string.
     pub fn from_hex(string_hex: &str) -> crate::Result<MosaicNonce> {
         ensure!(
             !string_hex.is_empty(),
@@ -41,7 +41,7 @@ impl MosaicNonce {
         Ok(MosaicNonce(decoded))
     }
 
-    /// Creates a random `MosaicNonce`.
+    /// Creates a random `mosaic_nonce`.
     pub fn random() -> MosaicNonce {
         let mut rng = match OsRng::new() {
             Ok(g) => g,
@@ -53,17 +53,17 @@ impl MosaicNonce {
         MosaicNonce(u32_to_array_u8(num))
     }
 
-    /// Converts the `MosaicNonce` to a hex string.
+    /// Converts the `mosaic_nonce` to a hex string.
     pub fn to_hex(&self) -> String {
         vec_u8_to_hex(self.0.to_vec())
     }
 
-    /// Converts the `MosaicNonce` to a u32.
+    /// Converts the `mosaic_nonce` to a u32.
     pub fn to_u32(&self) -> u32 {
         array_u8_to_u32(self.0)
     }
 
-    /// Converts the `MosaicNonce` to a array u8.
+    /// Converts the `mosaic_nonce` to a array u8.
     pub fn to_array(&self) -> [u8; 4] {
         self.0
     }

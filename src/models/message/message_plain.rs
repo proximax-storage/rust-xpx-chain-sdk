@@ -4,6 +4,7 @@ use super::{Message, MessageType, PLAIN_MESSAGE};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlainMessage {
+    #[serde(rename = "type")]
     _type: MessageType,
     pub payload: String,
 }
@@ -40,5 +41,12 @@ impl core::fmt::Display for PlainMessage {
             f, "{}",
             serde_json::to_string_pretty(&self).unwrap_or_default()
         )
+    }
+}
+
+/// Creates `MosaicFlags` with the default parameters.
+impl Default for PlainMessage {
+    fn default() -> Self {
+        PlainMessage{ _type: MessageType::PlainMessageType, payload: "".to_string() }
     }
 }

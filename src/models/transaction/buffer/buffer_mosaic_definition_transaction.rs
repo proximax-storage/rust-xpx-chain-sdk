@@ -10,7 +10,7 @@ use std::mem;
 use self::flatbuffers::EndianScalar;
 
 #[allow(unused_imports, dead_code)]
-pub mod catapult {
+pub mod mosaic_definition {
     use std::cmp::Ordering;
     use std::mem;
 

@@ -13,7 +13,7 @@ use crate::{fb, models::{
 
 use super::{
     AbstractTransaction,
-    buffer::sisrius::buffers,
+    buffer::transfer::buffers,
     deadline::Deadline,
     EntityTypeEnum,
     internal::sign_transaction,
@@ -158,6 +158,7 @@ impl Transaction for TransferTransaction {
         txn_builder.add_message_size(self.message_size() as u16);
         txn_builder.add_message(message_vec);
         txn_builder.add_mosaics(fb::WIPOffset::new(*mosaic_vec));
+
         let t = txn_builder.finish();
         _builder.finish(t, None);
 

@@ -15,6 +15,6 @@ serialize_trait_object!(Message);
 
 impl fmt::Display for dyn Message {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self)
+        write!(f, "Algo: {}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

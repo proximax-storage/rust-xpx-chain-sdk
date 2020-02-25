@@ -1,5 +1,5 @@
 //use crate::models::*;
-//use crate::models::mosaic::MosaicNonce;
+//use crate::models::mosaic::mosaic_nonce;
 //use std::fmt;
 //use serde::{Serialize, Serializer};
 //

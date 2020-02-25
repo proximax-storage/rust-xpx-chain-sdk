@@ -11,7 +11,12 @@ pub struct MessageDto {
 impl MessageDto {
     pub fn to_struct(&self) -> Box<dyn Message> {
         if self._type == 0 {
-            return Box::new(PlainMessage::new(&self.payload));
+            let mut plain = PlainMessage::default();
+            if self.payload.len() != 0 {
+                let b = hex::decode(&self.payload).unwrap();
+                plain = PlainMessage::new(&String::from_utf8(b).unwrap());
+            }
+            return Box::new(plain);
         } else {
             unimplemented!()
         }

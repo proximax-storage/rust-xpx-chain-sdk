@@ -133,12 +133,17 @@ impl TransactionStatusDto {
             }
         };
 
+        let mut height = None;
+        if let Some(value) = &dto.height {
+            height = Some(value.to_struct());
+        };
+
         TransactionStatus::new(
             dto.group.clone().unwrap(),
             dto.status.clone(),
             dto.hash.clone().unwrap(),
             Deadline::from(deadline),
-            dto.height.clone().unwrap().to_struct(),
+            height
         )
     }
 }

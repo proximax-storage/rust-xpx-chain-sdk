@@ -10,11 +10,12 @@ use crate::models::transaction::{deadline::Deadline, EntityTypeEnum};
 use crate::models::transaction::EntityVersion;
 use crate::models::Uint64;
 
-use super::buffer::sisrius::buffers;
+use super::buffer::transfer::buffers;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AbstractTransaction {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) transaction_info: Option<TransactionInfo>,
 
     pub(crate) network_type: NetworkType,

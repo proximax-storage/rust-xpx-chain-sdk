@@ -1,4 +1,5 @@
 use ::sha3::Sha3_256;
+use fb::FlatBufferBuilder;
 use sha3::Digest;
 use xpx_crypto::Keypair;
 
@@ -8,7 +9,10 @@ use crate::models::{
     utils::vec_u8_to_hex,
 };
 
+use crate::models::mosaic::MosaicProperty;
+
 use super::{EntityVersion, SignedTransaction, Transaction};
+use crate::models::transaction::buffer::mosaic_definition::buffers;
 
 pub fn extract_version(version: i32) -> EntityVersion {
     return version & 0xFFFFFF;
@@ -59,4 +63,22 @@ pub fn create_transaction_hash(p: String, generation_hash: &str) -> String {
     let sha3_public_key_hash = Sha3_256::digest(sb.as_slice());
 
     vec_u8_to_hex(sha3_public_key_hash[..].to_vec())
+}
+
+pub fn mosaic_property_array_to_buffer(
+    builder: &mut FlatBufferBuilder, properties: Vec<MosaicProperty>) -> fb::UOffsetT {
+
+    let mut p_buffer: Vec<fb::UOffsetT> = Vec::with_capacity( properties.len());
+
+    for p in properties {
+        let valueV = builder.create_vector( &p.value.to_int_array());
+
+        let mut mosaic_property = buffers::MosaicPropertyBuilder::new(builder);
+        mosaic_property.add_mosaicPropertyId( p.id);
+        mosaic_property.add_value( valueV);
+
+        p_buffer.push(mosaic_property.finish().value());
+    }
+
+    builder.create_vector(&p_buffer).value()
 }

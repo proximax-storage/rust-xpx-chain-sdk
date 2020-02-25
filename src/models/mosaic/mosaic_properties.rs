@@ -1,6 +1,20 @@
 use crate::models::Uint64;
 
-/// `MosaicProperties` structure which includes several properties for defining mosaic
+
+type MosaicPropertyId = u8;
+
+// MosaicPropertyId enums
+const MOSAIC_PROPERTY_FLAGS_ID: MosaicPropertyId = 0;
+const MOSAIC_PROPERTY_DIVISIBILITY_ID: MosaicPropertyId = 1;
+const MOSAIC_PROPERTY_DURATION_ID: MosaicPropertyId = 1;
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct MosaicProperty {
+    pub id: MosaicPropertyId,
+    pub value: Uint64,
+}
+
+/// `mosaic_properties` structure which includes several properties for defining mosaic
 ///
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -20,6 +34,8 @@ pub struct MosaicProperties {
     pub divisibility: u8,
 
     pub duration: Uint64,
+
+    pub optional_properties: Vec<MosaicProperty>
 }
 
 impl MosaicProperties {
@@ -30,11 +46,17 @@ impl MosaicProperties {
             "Divisibility must not be negative."
          );
 
+        let mut properties = vec![];
+        if duration.0 != 0 {
+            properties.push(MosaicProperty{ id: MOSAIC_PROPERTY_DURATION_ID, value: duration });
+        }
+
         Ok(MosaicProperties {
             supply_mutable,
             transferable,
             divisibility,
             duration,
+            optional_properties: properties
         })
     }
 }
@@ -47,6 +69,7 @@ impl Default for MosaicProperties {
             transferable: true,
             divisibility: 0,
             duration: Uint64::default(),
+            optional_properties: vec![]
         }
     }
 }

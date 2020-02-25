@@ -1,7 +1,7 @@
 extern crate flatbuffers;
 
 #[allow(unused_imports, dead_code)]
-pub mod sisrius {
+pub mod transfer {
     use std::cmp::Ordering;
     use std::mem;
 

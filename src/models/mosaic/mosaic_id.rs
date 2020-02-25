@@ -40,7 +40,7 @@ impl MosaicId {
         MosaicId(Uint64::from_ints(lower, higher))
     }
 
-    /// Creates a new `MosaicId` from a given `MosaicNonce` and owner's `PublicAccount`.
+    /// Creates a new `MosaicId` from a given `mosaic_nonce` and owner's `PublicAccount`.
     pub fn from_nonce_and_owner(nonce: MosaicNonce, owner_public_id: PublicAccount) -> MosaicId {
         let id = generate_mosaic_id(nonce, owner_public_id);
         MosaicId(id)

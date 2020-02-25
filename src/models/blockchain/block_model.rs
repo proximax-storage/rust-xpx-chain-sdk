@@ -1,6 +1,6 @@
 use crate::models::account::PublicAccount;
 use crate::models::network::NetworkType;
-use crate::models::transaction::deadline::Timestamp;
+use crate::models::transaction::Timestamp;
 use crate::models::transaction::EntityVersion;
 pub(crate) use crate::models::Uint64;
 

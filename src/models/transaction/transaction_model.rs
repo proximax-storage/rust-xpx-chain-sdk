@@ -68,11 +68,12 @@ pub struct TransactionStatus {
     pub status: String,
     pub hash: String,
     pub deadline: Deadline,
-    pub height: Uint64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub height: Option<Uint64>,
 }
 
 impl TransactionStatus {
-    pub fn new(group: String, status: String, hash: String, deadline: Deadline, height: Uint64) -> Self {
+    pub fn new(group: String, status: String, hash: String, deadline: Deadline, height: Option<Uint64>) -> Self {
         TransactionStatus {
             group,
             status,
