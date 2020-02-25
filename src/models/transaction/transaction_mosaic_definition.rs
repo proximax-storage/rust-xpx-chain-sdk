@@ -34,14 +34,14 @@ use crate::models::transaction::schema::mosaic_definition_transaction_schema;
 pub struct MosaicDefinitionTransaction {
     pub abs_transaction: AbstractTransaction,
     pub properties: MosaicProperties,
-    pub mosaic_nonce: u32,
+    pub mosaic_nonce: MosaicNonce,
     pub mosaic_id: MosaicId
 }
 
 impl MosaicDefinitionTransaction {
     pub fn new(
         deadline: Deadline,
-        nonce: u32,
+        nonce: MosaicNonce,
         owner_public_account: PublicAccount,
         properties: MosaicProperties,
         network_type: NetworkType,
@@ -58,7 +58,7 @@ impl MosaicDefinitionTransaction {
         };
 
         let mosaic_id = MosaicId::from_nonce_and_owner(
-            MosaicNonce::new(u32_to_array_u8(nonce)),
+            nonce.clone(),
             owner_public_account
         );
 
@@ -128,7 +128,7 @@ impl Transaction for MosaicDefinitionTransaction {
         txn_builder.add_maxFee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
         txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
 
-        txn_builder.add_mosaicNonce(self.mosaic_nonce);
+        txn_builder.add_mosaicNonce(self.mosaic_nonce.to_u32());
         txn_builder.add_mosaicId(mosaic_vec);
         txn_builder.add_flags(f);
         txn_builder.add_divisibility(self.properties.divisibility);

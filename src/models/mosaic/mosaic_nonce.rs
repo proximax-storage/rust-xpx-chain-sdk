@@ -13,7 +13,7 @@ use crate::models::{
 const NONCE_SIZE: usize = 4;
 
 /// The mosaic nonce structure.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MosaicNonce(pub(crate) [u8; NONCE_SIZE]);
 
 impl MosaicNonce {
