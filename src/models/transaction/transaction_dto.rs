@@ -23,7 +23,7 @@ pub trait TransactionDto where
     Self: fmt::Debug,
 {
     fn version(&self) -> i32;
-    fn to_struct(&self) -> Box<dyn Transaction>;
+    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>>;
     fn as_any(&self) -> &dyn Any;
 }
 
@@ -56,7 +56,7 @@ impl AbstractTransactionDto {
         }
     }
 
-    fn to_struct(&self) -> AbstractTransaction {
+    fn to_struct(&self) -> crate::Result<AbstractTransaction> {
         let dto = self;
 
         let network_type = extract_network_type(self.version);
@@ -65,7 +65,7 @@ impl AbstractTransactionDto {
 
         let signer = PublicAccount::from_public_key(
             &dto.signer, network_type,
-        ).unwrap();
+        )?;
 
         let blockchain_timestamp = BlockchainTimestamp::new(
             dto.deadline.to_struct().0 as i64
@@ -76,14 +76,14 @@ impl AbstractTransactionDto {
 
         let transaction_type = EntityTypeEnum::from(dto._type as u64);
 
-        AbstractTransaction::new(None,
-                                 dto.signature.clone(),
-                                 signer,
-                                 version,
-                                 transaction_type,
-                                 max_fee,
-                                 deadline,
-        )
+        Ok(AbstractTransaction::new(None,
+                                    dto.signature.clone(),
+                                    signer,
+                                    version,
+                                    transaction_type,
+                                    max_fee,
+                                    deadline,
+        ))
     }
 }
 
@@ -156,12 +156,12 @@ impl TransactionDto for TransferTransactionInfoDto {
         self.transaction.version
     }
 
-    fn to_struct(&self) -> Box<dyn Transaction> {
+    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
         let abs = AbstractTransactionDto::new(
             dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline,
-        ).to_struct();
+        ).to_struct()?;
 
 
         let mut mosaics: Vec<Mosaic> = vec![];
@@ -172,12 +172,12 @@ impl TransactionDto for TransferTransactionInfoDto {
 
         let recipient = Address::from_encoded(&dto.recipient).unwrap();
 
-        Box::new(TransferTransaction {
+        Ok(Box::new(TransferTransaction {
             abs_transaction: abs,
             recipient,
             mosaics,
             message: dto.message.to_struct(),
-        })
+        }))
     }
 
     fn as_any(&self) -> &dyn Any {

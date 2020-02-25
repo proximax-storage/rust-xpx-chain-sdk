@@ -1,3 +1,5 @@
+use hyper::http::uri::InvalidUri;
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SiriusError {
@@ -8,7 +10,7 @@ pub struct SiriusError {
 #[derive(Debug)]
 pub enum Error<T> {
     SiriusError(SiriusError),
-    UriError(hyper::http::uri::InvalidUri),
+    UriError(InvalidUri),
     Hyper(hyper::Error),
     Serde(serde_json::Error),
     ApiError(ApiError<T>),
@@ -60,3 +62,14 @@ impl<T> From<failure::Error> for Error<T> {
     }
 }
 
+impl<T> From<SiriusError> for Error<T> {
+    fn from(e: SiriusError) -> Self {
+        return Error::SiriusError(e);
+    }
+}
+
+impl<T> From<InvalidUri> for Error<T> {
+    fn from(e: InvalidUri) -> Self {
+        return Error::UriError(e);
+    }
+}

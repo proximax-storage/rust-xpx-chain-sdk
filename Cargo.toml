@@ -40,6 +40,8 @@ flatbuffers = "0.6.1"
 
 typetag = "0.1"
 
+downcast-rs = "1.1.1"
+
 bytes = { version = "0.5", features = ["serde"] }
 
 [dependencies.rand]

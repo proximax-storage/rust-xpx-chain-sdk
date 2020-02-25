@@ -5,7 +5,8 @@ use serde_json::Value;
 use crate::models::transaction::EntityTypeEnum as Entity;
 use crate::models::utils::is_hex;
 
-type Result<T> = ::std::result::Result<T, failure::Error>;
+use crate::Result;
+use std::fmt::Write;
 
 pub(super) fn valid_hash(hash: &str) -> Result<bool> {
     ensure!(
@@ -42,10 +43,28 @@ pub(super) fn valid_vec_hash(vector: &Vec<&str>) -> Result<bool> {
 pub(super) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
     let value_dto_vec: Value = serde_json::from_slice(&body)?;
 
-    let value_dto_vec_str = String::new().to_owned();
-    for dto in value_dto_vec.as_object() {
-//        value_dto_vec_str.push_str( &map_transaction_dto(dto)?)
+    let mut value_dto_vec_str: String = "".to_string();
+    value_dto_vec_str.write_char('[');
+    for dto in 0..value_dto_vec.as_array().unwrap().len() {
+       let to_array= &value_dto_vec.as_array().unwrap()[dto];
+
+        let to_string = format!("{}", to_array);
+
+        let transaction_dto = map_transaction_dto(Bytes::from(to_string)).unwrap();
+
+        value_dto_vec_str.push_str(&serde_json::to_string(&transaction_dto).unwrap());
+
+        if value_dto_vec.as_array().unwrap().len() != dto + 1 {
+            value_dto_vec_str.write_char(',');
+        }
     }
+
+    value_dto_vec_str.write_char(']');
+
+    let value_dto_vec_str = value_dto_vec_str.replace(&['\\'][..], "");
+    let value_dto_vec_str = value_dto_vec_str.replace(r#"["{"#, r#"[{"#);
+    let value_dto_vec_str = value_dto_vec_str.replace(r#"}","{"#, r#"},{"#);
+    let value_dto_vec_str = value_dto_vec_str.replace(r#"}}}"]"#, r#"}}}]"#);
 
     Ok(value_dto_vec_str)
 }

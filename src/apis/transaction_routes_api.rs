@@ -1,6 +1,4 @@
-use ::std::fmt::Debug;
-use ::std::sync::Arc;
-use std::fmt;
+use ::std::{fmt::{Debug, Display}, sync::Arc};
 
 use hyper::{client::connect::Connect, Method};
 
@@ -10,6 +8,7 @@ use crate::{
             SignedTransaction,
             Transaction,
             TransactionHashes,
+            TransactionIds,
             TransactionStatus,
             TransactionStatusDto,
             TransactionDto,
@@ -93,12 +92,33 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
 
         let version: Box<dyn TransactionDto> = req.execute(self.client).await?;
 
-        let b: &TransferTransactionInfoDto = match version.as_any().downcast_ref::<TransferTransactionInfoDto>() {
-            Some(b) => b,
-            None => panic!("&a isn't a B!"),
-        };
+        Ok(version.to_struct()?)
+    }
 
-        Ok(b.to_struct())
+
+    pub async fn get_transactions(self, transaction_ids: Vec<&str>) -> Result<Vec<Box<dyn Transaction>>> {
+        valid_vec_len(&transaction_ids)?;
+
+        valid_vec_hash(&transaction_ids)?;
+
+        let ids = TransactionIds::from(transaction_ids);
+
+        let mut req = __internal_request::Request::new(
+            Method::POST,
+            "/transaction".to_string(),
+        );
+
+        req = req.with_body_param(ids).is_transaction_vec();
+
+        let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.client).await?;
+
+        let mut transactions_info: Vec<Box<dyn Transaction>> = Vec::with_capacity(dto.len());
+        for i in dto {
+            let transaction_info = i;
+            transactions_info.push(transaction_info.to_struct()?);
+        }
+
+        Ok(transactions_info)
     }
 
     pub async fn announce_transaction(self, transaction_payload: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
@@ -134,18 +154,6 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
 
         req.execute(self.client).await
     }
-
-    pub async fn get_transactions(self, transaction_ids: Vec<&str>) -> Result<Vec<&dyn Transaction>> {
-        let mut req = __internal_request::Request::new(
-            Method::POST,
-            "/transaction".to_string(),
-        );
-
-        req = req.with_body_param(transaction_ids);
-
-        unimplemented!()
-//        req.execute(self.client).await
-    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -154,7 +162,7 @@ pub struct AnnounceTransactionInfo {
     pub message: String,
 }
 
-impl fmt::Display for AnnounceTransactionInfo {
+impl Display for AnnounceTransactionInfo {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f, "{}", &self.message

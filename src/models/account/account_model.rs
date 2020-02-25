@@ -33,9 +33,9 @@ impl Account {
 
         let sk_hex = hex::decode(private_key)?;
 
-        let secret_key = ::xpx_crypto::SecretKey::from_bytes(&sk_hex)?;
+        let secret_key = xpx_crypto::SecretKey::from_bytes(&sk_hex)?;
 
-        let key_pair = ::xpx_crypto::Keypair::from_private_key(secret_key);
+        let key_pair = xpx_crypto::Keypair::from_private_key(secret_key);
 
         let public_key_bytes = key_pair.public.as_bytes();
 

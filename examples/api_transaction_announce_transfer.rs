@@ -34,7 +34,7 @@ async fn main() {
         deadline,
         recipient,
         vec![Mosaic::xpx(1)],
-        Box::new(message),
+        message,
         network_type,
     );
 

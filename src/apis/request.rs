@@ -116,7 +116,7 @@ impl Request {
         let uri: Uri = match uri_str.parse()
         {
             Err(e) => {
-                return Err(Error::UriError(e));
+                return Err(Error::from(e));
             }
             Ok(u) => u,
         };
@@ -137,7 +137,7 @@ impl Request {
             if let Some(ref user_agent) = api.user_agent {
                 req_headers.insert(USER_AGENT, user_agent.clone().parse()
                     .map_err(|_err| {
-                        Error::Failure(format_err!("{}", _err))
+                        Error::from(format_err!("{}", _err))
                     })?);
             }
 
@@ -150,7 +150,7 @@ impl Request {
             if let Some(body) = self.serialized_body {
                 req.headers_mut().insert(CONTENT_TYPE, "application/json".parse()
                     .map_err(|_err| {
-                        Error::Failure(format_err!("{}", _err))
+                        Error::from(format_err!("{}", _err))
                     })?);
 
                 req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
@@ -181,11 +181,11 @@ impl Request {
                 _ => {
                     let body = hyper::body::to_bytes(resp).await?;
 
-                    let _err: SiriusError = serde_json::from_slice(&body)?;
+                    let err: SiriusError = serde_json::from_slice(&body)?;
 
-                    let _resp_err: Result<U, _> = Result::Err(Error::SiriusError(_err));
+                    let resp_err: Result<U, _> = Err(Error::from(err));
 
-                    return _resp_err;
+                    return resp_err;
                 }
             }
         }

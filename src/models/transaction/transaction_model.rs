@@ -1,6 +1,8 @@
 use ::std::{any::Any, fmt};
 
 use failure::_core::fmt::Debug;
+use downcast_rs::Downcast;
+
 use serde_json::Value;
 
 use crate::models::{account::Account, Uint64};
@@ -12,7 +14,7 @@ use super::{
     SignedTransaction,
 };
 
-pub trait Transaction: Sync + erased_serde::Serialize
+pub trait Transaction: Downcast + Sync + erased_serde::Serialize
     where
         Self: fmt::Debug,
 {
@@ -40,6 +42,8 @@ pub trait Transaction: Sync + erased_serde::Serialize
 
     fn as_any(&self) -> &dyn Any;
 }
+
+impl_downcast!(Transaction);
 
 serialize_trait_object!(Transaction);
 
