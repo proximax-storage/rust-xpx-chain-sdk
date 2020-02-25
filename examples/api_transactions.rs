@@ -10,13 +10,12 @@ async fn main() {
     let node = "http://bctestnetswap.xpxsirius.io:3000";
 
     let client = SiriusClient::new(node, Client::new());
-    let transaction_status = client.clone().transaction.get_transaction_status(
-        "5BD1AE427B10E50902DE8037B7A551104727732B2C97A08A3DD19342714337A5"
-    ).await;
 
+    let transaction_status = client.clone().transaction.get_transaction_status(
+        "5BD1AE427B10E50902DE8037B7A551104727732B2C97A08A3DD19342714337A5").await;
     match transaction_status {
         Ok(status) => println!("{}", status),
-        Err(err) => eprintln!("RESP_ERROR: {:?}", err),
+        Err(err) => eprintln!("{:?}", err),
     }
 
     let transactions_ids = vec![
@@ -26,7 +25,6 @@ async fn main() {
 
     let transactions_statuses = client.clone().transaction.get_transactions_statuses(
         transactions_ids.clone()).await;
-
     match transactions_statuses {
         Ok(statuses) => {
             for status in statuses {
@@ -37,16 +35,13 @@ async fn main() {
     }
 
     let transaction = client.clone().transaction.get_transaction(
-        "11AE3717294B61F8A747ABBA793A63BEF65F0E218A0E5B9B7D33D571FEC1CA31"
-    ).await;
-
+        "11AE3717294B61F8A747ABBA793A63BEF65F0E218A0E5B9B7D33D571FEC1CA31").await;
     match transaction {
         Ok(tx) => println!("{}", tx),
         Err(err) => eprintln!("{:?}", err),
     }
 
     let transactions = client.clone().transaction.get_transactions(transactions_ids ).await;
-
     match transactions {
         Ok(tx) => {
             for i in tx {
@@ -54,6 +49,6 @@ async fn main() {
 
             }
         },
-        Err(err) => eprintln!("RESP_ERROR: {:?}", err),
+        Err(err) => eprintln!("{:?}", err),
     }
 }
