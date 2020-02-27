@@ -41,5 +41,7 @@ pub mod upgrade_dto;
 pub mod verifiable_entity_dto;
 
 pub mod consts;
+pub mod errors;
+
 
 

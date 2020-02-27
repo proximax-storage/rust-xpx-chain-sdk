@@ -11,8 +11,11 @@ use crate::{fb, models::{
     network::NetworkType,
 }};
 use crate::models::consts::{MOSAIC_OPTIONAL_PROPERTY_SIZE, MOSAIC_PROPERTY_SIZE};
+use crate::models::Id;
 use crate::models::mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE};
+use crate::models::transaction::internal::mosaic_property_array_to_buffer;
 use crate::models::transaction::MOSAIC_DEFINITION_VERSION;
+use crate::models::transaction::schema::mosaic_definition_transaction_schema;
 use crate::models::utils::u32_to_array_u8;
 
 use super::{
@@ -25,9 +28,6 @@ use super::{
     Transaction,
     TRANSFER_VERSION,
 };
-use crate::models::Id;
-use crate::models::transaction::internal::mosaic_property_array_to_buffer;
-use crate::models::transaction::schema::mosaic_definition_transaction_schema;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]

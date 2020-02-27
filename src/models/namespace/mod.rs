@@ -1,9 +1,12 @@
+pub use self::internal::*;
 pub use self::namespace_dto::*;
 pub use self::namespace_id::*;
-pub use self::namespace_internal::*;
+pub use self::namespace_model::*;
 
-pub mod namespace_id;
-pub mod namespace_dto;
-pub mod namespace_internal;
+mod namespace_id;
+mod namespace_dto;
+mod internal;
+mod namespace_model;
+
 
 

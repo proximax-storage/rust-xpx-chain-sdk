@@ -1,8 +1,7 @@
 use ::std::{any::Any, fmt};
 
-use failure::_core::fmt::Debug;
 use downcast_rs::Downcast;
-
+use failure::_core::fmt::Debug;
 use serde_json::Value;
 
 use crate::models::{account::Account, Uint64};

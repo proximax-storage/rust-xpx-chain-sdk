@@ -19,45 +19,6 @@ pub(crate) static XPX_MAX_VALUE: u64 = XPX_MAX_RELATIVE_VALUE * XPX_DIVISIBILITY
 
 pub(crate) static XPX_MAX_RELATIVE_VALUE: u64 = 9000000000;
 
-/// MosaicPropertyId :
-/// The mosaic propery id means:
-/// * 0 - MosaicFlags
-/// * 1 - Divisibility
-/// * 2 - Duration
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-#[repr(u8)]
-pub enum MosaicPropertyId {
-    MosaicFlags,
-    Divisibility,
-    Duration,
-}
-
-/// mosaic_supply_type :
-/// The supply modification direction:
-/// * 0  - Decrease.
-/// * 1  - Increase.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub enum MosaicSupplyType { Decrease, Increase }
-
-impl MosaicSupplyType {
-    pub fn value(&self) -> u8 {
-        match self {
-            MosaicSupplyType::Decrease => 0,
-            MosaicSupplyType::Increase => 1,
-        }
-    }
-}
-
-impl From<u8> for MosaicSupplyType {
-    fn from(e: u8) -> Self {
-        let mut direction = MosaicSupplyType::Decrease;
-        if e != 0 {
-            direction = MosaicSupplyType::Increase;
-        }
-        direction
-    }
-}
-
 pub(crate) fn has_bits(number: Uint64, bits: u8) -> bool {
     (number.0 & bits as u64) == bits as u64
 }

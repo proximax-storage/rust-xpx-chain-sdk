@@ -11,7 +11,7 @@ pub trait Id: Sync + erased_serde::Serialize
 
     fn to_hex(&self) -> String;
 
-    fn to_uint64(&self) -> Uint64;
+    fn to_id(&self) -> Uint64;
 
     fn to_int_array(&self) -> [u32; 2];
 

@@ -64,10 +64,10 @@ impl AbstractTransactionDto {
         let version = extract_version(self.version);
 
         let signer = PublicAccount::from_public_key(
-            &dto.signer, network_type )?;
+            &dto.signer, network_type)?;
 
         let blockchain_timestamp = BlockchainTimestamp::new(
-            dto.deadline.to_struct().0 as i64 );
+            dto.deadline.to_struct().0 as i64);
 
         let deadline = Deadline::from(blockchain_timestamp);
         let max_fee = dto.max_fee.to_struct();
@@ -136,7 +136,6 @@ impl TransactionStatusDto {
         if let Some(value) = &dto.height {
             height = Some(value.to_struct());
         };
-
 
 
         TransactionStatus::new(

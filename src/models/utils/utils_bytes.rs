@@ -33,3 +33,7 @@ pub(crate) fn array_u8_to_u64(bytes: &[u8]) -> u64 {
 pub(crate) fn vec_u8_to_hex(bytes: Vec<u8>) -> String {
     encode(bytes)
 }
+
+pub(crate) fn has_bits(number: u64, bits: u64) -> bool {
+    (number & bits) == bits
+}

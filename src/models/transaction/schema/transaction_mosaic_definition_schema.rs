@@ -20,7 +20,6 @@ pub fn mosaic_definition_transaction_schema() -> Schema {
         Box::new(ScalarAttribute::new("numOptionalProperties", SIZEOF_BYTE)),
         Box::new(ScalarAttribute::new("flags", SIZEOF_BYTE)),
         Box::new(ScalarAttribute::new("divisibility", SIZEOF_BYTE)),
-
         Box::new(TableArrayAttribute::new(
             "modifications",
             vec![

@@ -6,9 +6,10 @@ pub use self::schema::*;
 pub use self::schema_attribute::*;
 pub use self::schema_common_definition::*;
 pub use self::table_array_attribute::*;
-pub use self::transaction_transafer_schema::*;
-pub use self::transaction_mosaic_supply_change::*;
 pub use self::transaction_mosaic_definition_schema::*;
+pub use self::transaction_mosaic_supply_change::*;
+pub use self::transaction_register_namespace::*;
+pub use self::transaction_transafer_schema::*;
 
 mod schema;
 mod constants;
@@ -22,4 +23,6 @@ mod schema_common_definition;
 mod transaction_transafer_schema;
 mod transaction_mosaic_definition_schema;
 mod transaction_mosaic_supply_change;
+mod transaction_register_namespace;
+
 

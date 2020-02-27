@@ -7,12 +7,12 @@ use xpx_chain_sdk::apis::sirius_client::SiriusClient;
 
 #[tokio::main]
 async fn main() {
-    let node = "http://bctestnet1.brimstone.xpxsirius.io:3000";
+    let node = "http://bctestnet3.brimstone.xpxsirius.io:3000";
 
     let client = SiriusClient::new(node, Client::new());
 
     let transaction_status = client.clone().transaction.get_transaction_status(
-        "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").await;
+        "A5215CA0D024B50F59B6A19354638F2A366B44B08A95DA59A926250400BBE86E").await;
     match transaction_status {
         Ok(status) => println!("{}", status),
         Err(err) => eprintln!("{:?}", err),
@@ -35,7 +35,7 @@ async fn main() {
     }
 
     let transaction = client.clone().transaction.get_transaction(
-        "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").await;
+        "A5215CA0D024B50F59B6A19354638F2A366B44B08A95DA59A926250400BBE86E").await;
     match transaction {
         Ok(tx) => println!("{}", tx),
         Err(err) => eprintln!("{:?}", err),

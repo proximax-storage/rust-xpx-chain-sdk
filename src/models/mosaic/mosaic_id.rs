@@ -58,7 +58,7 @@ impl Id for MosaicId {
         id.to_hex()
     }
 
-    fn to_uint64(&self) -> Uint64 {
+    fn to_id(&self) -> Uint64 {
         self.0
     }
 

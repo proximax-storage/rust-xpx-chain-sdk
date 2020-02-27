@@ -12,7 +12,7 @@ table RegisterNamespaceTransactionBuffer {
     durationParentId:[uint];
     namespaceId:[uint];
     namespaceNameSize:ubyte;
-    namespaceName:string;
+    namespace_name:string;
 }
 
 root_type RegisterNamespaceTransactionBuffer;

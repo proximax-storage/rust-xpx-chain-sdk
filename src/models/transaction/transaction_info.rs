@@ -66,6 +66,21 @@ impl AbstractTransaction {
         }
     }
 
+    pub fn new_from_type(deadline: Deadline,
+                         version: EntityVersion,
+                         transaction_type: EntityTypeEnum, network_type: NetworkType) -> Self {
+        AbstractTransaction {
+            transaction_info: None,
+            network_type,
+            signature: "".to_string(),
+            signer: Default::default(),
+            version,
+            transaction_type,
+            max_fee: Default::default(),
+            deadline
+        }
+    }
+
     pub(crate) fn is_unconfirmed(&self) -> bool {
         return if let Some(tx_info) = &self.transaction_info {
             tx_info.height.0.to_owned() == 0 &&

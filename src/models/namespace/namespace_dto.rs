@@ -2,16 +2,6 @@ use crate::models::field_dto::FieldDto;
 use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
 use crate::models::uint_64::Uint64Dto;
 
-/// NamespaceTypeEnum : The namespace type: * 0 -  Root namespace. * 1 -  Subnamespace.
-/// The namespace type: * 0 -  Root namespace. * 1 -  Subnamespace.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub enum NamespaceTypeEnum {
-    #[serde(rename = "0")]
-    _0,
-    #[serde(rename = "1")]
-    _1,
-}
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct NamespaceDto {
     /// The public key of the owner of the namespace.
@@ -34,7 +24,7 @@ pub struct NamespaceDto {
     #[serde(rename = "level2", skip_serializing_if = "Option::is_none")]
     pub level2: Option<Uint64Dto>,
     #[serde(rename = "type")]
-    pub _type: crate::models::namespace::NamespaceTypeEnum,
+    pub _type: u8,
     #[serde(rename = "alias")]
     pub alias: crate::models::alias::AliasDto,
     #[serde(rename = "parentId")]
@@ -42,7 +32,7 @@ pub struct NamespaceDto {
 }
 
 impl NamespaceDto {
-    pub fn new(owner: String, owner_address: String, start_height: Uint64Dto, end_height: Uint64Dto, depth: i32, level0: Uint64Dto, _type: crate::models::namespace::NamespaceTypeEnum, alias: crate::models::alias::AliasDto, parent_id: Uint64Dto) -> NamespaceDto {
+    pub fn new(owner: String, owner_address: String, start_height: Uint64Dto, end_height: Uint64Dto, depth: i32, level0: Uint64Dto, _type: u8, alias: crate::models::alias::AliasDto, parent_id: Uint64Dto) -> NamespaceDto {
         NamespaceDto {
             owner,
             owner_address,
@@ -231,7 +221,7 @@ impl NamespaceNameDto {
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct RegisterNamespaceTransactionBodyDto {
     #[serde(rename = "namespaceType")]
-    pub namespace_type: NamespaceTypeEnum,
+    pub namespace_type: u8,
     #[serde(rename = "duration")]
     pub duration: Uint64Dto,
     #[serde(rename = "namespaceId")]
@@ -244,7 +234,7 @@ pub struct RegisterNamespaceTransactionBodyDto {
 }
 
 impl RegisterNamespaceTransactionBodyDto {
-    pub fn new(namespace_type: NamespaceTypeEnum, duration: Uint64Dto, namespace_id: Uint64Dto, name: String, parent_id: Uint64Dto) -> RegisterNamespaceTransactionBodyDto {
+    pub fn new(namespace_type: u8, duration: Uint64Dto, namespace_id: Uint64Dto, name: String, parent_id: Uint64Dto) -> RegisterNamespaceTransactionBodyDto {
         RegisterNamespaceTransactionBodyDto {
             namespace_type,
             duration,
@@ -274,7 +264,7 @@ pub struct RegisterNamespaceTransactionDto {
     #[serde(rename = "deadline")]
     pub deadline: Uint64Dto,
     #[serde(rename = "namespaceType")]
-    pub namespace_type: NamespaceTypeEnum,
+    pub namespace_type: u8,
     #[serde(rename = "duration")]
     pub duration: Uint64Dto,
     #[serde(rename = "namespaceId")]
@@ -324,7 +314,7 @@ pub struct EmbeddedRegisterNamespaceTransactionDto {
     #[serde(rename = "deadline")]
     pub deadline: Uint64Dto,
     #[serde(rename = "namespaceType")]
-    pub namespace_type: NamespaceTypeEnum,
+    pub namespace_type: u8,
     #[serde(rename = "duration")]
     pub duration: Uint64Dto,
     #[serde(rename = "namespaceId")]

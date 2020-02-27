@@ -5,14 +5,13 @@ use hyper::Client;
 
 use xpx_chain_sdk::apis::sirius_client::SiriusClient;
 use xpx_chain_sdk::models::account::Account;
-use xpx_chain_sdk::models::mosaic::{MosaicNonce, MosaicProperties};
 use xpx_chain_sdk::models::network::PUBLIC_TEST;
-use xpx_chain_sdk::models::transaction::{Deadline, MosaicDefinitionTransaction};
+use xpx_chain_sdk::models::transaction::{Deadline, RegisterNamespaceTransaction};
 use xpx_chain_sdk::models::Uint64;
 
 #[tokio::main]
 async fn main() {
-    let node = "http://bctestnet1.brimstone.xpxsirius.io:3000";
+    let node = "http://bctestnet3.brimstone.xpxsirius.io:3000";
 
     let client = SiriusClient::new(node, Client::new());
 
@@ -25,25 +24,23 @@ async fn main() {
 
     let account = Account::from_private_key(private_key, network_type).unwrap();
 
-    let mosaic_definition = MosaicDefinitionTransaction::new(
+    let register_namespace = RegisterNamespaceTransaction::create_root(
         deadline,
-        MosaicNonce::random(),
-        account.public_account.clone(),
-        MosaicProperties::new(
-            true, true, 4, Uint64::new(0)
-        ).unwrap(),
-        network_type,
+        "rustnamespace",
+        Uint64::new(1),
+        network_type
     );
 
-    let mosaic_definition_tx = loop {
-        match &mosaic_definition {
+    let register_namespace_tx = loop {
+        match &register_namespace {
             Ok(definition) => break definition,
             Err(_e) => eprintln!("{:?}", _e),
         }
     };
 
     let sig_transaction = account.sign(
-        mosaic_definition_tx, "56D112C98F7A7E34D1AEDC4BD01BC06CA2276DD546A93E36690B785E82439CA9".to_owned());
+        register_namespace_tx,
+        "56D112C98F7A7E34D1AEDC4BD01BC06CA2276DD546A93E36690B785E82439CA9".to_owned());
 
     let sig_tx = loop {
         match &sig_transaction {

@@ -12,6 +12,49 @@ use super::internally::{
 pub(crate) const SUPPLY_MUTABLE: u8 = 0x01;
 pub(crate) const TRANSFERABLE: u8 = 0x02;
 
+/// MosaicPropertyId :
+/// The mosaic propery id means:
+/// * 0 - MosaicFlags
+/// * 1 - Divisibility
+/// * 2 - duration
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[repr(u8)]
+pub enum MosaicPropertyId {
+    MosaicFlags,
+    Divisibility,
+    Duration,
+}
+
+impl From<u8> for MosaicPropertyId {
+    fn from(e: u8) -> Self {
+        let mut property_id = MosaicPropertyId::MosaicFlags;
+        if e == 1 {
+            property_id = MosaicPropertyId::Divisibility;
+        }else {
+            property_id = MosaicPropertyId::Duration;
+        }
+        property_id
+    }
+}
+
+/// mosaic_supply_type :
+/// The supply modification direction:
+/// * 0  - Decrease.
+/// * 1  - Increase.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[repr(u8)]
+pub enum MosaicSupplyType { Decrease, Increase }
+
+impl From<u8> for MosaicSupplyType {
+    fn from(e: u8) -> Self {
+        let mut direction = MosaicSupplyType::Decrease;
+        if e != 0 {
+            direction = MosaicSupplyType::Increase;
+        }
+        direction
+    }
+}
+
 /// A `Mosaic` describes an instance of a `Mosaic` definition.
 /// Mosaics can be transferred by means of a transfer transaction.
 #[derive(Debug, Serialize)]

@@ -10,7 +10,7 @@ use std::mem;
 use self::flatbuffers::EndianScalar;
 
 #[allow(unused_imports, dead_code)]
-pub mod catapult {
+pub mod register_namespace {
     use std::cmp::Ordering;
     use std::mem;
 
