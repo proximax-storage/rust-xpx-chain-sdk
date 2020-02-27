@@ -32,12 +32,21 @@ pub enum MosaicPropertyId {
     Duration,
 }
 
-/// MosaicSupplyType :
+/// mosaic_supply_type :
 /// The supply modification direction:
 /// * 0  - Decrease.
 /// * 1  - Increase.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-enum MosaicSupplyType { Decrease, Increase }
+pub enum MosaicSupplyType { Decrease, Increase }
+
+impl MosaicSupplyType {
+    pub fn value(&self) -> u8 {
+        match self {
+            MosaicSupplyType::Decrease => 0,
+            MosaicSupplyType::Increase => 1,
+        }
+    }
+}
 
 pub(crate) fn has_bits(number: Uint64, bits: u8) -> bool {
     (number.0 & bits as u64) == bits as u64

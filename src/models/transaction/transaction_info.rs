@@ -46,6 +46,7 @@ pub struct AbstractTransaction {
 
 impl AbstractTransaction {
     pub fn new(tx_info: Option<TransactionInfo>,
+               network_type: NetworkType,
                signature: String,
                signer: PublicAccount,
                version: EntityVersion,
@@ -55,7 +56,7 @@ impl AbstractTransaction {
     ) -> Self {
         AbstractTransaction {
             transaction_info: tx_info,
-            network_type: extract_network_type(version),
+            network_type,
             signature,
             signer,
             version,

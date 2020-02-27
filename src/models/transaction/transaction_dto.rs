@@ -64,12 +64,10 @@ impl AbstractTransactionDto {
         let version = extract_version(self.version);
 
         let signer = PublicAccount::from_public_key(
-            &dto.signer, network_type,
-        )?;
+            &dto.signer, network_type )?;
 
         let blockchain_timestamp = BlockchainTimestamp::new(
-            dto.deadline.to_struct().0 as i64
-        );
+            dto.deadline.to_struct().0 as i64 );
 
         let deadline = Deadline::from(blockchain_timestamp);
         let max_fee = dto.max_fee.to_struct();
@@ -77,6 +75,7 @@ impl AbstractTransactionDto {
         let transaction_type = EntityTypeEnum::from(dto._type as u64);
 
         Ok(AbstractTransaction::new(None,
+                                    network_type,
                                     dto.signature.clone(),
                                     signer,
                                     version,
@@ -126,11 +125,11 @@ impl TransactionStatusDto {
     pub fn to_struct(&self) -> TransactionStatus {
         let dto = &self.to_owned();
 
-        let deadline = loop {
-            match &dto.deadline {
-                Some(d) => break BlockchainTimestamp::new(d.to_struct().0 as i64),
-                _ => {}
-            }
+        let mut deadline = None;
+        if let Some(value) = &dto.deadline {
+            let blockchain_timestamp = BlockchainTimestamp::new(
+                value.to_struct().0 as i64);
+            deadline = Some(Deadline::from(blockchain_timestamp));
         };
 
         let mut height = None;
@@ -138,11 +137,13 @@ impl TransactionStatusDto {
             height = Some(value.to_struct());
         };
 
+
+
         TransactionStatus::new(
             dto.group.clone().unwrap(),
             dto.status.clone(),
             dto.hash.clone().unwrap(),
-            Deadline::from(deadline),
+            deadline,
             height
         )
     }
@@ -175,7 +176,7 @@ impl TransactionDto for TransferTransactionInfoDto {
             mosaics.push(mosaic.to_struct());
         }
 
-        let recipient = Address::from_encoded(&dto.recipient).unwrap();
+        let recipient = Address::from_encoded(&dto.recipient)?;
 
         Ok(Box::new(TransferTransaction {
             abs_transaction: abs,
