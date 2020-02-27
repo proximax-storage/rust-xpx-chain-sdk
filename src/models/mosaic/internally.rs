@@ -48,6 +48,16 @@ impl MosaicSupplyType {
     }
 }
 
+impl From<u8> for MosaicSupplyType {
+    fn from(e: u8) -> Self {
+        let mut direction = MosaicSupplyType::Decrease;
+        if e != 0 {
+            direction = MosaicSupplyType::Increase;
+        }
+        direction
+    }
+}
+
 pub(crate) fn has_bits(number: Uint64, bits: u8) -> bool {
     (number.0 & bits as u64) == bits as u64
 }

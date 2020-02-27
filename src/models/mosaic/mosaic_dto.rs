@@ -17,9 +17,9 @@ use super::{
     MosaicProperties, SUPPLY_MUTABLE,
     TRANSFERABLE,
 };
-use crate::models::transaction::{TransactionMetaDto, TransactionDto, Transaction, AbstractTransactionDto, MosaicDefinitionTransaction};
+use crate::models::transaction::{TransactionMetaDto, TransactionDto, Transaction, AbstractTransactionDto, MosaicDefinitionTransaction, MosaicSupplyChangeTransaction};
 use failure::_core::any::Any;
-use crate::models::mosaic::MosaicNonce;
+use crate::models::mosaic::{MosaicNonce, MosaicSupplyType};
 use crate::models::mosaic::internally::mosaic_properties;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -229,7 +229,12 @@ impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
             dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline,
         ).to_struct()?;
 
-        unimplemented!()
+        Ok(Box::new(MosaicSupplyChangeTransaction{
+            abs_transaction: abs,
+            supply_type: MosaicSupplyType::from(dto.direction),
+            asset_id: Box::new(MosaicId::from(dto.mosaic_id.to_struct())),
+            delta: dto.delta.to_struct()
+        }))
     }
 
     fn as_any(&self) -> &dyn Any {
