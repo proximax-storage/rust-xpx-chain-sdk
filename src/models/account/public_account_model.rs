@@ -1,4 +1,4 @@
-use crate::models::utils::is_hex;
+use crate::models::{utils::is_hex, errors};
 use crate::Result;
 
 use super::Address;
@@ -18,17 +18,17 @@ impl PublicAccount {
     pub fn from_public_key(public_key: &str, network_type: crate::models::network::NetworkType) -> Result<PublicAccount> {
         ensure!(
             !public_key.is_empty(),
-            "public_key string is empty."
+            errors::ERR_INVALID_PUBLIC_KEY_LENGTH
          );
 
         ensure!(
             is_hex(public_key),
-            "Invalid hex public_key string."
+            errors::ERR_INVALID_KEY_HEX
             );
 
         ensure!(
             public_key.len() == 64,
-            "Invalid len public_key string."
+            errors::ERR_INVALID_KEY_LENGTH
          );
 
         let _address = super::public_key_to_address(public_key, network_type);
@@ -44,15 +44,15 @@ impl PublicAccount {
     /// # Return
     ///
     /// Returns `Ok(())` if the signature is valid, and `Err` otherwise.
-    pub fn verify_sign(&self, data: &str, signature: &str) -> Result<bool> {
+    pub fn verify_sign(&self, data: &str, signature: &str) -> Result<()> {
         ensure!(
             super::HASH512_LENGTH == (signature.len() / 2),
-            "Signature length is incorrect"
+            errors::ERR_INVALID_SIGNATURE_LENGTH
             );
 
         ensure!(
             is_hex(signature),
-            "Signature must be hexadecimal"
+            errors::ERR_INVALID_SIGNATURE_HEX
             );
 
         let sig_byte: Vec<u8> = hex::decode(signature)?;
@@ -66,7 +66,7 @@ impl PublicAccount {
         let verify = pk.verify(&data.as_bytes(), &signature);
 
         if verify.is_ok() {
-            Ok(true)
+            Ok(())
         } else {
             Err(format_err!("{}", verify.unwrap_err()))
         }

@@ -4,6 +4,7 @@ use failure::_core::any::Any;
 use serde_json::Value;
 
 use crate::{fb, models::{
+    errors,
     account::{Account, Address, PublicAccount},
     consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
     message::Message,
@@ -52,7 +53,7 @@ impl TransferTransaction {
 
         ensure!(
             mosaics.len() > 0,
-            "mosaics must not be empty."
+            errors::ERR_EMPTY_MOSAIC_ID
          );
 
 

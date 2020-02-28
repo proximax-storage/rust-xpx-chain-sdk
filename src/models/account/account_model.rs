@@ -1,5 +1,10 @@
-use crate::models::transaction::{SignedTransaction, Transaction};
-use crate::models::utils::{is_hex, vec_u8_to_hex};
+use crate::models::{
+    errors,
+    network::NetworkType,
+    transaction::{SignedTransaction, Transaction},
+    utils::{is_hex, vec_u8_to_hex}
+};
+
 use crate::Result;
 
 use super::PublicAccount;
@@ -15,20 +20,20 @@ pub struct Account {
 
 impl Account {
     /// Create a `Account` from a private key for the given `NetworkType`.
-    pub fn from_private_key(private_key: &str, network_type: crate::models::network::NetworkType) -> Result<Account> {
+    pub fn from_private_key(private_key: &str, network_type: NetworkType) -> Result<Account> {
         ensure!(
             !private_key.is_empty(),
-            "private_key string is empty."
+            errors::ERR_INVALID_PRIVATE_KEY_LENGTH
          );
 
         ensure!(
             private_key.len() == 64,
-            "Invalid len private_key."
+            errors::ERR_INVALID_KEY_LENGTH
          );
 
         ensure!(
             is_hex(private_key),
-            "Invalid hex private_key string."
+            errors::ERR_INVALID_KEY_HEX
             );
 
         let sk_hex = hex::decode(private_key)?;

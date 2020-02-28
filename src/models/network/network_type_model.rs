@@ -1,6 +1,8 @@
 use ::core::fmt;
 use ::core::fmt::{Debug, Display};
 
+use crate::models::errors;
+
 use crate::Result;
 
 /// MIJIN private network identifier. Decimal value = 96.
@@ -29,37 +31,6 @@ pub const NOT_SUPPORTED_NET: NetworkType = NetworkType(0);
 pub struct NetworkType(pub(crate) u8);
 
 impl NetworkType {
-    pub fn from_string(network_type: &str) -> Result<NetworkType> {
-        ensure!(
-            !network_type.is_empty(),
-            "network_type string is empty."
-         );
-
-        match network_type {
-            "MIJIN" => Ok(MIJIN),
-            "MIJIN_TEST" => Ok(MIJIN_TEST),
-            "PUBLIC" => Ok(PUBLIC),
-            "PUBLIC_TEST" => Ok(PUBLIC_TEST),
-            "PRIVATE" => Ok(PRIVATE),
-            "PRIVATE_TEST" => Ok(PRIVATE_TEST),
-            "ALIAS_ADDRESS" => Ok(ALIAS_ADDRESS),
-            _ => Err(format_err!("Network type is unknown"))
-        }
-    }
-
-    pub fn from_int(network_type: u8) -> Result<NetworkType> {
-        match network_type {
-            0x60 => Ok(MIJIN),
-            0x90 => Ok(MIJIN_TEST),
-            0xb8 => Ok(PUBLIC),
-            0xa8 => Ok(PUBLIC_TEST),
-            0xc8 => Ok(PRIVATE),
-            0xb0 => Ok(PRIVATE_TEST),
-            0x91 => Ok(ALIAS_ADDRESS),
-            _ => Err(format_err!("Network type is unknown"))
-        }
-    }
-
     pub fn to_string(self) -> &'static str {
         match self {
             MIJIN => "MIJIN",
@@ -77,5 +48,40 @@ impl NetworkType {
 impl Display for NetworkType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl From<u8> for NetworkType {
+    fn from(u: u8) -> Self {
+        match u {
+            0x60 => MIJIN,
+            0x90 => MIJIN_TEST,
+            0xb8 => PUBLIC,
+            0xa8 => PUBLIC_TEST,
+            0xc8 => PRIVATE,
+            0xb0 => PRIVATE_TEST,
+            0x91 => ALIAS_ADDRESS,
+            _ => NOT_SUPPORTED_NET
+        }
+    }
+}
+
+impl From<&str> for NetworkType {
+    fn from(s: &str) -> Self {
+        assert!(
+            !s.is_empty(),
+            errors::ERR_EMPTY_NETWORK_TYPE
+         );
+
+        match s {
+            "MIJIN" => MIJIN,
+            "MIJIN_TEST" => MIJIN_TEST,
+            "PUBLIC" => PUBLIC,
+            "PUBLIC_TEST" => PUBLIC_TEST,
+            "PRIVATE" => PRIVATE,
+            "PRIVATE_TEST" => PRIVATE_TEST,
+            "ALIAS_ADDRESS" => ALIAS_ADDRESS,
+            _ => NOT_SUPPORTED_NET
+        }
     }
 }

@@ -2,22 +2,17 @@ use failure::_core::any::Any;
 
 use crate::{
     models::{
+        errors,
         field_dto::FieldDto,
         metadata_dto::{MetadataModificationDto, MetadataTypeEnum},
         uint_64::Uint64Dto,
+        transaction::{AbstractTransactionDto, MosaicDefinitionTransaction,
+                      MosaicSupplyChangeTransaction, Transaction, TransactionDto, TransactionMetaDto}
     },
     Result,
 };
-use crate::models::mosaic::{MosaicNonce, MosaicSupplyType};
-use crate::models::mosaic::internally::mosaic_properties;
-use crate::models::transaction::{AbstractTransactionDto, MosaicDefinitionTransaction, MosaicSupplyChangeTransaction, Transaction, TransactionDto, TransactionMetaDto};
 
-use super::{
-    Mosaic,
-    MosaicId,
-    MosaicInfo,
-    MosaicNames
-};
+use super::{ Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicNonce, MosaicSupplyType, internally::mosaic_properties };
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicDto {
@@ -47,7 +42,7 @@ impl MosaicInfoDto {
     pub fn to_struct(&self) -> Result<MosaicInfo> {
         ensure!(
             self.mosaic.properties.len() > 0,
-            "mosaic Properties is not valid."
+            errors::ERR_NIL_MOSAIC_PROPERTIES
          );
 
         let mosaic_id = MosaicId::from(self.mosaic.mosaic_id.to_struct());
