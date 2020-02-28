@@ -13,13 +13,15 @@ use crate::{
             TransactionStatusDto,
             TransactionDto
         },
+        errors::{ERR_EMPTY_TRANSACTION_HASHES, ERR_EMPTY_TRANSACTION_IDS}
     }};
 
 use super::{
     internally::{valid_hash, valid_vec_hash, valid_vec_len},
     request as __internal_request,
     Result,
-    sirius_client::ApiClient};
+    sirius_client::ApiClient
+};
 
 #[derive(Clone)]
 pub struct TransactionRoutesApiClient<C: Connect> {
@@ -55,7 +57,7 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
     }
 
     pub async fn get_transactions_statuses(self, transaction_hashes: Vec<&str>) -> Result<Vec<TransactionStatus>> {
-        valid_vec_len(&transaction_hashes)?;
+        valid_vec_len(&transaction_hashes, ERR_EMPTY_TRANSACTION_HASHES)?;
 
         valid_vec_hash(&transaction_hashes)?;
 
@@ -96,7 +98,7 @@ impl<C: Connect> TransactionRoutesApiClient<C> where
 
 
     pub async fn get_transactions(self, transaction_ids: Vec<&str>) -> Result<Vec<Box<dyn Transaction>>> {
-        valid_vec_len(&transaction_ids)?;
+        valid_vec_len(&transaction_ids, ERR_EMPTY_TRANSACTION_IDS)?;
 
         valid_vec_hash(&transaction_ids)?;
 

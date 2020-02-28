@@ -14,10 +14,11 @@ use crate::{
             MosaicNames,
             MosaicNamesDto,
         },
+        errors::{ERR_EMPTY_MOSAIC_IDS}
     },
 };
 
-use super::{request as __internal_request, Result};
+use super::{request as __internal_request, internally::valid_vec_len, Result};
 
 #[derive(Clone)]
 pub struct MosaicRoutesApiClient<C: Connect> {
@@ -49,6 +50,8 @@ impl<C: Connect> MosaicRoutesApiClient<C> where
     }
 
     pub async fn get_mosaics_info(self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicInfo>> {
+        valid_vec_len(&mosaic_ids, ERR_EMPTY_MOSAIC_IDS)?;
+
         let mosaics_ids = MosaicIds::from(mosaic_ids);
         let mut req = __internal_request::Request::new(
             Method::POST,
@@ -69,6 +72,9 @@ impl<C: Connect> MosaicRoutesApiClient<C> where
     }
 
     pub async fn get_mosaics_names(self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicNames>> {
+
+        valid_vec_len(&mosaic_ids, ERR_EMPTY_MOSAIC_IDS)?;
+
         let mosaics_ids = MosaicIds::from(mosaic_ids);
 
         let mut req = __internal_request::Request::new(

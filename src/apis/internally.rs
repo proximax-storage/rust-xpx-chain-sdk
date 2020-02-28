@@ -1,43 +1,42 @@
-use std::fmt::Write;
+use ::std::fmt::Write;
 
 use failure::_core::fmt::Debug;
 use hyper::body::Bytes;
 use serde_json::Value;
 
-use crate::models::transaction::EntityTypeEnum as Entity;
-use crate::models::utils::is_hex;
+use crate::models::{transaction::EntityTypeEnum as Entity, errors, utils::is_hex};
 use crate::Result;
 
 pub(super) fn valid_hash(hash: &str) -> Result<bool> {
     ensure!(
         !hash.is_empty(),
-        "transaction_hashes is empty."
+        errors::ERR_INVALID_HASH_HEX
     );
 
     ensure!(
         is_hex(hash),
-        "hash {} it's not hex.", hash
+        "{} {}.", errors::ERR_INVALID_HASH_HEX, hash
     );
 
-    ensure!(hash.len() == 64, "hash {} invalid len.", hash);
+    ensure!(hash.len() == 64, "{} {}.", errors::ERR_INVALID_HASH_LENGTH, hash);
 
     Ok(true)
 }
 
-pub(super) fn valid_vec_len<T>(vector: &Vec<T>) -> Result<bool> where T: Debug
+pub(super) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()> where T: Debug
 {
     ensure!(
         !vector.is_empty(),
-        "vector {:?} is empty.", vector
+        "{}. {:?}", msg, vector
     );
-    Ok(true)
+    Ok(())
 }
 
-pub(super) fn valid_vec_hash(vector: &Vec<&str>) -> Result<bool> {
+pub(super) fn valid_vec_hash(vector: &Vec<&str>) -> Result<()> {
     for hash in vector {
         valid_hash(hash)?;
     }
-    Ok(true)
+    Ok(())
 }
 
 pub(super) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
@@ -97,7 +96,7 @@ pub(super) fn map_transaction_dto(body: Bytes) -> Result<String> {
         Entity::SecretLock => "SecretLock",
         Entity::SecretProof => "SecretProof",
         Entity::Transfer => "Transfer",
-        _ => "NotDto"
+        _ => errors::ERR_UNKNOWN_BLOCKCHAIN_TYPE
     };
 
     let info_dto = format!("{{\"{}TransactionInfoDto\":{{\"meta\":", entity_dto);
