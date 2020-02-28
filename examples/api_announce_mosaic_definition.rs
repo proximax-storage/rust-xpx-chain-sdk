@@ -9,6 +9,7 @@ use xpx_chain_sdk::models::mosaic::{MosaicNonce, MosaicProperties};
 use xpx_chain_sdk::models::network::PUBLIC_TEST;
 use xpx_chain_sdk::models::transaction::{Deadline, MosaicDefinitionTransaction};
 use xpx_chain_sdk::models::Uint64;
+use failure::_core::intrinsics::panic_if_uninhabited;
 
 #[tokio::main]
 async fn main() {
@@ -37,7 +38,7 @@ async fn main() {
     let mosaic_definition_tx = loop {
         match &mosaic_definition {
             Ok(definition) => break definition,
-            Err(_e) => eprintln!("{:?}", _e),
+            Err(_e) => panic!("{}", _e),
         }
     };
 
@@ -48,7 +49,7 @@ async fn main() {
     let sig_tx = loop {
         match &sig_transaction {
             Ok(sig) => break sig,
-            Err(err) => eprintln!("{:?}", err),
+            Err(err) => panic!("{}", err),
         }
     };
 
@@ -59,6 +60,6 @@ async fn main() {
 
     match response {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => panic!("{:?}", err),
     }
 }

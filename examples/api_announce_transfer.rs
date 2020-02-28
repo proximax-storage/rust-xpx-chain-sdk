@@ -41,7 +41,7 @@ async fn main() {
     let transfer_tx = loop {
         match &transfer_transaction {
             Ok(_transfer) => break _transfer,
-            Err(_e) => eprintln!("{:?}", _e),
+            Err(_e) => panic!("{}", _e),
         }
     };
 
@@ -51,7 +51,7 @@ async fn main() {
     let sig_tx = loop {
         match &sig_transaction {
             Ok(sig) => break sig,
-            Err(err) => eprintln!("{:?}", err),
+            Err(err) => panic!("{}", err),
         }
     };
 
@@ -62,6 +62,6 @@ async fn main() {
 
     match response {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => panic!("{:?}", err),
     }
 }

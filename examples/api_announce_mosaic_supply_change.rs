@@ -37,7 +37,7 @@ async fn main() {
     let mosaic_supply_tx = loop {
         match &mosaic_supply {
             Ok(supply) => break supply,
-            Err(_e) => eprintln!("{:?}", _e),
+            Err(_e) => panic!("{}", _e),
         }
     };
 
@@ -47,7 +47,7 @@ async fn main() {
     let sig_tx = loop {
         match &sig_transaction {
             Ok(sig) => break sig,
-            Err(err) => eprintln!("{:?}", err),
+            Err(err) => panic!("{}", err),
         }
     };
 
@@ -58,6 +58,6 @@ async fn main() {
 
     match response {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => panic!("{:?}", err),
     }
 }
