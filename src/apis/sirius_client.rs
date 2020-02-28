@@ -11,9 +11,11 @@ use super::{
     node_routes_api::NodeRoutesApiClient,
     transaction_routes_api::TransactionRoutesApiClient,
 };
+use std::future::Future;
 
 #[derive(Clone)]
 pub struct SiriusClient<C: Connect> {
+    generation_hash: &'static str,
     pub account: Box<AccountRoutesApiClient<C>>,
     pub block: Box<BlockRoutesApiClient<C>>,
     pub chain: Box<ChainRoutesApiClient<C>>,
@@ -32,6 +34,7 @@ impl<C: Connect> SiriusClient<C> where
         let rc = Arc::new(sirius);
 
         Box::new(SiriusClient {
+            generation_hash: "",
             account: Box::new(AccountRoutesApiClient::new(rc.clone())),
             block: Box::new(BlockRoutesApiClient::new(rc.clone())),
             chain: Box::new(ChainRoutesApiClient::new(rc.clone())),
@@ -39,6 +42,17 @@ impl<C: Connect> SiriusClient<C> where
             mosaic: Box::new(MosaicRoutesApiClient::new(rc.clone())),
             transaction: Box::new(TransactionRoutesApiClient::new(rc.clone())),
         })
+    }
+
+    pub fn generation_hash(&self) -> impl Future<Output = String> + '_ {
+        let client = self.block.clone();
+        async {
+            let block_info = client.get_block_by_height(1).await;
+            match block_info {
+                Ok(hash) =>  hash.generation_hash,
+                _ => "".to_string()
+            }
+        }
     }
 }
 
