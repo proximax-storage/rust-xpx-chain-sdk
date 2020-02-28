@@ -28,7 +28,7 @@ pub const ALIAS_ADDRESS: NetworkType = NetworkType(0x91);
 pub const NOT_SUPPORTED_NET: NetworkType = NetworkType(0);
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Copy)]// we derive Default in order to use the clear() method in Drop
-pub struct NetworkType(pub(crate) u8);
+pub struct NetworkType(pub(self) u8);
 
 impl NetworkType {
     pub fn to_string(self) -> &'static str {
@@ -42,6 +42,10 @@ impl NetworkType {
             ALIAS_ADDRESS => "ALIAS_ADDRESS",
             _ => "NOT_SUPPORTED_NET"
         }
+    }
+
+    pub fn value(&self) -> u8 {
+        self.0
     }
 }
 

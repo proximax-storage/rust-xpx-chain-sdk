@@ -122,7 +122,7 @@ impl AbstractTransaction {
     pub fn generate_vector(&self, builder: &mut FlatBufferBuilder) -> HashMap<&str, fb::UOffsetT> {
         let mut data: HashMap<&str, fb::UOffsetT> = HashMap::new();
 
-        let network_type: fb::UOffsetT = self.network_type.0 as u32;
+        let network_type: fb::UOffsetT = self.network_type.value() as u32;
         data.insert("versionV", (network_type << 24) + self.version as u32);
         data.insert("signatureV", builder.create_vector(&[0u8; SIGNATURE_SIZE]).value());
         data.insert("signerV", builder.create_vector_direct(&[0u8; SIGNER_SIZE]).value());
