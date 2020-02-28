@@ -24,7 +24,7 @@ use serde::Serialize;
 /// * 0x414C (16716 decimal) - Account Link Transaction.
 /// * 0x8043 (32835 decimal) - Nemesis block.
 /// * 0x8143 (33091 decimal) - Regular block.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 #[serde(from = "u64")]
 #[repr(u16)]
 pub enum EntityTypeEnum {

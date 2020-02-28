@@ -89,6 +89,12 @@ impl Serialize for MosaicId {
 
 impl From<Uint64> for MosaicId {
     fn from(e: Uint64) -> Self {
-        return MosaicId(e);
+        MosaicId(e)
+    }
+}
+
+impl From<u64> for MosaicId {
+    fn from(e: u64) -> Self {
+        MosaicId(Uint64::new(e))
     }
 }

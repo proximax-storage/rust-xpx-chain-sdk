@@ -25,6 +25,7 @@ use super::{
     SignedTransaction,
     Transaction
 };
+use crate::models::namespace::generate_namespace_id;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -64,6 +65,40 @@ impl RegisterNamespaceTransaction {
             name: namespace_name,
             duration,
             parent_id: Default::default()
+        })
+    }
+
+    pub fn create_sub(
+        deadline: Deadline,
+        namespace_name: &'static str,
+        parent_id: NamespaceId,
+        network_type: NetworkType,
+    ) -> crate::Result<RegisterNamespaceTransaction> {
+        ensure!(
+            namespace_name.len() != 0,
+            errors::ERR_INVALID_NAMESPACE_NAME
+        );
+
+        ensure!(
+            parent_id.to_id().0 != 0,
+            errors::ERR_NULL_NAMESPACE_ID
+        );
+
+        let abs_tx = AbstractTransaction::new_from_type(
+            deadline,
+            REGISTER_NAMESPACE_VERSION,
+            EntityTypeEnum::NamespaceRegistration,
+            network_type);
+
+        let namespace_id = generate_namespace_id(namespace_name, parent_id)?;
+
+        Ok(RegisterNamespaceTransaction {
+            abs_transaction: abs_tx,
+            namespace_type: NamespaceType::Sub,
+            namespace_id,
+            name: namespace_name,
+            duration: Default::default(),
+            parent_id
         })
     }
 
@@ -108,8 +143,6 @@ impl Transaction for RegisterNamespaceTransaction {
         }
 
         let name_vec = builder.create_string(self.name);
-
-        println!("{:?}", name_vec);
 
         let abs_vector = &self.abs_transaction.generate_vector(&mut builder);
 

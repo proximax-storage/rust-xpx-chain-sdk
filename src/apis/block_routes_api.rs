@@ -14,7 +14,7 @@ use super::{
     sirius_client::ApiClient,
 };
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct BlockRoutesApiClient<C: Connect> {
     client: Arc<ApiClient<C>>,
 }

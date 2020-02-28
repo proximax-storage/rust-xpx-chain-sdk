@@ -45,7 +45,7 @@ pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<Namespace
     Ok(path)
 }
 
-fn generate_namespace_id(name: &str, parent_id: NamespaceId) -> crate::Result<NamespaceId> {
+pub fn generate_namespace_id(name: &str, parent_id: NamespaceId) -> crate::Result<NamespaceId> {
     let mut result = Sha3_256::default();
 
     let id_to_bytes = parent_id.to_bytes();

@@ -29,7 +29,7 @@ impl BlockchainTimestamp {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
 pub struct Timestamp(SystemTime);
 
 impl Timestamp {
@@ -55,7 +55,7 @@ impl core::fmt::Display for Timestamp {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]// we derive Default in order to use the clear() method in Drop
 pub struct Deadline(Timestamp);
 
 impl Deadline {

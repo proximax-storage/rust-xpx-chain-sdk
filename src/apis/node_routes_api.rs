@@ -14,7 +14,7 @@ use crate::{
 
 use super::{request as __internal_request, Result};
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct NodeRoutesApiClient<C: Connect> {
     client: Arc<ApiClient<C>>,
 }

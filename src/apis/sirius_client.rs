@@ -26,8 +26,6 @@ impl<C: Connect> SiriusClient<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
     pub fn new(url: &'static str, client: Client<C>) -> Box<Self>
-        where
-            C: Clone + Send + Sync + Debug + 'static
     {
         let sirius = ApiClient::from_url(url, client);
 
@@ -44,7 +42,7 @@ impl<C: Connect> SiriusClient<C> where
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone)]
 pub struct ApiClient<C: Connect> {
     pub base_path: &'static str,
     pub client: Client<C>,
@@ -56,8 +54,6 @@ impl<C: Connect> ApiClient<C>
         C: Send + Sync,
 {
     pub fn from_url(url: &'static str, client: Client<C>) -> Self
-        where
-            C: Connect + Clone,
     {
         ApiClient {
             base_path: url,

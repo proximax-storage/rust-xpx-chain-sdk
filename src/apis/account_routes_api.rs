@@ -7,7 +7,7 @@ use crate::models::account::{AccountInfo, AccountInfoDto};
 
 use super::{request as __internal_request, Result, sirius_client::ApiClient};
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct AccountRoutesApiClient<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
