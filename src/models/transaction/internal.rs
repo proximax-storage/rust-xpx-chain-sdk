@@ -69,11 +69,11 @@ pub fn mosaic_property_array_to_buffer(
     let mut p_buffer: Vec<fb::UOffsetT> = Vec::with_capacity(properties.len());
 
     for p in properties {
-        let valueV = builder.create_vector(&p.value.to_int_array());
+        let value_v = builder.create_vector(&p.value.to_int_array());
 
         let mut mosaic_property = buffers::MosaicPropertyBuilder::new(builder);
-        mosaic_property.add_mosaicPropertyId(p.id);
-        mosaic_property.add_value(valueV);
+        mosaic_property.add_mosaic_property_id(p.id);
+        mosaic_property.add_value(value_v);
 
         p_buffer.push(mosaic_property.finish().value());
     }

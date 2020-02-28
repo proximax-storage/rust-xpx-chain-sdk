@@ -20,8 +20,7 @@ use super::{
     schema::transfer_transaction_schema,
     SignedTransaction,
     Transaction,
-    TRANSFER_VERSION,
-    TransferTransactionDto,
+    TRANSFER_VERSION
 };
 
 #[derive(Debug, Serialize)]
@@ -33,7 +32,7 @@ pub struct TransferTransaction {
     pub recipient: Address,
     /// The array of mosaics sent to the recipient.
     /// If the most significant bit of byte 0 is set, a
-    /// namespaceId (alias) is used instead of a instead of a mosaic_id corresponds to a mosaic_id.
+    /// namespace_id (alias) is used instead of a instead of a mosaic_id corresponds to a mosaic_id.
     pub mosaics: Vec<Mosaic>,
     pub message: Box<dyn Message>,
 }
@@ -190,12 +189,6 @@ impl Transaction for TransferTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
-    }
-}
-
-impl Into<(String)> for TransferTransaction {
-    fn into(self) -> String {
-        format!("{}", self)
     }
 }
 

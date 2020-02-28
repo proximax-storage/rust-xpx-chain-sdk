@@ -4,7 +4,7 @@ use ::std::fmt;
 use crate::models::{
     account::{Address, PublicAccount},
     blockchain::EmbeddedBlockchainUpgradeTransactionDto,
-    message::{MessageDto, MessageType::PlainMessageType, PlainMessage},
+    message::MessageDto,
     mosaic::{Mosaic, MosaicDto},
     network::network_internal::extract_network_type,
     uint_64::Uint64Dto,

@@ -7,7 +7,7 @@ pub fn schema_common_definition() -> Vec<Box<dyn SchemaAttribute>> {
         Box::new(ArrayAttribute::new("signer", SIZEOF_BYTE)),
         Box::new(ScalarAttribute::new("version", SIZEOF_INT)),
         Box::new(ScalarAttribute::new("type", SIZEOF_SHORT)),
-        Box::new(ArrayAttribute::new("maxFee", SIZEOF_INT)),
+        Box::new(ArrayAttribute::new("max_fee", SIZEOF_INT)),
         Box::new(ArrayAttribute::new("deadline", SIZEOF_INT)),
     ]
 }

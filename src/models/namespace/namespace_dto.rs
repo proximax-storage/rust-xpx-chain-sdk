@@ -202,7 +202,7 @@ pub struct NamespaceMetadataTransactionDto {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct NamespaceNameDto {
-    #[serde(rename = "namespaceId")]
+    #[serde(rename = "namespace_id")]
     pub namespace_id: Uint64Dto,
     /// The full name of the namespace.
     #[serde(rename = "name")]
@@ -220,11 +220,11 @@ impl NamespaceNameDto {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct RegisterNamespaceTransactionBodyDto {
-    #[serde(rename = "namespaceType")]
+    #[serde(rename = "namespace_type")]
     pub namespace_type: u8,
     #[serde(rename = "duration")]
     pub duration: Uint64Dto,
-    #[serde(rename = "namespaceId")]
+    #[serde(rename = "namespace_id")]
     pub namespace_id: Uint64Dto,
     /// The unique namespace name.
     #[serde(rename = "name")]
@@ -263,11 +263,11 @@ pub struct RegisterNamespaceTransactionDto {
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
     pub deadline: Uint64Dto,
-    #[serde(rename = "namespaceType")]
+    #[serde(rename = "namespace_type")]
     pub namespace_type: u8,
     #[serde(rename = "duration")]
     pub duration: Uint64Dto,
-    #[serde(rename = "namespaceId")]
+    #[serde(rename = "namespace_id")]
     pub namespace_id: Uint64Dto,
     /// The unique namespace name.
     #[serde(rename = "name")]
@@ -313,11 +313,11 @@ pub struct EmbeddedRegisterNamespaceTransactionDto {
     pub max_fee: Uint64Dto,
     #[serde(rename = "deadline")]
     pub deadline: Uint64Dto,
-    #[serde(rename = "namespaceType")]
+    #[serde(rename = "namespace_type")]
     pub namespace_type: u8,
     #[serde(rename = "duration")]
     pub duration: Uint64Dto,
-    #[serde(rename = "namespaceId")]
+    #[serde(rename = "namespace_id")]
     pub namespace_id: Uint64Dto,
     /// The unique namespace name.
     #[serde(rename = "name")]

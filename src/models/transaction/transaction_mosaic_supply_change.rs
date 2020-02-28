@@ -4,18 +4,12 @@ use failure::_core::any::Any;
 use serde_json::Value;
 
 use crate::{fb, models::{
-    account::{Account, Address, PublicAccount},
-    consts::{AMOUNT_SIZE, MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_ID_SIZE},
-    message::Message,
-    mosaic::Mosaic,
+    Id, Uint64,
+    account::{Account, PublicAccount},
+    mosaic::MosaicSupplyType,
     network::NetworkType,
+    consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE
 }};
-use crate::models::{Id, Uint64};
-use crate::models::consts::{MOSAIC_OPTIONAL_PROPERTY_SIZE, MOSAIC_PROPERTY_SIZE, MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE};
-use crate::models::mosaic::{MosaicId, MosaicNonce, MosaicProperties, MosaicSupplyType, SUPPLY_MUTABLE, TRANSFERABLE};
-use crate::models::transaction::{MOSAIC_DEFINITION_VERSION, MOSAIC_SUPPLY_CHANGE_VERSION};
-use crate::models::transaction::schema::mosaic_supply_change_transaction_schema;
-use crate::models::utils::u32_to_array_u8;
 
 use super::{
     AbstractTransaction,
@@ -25,7 +19,8 @@ use super::{
     internal::sign_transaction,
     SignedTransaction,
     Transaction,
-    TRANSFER_VERSION,
+    MOSAIC_SUPPLY_CHANGE_VERSION,
+    schema::mosaic_supply_change_transaction_schema
 };
 
 #[derive(Debug, Serialize)]
@@ -107,9 +102,9 @@ impl Transaction for MosaicSupplyChangeTransaction {
         txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
         txn_builder.add_version(*abs_vector.get("versionV").unwrap());
         txn_builder.add_type_(self.abs_transaction.transaction_type.get_value());
-        txn_builder.add_maxFee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
+        txn_builder.add_max_fee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
         txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
-        txn_builder.add_mosaicId(mosaic_vec);
+        txn_builder.add_mosaic_id(mosaic_vec);
         txn_builder.add_direction(self.supply_type.clone() as u8);
         txn_builder.add_delta(delta_vec);
         let t = txn_builder.finish();
@@ -143,12 +138,6 @@ impl Transaction for MosaicSupplyChangeTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
-    }
-}
-
-impl Into<(String)> for MosaicSupplyChangeTransaction {
-    fn into(self) -> String {
-        format!("{}", self)
     }
 }
 

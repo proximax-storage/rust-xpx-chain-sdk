@@ -2,15 +2,18 @@ use std::collections::HashMap;
 
 use fb::FlatBufferBuilder;
 
-use crate::models::account::PublicAccount;
-use crate::models::consts::{SIGNATURE_SIZE, SIGNER_SIZE};
-use crate::models::network::network_internal::extract_network_type;
-use crate::models::network::NetworkType;
-use crate::models::transaction::{deadline::Deadline, EntityTypeEnum};
-use crate::models::transaction::EntityVersion;
-use crate::models::Uint64;
+use crate::models::{
+    account::PublicAccount,
+    consts::{SIGNATURE_SIZE, SIGNER_SIZE},
+    network::NetworkType,
+    Uint64
+};
 
-use super::buffer::transfer::buffers;
+use super::{
+    deadline::Deadline, EntityTypeEnum,
+    buffer::transfer::buffers,
+    EntityVersion
+};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

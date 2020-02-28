@@ -44,7 +44,7 @@ pub(super) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
     let value_dto_vec: Value = serde_json::from_slice(&body)?;
 
     let mut value_dto_vec_str: String = "".to_string();
-    value_dto_vec_str.write_char('[');
+    value_dto_vec_str.write_char('[')?;
     for dto in 0..value_dto_vec.as_array().unwrap().len() {
        let to_array= &value_dto_vec.as_array().unwrap()[dto];
 
@@ -55,11 +55,11 @@ pub(super) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
         value_dto_vec_str.push_str(&serde_json::to_string(&transaction_dto).unwrap());
 
         if value_dto_vec.as_array().unwrap().len() != dto + 1 {
-            value_dto_vec_str.write_char(',');
+            value_dto_vec_str.write_char(',')?;
         }
     }
 
-    value_dto_vec_str.write_char(']');
+    value_dto_vec_str.write_char(']')?;
 
     let value_dto_vec_str = value_dto_vec_str.replace(&['\\'][..], "");
     let value_dto_vec_str = value_dto_vec_str.replace(r#"["{"#, r#"[{"#);

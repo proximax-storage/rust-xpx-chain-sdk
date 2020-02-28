@@ -1,8 +1,8 @@
 use sha3::{Digest, Sha3_256};
 use regex::Regex;
 
-use crate::models::{errors, Id, Uint64};
-use crate::models::utils::{array_u8_to_u64, u64_to_array_u8};
+use crate::models::{errors, Id};
+use crate::models::utils::array_u8_to_u64;
 
 use super::NamespaceId;
 

@@ -2,20 +2,16 @@ use crate::{
     models::{
         field_dto::FieldDto,
         metadata_dto::{MetadataModificationDto, MetadataTypeEnum},
-        Uint64,
         uint_64::Uint64Dto,
     },
     Result,
 };
 
 use super::{
-    internally::has_bits,
     Mosaic,
     MosaicId,
     MosaicInfo,
-    MosaicNames,
-    MosaicProperties, SUPPLY_MUTABLE,
-    TRANSFERABLE,
+    MosaicNames
 };
 use crate::models::transaction::{TransactionMetaDto, TransactionDto, Transaction, AbstractTransactionDto, MosaicDefinitionTransaction, MosaicSupplyChangeTransaction};
 use failure::_core::any::Any;

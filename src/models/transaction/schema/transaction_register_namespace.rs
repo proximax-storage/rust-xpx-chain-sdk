@@ -12,10 +12,10 @@ pub fn register_namespace_transaction_schema() -> Schema {
     let mut schema_definition = schema_common_definition();
 
     let mut register_namespace_definition: Vec<Box<dyn SchemaAttribute>> = vec![
-        Box::new(ScalarAttribute::new("namespaceType", SIZEOF_BYTE)),
-        Box::new(ArrayAttribute::new("durationParentId", SIZEOF_INT)),
-        Box::new(ArrayAttribute::new("namespaceId", SIZEOF_INT)),
-        Box::new(ScalarAttribute::new("namespaceNameSize", SIZEOF_BYTE)),
+        Box::new(ScalarAttribute::new("namespace_type", SIZEOF_BYTE)),
+        Box::new(ArrayAttribute::new("duration_parent_id", SIZEOF_INT)),
+        Box::new(ArrayAttribute::new("namespace_id", SIZEOF_INT)),
+        Box::new(ScalarAttribute::new("namespace_name_size", SIZEOF_BYTE)),
         Box::new(ArrayAttribute::new("name", SIZEOF_BYTE)),
     ];
 

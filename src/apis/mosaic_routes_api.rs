@@ -38,10 +38,10 @@ impl<C: Connect> MosaicRoutesApiClient<C> where
     pub async fn get_mosaic_info(self, mosaic_id: MosaicId) -> Result<MosaicInfo> {
         let mut req = __internal_request::Request::new(
             Method::GET,
-            "/mosaic/{mosaicId}".to_string(),
+            "/mosaic/{mosaic_id}".to_string(),
         );
 
-        req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_string());
+        req = req.with_path_param("mosaic_id".to_string(), mosaic_id.to_string());
 
         let dto: Result<MosaicInfoDto> = req.execute(self.client).await;
 

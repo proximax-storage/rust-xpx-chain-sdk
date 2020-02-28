@@ -8,10 +8,10 @@ table RegisterNamespaceTransactionBuffer {
     type: ushort;
     max_fee: [uint];
     deadline:[uint];
-    namespaceType:ubyte;
-    durationParentId:[uint];
-    namespaceId:[uint];
-    namespaceNameSize:ubyte;
+    namespace_type:ubyte;
+    duration_parent_id:[uint];
+    namespace_id:[uint];
+    namespace_name_size:ubyte;
     namespace_name:string;
 }
 

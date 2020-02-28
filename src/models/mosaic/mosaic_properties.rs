@@ -3,7 +3,6 @@ use crate::models::Uint64;
 
 type MosaicPropertyId = u8;
 
-// MosaicPropertyId enums
 const MOSAIC_PROPERTY_FLAGS_ID: MosaicPropertyId = 0;
 const MOSAIC_PROPERTY_DIVISIBILITY_ID: MosaicPropertyId = 1;
 const MOSAIC_PROPERTY_DURATION_ID: MosaicPropertyId = 1;

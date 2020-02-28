@@ -2,12 +2,7 @@ use ::core::fmt;
 
 use serde::{Serialize, Serializer};
 
-use crate::models::{account::PublicAccount,
-                    errors,
-                    Id,
-                    Uint64,
-                    utils::utils_hex::is_hex
-};
+use crate::models::{errors, Id, Uint64 };
 use crate::models::namespace::{generate_namespace_path, NAMESPACE_BIT};
 use crate::models::utils::has_bits;
 

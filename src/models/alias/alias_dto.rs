@@ -25,7 +25,7 @@ impl AliasDto {
 pub struct AddressAliasTransactionBodyDto {
     #[serde(rename = "aliasAction")]
     pub alias_action: u8,
-    #[serde(rename = "namespaceId")]
+    #[serde(rename = "namespace_id")]
     pub namespace_id: Uint64Dto,
     /// The aliased address in hexadecimal.
     #[serde(rename = "address")]
@@ -52,7 +52,7 @@ pub struct AddressAliasTransactionDto {
     pub deadline: Uint64Dto,
     #[serde(rename = "aliasAction")]
     pub alias_action: u8,
-    #[serde(rename = "namespaceId")]
+    #[serde(rename = "namespace_id")]
     pub namespace_id: Uint64Dto,
     /// The aliased address in hexadecimal.
     #[serde(rename = "address")]
@@ -63,7 +63,7 @@ pub struct AddressAliasTransactionDto {
 pub struct MosaicAliasTransactionBodyDto {
     #[serde(rename = "aliasAction")]
     pub alias_action: u8,
-    #[serde(rename = "namespaceId")]
+    #[serde(rename = "namespace_id")]
     pub namespace_id: Uint64Dto,
     #[serde(rename = "mosaic_id")]
     pub mosaic_id: Uint64Dto,
@@ -89,7 +89,7 @@ pub struct MosaicAliasTransactionDto {
     pub deadline: Uint64Dto,
     #[serde(rename = "aliasAction")]
     pub alias_action: u8,
-    #[serde(rename = "namespaceId")]
+    #[serde(rename = "namespace_id")]
     pub namespace_id: Uint64Dto,
     #[serde(rename = "mosaic_id")]
     pub mosaic_id: Uint64Dto,
@@ -111,7 +111,7 @@ pub struct EmbeddedAddressAliasTransactionDto {
     pub deadline: Uint64Dto,
     #[serde(rename = "aliasAction")]
     pub alias_action: u8,
-    #[serde(rename = "namespaceId")]
+    #[serde(rename = "namespace_id")]
     pub namespace_id: Uint64Dto,
     /// The aliased address in hexadecimal.
     #[serde(rename = "address")]
@@ -134,7 +134,7 @@ pub struct EmbeddedMosaicAliasTransactionDto {
     deadline: Uint64Dto,
     #[serde(rename = "aliasAction")]
     alias_action: u8,
-    #[serde(rename = "namespaceId")]
+    #[serde(rename = "namespace_id")]
     namespace_id: Uint64Dto,
     #[serde(rename = "mosaic_id")]
     mosaic_id: Uint64Dto,

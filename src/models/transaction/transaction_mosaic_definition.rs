@@ -4,29 +4,23 @@ use failure::_core::any::Any;
 use serde_json::Value;
 
 use crate::{fb, models::{
-    account::{Account, Address, PublicAccount},
-    consts::{AMOUNT_SIZE, MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_ID_SIZE},
-    message::Message,
-    mosaic::Mosaic,
-    network::NetworkType,
+    Id,
+    account::{Account, PublicAccount},
+    mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
+    consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE},
+    network::NetworkType
 }};
-use crate::models::consts::{MOSAIC_OPTIONAL_PROPERTY_SIZE, MOSAIC_PROPERTY_SIZE};
-use crate::models::Id;
-use crate::models::mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE};
-use crate::models::transaction::internal::mosaic_property_array_to_buffer;
-use crate::models::transaction::MOSAIC_DEFINITION_VERSION;
-use crate::models::transaction::schema::mosaic_definition_transaction_schema;
-use crate::models::utils::u32_to_array_u8;
 
 use super::{
     AbstractTransaction,
     buffer::mosaic_definition::buffers,
     deadline::Deadline,
     EntityTypeEnum,
-    internal::sign_transaction,
+    internal::{sign_transaction, mosaic_property_array_to_buffer},
     SignedTransaction,
     Transaction,
-    TRANSFER_VERSION,
+    MOSAIC_DEFINITION_VERSION,
+    schema::mosaic_definition_transaction_schema
 };
 
 #[derive(Debug, Serialize)]
@@ -125,15 +119,15 @@ impl Transaction for MosaicDefinitionTransaction {
         txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
         txn_builder.add_version(*abs_vector.get("versionV").unwrap());
         txn_builder.add_type_(self.abs_transaction.transaction_type.get_value());
-        txn_builder.add_maxFee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
+        txn_builder.add_max_fee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
         txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
 
-        txn_builder.add_mosaicNonce(self.mosaic_nonce.to_u32());
-        txn_builder.add_mosaicId(mosaic_vec);
+        txn_builder.add_mosaic_nonce(self.mosaic_nonce.to_u32());
+        txn_builder.add_mosaic_id(mosaic_vec);
         txn_builder.add_flags(f);
         txn_builder.add_divisibility(self.properties.divisibility);
-        txn_builder.add_numOptionalProperties(self.properties.optional_properties.len() as u8);
-        txn_builder.add_optionalProperties(fb::WIPOffset::new(property_vec));
+        txn_builder.add_num_optional_properties(self.properties.optional_properties.len() as u8);
+        txn_builder.add_optional_properties(fb::WIPOffset::new(property_vec));
         let t = txn_builder.finish();
 
         builder.finish(t, None);
@@ -165,12 +159,6 @@ impl Transaction for MosaicDefinitionTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
-    }
-}
-
-impl Into<(String)> for MosaicDefinitionTransaction {
-    fn into(self) -> String {
-        format!("{}", self)
     }
 }
 

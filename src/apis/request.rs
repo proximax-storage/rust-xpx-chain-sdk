@@ -53,11 +53,6 @@ impl Request {
         self
     }
 
-    pub fn with_header_param(mut self, basename: String, param: String) -> Self {
-        self.header_params.insert(basename, param);
-        self
-    }
-
     pub fn with_query_param(mut self, basename: String, param: String) -> Self {
         self.query_params.insert(basename, param);
         self

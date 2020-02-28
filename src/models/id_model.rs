@@ -2,7 +2,7 @@ use ::core::fmt;
 
 use crate::models::Uint64;
 
-/// An `trait` identifier used to define mosaic_id and namespaceId.
+/// An `trait` identifier used to define mosaic_id and namespace_id.
 pub trait Id: Sync + erased_serde::Serialize
     where
         Self: fmt::Debug,

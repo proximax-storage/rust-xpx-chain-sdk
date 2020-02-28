@@ -7,7 +7,6 @@ use crate::{fb, models::{
     {Id, Uint64},
     consts::REGISTER_NAMESPACE_HEADER_SIZE,
     errors,
-    message::Message,
     namespace::{NamespaceId, NamespaceType},
     network::NetworkType,
     account::{Account, PublicAccount}
@@ -153,14 +152,14 @@ impl Transaction for RegisterNamespaceTransaction {
         txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
         txn_builder.add_version(*abs_vector.get("versionV").unwrap());
         txn_builder.add_type_(self.abs_transaction.transaction_type.get_value());
-        txn_builder.add_maxFee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
+        txn_builder.add_max_fee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
         txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
 
-        txn_builder.add_namespaceType(self.namespace_type.clone() as u8);
-        txn_builder.add_durationParentId(d_vec);
-        txn_builder.add_namespaceId(namespace_id_vec);
-        txn_builder.add_namespaceNameSize(self.name.len() as u8);
-        txn_builder.add_namespaceName(name_vec);
+        txn_builder.add_namespace_type(self.namespace_type.clone() as u8);
+        txn_builder.add_duration_parent_id(d_vec);
+        txn_builder.add_namespace_id(namespace_id_vec);
+        txn_builder.add_namespace_name_size(self.name.len() as u8);
+        txn_builder.add_namespace_name(name_vec);
 
         let t = txn_builder.finish();
 

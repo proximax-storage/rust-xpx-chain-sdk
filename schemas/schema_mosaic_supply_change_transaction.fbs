@@ -8,7 +8,7 @@ table MosaicSupplyChangeTransactionBuffer {
     type: ushort;
     max_fee: [uint];
     deadline:[uint];
-    mosaicId:[uint];
+    mosaic_id:[uint];
     direction:ubyte;
     delta:[uint];
 }

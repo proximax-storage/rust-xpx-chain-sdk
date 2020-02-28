@@ -11,8 +11,7 @@ use crate::{
             TransactionIds,
             TransactionStatus,
             TransactionStatusDto,
-            TransactionDto,
-            TransferTransactionInfoDto
+            TransactionDto
         },
     }};
 

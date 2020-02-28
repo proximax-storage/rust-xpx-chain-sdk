@@ -9,7 +9,7 @@ table AliasTransactionBuffer {
     max_fee: [uint];
     deadline:[uint];
     actionType: ubyte;
-    namespaceId: [uint];
+    namespace_id: [uint];
     /// In case of address it is 25 bytes array. In case of mosaic it is 8 byte array(or 2 uint32 array)
     aliasId: [ubyte];
 }

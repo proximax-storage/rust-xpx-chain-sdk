@@ -25,7 +25,7 @@ pub struct ResolutionStatementDto {
     pub height: Uint64Dto,
     #[serde(rename = "unresolved")]
     pub unresolved: Uint64Dto,
-    /// The array of resolution entries linked to the unresolved namespaceId. It is an array instead of a single UInt64 field since within one block the resolution might change for different sources due to alias related transactions.
+    /// The array of resolution entries linked to the unresolved namespace_id. It is an array instead of a single UInt64 field since within one block the resolution might change for different sources due to alias related transactions.
     #[serde(rename = "resolutionEntries")]
     pub resolution_entries: Vec<ResolutionEntryDto>,
 }
