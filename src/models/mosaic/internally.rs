@@ -5,9 +5,9 @@ use crate::models::{{account::PublicAccount},
                     Uint64,
                     utils::array_u8_to_u64,
 };
+use crate::models::mosaic::{MosaicProperties, MosaicPropertyDto, SUPPLY_MUTABLE, TRANSFERABLE};
 
 use super::MosaicNonce;
-use crate::models::mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE, MosaicPropertyDto};
 
 static GET_SUPPLY_MUTABLE: u8 = 0x01;
 

@@ -1,7 +1,6 @@
+extern crate chrono;
 #[macro_use]
 extern crate downcast_rs;
-
-extern crate chrono;
 #[macro_use]
 extern crate erased_serde;
 #[macro_use]

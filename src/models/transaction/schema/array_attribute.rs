@@ -1,7 +1,7 @@
 use super::{AbstractSchemaAttribute, SchemaAttribute};
 
 #[derive(Debug, Serialize)]
-pub(crate) struct ArrayAttribute {
+pub struct ArrayAttribute {
     abs_schema_attribute: AbstractSchemaAttribute,
     size: usize,
 }

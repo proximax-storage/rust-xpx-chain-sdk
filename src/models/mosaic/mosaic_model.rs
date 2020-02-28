@@ -30,7 +30,7 @@ impl From<u8> for MosaicPropertyId {
         let mut property_id = MosaicPropertyId::MosaicFlags;
         if e == 1 {
             property_id = MosaicPropertyId::Divisibility;
-        }else {
+        } else {
             property_id = MosaicPropertyId::Duration;
         }
         property_id

@@ -1,3 +1,5 @@
+use failure::_core::any::Any;
+
 use crate::{
     models::{
         field_dto::FieldDto,
@@ -6,6 +8,9 @@ use crate::{
     },
     Result,
 };
+use crate::models::mosaic::{MosaicNonce, MosaicSupplyType};
+use crate::models::mosaic::internally::mosaic_properties;
+use crate::models::transaction::{AbstractTransactionDto, MosaicDefinitionTransaction, MosaicSupplyChangeTransaction, Transaction, TransactionDto, TransactionMetaDto};
 
 use super::{
     Mosaic,
@@ -13,10 +18,6 @@ use super::{
     MosaicInfo,
     MosaicNames
 };
-use crate::models::transaction::{TransactionMetaDto, TransactionDto, Transaction, AbstractTransactionDto, MosaicDefinitionTransaction, MosaicSupplyChangeTransaction};
-use failure::_core::any::Any;
-use crate::models::mosaic::{MosaicNonce, MosaicSupplyType};
-use crate::models::mosaic::internally::mosaic_properties;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicDto {
@@ -123,7 +124,7 @@ impl TransactionDto for MosaicDefinitionTransactionInfoDto {
 
         let properties = mosaic_properties(&dto.properties)?;
 
-        Ok(Box::new(MosaicDefinitionTransaction{
+        Ok(Box::new(MosaicDefinitionTransaction {
             abs_transaction: abs,
             properties,
             mosaic_nonce: MosaicNonce::from(dto.mosaic_nonce as u32),
@@ -225,7 +226,7 @@ impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
             dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline,
         ).to_struct()?;
 
-        Ok(Box::new(MosaicSupplyChangeTransaction{
+        Ok(Box::new(MosaicSupplyChangeTransaction {
             abs_transaction: abs,
             supply_type: MosaicSupplyType::from(dto.direction),
             asset_id: Box::new(MosaicId::from(dto.mosaic_id.to_struct())),

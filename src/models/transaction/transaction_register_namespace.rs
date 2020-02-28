@@ -5,13 +5,14 @@ use serde_json::Value;
 
 use crate::{fb, models::{
     {Id, Uint64},
+    account::{Account, PublicAccount},
     consts::REGISTER_NAMESPACE_HEADER_SIZE,
     errors,
     namespace::{NamespaceId, NamespaceType},
-    network::NetworkType,
-    account::{Account, PublicAccount}
-    }
+    network::NetworkType
+}
 };
+use crate::models::namespace::generate_namespace_id;
 
 use super::{
     AbstractTransaction,
@@ -24,7 +25,6 @@ use super::{
     SignedTransaction,
     Transaction
 };
-use crate::models::namespace::generate_namespace_id;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -55,7 +55,7 @@ impl RegisterNamespaceTransaction {
             EntityTypeEnum::NamespaceRegistration,
             network_type);
 
-        let namespace_id = NamespaceId::from_name(namespace_name )?;
+        let namespace_id = NamespaceId::from_name(namespace_name)?;
 
         Ok(RegisterNamespaceTransaction {
             abs_transaction: abs_tx,

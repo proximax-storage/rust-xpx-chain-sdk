@@ -4,11 +4,11 @@ use failure::_core::any::Any;
 use serde_json::Value;
 
 use crate::{fb, models::{
-    Id, Uint64,
-    account::{Account, PublicAccount},
+    account::{Account, PublicAccount}, consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
+    Id,
     mosaic::MosaicSupplyType,
     network::NetworkType,
-    consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE
+    Uint64
 }};
 
 use super::{
@@ -17,10 +17,10 @@ use super::{
     deadline::Deadline,
     EntityTypeEnum,
     internal::sign_transaction,
-    SignedTransaction,
-    Transaction,
     MOSAIC_SUPPLY_CHANGE_VERSION,
-    schema::mosaic_supply_change_transaction_schema
+    schema::mosaic_supply_change_transaction_schema,
+    SignedTransaction,
+    Transaction
 };
 
 #[derive(Debug, Serialize)]

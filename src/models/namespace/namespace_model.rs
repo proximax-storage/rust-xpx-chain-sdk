@@ -4,7 +4,7 @@
 /// * 1 -  Subnamespace.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[repr(u8)]
-pub enum NamespaceType {Root, Sub}
+pub enum NamespaceType { Root, Sub }
 
 impl From<u8> for NamespaceType {
     fn from(e: u8) -> Self {

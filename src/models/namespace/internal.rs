@@ -1,5 +1,5 @@
-use sha3::{Digest, Sha3_256};
 use regex::Regex;
+use sha3::{Digest, Sha3_256};
 
 use crate::models::{errors, Id};
 use crate::models::utils::array_u8_to_u64;
@@ -39,7 +39,7 @@ pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<Namespace
 
         namespace_id = generate_namespace_id(part, namespace_id)?;
 
-        path.push( namespace_id)
+        path.push(namespace_id)
     }
 
     Ok(path)

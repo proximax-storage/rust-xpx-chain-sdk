@@ -2,7 +2,7 @@ use ::core::fmt;
 
 use serde::{Serialize, Serializer};
 
-use crate::models::{errors, Id, Uint64 };
+use crate::models::{errors, Id, Uint64};
 use crate::models::namespace::{generate_namespace_path, NAMESPACE_BIT};
 use crate::models::utils::has_bits;
 
@@ -35,7 +35,7 @@ impl NamespaceId {
              errors::ERR_INVALID_NAMESPACE_NAME
          );
 
-        Ok(list[list.len()-1])
+        Ok(list[list.len() - 1])
     }
 
     /// Creates a new `MosaicId` from a pair of 32-bit integers.

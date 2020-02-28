@@ -1,6 +1,5 @@
 use crate::models::Uint64;
 
-
 type MosaicPropertyId = u8;
 
 const MOSAIC_PROPERTY_FLAGS_ID: MosaicPropertyId = 0;
@@ -47,7 +46,7 @@ impl MosaicProperties {
 
         let mut properties = vec![];
         if duration.0 != 0 {
-            properties.push(MosaicProperty{ id: MOSAIC_PROPERTY_DURATION_ID, value: duration });
+            properties.push(MosaicProperty { id: MOSAIC_PROPERTY_DURATION_ID, value: duration });
         }
 
         Ok(MosaicProperties {

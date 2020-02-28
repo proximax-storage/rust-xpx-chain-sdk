@@ -10,8 +10,8 @@ use crate::models::{
 };
 
 use super::{
-    deadline::Deadline, EntityTypeEnum,
-    buffer::transfer::buffers,
+    buffer::transfer::buffers, deadline::Deadline,
+    EntityTypeEnum,
     EntityVersion
 };
 
@@ -133,7 +133,7 @@ impl AbstractTransaction {
 
         return data;
     }
-    pub fn build_vector(&self, builder: &mut FlatBufferBuilder,vector: &HashMap<&str, fb::UOffsetT>,
+    pub fn build_vector(&self, builder: &mut FlatBufferBuilder, vector: &HashMap<&str, fb::UOffsetT>,
     ) {
         let mut transaction = buffers::TransferTransactionBufferBuilder::new(builder);
         transaction.add_signature(fb::WIPOffset::new(*vector.get("signatureV").unwrap()));

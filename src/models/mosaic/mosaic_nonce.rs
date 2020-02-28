@@ -1,6 +1,9 @@
+use std::fmt;
+
 use ::hex::FromHex;
 use ::rand::RngCore;
 use ::rand::rngs::OsRng;
+use serde::{Serialize, Serializer};
 
 use crate::models::{
     utils::{
@@ -9,8 +12,6 @@ use crate::models::{
         vec_u8_to_hex,
     },
 };
-use std::fmt;
-use serde::{Serialize, Serializer};
 
 const NONCE_SIZE: usize = 4;
 

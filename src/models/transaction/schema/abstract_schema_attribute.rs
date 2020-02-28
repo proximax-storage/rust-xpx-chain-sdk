@@ -1,7 +1,7 @@
 use ::byteorder::{ByteOrder, LittleEndian};
 
 #[derive(Debug, Serialize)]
-pub(crate) struct AbstractSchemaAttribute {
+pub struct AbstractSchemaAttribute {
     pub(crate) name: String
 }
 

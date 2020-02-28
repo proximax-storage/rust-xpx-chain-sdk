@@ -4,10 +4,10 @@ use failure::_core::any::Any;
 use serde_json::Value;
 
 use crate::{fb, models::{
-    Id,
     account::{Account, PublicAccount},
-    mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE},
+    Id,
+    mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     network::NetworkType
 }};
 
@@ -16,11 +16,11 @@ use super::{
     buffer::mosaic_definition::buffers,
     deadline::Deadline,
     EntityTypeEnum,
-    internal::{sign_transaction, mosaic_property_array_to_buffer},
-    SignedTransaction,
-    Transaction,
+    internal::{mosaic_property_array_to_buffer, sign_transaction},
     MOSAIC_DEFINITION_VERSION,
-    schema::mosaic_definition_transaction_schema
+    schema::mosaic_definition_transaction_schema,
+    SignedTransaction,
+    Transaction
 };
 
 #[derive(Debug, Serialize)]

@@ -1,7 +1,7 @@
 use super::{AbstractSchemaAttribute, SchemaAttribute};
 
 #[derive(Debug, Serialize)]
-pub(crate) struct ScalarAttribute {
+pub struct ScalarAttribute {
     abs_schema_attribute: AbstractSchemaAttribute,
     size: usize,
 }

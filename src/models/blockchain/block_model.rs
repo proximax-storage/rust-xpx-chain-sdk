@@ -1,7 +1,7 @@
 use crate::models::account::PublicAccount;
 use crate::models::network::NetworkType;
-use crate::models::transaction::Timestamp;
 use crate::models::transaction::EntityVersion;
+use crate::models::transaction::Timestamp;
 pub(crate) use crate::models::Uint64;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

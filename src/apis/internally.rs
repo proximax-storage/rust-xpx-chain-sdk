@@ -1,12 +1,12 @@
+use std::fmt::Write;
+
 use failure::_core::fmt::Debug;
 use hyper::body::Bytes;
 use serde_json::Value;
 
 use crate::models::transaction::EntityTypeEnum as Entity;
 use crate::models::utils::is_hex;
-
 use crate::Result;
-use std::fmt::Write;
 
 pub(super) fn valid_hash(hash: &str) -> Result<bool> {
     ensure!(
@@ -46,7 +46,7 @@ pub(super) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
     let mut value_dto_vec_str: String = "".to_string();
     value_dto_vec_str.write_char('[')?;
     for dto in 0..value_dto_vec.as_array().unwrap().len() {
-       let to_array= &value_dto_vec.as_array().unwrap()[dto];
+        let to_array = &value_dto_vec.as_array().unwrap()[dto];
 
         let to_string = format!("{}", to_array);
 
