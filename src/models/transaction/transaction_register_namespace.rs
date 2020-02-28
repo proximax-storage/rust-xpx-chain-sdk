@@ -45,7 +45,7 @@ impl RegisterNamespaceTransaction {
         network_type: NetworkType,
     ) -> crate::Result<RegisterNamespaceTransaction> {
         ensure!(
-            namespace_name.len() != 0 ,
+            namespace_name.len() != 0 && namespace_name.len() <= 16 ,
             errors::ERR_INVALID_NAMESPACE_NAME
         );
 
@@ -74,7 +74,7 @@ impl RegisterNamespaceTransaction {
         network_type: NetworkType,
     ) -> crate::Result<RegisterNamespaceTransaction> {
         ensure!(
-            namespace_name.len() != 0,
+            namespace_name.len() != 0 && namespace_name.len() <= 64 ,
             errors::ERR_INVALID_NAMESPACE_NAME
         );
 

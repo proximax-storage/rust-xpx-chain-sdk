@@ -41,12 +41,11 @@ async fn main() {
         Err(err) => eprintln!("{:?}", err),
     }
 
-    let transactions = client.clone().transaction.get_transactions(transactions_ids ).await;
+    let transactions = client.clone().transaction.get_transactions(transactions_ids).await;
     match transactions {
         Ok(tx) => {
             for i in tx {
                 println!("{}", i)
-
             }
         },
         Err(err) => eprintln!("{:?}", err),

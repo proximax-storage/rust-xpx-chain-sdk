@@ -1,6 +1,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
+use failure::_core::intrinsics::panic_if_uninhabited;
 use hyper::Client;
 
 use xpx_chain_sdk::apis::sirius_client::SiriusClient;
@@ -9,7 +10,6 @@ use xpx_chain_sdk::models::mosaic::{MosaicNonce, MosaicProperties};
 use xpx_chain_sdk::models::network::PUBLIC_TEST;
 use xpx_chain_sdk::models::transaction::{Deadline, MosaicDefinitionTransaction};
 use xpx_chain_sdk::models::Uint64;
-use failure::_core::intrinsics::panic_if_uninhabited;
 
 #[tokio::main]
 async fn main() {
@@ -33,7 +33,7 @@ async fn main() {
         MosaicProperties::new(
             true, true, 4, Uint64::new(0)
         ).unwrap(),
-        network_type );
+        network_type);
 
     let mosaic_definition_tx = loop {
         match &mosaic_definition {
