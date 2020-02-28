@@ -6,19 +6,12 @@ use hyper::{client::connect::Connect, Method};
 use crate::{
     apis::sirius_client::ApiClient,
     models::{
-        mosaic::{
-            MosaicId,
-            MosaicIds,
-            MosaicInfo,
-            MosaicInfoDto,
-            MosaicNames,
-            MosaicNamesDto,
-        },
-        errors::{ERR_EMPTY_MOSAIC_IDS}
+        errors::ERR_EMPTY_MOSAIC_IDS,
+        mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicInfoDto, MosaicNames, MosaicNamesDto}
     },
 };
 
-use super::{request as __internal_request, internally::valid_vec_len, Result};
+use super::{internally::valid_vec_len, request as __internal_request, Result};
 
 #[derive(Clone)]
 pub struct MosaicRoutesApiClient<C: Connect> {
@@ -72,7 +65,6 @@ impl<C: Connect> MosaicRoutesApiClient<C> where
     }
 
     pub async fn get_mosaics_names(self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicNames>> {
-
         valid_vec_len(&mosaic_ids, ERR_EMPTY_MOSAIC_IDS)?;
 
         let mosaics_ids = MosaicIds::from(mosaic_ids);

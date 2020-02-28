@@ -4,12 +4,13 @@
 use hyper::Client;
 
 use xpx_chain_sdk::apis::sirius_client::SiriusClient;
-use xpx_chain_sdk::models::account::{Account, Address};
-use xpx_chain_sdk::models::message::PlainMessage;
-use xpx_chain_sdk::models::mosaic::Mosaic;
-use xpx_chain_sdk::models::network::PUBLIC_TEST;
-use xpx_chain_sdk::models::transaction::Deadline;
-use xpx_chain_sdk::models::transaction::TransferTransaction;
+use xpx_chain_sdk::models::{
+    account::{Account, Address},
+    message::PlainMessage,
+    mosaic::Mosaic,
+    network::PUBLIC_TEST,
+    transaction::{Deadline, TransferTransaction}
+};
 
 #[tokio::main]
 async fn main() {
@@ -17,9 +18,13 @@ async fn main() {
 
     let client = SiriusClient::new(node, Client::new());
 
+    let generation_hash = client.generation_hash().await;
+
+    // let network_type = client.network_type().await;
     let network_type = PUBLIC_TEST;
 
     // Deadline default 1 hour
+    // let deadline = Deadline::new(1, 0, 0);
     let deadline = Deadline::default();
 
     let private_key = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
@@ -46,7 +51,7 @@ async fn main() {
     };
 
     let sig_transaction = account.sign(
-        transfer_tx, "56D112C98F7A7E34D1AEDC4BD01BC06CA2276DD546A93E36690B785E82439CA9".to_owned());
+        transfer_tx, &generation_hash);
 
     let sig_tx = loop {
         match &sig_transaction {

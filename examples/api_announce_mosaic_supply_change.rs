@@ -17,9 +17,13 @@ async fn main() {
 
     let client = SiriusClient::new(node, Client::new());
 
+    let generation_hash = client.generation_hash().await;
+
+    // let network_type = client.network_type().await;
     let network_type = PUBLIC_TEST;
 
     // Deadline default 1 hour
+    // let deadline = Deadline::new(1, 0, 0);
     let deadline = Deadline::default();
 
     let private_key = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
@@ -41,8 +45,7 @@ async fn main() {
         }
     };
 
-    let sig_transaction = account.sign(
-        mosaic_supply_tx, "56D112C98F7A7E34D1AEDC4BD01BC06CA2276DD546A93E36690B785E82439CA9".to_owned());
+    let sig_transaction = account.sign( mosaic_supply_tx, generation_hash );
 
     let sig_tx = loop {
         match &sig_transaction {

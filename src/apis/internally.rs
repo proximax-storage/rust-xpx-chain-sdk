@@ -4,7 +4,7 @@ use failure::_core::fmt::Debug;
 use hyper::body::Bytes;
 use serde_json::Value;
 
-use crate::models::{transaction::EntityTypeEnum as Entity, errors, utils::is_hex};
+use crate::models::{errors, transaction::EntityTypeEnum as Entity, utils::is_hex};
 use crate::Result;
 
 pub(super) fn valid_hash(hash: &str) -> Result<bool> {

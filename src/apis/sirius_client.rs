@@ -1,7 +1,10 @@
 use ::std::fmt::Debug;
+use ::std::future::Future;
 use ::std::sync::Arc;
 
 use hyper::{Client, client::connect::Connect};
+
+use crate::models::network::{NetworkType, NOT_SUPPORTED_NET};
 
 use super::{
     account_routes_api::AccountRoutesApiClient,
@@ -11,7 +14,6 @@ use super::{
     node_routes_api::NodeRoutesApiClient,
     transaction_routes_api::TransactionRoutesApiClient,
 };
-use std::future::Future;
 
 #[derive(Clone)]
 pub struct SiriusClient<C: Connect> {
@@ -49,8 +51,19 @@ impl<C: Connect> SiriusClient<C> where
         async {
             let block_info = client.get_block_by_height(1).await;
             match block_info {
-                Ok(hash) =>  hash.generation_hash,
-                _ => "".to_string()
+                Ok(hash) => hash.generation_hash,
+                Err(err) => panic!("{:?}", err),
+            }
+        }
+    }
+
+    pub fn network_type(&self) -> impl Future<Output = NetworkType> + '_ {
+        let client = self.node.clone();
+        async {
+            let block_info = client.get_node_info().await;
+            match block_info {
+                Ok(node) => NetworkType::from(node.network_identifier),
+                Err(err) => panic!("{:?}", err),
             }
         }
     }
