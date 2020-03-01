@@ -258,9 +258,11 @@ impl TransactionDto for RegisterNamespaceTransactionInfoDto {
     fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
+        let info = self.meta.to_struct();
+
         let abs_transaction = AbstractTransactionDto::new(
             dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline,
-        ).to_struct()?;
+        ).to_struct(info)?;
 
         let namespace_type = NamespaceType::from(dto.namespace_type);
 

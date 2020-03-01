@@ -17,6 +17,7 @@ use super::{
     TransactionStatus,
     TransferTransaction,
 };
+use crate::models::transaction::TransactionInfo;
 
 #[typetag::serde]
 pub trait TransactionDto {
@@ -52,7 +53,7 @@ impl AbstractTransactionDto {
         }
     }
 
-    pub(crate) fn to_struct(&self) -> crate::Result<AbstractTransaction> {
+    pub(crate) fn to_struct(&self, info: TransactionInfo) -> crate::Result<AbstractTransaction> {
         let dto = self;
 
         let network_type = extract_network_type(self.version);
@@ -70,7 +71,7 @@ impl AbstractTransactionDto {
 
         let transaction_type = EntityTypeEnum::from(dto._type as u64);
 
-        Ok(AbstractTransaction::new(None,
+        Ok(AbstractTransaction::new(Some(info),
                                     network_type,
                                     dto.signature.clone(),
                                     signer,
@@ -100,6 +101,32 @@ pub struct TransactionMetaDto {
     id: String,
     aggregate_id: Option<String>,
     aggregate_hash: Option<String>,
+}
+
+impl TransactionMetaDto {
+    pub fn to_struct(&self)-> TransactionInfo {
+        let dto = self.clone();
+
+        let mut agregate_hash = None;
+        if let Some(t) = dto.aggregate_hash.clone() {
+            agregate_hash = Some(t)
+        }
+
+        let mut aggregate_id = None;
+        if let Some(t) = dto.aggregate_id.clone() {
+            aggregate_id = Some(t)
+        }
+
+        TransactionInfo{
+            height: dto.height.to_struct(),
+            index: dto.index,
+            id: dto.id.clone(),
+            transaction_hash: dto.hash.clone(),
+            merkle_component_hash: dto.merkle_component_hash.clone(),
+            agregate_hash,
+            aggregate_id
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -155,10 +182,11 @@ pub struct TransferTransactionInfoDto {
 impl TransactionDto for TransferTransactionInfoDto {
     fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
+        let info = self.meta.to_struct();
 
         let abs = AbstractTransactionDto::new(
             dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline,
-        ).to_struct()?;
+        ).to_struct(info)?;
 
 
         let mut mosaics: Vec<Mosaic> = vec![];

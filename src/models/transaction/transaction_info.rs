@@ -162,8 +162,10 @@ pub struct TransactionInfo {
     pub id: String,
     pub transaction_hash: String,
     pub merkle_component_hash: String,
-    pub agregate_hash: String,
-    pub aggregate_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub agregate_hash: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub aggregate_id: Option<String>,
 }
 
 impl TransactionInfo {
@@ -182,8 +184,8 @@ impl TransactionInfo {
             id,
             transaction_hash,
             merkle_component_hash,
-            agregate_hash,
-            aggregate_id,
+            agregate_hash: Some(agregate_hash),
+            aggregate_id:  Some(aggregate_id),
         }
     }
 }

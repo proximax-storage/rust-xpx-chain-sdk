@@ -109,9 +109,11 @@ impl TransactionDto for MosaicDefinitionTransactionInfoDto {
     fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
+        let info = self.meta.to_struct();
+
         let abs = AbstractTransactionDto::new(
             dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline,
-        ).to_struct()?;
+        ).to_struct(info)?;
 
         let properties = mosaic_properties(&dto.properties)?;
 
@@ -205,9 +207,11 @@ impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
     fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
+        let info = self.meta.to_struct();
+
         let abs = AbstractTransactionDto::new(
             dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline,
-        ).to_struct()?;
+        ).to_struct(info)?;
 
         Ok(Box::new(MosaicSupplyChangeTransaction {
             abs_transaction: abs,
