@@ -20,7 +20,7 @@ async fn main() {
 
     let transactions_ids = vec![
         "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F",
-        "c088f96252ab76ac73b4367de2c8c6d7dfaf33ea3e7120d867888632862eb514"
+        "5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4"
     ];
 
     let transactions_statuses = client.clone().transaction.get_transactions_statuses(
@@ -35,19 +35,19 @@ async fn main() {
     }
 
     let transaction = client.clone().transaction.get_transaction(
-        "2409DC670B868D657FD8CE8CE3B01213F6920DAFB734766EB0ECA9F991BEBD91").await;
+        "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").await;
     match transaction {
         Ok(tx) => println!("{}", tx),
         Err(err) => eprintln!("{:?}", err),
     }
-//
-//    let transactions = client.clone().transaction.get_transactions(transactions_ids).await;
-//    match transactions {
-//        Ok(tx) => {
-//            for i in tx {
-//                println!("{}", i)
-//            }
-//        },
-//        Err(err) => eprintln!("{:?}", err),
-//    }
+
+    let transactions = client.clone().transaction.get_transactions(transactions_ids).await;
+    match transactions {
+        Ok(tx) => {
+            for i in tx {
+                println!("{}", i)
+            }
+        },
+        Err(err) => eprintln!("{:?}", err),
+    }
 }
