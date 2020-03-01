@@ -32,15 +32,18 @@ pub struct RegisterNamespaceTransaction {
     pub abs_transaction: AbstractTransaction,
     pub namespace_type: NamespaceType,
     pub namespace_id: NamespaceId,
-    pub name: &'static str,
-    pub duration: Uint64,
-    pub parent_id: NamespaceId
+    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<Uint64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parent_id: Option<NamespaceId>
 }
 
 impl RegisterNamespaceTransaction {
+
     pub fn create_root(
         deadline: Deadline,
-        namespace_name: &'static str,
+        namespace_name: &str,
         duration: Uint64,
         network_type: NetworkType,
     ) -> crate::Result<RegisterNamespaceTransaction> {
@@ -61,9 +64,9 @@ impl RegisterNamespaceTransaction {
             abs_transaction: abs_tx,
             namespace_type: NamespaceType::Root,
             namespace_id,
-            name: namespace_name,
-            duration,
-            parent_id: Default::default()
+            name: namespace_name.parse().unwrap(),
+            duration: Some(duration),
+            parent_id: None
         })
     }
 
@@ -95,9 +98,9 @@ impl RegisterNamespaceTransaction {
             abs_transaction: abs_tx,
             namespace_type: NamespaceType::Sub,
             namespace_id,
-            name: namespace_name,
-            duration: Default::default(),
-            parent_id
+            name: namespace_name.parse().unwrap(),
+            duration: None,
+            parent_id: Some(parent_id)
         })
     }
 
@@ -136,12 +139,12 @@ impl Transaction for RegisterNamespaceTransaction {
 
         let mut d_vec = fb::WIPOffset::new(0);
         if self.namespace_type == NamespaceType::Root {
-            d_vec = builder.create_vector(&self.duration.to_int_array());
+            d_vec = builder.create_vector(&self.duration.unwrap().to_int_array());
         } else {
-            d_vec = builder.create_vector(&self.parent_id.to_int_array());
+            d_vec = builder.create_vector(&self.parent_id.unwrap().to_int_array());
         }
 
-        let name_vec = builder.create_string(self.name);
+        let name_vec = builder.create_string(self.name.as_ref());
 
         let abs_vector = &self.abs_transaction.generate_vector(&mut builder);
 

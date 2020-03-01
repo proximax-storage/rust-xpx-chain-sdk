@@ -35,19 +35,19 @@ async fn main() {
     }
 
     let transaction = client.clone().transaction.get_transaction(
-        "A5215CA0D024B50F59B6A19354638F2A366B44B08A95DA59A926250400BBE86E").await;
+        "2409DC670B868D657FD8CE8CE3B01213F6920DAFB734766EB0ECA9F991BEBD91").await;
     match transaction {
         Ok(tx) => println!("{}", tx),
         Err(err) => eprintln!("{:?}", err),
     }
-
-    let transactions = client.clone().transaction.get_transactions(transactions_ids).await;
-    match transactions {
-        Ok(tx) => {
-            for i in tx {
-                println!("{}", i)
-            }
-        },
-        Err(err) => eprintln!("{:?}", err),
-    }
+//
+//    let transactions = client.clone().transaction.get_transactions(transactions_ids).await;
+//    match transactions {
+//        Ok(tx) => {
+//            for i in tx {
+//                println!("{}", i)
+//            }
+//        },
+//        Err(err) => eprintln!("{:?}", err),
+//    }
 }

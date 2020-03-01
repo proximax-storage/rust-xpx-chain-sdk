@@ -3,10 +3,10 @@ use crate::models::mosaic::{Mosaic, MosaicDto};
 use crate::models::uint_64::Uint64Dto;
 use crate::Result;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct AccountMetaDto {}
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct AccountDto {
     address: String,
@@ -31,7 +31,7 @@ pub(crate) struct AccountIds {
     addresses: Option<Vec<String>>,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct AccountInfoDto {
     #[serde(rename = "meta")]
     meta: AccountMetaDto,

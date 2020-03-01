@@ -19,12 +19,8 @@ use super::{
 };
 
 #[typetag::serde]
-pub trait TransactionDto where
-    Self: fmt::Debug,
-{
-    fn version(&self) -> i32;
+pub trait TransactionDto {
     fn to_struct(&self) -> crate::Result<Box<dyn Transaction>>;
-    fn as_any(&self) -> &dyn Any;
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -157,10 +153,6 @@ pub struct TransferTransactionInfoDto {
 
 #[typetag::serde]
 impl TransactionDto for TransferTransactionInfoDto {
-    fn version(&self) -> i32 {
-        self.transaction.version
-    }
-
     fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
@@ -183,10 +175,6 @@ impl TransactionDto for TransferTransactionInfoDto {
             mosaics,
             message: dto.message.to_struct(),
         }))
-    }
-
-    fn as_any(&self) -> &dyn Any {
-        self
     }
 }
 
