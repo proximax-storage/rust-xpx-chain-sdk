@@ -90,7 +90,7 @@ pub(super) fn map_transaction_dto(body: Bytes) -> Result<String> {
         Entity::MosaicAlias => "ModifyMultisigAccount",
         Entity::MosaicDefinition => "MosaicDefinition",
         Entity::MosaicSupplyChange => "MosaicSupplyChange",
-        Entity::NamespaceRegistration => "ModifyMultisigAccount",
+        Entity::NamespaceRegistration => "NamespaceRegistration",
         Entity::NemesisBlock => "NemesisBlock:",
         Entity::NetworkConfigEntityType => "NetworkConfigEntityType",
         Entity::SecretLock => "SecretLock",
