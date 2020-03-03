@@ -35,20 +35,16 @@ async fn main() {
         network_type
     );
 
-    let register_namespace_root_tx = loop {
-        match &register_namespace_root {
-            Ok(definition) => break definition,
-            Err(err) => panic!("{}", err),
-        }
+    let register_namespace_root_tx = match &register_namespace_root {
+        Ok(definition) => definition,
+        Err(err) => panic!("{}", err),
     };
 
-    let sig_transaction_root = account.sign( register_namespace_root_tx, &generation_hash);
+    let sig_transaction_root = account.sign(register_namespace_root_tx, &generation_hash);
 
-    let sig_root_tx = loop {
-        match &sig_transaction_root {
-            Ok(sig) => break sig,
-            Err(err) => panic!("{}", err),
-        }
+    let sig_root_tx = match &sig_transaction_root {
+        Ok(sig) => sig,
+        Err(err) => panic!("{}", err),
     };
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
@@ -58,7 +54,7 @@ async fn main() {
 
     match response_root {
         Ok(resp) => println!("{}\n", resp),
-        Err(err) => panic!("{:?}", err),
+        Err(err) => eprintln!("{:?}", err),
     }
 
     let register_namespace_sub = RegisterNamespaceTransaction::create_sub(
@@ -75,13 +71,11 @@ async fn main() {
         }
     };
 
-    let sig_transaction_sub = account.sign( register_namespace_sub_tx, &generation_hash);
+    let sig_transaction_sub = account.sign(register_namespace_sub_tx, &generation_hash);
 
-    let sig_sub_tx = loop {
-        match &sig_transaction_sub {
-            Ok(sig) => break sig,
-            Err(err) => panic!("{}", err),
-        }
+    let sig_sub_tx = match &sig_transaction_sub {
+        Ok(sig) => sig,
+        Err(err) => panic!("{}", err),
     };
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
@@ -91,6 +85,6 @@ async fn main() {
 
     match response_sub {
         Ok(resp) => println!("{}", resp),
-        Err(err) => panic!("{:?}", err),
+        Err(err) => eprintln!("{:?}", err),
     }
 }

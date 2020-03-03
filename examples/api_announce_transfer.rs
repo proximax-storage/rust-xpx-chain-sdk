@@ -43,21 +43,17 @@ async fn main() {
         network_type,
     );
 
-    let transfer_tx = loop {
-        match &transfer_transaction {
-            Ok(_transfer) => break _transfer,
-            Err(_e) => panic!("{}", _e),
-        }
+    let transfer_tx = match &transfer_transaction {
+        Ok(transfer) => transfer,
+        Err(err) => panic!("{}", err),
     };
 
     let sig_transaction = account.sign(
         transfer_tx, &generation_hash);
 
-    let sig_tx = loop {
-        match &sig_transaction {
-            Ok(sig) => break sig,
-            Err(err) => panic!("{}", err),
-        }
+    let sig_tx = match &sig_transaction {
+        Ok(sig) => sig,
+        Err(err) => panic!("{}", err),
     };
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
@@ -67,6 +63,6 @@ async fn main() {
 
     match response {
         Ok(resp) => println!("{}", resp),
-        Err(err) => panic!("{:?}", err),
+        Err(err) => eprintln!("{:?}", err),
     }
 }

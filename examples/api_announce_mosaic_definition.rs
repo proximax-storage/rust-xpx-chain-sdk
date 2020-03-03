@@ -1,7 +1,6 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use failure::_core::intrinsics::panic_if_uninhabited;
 use hyper::Client;
 
 use xpx_chain_sdk::apis::sirius_client::SiriusClient;
@@ -35,24 +34,20 @@ async fn main() {
         MosaicNonce::random(),
         account.clone().public_account,
         MosaicProperties::new(
-            true, true, 4, Uint64::new(0)
+            true, true, 6, Uint64::new(0)
         ).unwrap(),
         network_type);
 
-    let mosaic_definition_tx = loop {
-        match &mosaic_definition {
-            Ok(definition) => break definition,
-            Err(_e) => panic!("{}", _e),
-        }
+    let mosaic_definition_tx = match &mosaic_definition {
+        Ok(definition) => definition,
+        Err(err) => panic!("{}", err),
     };
 
-    let sig_transaction = account.sign(mosaic_definition_tx, generation_hash);
+    let sig_transaction = account.sign(mosaic_definition_tx, &generation_hash);
 
-    let sig_tx = loop {
-        match &sig_transaction {
-            Ok(sig) => break sig,
-            Err(err) => panic!("{}", err),
-        }
+    let sig_tx = match &sig_transaction {
+        Ok(sig) => sig,
+        Err(err) => panic!("{}", err),
     };
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
@@ -62,6 +57,6 @@ async fn main() {
 
     match response {
         Ok(resp) => println!("{}", resp),
-        Err(err) => panic!("{:?}", err),
+        Err(err) => eprintln!("{:?}", err),
     }
 }

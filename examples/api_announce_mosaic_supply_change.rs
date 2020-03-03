@@ -5,11 +5,10 @@ use hyper::Client;
 
 use xpx_chain_sdk::apis::sirius_client::SiriusClient;
 use xpx_chain_sdk::models::account::Account;
+use xpx_chain_sdk::models::mosaic::{MosaicId, MosaicSupplyType};
 use xpx_chain_sdk::models::network::PUBLIC_TEST;
 use xpx_chain_sdk::models::transaction::{Deadline, MosaicSupplyChangeTransaction};
 use xpx_chain_sdk::models::Uint64;
-use xpx_chain_sdk::models::mosaic::{MosaicSupplyType, MosaicId};
-
 
 #[tokio::main]
 async fn main() {
@@ -38,20 +37,17 @@ async fn main() {
         network_type,
     );
 
-    let mosaic_supply_tx = loop {
+    let mosaic_supply_tx =
         match &mosaic_supply {
-            Ok(supply) => break supply,
-            Err(_e) => panic!("{}", _e),
-        }
-    };
-
-    let sig_transaction = account.sign( mosaic_supply_tx, generation_hash );
-
-    let sig_tx = loop {
-        match &sig_transaction {
-            Ok(sig) => break sig,
+            Ok(supply) => supply,
             Err(err) => panic!("{}", err),
-        }
+        };
+
+    let sig_transaction = account.sign(mosaic_supply_tx, &generation_hash);
+
+    let sig_tx = match &sig_transaction {
+        Ok(sig) => sig,
+        Err(err) => panic!("{}", err),
     };
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
@@ -61,6 +57,6 @@ async fn main() {
 
     match response {
         Ok(resp) => println!("{}", resp),
-        Err(err) => panic!("{:?}", err),
+        Err(err) => eprintln!("{:?}", err),
     }
 }
