@@ -35,56 +35,55 @@ async fn main() {
         network_type
     );
 
-    let register_namespace_root_tx = match &register_namespace_root {
-        Ok(definition) => definition,
+    let namespace_root = match &register_namespace_root {
+        Ok(register_namespace) => register_namespace,
         Err(err) => panic!("{}", err),
     };
 
-    let sig_transaction_root = account.sign(register_namespace_root_tx, &generation_hash);
+    let sig_transaction_root = account.sign(namespace_root, &generation_hash);
 
-    let sig_root_tx = match &sig_transaction_root {
-        Ok(sig) => sig,
-        Err(err) => panic!("{}", err),
-    };
+    if let Err(err) = &sig_transaction_root {
+        panic!("{}", err)
+    }
+
+    let sig_transaction = &sig_transaction_root.unwrap();
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
-    println!("Hash: \t\t{}", sig_root_tx.hash.to_uppercase());
+    println!("Hash: \t\t{}", sig_transaction.hash.to_uppercase());
 
-    let response_root = client.clone().transaction.announce_transaction(&sig_root_tx).await;
+    let response_root = client.clone().transaction.announce_transaction(&sig_transaction).await;
 
     match response_root {
-        Ok(resp) => println!("{}\n", resp),
+        Ok(response) => println!("{}\n", response),
         Err(err) => eprintln!("{:?}", err),
     }
 
     let register_namespace_sub = RegisterNamespaceTransaction::create_sub(
         deadline,
         "latam",
-        register_namespace_root_tx.namespace_id,
+        namespace_root.namespace_id,
         network_type
     );
 
-    let register_namespace_sub_tx = loop {
-        match &register_namespace_sub {
-            Ok(definition) => break definition,
-            Err(err) => panic!("{}", err),
-        }
-    };
+    if let Err(err) = &register_namespace_sub {
+        panic!("{}", err)
+    }
 
-    let sig_transaction_sub = account.sign(register_namespace_sub_tx, &generation_hash);
+    let sig_transaction_sub = account.sign(&register_namespace_sub.unwrap(), &generation_hash);
 
-    let sig_sub_tx = match &sig_transaction_sub {
-        Ok(sig) => sig,
-        Err(err) => panic!("{}", err),
-    };
+    if let Err(err) = &sig_transaction_sub {
+        panic!("{}", err)
+    }
+
+    let sig_transaction = &sig_transaction_sub.unwrap();
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
-    println!("Hash: \t\t{}", sig_sub_tx.hash.to_uppercase());
+    println!("Hash: \t\t{}", sig_transaction.hash.to_uppercase());
 
-    let response_sub = client.transaction.announce_transaction(&sig_sub_tx).await;
+    let response_sub = client.transaction.announce_transaction(&sig_transaction).await;
 
     match response_sub {
-        Ok(resp) => println!("{}", resp),
+        Ok(response) => println!("{}", response),
         Err(err) => eprintln!("{:?}", err),
     }
 }

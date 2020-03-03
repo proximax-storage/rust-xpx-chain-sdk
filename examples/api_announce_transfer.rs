@@ -43,13 +43,12 @@ async fn main() {
         network_type,
     );
 
-    let transfer_tx = match &transfer_transaction {
-        Ok(transfer) => transfer,
-        Err(err) => panic!("{}", err),
-    };
+    if let Err(err) = &transfer_transaction {
+        panic!("{}", err)
+    }
 
     let sig_transaction = account.sign(
-        transfer_tx, &generation_hash);
+        &transfer_transaction.unwrap(), &generation_hash);
 
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,
@@ -57,7 +56,7 @@ async fn main() {
     };
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
-    println!("Hash: \t\t{}", sig_tx.clone().hash.to_uppercase());
+    println!("Hash: \t\t{}", &sig_tx.hash.to_uppercase());
 
     let response = client.transaction.announce_transaction(&sig_tx).await;
 

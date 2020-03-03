@@ -37,23 +37,22 @@ async fn main() {
         network_type,
     );
 
-    let mosaic_supply_tx =
-        match &mosaic_supply {
-            Ok(supply) => supply,
-            Err(err) => panic!("{}", err),
-        };
+    if let Err(err) = &mosaic_supply {
+        panic!("{}", err)
+    }
 
-    let sig_transaction = account.sign(mosaic_supply_tx, &generation_hash);
+    let sig_mosaic_supply = account.sign(&mosaic_supply.unwrap(), &generation_hash);
 
-    let sig_tx = match &sig_transaction {
-        Ok(sig) => sig,
-        Err(err) => panic!("{}", err),
-    };
+    if let Err(err) = &sig_mosaic_supply {
+        panic!("{}", err)
+    }
+
+    let sig_transaction = &sig_mosaic_supply.unwrap();
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
-    println!("Hash: \t\t{}", sig_tx.clone().hash.to_uppercase());
+    println!("Hash: \t\t{}", sig_transaction.hash.to_uppercase());
 
-    let response = client.transaction.announce_transaction(&sig_tx).await;
+    let response = client.transaction.announce_transaction(&sig_transaction).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

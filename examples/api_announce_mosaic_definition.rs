@@ -38,22 +38,22 @@ async fn main() {
         ).unwrap(),
         network_type);
 
-    let mosaic_definition_tx = match &mosaic_definition {
-        Ok(definition) => definition,
-        Err(err) => panic!("{}", err),
-    };
+    if let Err(err) = &mosaic_definition {
+        panic!("{}", err)
+    }
 
-    let sig_transaction = account.sign(mosaic_definition_tx, &generation_hash);
+    let sig_mosaic_definition = account.sign(&mosaic_definition.unwrap(), &generation_hash);
 
-    let sig_tx = match &sig_transaction {
-        Ok(sig) => sig,
-        Err(err) => panic!("{}", err),
-    };
+    if let Err(err) = &sig_mosaic_definition {
+        panic!("{}", err)
+    }
+
+    let sig_transaction = &sig_mosaic_definition.unwrap();
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
-    println!("Hash: \t\t{}", sig_tx.clone().hash.to_uppercase());
+    println!("Hash: \t\t{}", sig_transaction.hash.to_uppercase());
 
-    let response = client.transaction.announce_transaction(&sig_tx).await;
+    let response = client.transaction.announce_transaction(sig_transaction).await;
 
     match response {
         Ok(resp) => println!("{}", resp),
