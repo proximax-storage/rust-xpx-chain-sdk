@@ -1,7 +1,6 @@
 use ::std::{any::Any, fmt};
 
 use downcast_rs::Downcast;
-use failure::_core::fmt::Debug;
 use serde_json::Value;
 
 use crate::models::{account::Account, Uint64};
@@ -12,6 +11,9 @@ use super::{
     EntityTypeEnum,
     SignedTransaction,
 };
+use std::path::Display;
+
+pub type Transactions = Vec<Box<dyn Transaction>>;
 
 pub trait Transaction: Downcast + Sync + erased_serde::Serialize
     where

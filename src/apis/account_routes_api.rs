@@ -26,13 +26,13 @@ impl<C: Connect> AccountRoutes<C> {
 ///
 impl<C: Connect> AccountRoutes<C>
     where
-        C: Clone + Send + Sync + Debug + 'static
+        C: Clone + Send + Sync + 'static
 {
     /// Get [Account] information
     ///
     /// # Inputs
     ///
-    /// * `account_id` The public key or address of the account.
+    /// * `account_id` =    The public key or address of the account.
     ///
     /// # Example
     ///

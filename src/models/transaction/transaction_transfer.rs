@@ -129,7 +129,7 @@ impl Transaction for TransferTransaction {
         let mut mosaics_buffer: Vec<fb::WIPOffset<buffers::MosaicBuffer<'a>>> = Vec::with_capacity(ml);
 
         for mosaic in &self.mosaics {
-            let mosaic_id = _builder.create_vector(&mosaic.id.to_int_array());
+            let mosaic_id = _builder.create_vector(&mosaic.asset_id.to_int_array());
             let mosaic_amount = _builder.create_vector(&mosaic.amount.to_int_array());
 
             let mut mosaic_buffer = buffers::MosaicBufferBuilder::new(&mut _builder);

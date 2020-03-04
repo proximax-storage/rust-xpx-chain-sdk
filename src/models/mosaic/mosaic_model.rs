@@ -61,7 +61,7 @@ impl From<u8> for MosaicSupplyType {
 #[serde(rename_all = "camelCase")]
 pub struct Mosaic {
     /// The mosaic id. This can either be of type `MosaicId` or `NamespaceId`.
-    pub id: Box<dyn Id + 'static>,
+    pub asset_id: Box<dyn Id + 'static>,
     /// The mosaic amount.
     pub amount: Uint64,
 }
@@ -71,8 +71,8 @@ impl Mosaic {
     ///
     /// The quantity is always given in smallest units for the mosaic. For example, if it has a
     /// divisibility of 3 the quantity is given in millis.
-    pub fn new(id: impl Id + 'static, amount: Uint64) -> Self {
-        Mosaic { id: Box::new(id), amount }
+    pub fn new(asset_id: impl Id + 'static, amount: Uint64) -> Self {
+        Mosaic { asset_id: Box::new(asset_id), amount }
     }
 
     pub fn xpx(amount: u64) -> Self {
@@ -83,7 +83,7 @@ impl Mosaic {
 
         let xpx_mosaic_id = Box::new(MosaicId(Uint64(13833723942089965046)));
 
-        Mosaic { id: xpx_mosaic_id, amount: Uint64::new(amount) }
+        Mosaic { asset_id: xpx_mosaic_id, amount: Uint64::new(amount) }
     }
 
     pub fn xpx_relative(amount: u64) -> Self {
@@ -96,7 +96,7 @@ impl Mosaic {
     }
 
     fn get_id<'a>(&'a self) -> &'a dyn Id {
-        &*self.id
+        &*self.asset_id
     }
 }
 

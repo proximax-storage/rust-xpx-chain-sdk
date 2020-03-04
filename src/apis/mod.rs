@@ -12,7 +12,6 @@ mod mosaic_routes_api;
 mod transaction_routes_api;
 mod internally;
 
-
 pub mod sirius_client;
 
 type Result<T> = std::result::Result<T, Error<Value>>;
