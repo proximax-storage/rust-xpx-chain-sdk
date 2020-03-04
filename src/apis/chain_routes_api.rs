@@ -17,19 +17,19 @@ use crate::{
 use super::{request as __internal_request, Result};
 
 #[derive(Clone)]
-pub struct ChainRoutesApiClient<C: Connect> {
+pub struct ChainRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> ChainRoutesApiClient<C> {
+impl<C: Connect> ChainRoutes<C> {
     pub fn new(client: Arc<ApiClient<C>>) -> Self {
-        ChainRoutesApiClient {
+        ChainRoutes {
             client,
         }
     }
 }
 
-impl<C: Connect> ChainRoutesApiClient<C> where
+impl<C: Connect> ChainRoutes<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
     pub async fn get_blockchain_height(self) -> Result<HeightInfo> {

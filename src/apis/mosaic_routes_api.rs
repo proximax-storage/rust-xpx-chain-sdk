@@ -14,19 +14,19 @@ use crate::{
 use super::{internally::valid_vec_len, request as __internal_request, Result};
 
 #[derive(Clone)]
-pub struct MosaicRoutesApiClient<C: Connect> {
+pub struct MosaicRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> MosaicRoutesApiClient<C> {
+impl<C: Connect> MosaicRoutes<C> {
     pub fn new(client: Arc<ApiClient<C>>) -> Self {
-        MosaicRoutesApiClient {
+        MosaicRoutes {
             client,
         }
     }
 }
 
-impl<C: Connect> MosaicRoutesApiClient<C> where
+impl<C: Connect> MosaicRoutes<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
     pub async fn get_mosaic_info(self, mosaic_id: MosaicId) -> Result<MosaicInfo> {

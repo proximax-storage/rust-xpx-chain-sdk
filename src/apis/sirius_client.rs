@@ -7,23 +7,23 @@ use hyper::{Client, client::connect::Connect};
 use crate::models::network::{NetworkType, NOT_SUPPORTED_NET};
 
 use super::{
-    account_routes_api::AccountRoutesApiClient,
-    block_routes_api::BlockRoutesApiClient,
-    chain_routes_api::ChainRoutesApiClient,
-    mosaic_routes_api::MosaicRoutesApiClient,
-    node_routes_api::NodeRoutesApiClient,
-    transaction_routes_api::TransactionRoutesApiClient,
+    account_routes_api::AccountRoutes,
+    block_routes_api::BlockRoutes,
+    chain_routes_api::ChainRoutes,
+    mosaic_routes_api::MosaicRoutes,
+    node_routes_api::NodeRoutes,
+    transaction_routes_api::TransactionRoutes,
 };
 
 #[derive(Clone)]
 pub struct SiriusClient<C: Connect> {
     generation_hash: &'static str,
-    pub account: Box<AccountRoutesApiClient<C>>,
-    pub block: Box<BlockRoutesApiClient<C>>,
-    pub chain: Box<ChainRoutesApiClient<C>>,
-    pub node: Box<NodeRoutesApiClient<C>>,
-    pub mosaic: Box<MosaicRoutesApiClient<C>>,
-    pub transaction: Box<TransactionRoutesApiClient<C>>,
+    pub account: Box<AccountRoutes<C>>,
+    pub block: Box<BlockRoutes<C>>,
+    pub chain: Box<ChainRoutes<C>>,
+    pub node: Box<NodeRoutes<C>>,
+    pub mosaic: Box<MosaicRoutes<C>>,
+    pub transaction: Box<TransactionRoutes<C>>,
 }
 
 impl<C: Connect> SiriusClient<C> where
@@ -37,12 +37,12 @@ impl<C: Connect> SiriusClient<C> where
 
         Box::new(SiriusClient {
             generation_hash: "",
-            account: Box::new(AccountRoutesApiClient::new(rc.clone())),
-            block: Box::new(BlockRoutesApiClient::new(rc.clone())),
-            chain: Box::new(ChainRoutesApiClient::new(rc.clone())),
-            node: Box::new(NodeRoutesApiClient::new(rc.clone())),
-            mosaic: Box::new(MosaicRoutesApiClient::new(rc.clone())),
-            transaction: Box::new(TransactionRoutesApiClient::new(rc.clone())),
+            account: Box::new(AccountRoutes::new(rc.clone())),
+            block: Box::new(BlockRoutes::new(rc.clone())),
+            chain: Box::new(ChainRoutes::new(rc.clone())),
+            node: Box::new(NodeRoutes::new(rc.clone())),
+            mosaic: Box::new(MosaicRoutes::new(rc.clone())),
+            transaction: Box::new(TransactionRoutes::new(rc.clone())),
         })
     }
 

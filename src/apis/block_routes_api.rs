@@ -15,19 +15,19 @@ use super::{
 };
 
 #[derive(Clone)]
-pub struct BlockRoutesApiClient<C: Connect> {
+pub struct BlockRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> BlockRoutesApiClient<C> {
+impl<C: Connect> BlockRoutes<C> {
     pub fn new(client: Arc<ApiClient<C>>) -> Self {
-        BlockRoutesApiClient {
+        BlockRoutes {
             client,
         }
     }
 }
 
-impl<C: Connect> BlockRoutesApiClient<C>
+impl<C: Connect> BlockRoutes<C>
     where
         C: Clone + Send + Sync + Debug + 'static
 {

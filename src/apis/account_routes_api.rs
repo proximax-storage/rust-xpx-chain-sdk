@@ -10,13 +10,13 @@ use super::{request as __internal_request, Result, sirius_client::ApiClient};
 /// Account ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct AccountRoutesApiClient<C: Connect> {
+pub struct AccountRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> AccountRoutesApiClient<C> {
+impl<C: Connect> AccountRoutes<C> {
     pub fn new(client: Arc<ApiClient<C>>) -> Self {
-        AccountRoutesApiClient {
+        AccountRoutes {
             client,
         }
     }
@@ -24,7 +24,7 @@ impl<C: Connect> AccountRoutesApiClient<C> {
 
 /// Account related endpoints.
 ///
-impl<C: Connect> AccountRoutesApiClient<C>
+impl<C: Connect> AccountRoutes<C>
     where
         C: Clone + Send + Sync + Debug + 'static
 {

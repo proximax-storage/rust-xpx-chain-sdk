@@ -24,21 +24,21 @@ use super::{
 };
 
 #[derive(Clone)]
-pub struct TransactionRoutesApiClient<C: Connect> {
+pub struct TransactionRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> TransactionRoutesApiClient<C> where
+impl<C: Connect> TransactionRoutes<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
     pub fn new(client: Arc<ApiClient<C>>) -> Self {
-        TransactionRoutesApiClient {
+        TransactionRoutes {
             client,
         }
     }
 }
 
-impl<C: Connect> TransactionRoutesApiClient<C> where
+impl<C: Connect> TransactionRoutes<C> where
     C: Clone + Send + Sync + Debug + 'static,
 {
     pub async fn get_transaction_status(self, hash: &str) -> Result<TransactionStatus> {

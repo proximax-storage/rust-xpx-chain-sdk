@@ -15,19 +15,19 @@ use crate::{
 use super::{request as __internal_request, Result};
 
 #[derive(Clone)]
-pub struct NodeRoutesApiClient<C: Connect> {
+pub struct NodeRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> NodeRoutesApiClient<C> {
+impl<C: Connect> NodeRoutes<C> {
     pub fn new(client: Arc<ApiClient<C>>) -> Self {
-        NodeRoutesApiClient {
+        NodeRoutes {
             client,
         }
     }
 }
 
-impl<C: Connect> NodeRoutesApiClient<C> where
+impl<C: Connect> NodeRoutes<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
     pub async fn get_node_info(self) -> Result<NodeInfo> {
