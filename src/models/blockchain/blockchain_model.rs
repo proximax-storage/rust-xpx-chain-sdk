@@ -15,6 +15,8 @@ impl<'a> core::fmt::Display for HeightInfo {
     }
 }
 
+/// Get the current score of the chain.
+///
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BlockchainScore {
     #[serde(rename = "scoreHigh")]
@@ -32,6 +34,8 @@ impl<'a> core::fmt::Display for BlockchainScore {
     }
 }
 
+/// Diagnostic information about the node storage.
+///
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StorageInfo {
     /// The number of blocks stored.
