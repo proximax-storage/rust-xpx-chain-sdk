@@ -10,7 +10,7 @@ static ENCRYPTED_MESSAGE: MessageType = MessageType::SecureMessageType; // 1
 /// The type of the message:
 /// * 0 - Plain text or unencrypted message.
 /// * 1 - Secured text or encrypted message.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum MessageType {
     #[serde(rename = "0")]
