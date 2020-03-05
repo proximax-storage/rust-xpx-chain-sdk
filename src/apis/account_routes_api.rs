@@ -3,7 +3,13 @@ use ::std::sync::Arc;
 
 use hyper::{client::connect::Connect, Method};
 
-use crate::models::account::{AccountInfo, AccountInfoDto};
+use crate::apis::internally::{valid_vec_hash, valid_vec_len};
+
+use crate::models::{
+    account::{AccountInfo, AccountInfoDto},
+    errors::ERR_EMPTY_ADDRESSES_IDS,
+    utils::is_hex
+};
 
 use super::{request as __internal_request, Result, sirius_client::ApiClient};
 
@@ -75,5 +81,56 @@ impl<C: Connect> AccountRoutes<C>
         let dto: Result<AccountInfoDto> = req.execute(self.client).await;
 
         Ok(dto?.to_struct()?)
+    }
+
+    pub async fn get_accounts_info(self, accounts_id: Vec<&str>) -> Result<Vec<AccountInfo>> {
+        valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
+
+        #[derive(Clone, Serialize)]
+        #[serde(rename_all = "camelCase")]
+        struct AccountsId<'a> {
+            #[serde(skip_serializing_if = "Option::is_none")]
+            addresses: Option<Vec<&'a str>>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            public_keys: Option<Vec<&'a str>>
+        };
+
+        let mut accounts = AccountsId{ addresses: None, public_keys: None };
+        let mut public_keys = vec![];
+        let mut addresses = vec![];
+
+        for (i, id) in accounts_id.iter().enumerate() {
+            if is_hex(*id){
+                public_keys.push(*id);
+            }
+            else {
+                addresses.push(*id);
+            }
+
+            if i == accounts_id.len() -1 {
+                if !public_keys.is_empty() {
+                    accounts.public_keys = Some(public_keys.to_owned())
+                }else if !addresses.is_empty() {
+                    accounts.addresses = Some(addresses.to_owned())
+                }
+            }
+        }
+
+        let mut req = __internal_request::Request::new(
+            Method::POST,
+            "/account".to_string(),
+        );
+
+        req = req.with_body_param(&accounts);
+
+        let dto: Vec<AccountInfoDto> = req.execute(self.client).await?;
+
+        let mut accounts_info: Vec<AccountInfo> = Vec::with_capacity(dto.len());
+        for i in dto {
+            let account_info = i;
+            accounts_info.push(account_info.to_struct()?);
+        }
+
+        Ok(accounts_info)
     }
 }

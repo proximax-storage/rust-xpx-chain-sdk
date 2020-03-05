@@ -1,3 +1,7 @@
+// Accounts errors
+pub static ERR_EMPTY_ADDRESSES_IDS: &str = "list of addresses should not be empty";
+pub static ERR_NIL_ADDRESS: &str = "address is empty";
+
 // Namespace errors
 pub static ERR_NAMESPACE_TOO_MANY_PART: &str = "Too many parts";
 pub static ERR_NULL_NAMESPACE_ID: &str = "Namespace_id is null or zero";
