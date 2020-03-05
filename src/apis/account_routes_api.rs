@@ -50,7 +50,7 @@ impl<C: Connect> AccountRoutes<C>
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(node, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL, Client::new());
     ///
     ///    let account_info = client.account.get_account_info( PUBLIC_KEY).await;
     ///
@@ -102,7 +102,7 @@ impl<C: Connect> AccountRoutes<C>
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(node, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL, Client::new());
     ///
     ///    let accounts_info = client.account.get_accounts_info( vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
     ///

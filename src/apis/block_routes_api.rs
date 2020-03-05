@@ -52,7 +52,7 @@ impl<C: Connect> BlockRoutes<C>
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(node, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL, Client::new());
     ///
     ///    let block_by_height = client.block.get_block_by_height(1).await;
     ///
@@ -107,7 +107,7 @@ impl<C: Connect> BlockRoutes<C>
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(node, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL, Client::new());
     ///
     ///    let blocks_by_height_with_limit = client.block.get_blocks_by_height_with_limit(1, 25).await;
     ///

@@ -52,7 +52,7 @@ impl<C: Connect> MosaicRoutes<C> where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    /// let client = SiriusClient::new(node, Client::new());
+    /// let client = SiriusClient::new(NODE_URL, Client::new());
     ///
     ///    let mosaic_id = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
     ///
