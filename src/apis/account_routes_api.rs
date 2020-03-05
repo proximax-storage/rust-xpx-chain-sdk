@@ -83,6 +83,44 @@ impl<C: Connect> AccountRoutes<C>
         Ok(dto?.to_struct()?)
     }
 
+    /// Get `Accounts` information
+    ///
+    /// # Inputs
+    ///
+    /// * `accounts_id` =    The array of public keys String or The array of addresses String.
+    ///
+    /// # Example
+    ///
+    /// ```
+    ///use hyper::Client;
+    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///
+    ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
+    ///const PUBLIC_KEY_A: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
+    ///const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
+    ///
+    ///#[tokio::main]
+    ///async fn main() {
+    ///
+    ///    let client = SiriusClient::new(node, Client::new());
+    ///
+    ///    let accounts_info = client.account.get_accounts_info( vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
+    ///
+    ///    match accounts_info {
+    ///        Ok(tx) => {
+    ///            for info in tx {
+    ///                println!("{}", info)
+    ///            }
+    ///        },
+    ///        Err(err) => eprintln!("{:?}", err)
+    ///    }
+    ///}
+    /// ```
+    ///
+    /// # Returns
+    ///
+    /// Returns a Future `Result` whose okay value is an vector of [AccountInfo] or
+    /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_accounts_info(self, accounts_id: Vec<&str>) -> Result<Vec<AccountInfo>> {
         valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
 
@@ -100,7 +138,7 @@ impl<C: Connect> AccountRoutes<C>
         let mut addresses = vec![];
 
         for (i, id) in accounts_id.iter().enumerate() {
-            if is_hex(*id){
+            if is_hex(*id) && id.len() == 64 {
                 public_keys.push(*id);
             }
             else {
