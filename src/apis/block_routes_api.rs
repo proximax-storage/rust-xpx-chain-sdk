@@ -5,9 +5,8 @@ use hyper::{client::connect::Connect, Method};
 
 use crate::models::{
     blockchain::{BlockInfo, BlockInfoDto},
-    transaction::TransactionInfoDto,
+    transaction::{Transaction, TransactionDto, TransactionInfoDto, Transactions},
 };
-use crate::models::transaction::{Transaction, TransactionDto, Transactions};
 
 use super::{
     request as __internal_request,

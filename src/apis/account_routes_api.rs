@@ -3,12 +3,13 @@ use ::std::sync::Arc;
 
 use hyper::{client::connect::Connect, Method};
 
-use crate::apis::internally::{valid_vec_hash, valid_vec_len};
-
-use crate::models::{
-    account::{AccountInfo, AccountInfoDto},
-    errors::ERR_EMPTY_ADDRESSES_IDS,
-    utils::is_hex
+use crate::{
+    apis::internally::{valid_vec_hash, valid_vec_len},
+    models::{
+        account::{AccountInfo, AccountInfoDto},
+        errors::ERR_EMPTY_ADDRESSES_IDS,
+        utils::is_hex
+    }
 };
 
 use super::{request as __internal_request, Result, sirius_client::ApiClient};
@@ -133,22 +134,21 @@ impl<C: Connect> AccountRoutes<C>
             public_keys: Option<Vec<&'a str>>
         };
 
-        let mut accounts = AccountsId{ addresses: None, public_keys: None };
+        let mut accounts = AccountsId { addresses: None, public_keys: None };
         let mut public_keys = vec![];
         let mut addresses = vec![];
 
         for (i, id) in accounts_id.iter().enumerate() {
             if is_hex(*id) && id.len() == 64 {
                 public_keys.push(*id);
-            }
-            else {
+            } else {
                 addresses.push(*id);
             }
 
-            if i == accounts_id.len() -1 {
+            if i == accounts_id.len() - 1 {
                 if !public_keys.is_empty() {
                     accounts.public_keys = Some(public_keys.to_owned())
-                }else if !addresses.is_empty() {
+                } else if !addresses.is_empty() {
                     accounts.addresses = Some(addresses.to_owned())
                 }
             }

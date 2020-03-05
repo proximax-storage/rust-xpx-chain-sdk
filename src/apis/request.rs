@@ -1,5 +1,3 @@
-extern crate url;
-
 use ::std::collections::HashMap;
 use ::std::sync::Arc;
 
