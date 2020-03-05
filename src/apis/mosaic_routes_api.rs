@@ -48,7 +48,7 @@ impl<C: Connect> MosaicRoutes<C> where
     ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
     ///use xpx_chain_sdk::models::mosaic::MosaicId;
     ///
-    ///const NODE_URL: &str = "http://bctestnetswap.xpxsirius.io:3000";
+    ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
     ///#[tokio::main]
     ///async fn main() {

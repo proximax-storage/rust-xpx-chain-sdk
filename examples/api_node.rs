@@ -7,7 +7,7 @@ use xpx_chain_sdk::apis::sirius_client::SiriusClient;
 
 #[tokio::main]
 async fn main() {
-    let node = "http://bctestnetswap.xpxsirius.io:3000";
+    let node = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
     let client = SiriusClient::new(node, Client::new());
 

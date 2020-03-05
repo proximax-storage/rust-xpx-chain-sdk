@@ -45,12 +45,11 @@ impl<C: Connect> BlockRoutes<C>
     /// * `height` =    The height of the block.
     ///
     /// # Example
-    ///
     /// ```
     ///use hyper::Client;
     ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
     ///
-    ///const NODE_URL: &str = "http://bctestnetswap.xpxsirius.io:3000";
+    ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
     ///#[tokio::main]
     ///async fn main() {
@@ -101,12 +100,11 @@ impl<C: Connect> BlockRoutes<C>
     ///
     ///
     /// # Example
-    ///
     /// ```
     ///use hyper::Client;
     ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
     ///
-    ///const NODE_URL: &str = "http://bctestnetswap.xpxsirius.io:3000";
+    ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
     ///#[tokio::main]
     ///async fn main() {
@@ -176,12 +174,11 @@ impl<C: Connect> BlockRoutes<C>
     ///   `Default`: "".
     ///
     /// # Example
-    ///
     /// ```
     ///use hyper::Client;
     ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
     ///
-    ///const NODE_URL: &str = "http://bctestnetswap.xpxsirius.io:3000";
+    ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
     ///#[tokio::main]
     ///async fn main() {
