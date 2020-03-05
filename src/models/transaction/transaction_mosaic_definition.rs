@@ -82,7 +82,6 @@ impl MosaicDefinitionTransaction {
 }
 
 impl Transaction for MosaicDefinitionTransaction {
-
     fn transaction_hash(&self) -> String {
         let mut hash = "".to_owned();
 

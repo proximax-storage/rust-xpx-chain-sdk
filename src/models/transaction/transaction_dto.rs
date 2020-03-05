@@ -9,6 +9,7 @@ use crate::models::{
     network::network_internal::extract_network_type,
     uint_64::Uint64Dto,
 };
+use crate::models::transaction::TransactionInfo;
 
 use super::{
     AbstractTransaction, deadline::{
@@ -17,7 +18,6 @@ use super::{
     TransactionStatus,
     TransferTransaction,
 };
-use crate::models::transaction::TransactionInfo;
 
 #[typetag::serde]
 pub trait TransactionDto {
@@ -104,7 +104,7 @@ pub struct TransactionMetaDto {
 }
 
 impl TransactionMetaDto {
-    pub fn to_struct(&self)-> TransactionInfo {
+    pub fn to_struct(&self) -> TransactionInfo {
         let dto = self.clone();
 
         let mut agregate_hash = None;
@@ -117,7 +117,7 @@ impl TransactionMetaDto {
             aggregate_id = Some(t)
         }
 
-        TransactionInfo{
+        TransactionInfo {
             height: dto.height.to_struct(),
             index: dto.index,
             id: dto.id.clone(),

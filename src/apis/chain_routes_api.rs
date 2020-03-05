@@ -108,7 +108,6 @@ impl<C: Connect> ChainRoutes<C> where
     ///
     /// Returns a Future `Result` whose okay value is [BlockchainScore] or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-
     pub async fn get_blockchain_score(self) -> Result<BlockchainScore> {
         let req = __internal_request::Request::new(
             Method::GET,

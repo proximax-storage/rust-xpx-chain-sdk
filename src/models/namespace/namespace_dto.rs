@@ -1,12 +1,13 @@
+use std::borrow::Cow;
+
+use failure::_core::any::Any;
+
 use crate::models::field_dto::FieldDto;
 use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
-use crate::models::uint_64::Uint64Dto;
-use crate::models::transaction::{TransactionDto, Transaction, TransactionMetaDto, AbstractTransactionDto, RegisterNamespaceTransaction};
-use failure::_core::any::Any;
 use crate::models::namespace::{NamespaceId, NamespaceType};
+use crate::models::transaction::{AbstractTransactionDto, RegisterNamespaceTransaction, Transaction, TransactionDto, TransactionMetaDto};
 use crate::models::Uint64;
-
-use std::borrow::Cow;
+use crate::models::uint_64::Uint64Dto;
 
 #[derive(Serialize, Deserialize)]
 pub struct NamespaceDto {
@@ -268,10 +269,10 @@ impl TransactionDto for RegisterNamespaceTransactionInfoDto {
 
         let namespace_id = NamespaceId::from(dto.namespace_id.to_struct());
 
-        let mut parent_id = None ;
+        let mut parent_id = None;
 
         let mut duration = None;
-        if namespace_type  == NamespaceType::Root {
+        if namespace_type == NamespaceType::Root {
             if let Some(d) = dto.duration {
                 duration = Some(d.to_struct())
             };
@@ -281,7 +282,7 @@ impl TransactionDto for RegisterNamespaceTransactionInfoDto {
             };
         }
 
-        Ok(Box::new(RegisterNamespaceTransaction{
+        Ok(Box::new(RegisterNamespaceTransaction {
             abs_transaction,
             namespace_type,
             namespace_id,

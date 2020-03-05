@@ -13,6 +13,8 @@ use crate::{
 
 use super::{internally::valid_vec_len, request as __internal_request, Result};
 
+/// Mosaic ApiClient routes.
+///
 #[derive(Clone)]
 pub struct MosaicRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
@@ -26,9 +28,48 @@ impl<C: Connect> MosaicRoutes<C> {
     }
 }
 
+/// Mosaic related endpoints.
+///
 impl<C: Connect> MosaicRoutes<C> where
-    C: Clone + Send + Sync + Debug + 'static
+    C: Clone + Send + Sync + 'static
 {
+    /// Get [Mosaic] information.
+    ///
+    /// Gets the mosaic definition for a given mosaicId.
+    ///
+    /// # Inputs
+    ///
+    /// * `mosaic_id` =    The mosaic identifier.
+    ///
+    /// # Example
+    ///
+    /// ```
+    ///use hyper::Client;
+    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::models::mosaic::MosaicId;
+    ///
+    ///const NODE_URL: &str = "http://bctestnetswap.xpxsirius.io:3000";
+    ///
+    ///#[tokio::main]
+    ///async fn main() {
+    ///
+    /// let client = SiriusClient::new(node, Client::new());
+    ///
+    ///    let mosaic_id = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
+    ///
+    ///    let mosaic_info = client.mosaic.get_mosaic_info(mosaic_id).await;
+    ///
+    ///    match mosaic_info {
+    ///        Ok(resp_info) => println!("{}", resp_info),
+    ///        Err(err) => eprintln!("{:?}", err),
+    ///    }
+    ///}
+    /// ```
+    ///
+    /// # Returns
+    ///
+    /// Returns a Future `Result` whose okay value is an [MosaicInfo] or
+    /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_mosaic_info(self, mosaic_id: MosaicId) -> Result<MosaicInfo> {
         let mut req = __internal_request::Request::new(
             Method::GET,

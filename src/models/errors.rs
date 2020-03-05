@@ -8,10 +8,10 @@ pub static ERR_INVALID_NAMESPACE_NAME: &str = "Namespace name is invalid";
 
 // Mosaic errors
 pub static ERR_EMPTY_MOSAIC_IDS: &str = "Mosaics ids vec must not by empty";
-pub static ERR_EMPTY_MOSAIC_ID: &str ="MosaicId must not be empty";
-pub static ERR_WRONG_BIT_MOSAIC_ID: &str ="MosaicId has 64th bit";
-pub static ERR_INVALID_OWNER_PUBLIC_KEY: &str ="Public owner key is invalid";
-pub static ERR_NIL_MOSAIC_PROPERTIES: &str ="Mosaic Properties is not valid.";
+pub static ERR_EMPTY_MOSAIC_ID: &str = "MosaicId must not be empty";
+pub static ERR_WRONG_BIT_MOSAIC_ID: &str = "MosaicId has 64th bit";
+pub static ERR_INVALID_OWNER_PUBLIC_KEY: &str = "Public owner key is invalid";
+pub static ERR_NIL_MOSAIC_PROPERTIES: &str = "Mosaic Properties is not valid.";
 
 // Transaction errors
 pub static ERR_EMPTY_TRANSACTION_HASHES: &str = "Transaction hashes vec must not by empty";

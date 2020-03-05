@@ -1,8 +1,9 @@
-use crate::models::account::PublicAccount;
-use crate::models::network::NetworkType;
-use crate::models::transaction::EntityVersion;
-use crate::models::transaction::Timestamp;
-pub(crate) use crate::models::Uint64;
+pub(crate) use crate::models::{
+    account::PublicAccount,
+    network::NetworkType,
+    transaction::{EntityVersion, Hash, Height, Timestamp},
+    Uint64
+};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -29,7 +30,7 @@ pub struct BlockInfo {
     /// The height of which this block was confirmed.
     ///
     /// Each block has a unique height. Subsequent blocks differ in height by one.
-    pub height: Uint64,
+    pub height: Height,
     /// The date elapsed since the creation of the nemesis block.
     pub timestamp: Timestamp,
     /// The Proof-of-Importance difficulty to harvest a block.
@@ -39,19 +40,19 @@ pub struct BlockInfo {
     /// The fee multiplier applied to transactions contained in block.
     pub fee_multiplier: i32,
     /// The generation hash.
-    pub generation_hash: String,
+    pub generation_hash: Hash,
     /// The hash of the previous block.
-    pub previous_block_hash: String,
+    pub previous_block_hash: Hash,
     /// The transactions included in a block are hashed forming a merkle tree.
     /// The root of the tree summarizes them.
-    pub block_transactions_hash: String,
+    pub block_transactions_hash: Hash,
     /// The collection of receipts  are hashed into a merkle tree and linked to a block.
     /// The block header stores the root hash.
-    pub block_receipts_hash: String,
+    pub block_receipts_hash: Hash,
     /// For each block, the state of the blockchain is stored in RocksDB,
     /// forming a patricia tree. The root of the tree summarizes the state of
     /// the blockchain for the given block.
-    pub state_hash: String,
+    pub state_hash: Hash,
     /// The 'PublicAccount' of the optional beneficiary designated by harvester.
     pub beneficiary: Option<PublicAccount>,
     /// The part of the transaction fee harvester is willing to get.
@@ -67,10 +68,10 @@ pub struct BlockInfo {
 
 impl BlockInfo {
     pub fn new(network_type: NetworkType, signature: String, signer: PublicAccount,
-               version: EntityVersion, ver_type: u16, height: Uint64, timestamp: Timestamp,
+               version: EntityVersion, ver_type: u16, height: Height, timestamp: Timestamp,
                difficulty: Uint64, num_transactions: u64, fee_multiplier: i32,
-               generation_hash: String, previous_block_hash: String, block_transactions_hash: String,
-               block_receipts_hash: String, state_hash: String, beneficiary: Option<PublicAccount>,
+               generation_hash: Hash, previous_block_hash: Hash, block_transactions_hash: Hash,
+               block_receipts_hash: Hash, state_hash: String, beneficiary: Option<PublicAccount>,
                fee_interest: u32, total_fee: Uint64, fee_interest_denominator: u32,
     ) -> Self {
         BlockInfo {

@@ -40,7 +40,6 @@ pub struct RegisterNamespaceTransaction {
 }
 
 impl RegisterNamespaceTransaction {
-
     pub fn create_root(
         deadline: Deadline,
         namespace_name: &str,
@@ -122,7 +121,6 @@ impl RegisterNamespaceTransaction {
 }
 
 impl Transaction for RegisterNamespaceTransaction {
-
     fn transaction_hash(&self) -> String {
         let mut hash = "".to_owned();
 

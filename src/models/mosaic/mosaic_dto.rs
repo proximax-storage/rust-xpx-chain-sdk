@@ -5,14 +5,14 @@ use crate::{
         errors,
         field_dto::FieldDto,
         metadata_dto::{MetadataModificationDto, MetadataTypeEnum},
-        uint_64::Uint64Dto,
         transaction::{AbstractTransactionDto, MosaicDefinitionTransaction,
-                      MosaicSupplyChangeTransaction, Transaction, TransactionDto, TransactionMetaDto}
+                      MosaicSupplyChangeTransaction, Transaction, TransactionDto, TransactionMetaDto},
+        uint_64::Uint64Dto
     },
     Result,
 };
 
-use super::{ Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicNonce, MosaicSupplyType, internally::mosaic_properties };
+use super::{internally::mosaic_properties, Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicNonce, MosaicSupplyType};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MosaicDto {

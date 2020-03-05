@@ -1,4 +1,4 @@
-use crate::models::{utils::is_hex, errors};
+use crate::models::{errors, utils::is_hex};
 use crate::Result;
 
 use super::Address;

@@ -4,7 +4,6 @@ use crate::models::{
     transaction::{SignedTransaction, Transaction},
     utils::{is_hex, vec_u8_to_hex}
 };
-
 use crate::Result;
 
 use super::PublicAccount;

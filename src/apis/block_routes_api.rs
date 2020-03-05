@@ -70,7 +70,6 @@ impl<C: Connect> BlockRoutes<C>
     ///
     /// Returns a Future `Result` whose okay value is an [BlockInfo] the block information or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-
     pub async fn get_block_by_height(self, height: u64) -> Result<BlockInfo> {
         assert_ne!(height, 0, "Block height should not be zero.");
 
@@ -127,7 +126,6 @@ impl<C: Connect> BlockRoutes<C>
     ///
     /// Returns a Future `Result` whose okay value is an Vector of [BlockInfo] or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-
     pub async fn get_blocks_by_height_with_limit(
         self, height: u64, mut limit: i32) -> Result<Vec<BlockInfo>> {
         assert_ne!(height, 0, "Block height should not be zero.");

@@ -4,6 +4,7 @@ use fb::FlatBufferBuilder;
 
 use crate::models::{
     account::PublicAccount,
+    blockchain::{Hash, Height},
     consts::{SIGNATURE_SIZE, SIGNER_SIZE},
     network::NetworkType,
     Uint64
@@ -157,25 +158,25 @@ impl core::fmt::Display for AbstractTransaction {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionInfo {
-    pub height: Uint64,
+    pub height: Height,
     pub index: u32,
     pub id: String,
-    pub transaction_hash: String,
-    pub merkle_component_hash: String,
+    pub transaction_hash: Hash,
+    pub merkle_component_hash: Hash,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub agregate_hash: Option<String>,
+    pub agregate_hash: Option<Hash>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_id: Option<String>,
 }
 
 impl TransactionInfo {
     pub fn new(
-        height: Uint64,
+        height: Height,
         index: u32,
         id: String,
-        transaction_hash: String,
-        merkle_component_hash: String,
-        agregate_hash: String,
+        transaction_hash: Hash,
+        merkle_component_hash: Hash,
+        agregate_hash: Hash,
         aggregate_id: String,
     ) -> Self {
         TransactionInfo {
@@ -185,7 +186,7 @@ impl TransactionInfo {
             transaction_hash,
             merkle_component_hash,
             agregate_hash: Some(agregate_hash),
-            aggregate_id:  Some(aggregate_id),
+            aggregate_id: Some(aggregate_id),
         }
     }
 }

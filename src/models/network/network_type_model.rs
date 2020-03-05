@@ -2,7 +2,6 @@ use ::core::fmt;
 use ::core::fmt::{Debug, Display};
 
 use crate::models::errors;
-
 use crate::Result;
 
 /// MIJIN private network identifier. Decimal value = 96.
@@ -75,7 +74,7 @@ impl From<&str> for NetworkType {
         assert!(
             !s.is_empty(),
             errors::ERR_EMPTY_NETWORK_TYPE
-         );
+        );
 
         match s {
             "MIJIN" => MIJIN,

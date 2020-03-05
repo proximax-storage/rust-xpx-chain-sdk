@@ -1,4 +1,5 @@
 use ::std::{any::Any, fmt};
+use ::std::fmt::Display;
 
 use downcast_rs::Downcast;
 use serde_json::Value;
@@ -11,7 +12,10 @@ use super::{
     EntityTypeEnum,
     SignedTransaction,
 };
-use std::path::Display;
+
+pub type Height = Uint64;
+
+pub type Hash = String;
 
 pub type Transactions = Vec<Box<dyn Transaction>>;
 
@@ -69,7 +73,7 @@ impl fmt::Display for dyn Transaction {
 pub struct TransactionStatus {
     pub group: String,
     pub status: String,
-    pub hash: String,
+    pub hash: Hash,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deadline: Option<Deadline>,
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -4,9 +4,9 @@ use failure::_core::any::Any;
 use serde_json::Value;
 
 use crate::{fb, models::{
-    errors,
     account::{Account, Address, PublicAccount},
     consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
+    errors,
     message::Message,
     mosaic::Mosaic,
     network::NetworkType,
@@ -98,7 +98,6 @@ impl TransferTransaction {
 }
 
 impl Transaction for TransferTransaction {
-
     fn transaction_hash(&self) -> String {
         let mut hash = "".to_owned();
 
@@ -107,7 +106,6 @@ impl Transaction for TransferTransaction {
         };
 
         hash
-
     }
 
     fn abs_transaction(&self) -> AbstractTransaction {
