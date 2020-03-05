@@ -1,4 +1,3 @@
-use ::std::fmt::Debug;
 use ::std::sync::Arc;
 
 use hyper::{client::connect::Connect, Method};

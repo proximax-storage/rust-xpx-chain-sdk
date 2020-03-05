@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ServerDto {
     #[serde(rename = "serverInfo")]
     pub server_info: ServerInfoDto,
@@ -12,7 +12,7 @@ impl ServerDto {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ServerInfoDto {
     /// The catapult-rest component version.
     #[serde(rename = "restVersion")]

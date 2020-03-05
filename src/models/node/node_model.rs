@@ -1,6 +1,6 @@
 use crate::models::Uint64;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeInfo {
     /// The public key used to identify the node.
@@ -26,7 +26,7 @@ impl core::fmt::Display for NodeInfo {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct NodeTime {
     #[serde(rename = "sendTimestamp", skip_serializing_if = "Option::is_none")]
     pub send_timestamp: Option<Uint64>,

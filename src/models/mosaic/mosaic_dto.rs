@@ -1,5 +1,3 @@
-use failure::_core::any::Any;
-
 use crate::{
     models::{
         errors,
@@ -12,9 +10,17 @@ use crate::{
     Result,
 };
 
-use super::{internally::mosaic_properties, Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicNonce, MosaicSupplyType};
+use super::{
+    internally::mosaic_properties,
+    Mosaic,
+    MosaicId,
+    MosaicInfo,
+    MosaicNames,
+    MosaicNonce,
+    MosaicSupplyType
+};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct MosaicDto {
     #[serde(rename = "id")]
     id: Uint64Dto,
@@ -195,7 +201,7 @@ pub struct MosaicPropertyDto {
     pub(crate) value: Uint64Dto,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicSupplyChangeTransactionInfoDto {
     pub meta: TransactionMetaDto,

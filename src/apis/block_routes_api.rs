@@ -1,11 +1,10 @@
-use ::std::fmt::Debug;
 use ::std::sync::Arc;
 
 use hyper::{client::connect::Connect, Method};
 
 use crate::models::{
     blockchain::{BlockInfo, BlockInfoDto},
-    transaction::{Transaction, TransactionDto, TransactionInfoDto, Transactions},
+    transaction::{Transaction, TransactionDto, Transactions},
 };
 
 use super::{

@@ -1,13 +1,13 @@
 use crate::models::{Uint64, uint_64::Uint64Dto};
 use crate::models::node::NodeTime;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub(crate) struct NodeTimeDto {
     #[serde(rename = "communicationTimestamps")]
     communication_timestamps: CommunicationTimestampsDto,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 struct CommunicationTimestampsDto {
     #[serde(rename = "sendTimestamp", skip_serializing_if = "Option::is_none")]
     send_timestamp: Option<Uint64Dto>,

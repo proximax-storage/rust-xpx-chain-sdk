@@ -98,3 +98,20 @@ impl core::fmt::Display for Account {
         )
     }
 }
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AccountsId<'a> {
+    /// The array of addresses.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub addresses: Option<Vec<&'a str>>,
+    /// The array of public keys.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub public_keys: Option<Vec<&'a str>>
+}
+
+impl<'a>  AccountsId<'a> {
+    pub(crate) fn new(addresses: Option<Vec<&'a str>>, public_keys: Option<Vec<&'a str>>) -> Self {
+        AccountsId{ addresses, public_keys }
+    }
+}

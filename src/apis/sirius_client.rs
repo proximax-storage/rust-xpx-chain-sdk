@@ -4,7 +4,7 @@ use ::std::sync::Arc;
 
 use hyper::{Client, client::connect::Connect};
 
-use crate::models::network::{NetworkType, NOT_SUPPORTED_NET};
+use crate::models::network::NetworkType;
 
 use super::{
     account_routes_api::AccountRoutes,

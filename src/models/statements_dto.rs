@@ -2,7 +2,7 @@ use crate::models::resolution_dto::ResolutionStatementDto;
 use crate::models::source_dto::SourceDto;
 
 /// StatementsDto : The collection of transaction statements and resolutions triggered for the block requested.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct StatementsDto {
     /// The array of transaction statements for the block requested.
     #[serde(rename = "transactionStatements")]
@@ -27,7 +27,7 @@ impl StatementsDto {
 }
 
 /// TransactionStatementDto : The collection of receipts related to a transaction.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct TransactionStatementDto {
     #[serde(rename = "height")]
     pub height: Vec<i32>,

@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct FieldDto {
     #[serde(rename = "key")]
     pub key: String,

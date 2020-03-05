@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ConfigDto {
     #[serde(rename = "height")]
     pub height: Vec<i32>,

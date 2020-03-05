@@ -2,7 +2,7 @@ use crate::models::receipt_dto::ReceiptTypeEnum;
 use crate::models::uint_64::Uint64Dto;
 
 /// ArtifactExpiryReceiptDto : An artifact namespace or mosaic expired.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ArtifactExpiryReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
@@ -24,7 +24,7 @@ impl ArtifactExpiryReceiptDto {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ArtifactExpiryReceiptDtoAllOf {
     #[serde(rename = "artifactId")]
     pub artifact_id: Uint64Dto,

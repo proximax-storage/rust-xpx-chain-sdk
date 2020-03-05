@@ -1,5 +1,5 @@
 /// SourceDto : The transaction that triggered the receipt.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct SourceDto {
     /// The transaction index within the block.
     #[serde(rename = "primaryId")]

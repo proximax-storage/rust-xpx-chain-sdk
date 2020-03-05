@@ -1,12 +1,7 @@
-use std::borrow::Cow;
-
-use failure::_core::any::Any;
-
 use crate::models::field_dto::FieldDto;
 use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
 use crate::models::namespace::{NamespaceId, NamespaceType};
 use crate::models::transaction::{AbstractTransactionDto, RegisterNamespaceTransaction, Transaction, TransactionDto, TransactionMetaDto};
-use crate::models::Uint64;
 use crate::models::uint_64::Uint64Dto;
 
 #[derive(Serialize, Deserialize)]

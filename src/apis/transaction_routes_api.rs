@@ -134,7 +134,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         valid_vec_hash(&hashes)?;
 
-        let transaction_hashes = TransactionHashes::from(transaction_hashes);
+        let transaction_hashes = TransactionHashes::from(hashes);
 
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
@@ -347,7 +347,7 @@ impl<C: Connect> TransactionRoutes<C> where
             "/transaction".to_string(),
         );
 
-        req = req.with_body_param(transaction_payload);
+        req = req.with_body_param(transaction_signed);
 
         req.execute(self.client).await
     }

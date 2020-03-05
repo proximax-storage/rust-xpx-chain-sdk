@@ -1,6 +1,6 @@
-use crate::models::merkle_proof_info::MerkleProofInfo;
+use super::merkle_model::MerkleProofInfo;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct MerkleProofInfoDto {
     #[serde(rename = "payload")]
     pub payload: MerkleProofInfo,

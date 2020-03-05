@@ -7,7 +7,7 @@ use crate::Result;
 
 use super::block_model::BlockInfo;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct BlockMetaDto {
     hash: String,
@@ -19,7 +19,7 @@ struct BlockMetaDto {
     num_statements: Option<u32>,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct BlockDto {
     signature: String,
@@ -40,7 +40,7 @@ struct BlockDto {
     fee_interest_denominator: u32,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub(crate) struct BlockInfoDto {
     #[serde(rename = "meta")]
     meta: BlockMetaDto,
@@ -90,7 +90,7 @@ impl BlockInfoDto {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct BlockDtoAllOf {
     height: Uint64Dto,

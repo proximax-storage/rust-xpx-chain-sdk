@@ -1,6 +1,3 @@
-use ::std::any::Any;
-use ::std::fmt;
-
 use crate::models::{
     account::{Address, PublicAccount},
     blockchain::EmbeddedBlockchainUpgradeTransactionDto,
@@ -9,6 +6,7 @@ use crate::models::{
     network::network_internal::extract_network_type,
     uint_64::Uint64Dto,
 };
+
 use crate::models::transaction::TransactionInfo;
 
 use super::{
@@ -24,7 +22,7 @@ pub trait TransactionDto {
     fn to_struct(&self) -> crate::Result<Box<dyn Transaction>>;
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct AbstractTransactionDto {
     pub signature: String,
     pub signer: String,
@@ -83,7 +81,7 @@ impl AbstractTransactionDto {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub(crate) struct TransactionInfoDto {
     #[serde(rename = "meta")]
     meta: TransactionMetaDto,
@@ -91,7 +89,7 @@ pub(crate) struct TransactionInfoDto {
     transaction: EmbeddedBlockchainUpgradeTransactionDto,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionMetaDto {
     height: Uint64Dto,
@@ -129,7 +127,7 @@ impl TransactionMetaDto {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionStatusDto {
     #[serde(rename = "group", skip_serializing_if = "Option::is_none")]
@@ -171,7 +169,7 @@ impl TransactionStatusDto {
     }
 }
 
-#[derive(Default, Debug, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransferTransactionInfoDto {
     pub meta: TransactionMetaDto,
@@ -207,7 +205,7 @@ impl TransactionDto for TransferTransactionInfoDto {
 }
 
 /// TransferTransactionDto : Transaction that transfers mosaics and messages to another account.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransferTransactionDto {
     pub signature: String,
@@ -222,7 +220,7 @@ pub struct TransferTransactionDto {
     pub message: MessageDto,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct EmbeddedTransactionInfoDto {
     #[serde(rename = "meta")]
     pub meta: EmbeddedTransactionMetaDto,
@@ -230,7 +228,7 @@ pub struct EmbeddedTransactionInfoDto {
     pub transaction: EmbeddedBlockchainUpgradeTransactionDto,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct EmbeddedTransactionMetaDto {
     #[serde(rename = "height")]
     pub height: Uint64Dto,

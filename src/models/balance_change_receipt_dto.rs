@@ -2,7 +2,7 @@ use crate::models::receipt_dto::ReceiptTypeEnum;
 use crate::models::uint_64::Uint64Dto;
 
 /// BalanceChangeReceiptDto : The invisible state change changed an account balance.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct BalanceChangeReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
@@ -31,7 +31,7 @@ impl BalanceChangeReceiptDto {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct BalanceChangeReceiptDtoAllOf {
     /// The target account public key.
     #[serde(rename = "account")]
@@ -53,7 +53,7 @@ impl BalanceChangeReceiptDtoAllOf {
 }
 
 /// BalanceTransferReceiptDto : The invisible state change triggered a mosaic transfer.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct BalanceTransferReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
@@ -86,7 +86,7 @@ impl BalanceTransferReceiptDto {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct BalanceTransferReceiptDtoAllOf {
     /// The public key of the sender.
     #[serde(rename = "sender")]

@@ -1,10 +1,9 @@
-use ::std::fmt::Debug;
 use ::std::sync::Arc;
 
 use hyper::{client::connect::Connect, Method};
 
 use crate::{
-    apis::internally::{valid_vec_hash, valid_vec_len},
+    apis::internally::valid_vec_len,
     models::{
         account::{AccountInfo, AccountInfoDto},
         errors::ERR_EMPTY_ADDRESSES_IDS,
@@ -13,6 +12,7 @@ use crate::{
 };
 
 use super::{request as __internal_request, Result, sirius_client::ApiClient};
+use crate::models::account::AccountsId;
 
 /// Account ApiClient routes.
 ///
@@ -125,18 +125,10 @@ impl<C: Connect> AccountRoutes<C>
     pub async fn get_accounts_info(self, accounts_id: Vec<&str>) -> Result<Vec<AccountInfo>> {
         valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
 
-        #[derive(Clone, Serialize)]
-        #[serde(rename_all = "camelCase")]
-        struct AccountsId<'a> {
-            #[serde(skip_serializing_if = "Option::is_none")]
-            addresses: Option<Vec<&'a str>>,
-            #[serde(skip_serializing_if = "Option::is_none")]
-            public_keys: Option<Vec<&'a str>>
-        };
-
-        let mut accounts = AccountsId { addresses: None, public_keys: None };
         let mut public_keys = vec![];
         let mut addresses = vec![];
+
+        let mut accounts = AccountsId::new(None, None);
 
         for (i, id) in accounts_id.iter().enumerate() {
             if is_hex(*id) && id.len() == 64 {

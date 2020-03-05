@@ -17,7 +17,7 @@ impl CosignatureDto {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct CosignatoryModificationDto {
     #[serde(rename = "modificationType")]
     pub modification_type: crate::models::multisig::MultisigModificationTypeEnum,
@@ -35,7 +35,7 @@ impl CosignatoryModificationDto {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct Cosignature {
     /// The hash of parent aggregate transaction that has been signed by a cosignatory of the transaction.
     #[serde(rename = "parentHash", skip_serializing_if = "Option::is_none")]
@@ -58,7 +58,7 @@ impl Cosignature {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct CosignatureDtoAllOf {
     /// The public key of the transaction signer.
     #[serde(rename = "signer")]

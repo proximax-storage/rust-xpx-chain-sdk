@@ -2,7 +2,6 @@ use ::core::fmt;
 use ::core::fmt::{Debug, Display};
 
 use crate::models::errors;
-use crate::Result;
 
 /// MIJIN private network identifier. Decimal value = 96.
 pub const MIJIN: NetworkType = NetworkType(0x60);
