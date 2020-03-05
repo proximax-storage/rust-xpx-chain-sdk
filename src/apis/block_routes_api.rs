@@ -22,20 +22,18 @@ pub struct BlockRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> BlockRoutes<C> {
-    pub fn new(client: Arc<ApiClient<C>>) -> Self {
-        BlockRoutes {
-            client,
-        }
-    }
-}
-
 ///  Block related endpoints.
 ///
 impl<C: Connect> BlockRoutes<C>
     where
         C: Clone + Send + Sync + 'static
 {
+    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+        BlockRoutes {
+            client,
+        }
+    }
+
     /// Get [BlockInfo] information
     ///
     /// Gets a block from the chain that has the given height.

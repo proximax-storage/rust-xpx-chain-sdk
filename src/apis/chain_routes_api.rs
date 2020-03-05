@@ -23,19 +23,18 @@ pub struct ChainRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> ChainRoutes<C> {
-    pub fn new(client: Arc<ApiClient<C>>) -> Self {
-        ChainRoutes {
-            client,
-        }
-    }
-}
-
 /// Chain related endpoints.
 ///
 impl<C: Connect> ChainRoutes<C> where
     C: Clone + Send + Sync + 'static
 {
+
+    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+        ChainRoutes {
+            client,
+        }
+    }
+
     /// Get the current height of the chain
     ///
     /// # Example

@@ -19,17 +19,16 @@ pub struct NodeRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> NodeRoutes<C> {
-    pub fn new(client: Arc<ApiClient<C>>) -> Self {
+impl<C: Connect> NodeRoutes<C> where
+    C: Clone + Send + Sync + Debug + 'static
+{
+
+    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
         NodeRoutes {
             client,
         }
     }
-}
 
-impl<C: Connect> NodeRoutes<C> where
-    C: Clone + Send + Sync + Debug + 'static
-{
     pub async fn get_node_info(self) -> Result<NodeInfo> {
         let req = __internal_request::Request::new(
             Method::GET,

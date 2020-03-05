@@ -14,20 +14,18 @@ pub struct AccountRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> AccountRoutes<C> {
-    pub fn new(client: Arc<ApiClient<C>>) -> Self {
-        AccountRoutes {
-            client,
-        }
-    }
-}
-
 /// Account related endpoints.
 ///
 impl<C: Connect> AccountRoutes<C>
     where
         C: Clone + Send + Sync + 'static
 {
+    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+        AccountRoutes {
+            client,
+        }
+    }
+
     /// Get [Account] information
     ///
     /// # Inputs

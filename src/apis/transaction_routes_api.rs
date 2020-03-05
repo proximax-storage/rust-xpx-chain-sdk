@@ -31,16 +31,19 @@ pub struct TransactionRoutes<C: Connect> {
 impl<C: Connect> TransactionRoutes<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
-    pub fn new(client: Arc<ApiClient<C>>) -> Self {
+
+}
+
+impl<C: Connect> TransactionRoutes<C> where
+    C: Clone + Send + Sync + 'static,
+{
+
+    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
         TransactionRoutes {
             client,
         }
     }
-}
 
-impl<C: Connect> TransactionRoutes<C> where
-    C: Clone + Send + Sync + Debug + 'static,
-{
     pub async fn get_transaction_status(self, hash: &str) -> Result<TransactionStatus> {
         valid_hash(hash)?;
 

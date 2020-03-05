@@ -20,19 +20,18 @@ pub struct MosaicRoutes<C: Connect> {
     client: Arc<ApiClient<C>>,
 }
 
-impl<C: Connect> MosaicRoutes<C> {
-    pub fn new(client: Arc<ApiClient<C>>) -> Self {
-        MosaicRoutes {
-            client,
-        }
-    }
-}
-
 /// Mosaic related endpoints.
 ///
 impl<C: Connect> MosaicRoutes<C> where
     C: Clone + Send + Sync + 'static
 {
+
+    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+        MosaicRoutes {
+            client,
+        }
+    }
+
     /// Get [Mosaic] information.
     ///
     /// Gets the mosaic definition for a given mosaicId.
