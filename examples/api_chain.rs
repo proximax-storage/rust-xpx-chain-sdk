@@ -5,11 +5,12 @@ use hyper::Client;
 
 use xpx_chain_sdk::sirius_client::SiriusClient;
 
+const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
+
 #[tokio::main]
 async fn main() {
-    let node = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
-    let client = SiriusClient::new(node, Client::new());
+    let client = SiriusClient::new(NODE_URL, Client::new());
 
     let blockchain_height = client.clone().chain.get_blockchain_height().await;
     match blockchain_height {

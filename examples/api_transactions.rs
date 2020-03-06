@@ -5,11 +5,12 @@ use hyper::Client;
 
 use xpx_chain_sdk::sirius_client::SiriusClient;
 
+const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
+
 #[tokio::main]
 async fn main() {
-    let node = "http://bctestnet3.brimstone.xpxsirius.io:3000";
 
-    let client = SiriusClient::new(node, Client::new());
+    let client = SiriusClient::new(NODE_URL, Client::new());
 
     let transaction_status = client.clone().transaction.get_transaction_status(
         "A5215CA0D024B50F59B6A19354638F2A366B44B08A95DA59A926250400BBE86E").await;

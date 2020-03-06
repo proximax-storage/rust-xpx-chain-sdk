@@ -10,11 +10,14 @@ use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::sirius_client::SiriusClient;
 use xpx_chain_sdk::transaction::{Deadline, TransferTransaction};
 
+const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
+
+const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
+
 #[tokio::main]
 async fn main() {
-    let node = "http://bctestnet3.brimstone.xpxsirius.io:3000";
 
-    let client = SiriusClient::new(node, Client::new());
+    let client = SiriusClient::new(NODE_URL, Client::new());
 
     let generation_hash = client.generation_hash().await;
 
@@ -25,9 +28,7 @@ async fn main() {
     // let deadline = Deadline::new(1, 0, 0);
     let deadline = Deadline::default();
 
-    let private_key = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
-
-    let account = Account::from_private_key(private_key, network_type).unwrap();
+    let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
     let recipient = Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap();
 
