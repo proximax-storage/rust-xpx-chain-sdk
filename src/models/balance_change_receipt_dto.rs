@@ -3,7 +3,7 @@ use crate::models::uint_64::Uint64Dto;
 
 /// BalanceChangeReceiptDto : The invisible state change changed an account balance.
 #[derive(Serialize, Deserialize)]
-pub struct BalanceChangeReceiptDto {
+pub(crate) struct BalanceChangeReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
     pub version: i32,
@@ -32,7 +32,7 @@ impl BalanceChangeReceiptDto {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct BalanceChangeReceiptDtoAllOf {
+pub(crate) struct BalanceChangeReceiptDtoAllOf {
     /// The target account public key.
     #[serde(rename = "account")]
     pub account: String,
@@ -54,7 +54,7 @@ impl BalanceChangeReceiptDtoAllOf {
 
 /// BalanceTransferReceiptDto : The invisible state change triggered a mosaic transfer.
 #[derive(Serialize, Deserialize)]
-pub struct BalanceTransferReceiptDto {
+pub(crate) struct BalanceTransferReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
     pub version: i32,
@@ -87,7 +87,7 @@ impl BalanceTransferReceiptDto {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct BalanceTransferReceiptDtoAllOf {
+pub(crate) struct BalanceTransferReceiptDtoAllOf {
     /// The public key of the sender.
     #[serde(rename = "sender")]
     pub sender: String,

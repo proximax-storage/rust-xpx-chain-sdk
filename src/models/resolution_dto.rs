@@ -2,7 +2,7 @@ use crate::models::source_dto::SourceDto;
 use crate::models::uint_64::Uint64Dto;
 
 #[derive(Serialize, Deserialize)]
-pub struct ResolutionEntryDto {
+pub(crate) struct ResolutionEntryDto {
     #[serde(rename = "source")]
     pub source: SourceDto,
     #[serde(rename = "resolved")]
@@ -20,7 +20,7 @@ impl ResolutionEntryDto {
 
 /// ResolutionStatementDto : A resolution statement keeps the relation between a namespace alias used in a transaction and the real address or mosaic_id.
 #[derive(Serialize, Deserialize)]
-pub struct ResolutionStatementDto {
+pub(crate) struct ResolutionStatementDto {
     #[serde(rename = "height")]
     pub height: Uint64Dto,
     #[serde(rename = "unresolved")]

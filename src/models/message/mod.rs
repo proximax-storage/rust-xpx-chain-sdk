@@ -1,4 +1,4 @@
-pub(crate) use self::message_dto::*;
+pub use self::message_dto::*;
 pub use self::message_model::*;
 pub use self::message_plain::*;
 pub use self::message_type::*;

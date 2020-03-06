@@ -2,7 +2,7 @@ use ::std::borrow::Borrow;
 
 use super::{Message, MessageType, PLAIN_MESSAGE};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PlainMessage {
     #[serde(rename = "type")]
     _type: MessageType,

@@ -1,5 +1,5 @@
 #[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
-pub struct TransactionHashes {
+pub(crate) struct TransactionHashes {
     /// The array of transaction hashes.
     #[serde(rename = "hashes")]
     pub hashes: Vec<String>,

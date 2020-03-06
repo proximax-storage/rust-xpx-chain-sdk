@@ -5,7 +5,7 @@ use crate::models::Uint64;
 use super::{MosaicId, MosaicProperties};
 
 /// Contains information about a mosaic.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MosaicInfo {
     /// The mosaic ID.
     pub mosaic_id: MosaicId,

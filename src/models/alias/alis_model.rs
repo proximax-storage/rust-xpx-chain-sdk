@@ -1,7 +1,7 @@
 /// LinkActionEnum : The type of the action: * 0 - Link. * 1 - Unlink.
 /// The type of the action: * 0 - Link. * 1 - Unlink.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub enum LinkActionEnum {
+enum LinkActionEnum {
     #[serde(rename = "0")]
     _0,
     #[serde(rename = "1")]
@@ -11,7 +11,7 @@ pub enum LinkActionEnum {
 /// AliasTypeEnum : The alias type: * 0 -  No alias. * 1 -  Mosaic id alias. * 2 -  Addres alias.
 /// The alias type: * 0 -  No alias. * 1 -  Mosaic id alias. * 2 -  Addres alias.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub enum AliasTypeEnum {
+enum AliasTypeEnum {
     #[serde(rename = "0")]
     _0,
     #[serde(rename = "1")]
@@ -23,7 +23,7 @@ pub enum AliasTypeEnum {
 /// AliasActionEnum : The alias action: * 0 -  Link alias. * 1 -  Unlink alias.
 /// The alias action: * 0 -  Link alias. * 1 -  Unlink alias.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub enum AliasActionEnum {
+enum AliasActionEnum {
     #[serde(rename = "0")]
     _0,
     #[serde(rename = "1")]

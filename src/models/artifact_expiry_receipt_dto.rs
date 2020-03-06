@@ -3,7 +3,7 @@ use crate::models::uint_64::Uint64Dto;
 
 /// ArtifactExpiryReceiptDto : An artifact namespace or mosaic expired.
 #[derive(Serialize, Deserialize)]
-pub struct ArtifactExpiryReceiptDto {
+pub(crate) struct ArtifactExpiryReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
     pub version: i32,
@@ -25,7 +25,7 @@ impl ArtifactExpiryReceiptDto {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct ArtifactExpiryReceiptDtoAllOf {
+pub(crate) struct ArtifactExpiryReceiptDtoAllOf {
     #[serde(rename = "artifactId")]
     pub artifact_id: Uint64Dto,
 }

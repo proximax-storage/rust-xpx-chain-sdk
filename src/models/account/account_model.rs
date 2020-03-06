@@ -101,7 +101,7 @@ impl core::fmt::Display for Account {
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountsId<'a> {
+pub(crate) struct AccountsId<'a> {
     /// The array of addresses.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<&'a str>>,

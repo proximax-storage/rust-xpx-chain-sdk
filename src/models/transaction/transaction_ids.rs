@@ -1,5 +1,5 @@
 #[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
-pub struct TransactionIds {
+pub(crate) struct TransactionIds {
     /// The array of transaction ids.
     #[serde(rename = "transactionIds")]
     pub transaction_ids: Vec<String>,

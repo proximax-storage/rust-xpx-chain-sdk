@@ -6,10 +6,10 @@ pub mod mosaic;
 pub mod namespace;
 pub mod network;
 pub mod transaction;
+pub mod blockchain;
+pub mod node;
 
-pub(crate) mod blockchain;
 pub(crate) mod errors;
-pub(crate) mod node;
 pub(crate) mod utils;
 
 mod aggregate_transaction_dto;
@@ -38,5 +38,6 @@ mod statements_dto;
 mod uint_64;
 mod upgrade_dto;
 mod verifiable_entity_dto;
+
 
 

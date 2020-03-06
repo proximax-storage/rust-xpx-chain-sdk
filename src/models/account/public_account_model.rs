@@ -4,7 +4,7 @@ use crate::Result;
 use super::Address;
 
 /// The `PublicAccount` account structure contains account's `Address` and public key.
-#[derive(Default, Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PublicAccount {
     /// Retrieves the `Address` of this public account.

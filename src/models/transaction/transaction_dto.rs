@@ -17,12 +17,12 @@ use super::{
 };
 
 #[typetag::serde]
-pub trait TransactionDto {
+pub(crate) trait TransactionDto {
     fn to_struct(&self) -> crate::Result<Box<dyn Transaction>>;
 }
 
 #[derive(Clone, Serialize, Deserialize)]
-pub struct AbstractTransactionDto {
+pub(crate) struct AbstractTransactionDto {
     pub signature: String,
     pub signer: String,
     pub version: i32,
@@ -90,7 +90,7 @@ pub(crate) struct TransactionInfoDto {
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct TransactionMetaDto {
+pub(crate) struct TransactionMetaDto {
     height: Uint64Dto,
     hash: String,
     merkle_component_hash: String,
@@ -128,7 +128,7 @@ impl TransactionMetaDto {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct TransactionStatusDto {
+pub(crate) struct TransactionStatusDto {
     #[serde(rename = "group", skip_serializing_if = "Option::is_none")]
     group: Option<String>,
     #[serde(rename = "status")]
@@ -170,7 +170,7 @@ impl TransactionStatusDto {
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct TransferTransactionInfoDto {
+pub(crate) struct TransferTransactionInfoDto {
     pub meta: TransactionMetaDto,
     pub transaction: TransferTransactionDto,
 }
@@ -206,7 +206,7 @@ impl TransactionDto for TransferTransactionInfoDto {
 /// TransferTransactionDto : Transaction that transfers mosaics and messages to another account.
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct TransferTransactionDto {
+pub(crate) struct TransferTransactionDto {
     pub signature: String,
     pub signer: String,
     pub version: i32,
@@ -220,7 +220,7 @@ pub struct TransferTransactionDto {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct EmbeddedTransactionInfoDto {
+pub(crate) struct EmbeddedTransactionInfoDto {
     #[serde(rename = "meta")]
     pub meta: EmbeddedTransactionMetaDto,
     #[serde(rename = "transaction")]
@@ -228,7 +228,7 @@ pub struct EmbeddedTransactionInfoDto {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct EmbeddedTransactionMetaDto {
+pub(crate) struct EmbeddedTransactionMetaDto {
     #[serde(rename = "height")]
     pub height: Uint64Dto,
     #[serde(rename = "hash")]

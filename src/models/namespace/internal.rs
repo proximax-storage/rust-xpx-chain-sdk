@@ -7,7 +7,7 @@ use crate::models::utils::array_u8_to_u64;
 
 use super::NamespaceId;
 
-pub const NAMESPACE_BIT: u64 = 1 << 63;
+pub(crate) const NAMESPACE_BIT: u64 = 1 << 63;
 
 fn is_valid_namespace_name(name: &str) -> bool {
     let reg_valid_namespace: Regex = Regex::new(r"^[a-z0-9][a-z0-9-_]*$").unwrap();
@@ -46,7 +46,7 @@ pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<Namespace
     Ok(path)
 }
 
-pub fn generate_namespace_id(name: &str, parent_id: NamespaceId) -> crate::Result<NamespaceId> {
+pub(crate) fn generate_namespace_id(name: &str, parent_id: NamespaceId) -> crate::Result<NamespaceId> {
     let mut result = Sha3_256::default();
 
     let id_to_bytes = parent_id.to_bytes();

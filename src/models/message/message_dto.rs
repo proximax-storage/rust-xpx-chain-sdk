@@ -1,7 +1,7 @@
 use crate::models::message::{Message, PlainMessage};
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct MessageDto {
+#[derive(Clone, Serialize, Deserialize)]
+pub(crate) struct MessageDto {
     #[serde(rename = "type")]
     _type: u8,
     #[serde(rename = "payload")]

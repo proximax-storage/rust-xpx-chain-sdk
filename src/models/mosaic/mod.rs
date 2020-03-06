@@ -1,5 +1,5 @@
 use self::internally::*;
-pub(crate) use self::mosaic_dto::*;
+pub use self::mosaic_dto::*;
 pub use self::mosaic_id::*;
 pub use self::mosaic_info::*;
 pub use self::mosaic_model::*;

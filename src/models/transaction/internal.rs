@@ -13,11 +13,11 @@ use crate::models::transaction::buffer::mosaic_definition::buffers;
 
 use super::{EntityVersion, SignedTransaction, Transaction};
 
-pub fn extract_version(version: i32) -> EntityVersion {
+pub(crate) fn extract_version(version: i32) -> EntityVersion {
     return version & 0xFFFFFF;
 }
 
-pub fn sign_transaction(tx: &dyn Transaction, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
+pub(crate) fn sign_transaction(tx: &dyn Transaction, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
     let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
 
     let mut bytes = tx.generate_bytes();
@@ -44,7 +44,7 @@ pub fn sign_transaction(tx: &dyn Transaction, account: Account, generation_hash:
     Ok(SignedTransaction::new(tx.entity_type(), p_hex, hash))
 }
 
-pub fn create_transaction_hash(p: String, generation_hash: &str) -> String {
+pub(crate) fn create_transaction_hash(p: String, generation_hash: &str) -> String {
     let mut p_bytes = hex::decode(p).unwrap();
 
     let mut sb = Vec::new();
@@ -64,7 +64,7 @@ pub fn create_transaction_hash(p: String, generation_hash: &str) -> String {
     vec_u8_to_hex(sha3_public_key_hash[..].to_vec())
 }
 
-pub fn mosaic_property_array_to_buffer(
+pub(crate) fn mosaic_property_array_to_buffer(
     builder: &mut FlatBufferBuilder, properties: Vec<MosaicProperty>) -> fb::UOffsetT {
     let mut p_buffer: Vec<fb::UOffsetT> = Vec::with_capacity(properties.len());
 

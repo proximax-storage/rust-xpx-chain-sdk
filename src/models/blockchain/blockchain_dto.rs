@@ -1,4 +1,4 @@
-use crate::models::blockchain::{BlockchainScore, HeightInfo};
+use super::{BlockchainScore, HeightInfo};
 use crate::models::uint_64::Uint64Dto;
 use crate::models::upgrade_dto::UpgradeDto;
 
@@ -72,7 +72,7 @@ pub(crate) struct BlockchainUpgradeTransactionDto {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct EmbeddedBlockchainUpgradeTransactionDto {
+pub(crate) struct EmbeddedBlockchainUpgradeTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     #[serde(rename = "signer")]
     signer: String,

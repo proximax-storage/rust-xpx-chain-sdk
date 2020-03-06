@@ -39,7 +39,7 @@ pub(crate) fn generate_mosaic_id(nonce: MosaicNonce, owner_public_id: PublicAcco
     Uint64(array_u8_to_u64(&mut hash_to_array.as_slice()) ^ NAMESPACE_BIT)
 }
 
-pub fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> crate::Result<MosaicProperties> {
+pub(crate) fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> crate::Result<MosaicProperties> {
     let mut flags: Uint64 = Uint64::default();
     let mut divisibility: u8 = 0;
     let mut duration: Uint64 = Uint64::default();

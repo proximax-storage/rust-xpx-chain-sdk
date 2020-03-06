@@ -15,7 +15,7 @@ use super::{
     Height
 };
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AbstractTransaction {
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -6,7 +6,7 @@ use ::failure::_core::ops::BitAnd;
 use crate::models::utils::u64_to_array_u8;
 
 #[derive(Clone, Deserialize, Serialize)]// we derive Default in order to use the clear() method in Drop
-pub struct Uint64Dto([u32; 2]);
+pub(crate) struct Uint64Dto([u32; 2]);
 
 impl Uint64Dto {
     pub fn to_struct(&self) -> Uint64 {

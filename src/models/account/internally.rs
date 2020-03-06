@@ -4,9 +4,9 @@ use ::sha3::Sha3_256;
 
 use crate::models::network::NetworkType;
 
-pub static HASH512_LENGTH: usize = 64;
+pub(crate) static HASH512_LENGTH: usize = 64;
 
-pub static EMPTY_PUBLIC_KEY: &str = "0000000000000000000000000000000000000000000000000000000000000000";
+pub(crate) static EMPTY_PUBLIC_KEY: &str = "0000000000000000000000000000000000000000000000000000000000000000";
 
 /// AccountPropertyTypeEnum :
 /// The account properties type:
@@ -17,7 +17,7 @@ pub static EMPTY_PUBLIC_KEY: &str = "0000000000000000000000000000000000000000000
 /// * 0x81 (129 decimal) - The property type blocks receiving transactions from an address.
 /// * 0x82 (130 decimal) - The property type blocks receiving transactions containing a mosaic id.
 /// * 0x84 (132 decimal) -  The property type blocks sending transactions with a given transaction type.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub enum AccountPropertyTypeEnum {
     #[serde(rename = "1")]
     _1,
@@ -38,7 +38,7 @@ pub enum AccountPropertyTypeEnum {
 
 /// AccountPropertiesModificationTypeEnum :
 /// The account properties modification type: * 0 - Add property. * 1 - Remove property.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub enum AccountPropertiesModificationTypeEnum {
     #[serde(rename = "0")]
     _0,
@@ -47,7 +47,7 @@ pub enum AccountPropertiesModificationTypeEnum {
 
 }
 
-pub fn public_key_to_address(public_key: &str, version: NetworkType) -> String {
+pub(crate) fn public_key_to_address(public_key: &str, version: NetworkType) -> String {
     let pk: Vec<u8> = hex::decode(public_key).unwrap();
 
     // step 1: sha3 hash of the public key
