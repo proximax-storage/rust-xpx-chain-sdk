@@ -2,18 +2,17 @@ use std::collections::HashMap;
 
 use fb::FlatBufferBuilder;
 
-use crate::models::{
-    account::PublicAccount,
-    blockchain::{Hash, Height},
-    consts::{SIGNATURE_SIZE, SIGNER_SIZE},
-    network::NetworkType,
-    Uint64
-};
+use crate::models::account::PublicAccount;
+use crate::models::consts::{SIGNATURE_SIZE, SIGNER_SIZE};
+use crate::models::network::NetworkType;
+use crate::models::Uint64;
 
 use super::{
     buffer::transfer::buffers, deadline::Deadline,
     EntityTypeEnum,
-    EntityVersion
+    EntityVersion,
+    Hash,
+    Height
 };
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

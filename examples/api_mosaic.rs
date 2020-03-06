@@ -3,8 +3,8 @@
 
 use hyper::Client;
 
-use xpx_chain_sdk::apis::sirius_client::SiriusClient;
-use xpx_chain_sdk::models::mosaic::MosaicId;
+use xpx_chain_sdk::mosaic::MosaicId;
+use xpx_chain_sdk::sirius_client::SiriusClient;
 
 #[tokio::main]
 async fn main() {

@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_sdk::models::message::{MessageType, PlainMessage};
+use xpx_chain_sdk::message::{MessageType, PlainMessage};
 
 fn main() {
     let message_type = MessageType::PlainMessageType;

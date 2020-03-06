@@ -110,8 +110,8 @@ pub struct AccountsId<'a> {
     pub public_keys: Option<Vec<&'a str>>
 }
 
-impl<'a>  AccountsId<'a> {
+impl<'a> AccountsId<'a> {
     pub(crate) fn new(addresses: Option<Vec<&'a str>>, public_keys: Option<Vec<&'a str>>) -> Self {
-        AccountsId{ addresses, public_keys }
+        AccountsId { addresses, public_keys }
     }
 }

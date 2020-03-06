@@ -3,12 +3,12 @@
 
 use hyper::Client;
 
-use xpx_chain_sdk::apis::sirius_client::SiriusClient;
-use xpx_chain_sdk::models::account::Account;
-use xpx_chain_sdk::models::mosaic::{MosaicId, MosaicSupplyType};
-use xpx_chain_sdk::models::network::PUBLIC_TEST;
-use xpx_chain_sdk::models::transaction::{Deadline, MosaicSupplyChangeTransaction};
-use xpx_chain_sdk::models::Uint64;
+use xpx_chain_sdk::account::Account;
+use xpx_chain_sdk::mosaic::{MosaicId, MosaicSupplyType};
+use xpx_chain_sdk::network::PUBLIC_TEST;
+use xpx_chain_sdk::sirius_client::SiriusClient;
+use xpx_chain_sdk::transaction::{Deadline, MosaicSupplyChangeTransaction};
+use xpx_chain_sdk::Uint64;
 
 #[tokio::main]
 async fn main() {

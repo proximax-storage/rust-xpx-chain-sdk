@@ -3,7 +3,6 @@ use ::std::sync::Arc;
 use hyper::{client::connect::Connect, Method};
 
 use crate::{
-    apis::sirius_client::ApiClient,
     models::blockchain::{
         BlockchainScore,
         BlockchainScoreDto,
@@ -13,7 +12,7 @@ use crate::{
     },
 };
 
-use super::{request as __internal_request, Result};
+use super::{request as __internal_request, Result, sirius_client::ApiClient};
 
 /// Chain ApiClient routes.
 ///
@@ -27,7 +26,6 @@ pub struct ChainRoutes<C: Connect> {
 impl<C: Connect> ChainRoutes<C> where
     C: Clone + Send + Sync + 'static
 {
-
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
         ChainRoutes {
             client,
@@ -40,7 +38,7 @@ impl<C: Connect> ChainRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
@@ -84,7 +82,7 @@ impl<C: Connect> ChainRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
@@ -124,7 +122,7 @@ impl<C: Connect> ChainRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///

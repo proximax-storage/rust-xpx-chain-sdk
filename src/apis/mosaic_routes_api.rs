@@ -24,7 +24,6 @@ pub struct MosaicRoutes<C: Connect> {
 impl<C: Connect> MosaicRoutes<C> where
     C: Clone + Send + Sync + 'static
 {
-
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
         MosaicRoutes {
             client,
@@ -43,8 +42,8 @@ impl<C: Connect> MosaicRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
-    ///use xpx_chain_sdk::models::mosaic::MosaicId;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::mosaic::MosaicId;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
@@ -93,8 +92,8 @@ impl<C: Connect> MosaicRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
-    ///use xpx_chain_sdk::models::mosaic::MosaicId;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::mosaic::MosaicId;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
@@ -155,8 +154,8 @@ impl<C: Connect> MosaicRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
-    ///use xpx_chain_sdk::models::mosaic::MosaicId;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::mosaic::MosaicId;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///

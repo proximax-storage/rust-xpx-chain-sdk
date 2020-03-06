@@ -1,6 +1,6 @@
 use hyper::Client;
 
-use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+use xpx_chain_sdk::sirius_client::SiriusClient;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 const PUBLIC_KEY_A: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";

@@ -1,8 +1,8 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_sdk::models::mosaic::{Mosaic, MosaicId};
-use xpx_chain_sdk::models::Uint64;
+use xpx_chain_sdk::mosaic::{Mosaic, MosaicId};
+use xpx_chain_sdk::Uint64;
 
 fn main() {
     let mosaic_xpx = Mosaic::xpx(100);

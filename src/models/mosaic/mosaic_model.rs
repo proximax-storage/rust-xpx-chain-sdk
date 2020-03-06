@@ -1,6 +1,6 @@
 use ::core::fmt;
 
-use crate::models::{Id, Uint64};
+use crate::models::{id_model::Id, Uint64};
 use crate::models::mosaic::MosaicId;
 
 use super::internally::{

@@ -35,7 +35,6 @@ pub struct TransactionRoutes<C: Connect> {
 impl<C: Connect> TransactionRoutes<C> where
     C: Clone + Send + Sync + 'static,
 {
-
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
         TransactionRoutes {
             client,
@@ -52,7 +51,7 @@ impl<C: Connect> TransactionRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///const HASH: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
@@ -100,7 +99,7 @@ impl<C: Connect> TransactionRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///const HASH_A: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
@@ -164,7 +163,7 @@ impl<C: Connect> TransactionRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///const HASH: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
@@ -212,7 +211,7 @@ impl<C: Connect> TransactionRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///const HASH_A: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
@@ -276,8 +275,8 @@ impl<C: Connect> TransactionRoutes<C> where
     /// ```
     /// use hyper::Client;
     ///
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
-    ///use xpx_chain_sdk::models::{
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::{
     ///    account::{Account, Address},
     ///    message::PlainMessage,
     ///    mosaic::Mosaic,

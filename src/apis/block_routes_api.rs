@@ -43,7 +43,7 @@ impl<C: Connect> BlockRoutes<C>
     /// # Example
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
@@ -98,7 +98,7 @@ impl<C: Connect> BlockRoutes<C>
     /// # Example
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
@@ -172,7 +172,7 @@ impl<C: Connect> BlockRoutes<C>
     /// # Example
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///

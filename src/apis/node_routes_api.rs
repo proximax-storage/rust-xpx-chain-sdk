@@ -26,13 +26,12 @@ pub struct NodeRoutes<C: Connect> {
 impl<C: Connect> NodeRoutes<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
-
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
         NodeRoutes {
             client,
         }
     }
-    
+
     /// Get the node information.
     /// Supplies additional information about the application running on a node.
     ///
@@ -40,7 +39,7 @@ impl<C: Connect> NodeRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///
@@ -77,7 +76,7 @@ impl<C: Connect> NodeRoutes<C> where
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///

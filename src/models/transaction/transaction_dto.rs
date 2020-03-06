@@ -6,7 +6,6 @@ use crate::models::{
     network::network_internal::extract_network_type,
     uint_64::Uint64Dto,
 };
-
 use crate::models::transaction::TransactionInfo;
 
 use super::{

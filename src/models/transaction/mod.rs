@@ -1,24 +1,23 @@
 pub use self::deadline::*;
-pub use self::signed_transaction::*;
-pub use self::transaction_dto::*;
-pub use self::transaction_hashes::*;
-pub use self::transaction_ids::*;
-pub use self::transaction_info::*;
+pub(crate) use self::signed_transaction::*;
+pub(crate) use self::transaction_dto::*;
+pub(crate) use self::transaction_hashes::*;
+pub(crate) use self::transaction_ids::*;
+pub(crate) use self::transaction_info::*;
 pub use self::transaction_model::*;
 pub use self::transaction_mosaic_definition::*;
 pub use self::transaction_mosaic_supply_change::*;
 pub use self::transaction_register_namespace::*;
 pub use self::transaction_transfer::*;
-pub use self::transaction_type::*;
+pub(crate) use self::transaction_type::*;
 
 mod deadline;
 mod transaction_dto;
-pub(super) mod internal;
+pub(crate) mod internal;
 mod transaction_transfer;
 mod transaction_mosaic_definition;
 mod transaction_mosaic_supply_change;
 mod transaction_register_namespace;
-
 mod transaction_model;
 mod transaction_info;
 mod transaction_type;

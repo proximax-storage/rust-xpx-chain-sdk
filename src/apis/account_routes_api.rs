@@ -1,18 +1,13 @@
 use ::std::sync::Arc;
 
-use hyper::{client::connect::Connect, Method};
+use hyper::client::connect::Connect;
+use hyper::Method;
 
-use crate::{
-    apis::internally::valid_vec_len,
-    models::{
-        account::{AccountInfo, AccountInfoDto},
-        errors::ERR_EMPTY_ADDRESSES_IDS,
-        utils::is_hex
-    }
-};
+use crate::models::account::{AccountInfo, AccountInfoDto, AccountsId};
+use crate::models::errors::ERR_EMPTY_ADDRESSES_IDS;
+use crate::models::utils::is_hex;
 
-use super::{request as __internal_request, Result, sirius_client::ApiClient};
-use crate::models::account::AccountsId;
+use super::{internally::valid_vec_len, request as __internal_request, Result, sirius_client::ApiClient};
 
 /// Account ApiClient routes.
 ///
@@ -43,7 +38,7 @@ impl<C: Connect> AccountRoutes<C>
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///const PUBLIC_KEY: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
@@ -51,7 +46,7 @@ impl<C: Connect> AccountRoutes<C>
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    /// let client = SiriusClient::new(NODE_URL, Client::new());
     ///
     ///    let account_info = client.account.get_account_info( PUBLIC_KEY).await;
     ///
@@ -94,7 +89,7 @@ impl<C: Connect> AccountRoutes<C>
     ///
     /// ```
     ///use hyper::Client;
-    ///use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+    ///use xpx_chain_sdk::sirius_client::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
     ///const PUBLIC_KEY_A: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";

@@ -3,7 +3,7 @@ use ::core::fmt;
 use serde::{Serialize, Serializer};
 
 use crate::models::{account::PublicAccount,
-                    Id,
+                    id_model::Id,
                     Uint64,
                     utils::utils_hex::is_hex,
 };

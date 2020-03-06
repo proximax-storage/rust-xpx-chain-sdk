@@ -6,13 +6,13 @@ pub use self::mosaic_model::*;
 pub use self::mosaic_nonce::*;
 pub use self::mosaic_properties::*;
 
-pub mod mosaic_dto;
-pub mod mosaic_id;
-pub mod mosaic_model;
-pub mod mosaic_nonce;
+mod mosaic_dto;
+mod mosaic_id;
+mod mosaic_model;
+mod mosaic_nonce;
 mod internally;
-pub mod mosaic_properties;
-pub mod mosaic_info;
+mod mosaic_properties;
+mod mosaic_info;
 
 
 

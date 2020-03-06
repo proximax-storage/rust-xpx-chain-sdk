@@ -3,13 +3,12 @@ use ::std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
-use crate::{fb, models::{
-    account::{Account, PublicAccount}, consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
-    Id,
-    mosaic::MosaicSupplyType,
-    network::NetworkType,
-    Uint64
-}};
+use crate::models::account::{Account, PublicAccount};
+use crate::models::consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE;
+use crate::models::id_model::Id;
+use crate::models::mosaic::MosaicSupplyType;
+use crate::models::network::NetworkType;
+use crate::models::Uint64;
 
 use super::{
     AbstractTransaction,

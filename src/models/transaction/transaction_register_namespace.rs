@@ -3,16 +3,13 @@ use ::std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
-use crate::{fb, models::{
-    {Id, Uint64},
-    account::{Account, PublicAccount},
-    consts::REGISTER_NAMESPACE_HEADER_SIZE,
-    errors,
-    namespace::{NamespaceId, NamespaceType},
-    network::NetworkType
-}
-};
-use crate::models::namespace::generate_namespace_id;
+use crate::models::account::{Account, PublicAccount};
+use crate::models::consts::REGISTER_NAMESPACE_HEADER_SIZE;
+use crate::models::errors;
+use crate::models::id_model::Id;
+use crate::models::namespace::{generate_namespace_id, NamespaceId, NamespaceType};
+use crate::models::network::NetworkType;
+use crate::models::Uint64;
 
 use super::{
     AbstractTransaction,

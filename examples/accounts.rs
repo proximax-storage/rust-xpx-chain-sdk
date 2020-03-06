@@ -1,8 +1,8 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_sdk::models::account::{Account, Address, PublicAccount};
-use xpx_chain_sdk::models::network::PUBLIC_TEST;
+use xpx_chain_sdk::account::{Account, Address, PublicAccount};
+use xpx_chain_sdk::network::PUBLIC_TEST;
 
 fn main() {
     let network_type = PUBLIC_TEST;

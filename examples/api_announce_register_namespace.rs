@@ -3,11 +3,11 @@
 
 use hyper::Client;
 
-use xpx_chain_sdk::apis::sirius_client::SiriusClient;
-use xpx_chain_sdk::models::account::Account;
-use xpx_chain_sdk::models::network::PUBLIC_TEST;
-use xpx_chain_sdk::models::transaction::{Deadline, RegisterNamespaceTransaction};
-use xpx_chain_sdk::models::Uint64;
+use xpx_chain_sdk::account::Account;
+use xpx_chain_sdk::network::PUBLIC_TEST;
+use xpx_chain_sdk::sirius_client::SiriusClient;
+use xpx_chain_sdk::transaction::{Deadline, RegisterNamespaceTransaction};
+use xpx_chain_sdk::Uint64;
 
 #[tokio::main]
 async fn main() {

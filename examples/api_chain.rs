@@ -3,7 +3,7 @@
 
 use hyper::Client;
 
-use xpx_chain_sdk::apis::sirius_client::SiriusClient;
+use xpx_chain_sdk::sirius_client::SiriusClient;
 
 #[tokio::main]
 async fn main() {

@@ -2,7 +2,8 @@ use ::core::fmt;
 
 use serde::{Serialize, Serializer};
 
-use crate::models::{errors, Id, Uint64};
+use crate::models::{errors, Uint64};
+use crate::models::id_model::Id;
 use crate::models::namespace::{generate_namespace_path, NAMESPACE_BIT};
 use crate::models::utils::has_bits;
 

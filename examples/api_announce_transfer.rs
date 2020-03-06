@@ -3,14 +3,12 @@
 
 use hyper::Client;
 
-use xpx_chain_sdk::apis::sirius_client::SiriusClient;
-use xpx_chain_sdk::models::{
-    account::{Account, Address},
-    message::PlainMessage,
-    mosaic::Mosaic,
-    network::PUBLIC_TEST,
-    transaction::{Deadline, TransferTransaction}
-};
+use xpx_chain_sdk::account::{Account, Address};
+use xpx_chain_sdk::message::PlainMessage;
+use xpx_chain_sdk::mosaic::Mosaic;
+use xpx_chain_sdk::network::PUBLIC_TEST;
+use xpx_chain_sdk::sirius_client::SiriusClient;
+use xpx_chain_sdk::transaction::{Deadline, TransferTransaction};
 
 #[tokio::main]
 async fn main() {

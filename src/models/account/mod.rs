@@ -1,10 +1,10 @@
 pub(crate) use self::account_dto::*;
-pub use self::account_info::*;
+pub(crate) use self::account_info::*;
 pub use self::account_model::*;
 pub use self::account_type::*;
 pub use self::address_model::*;
-use self::internally::*;
-pub use self::internally::EMPTY_PUBLIC_KEY;
+pub(crate) use self::internally::*;
+pub(crate) use self::internally::EMPTY_PUBLIC_KEY;
 pub use self::public_account_model::*;
 
 mod internally;
