@@ -33,7 +33,7 @@ async fn main() {
     let mosaic_definition = MosaicDefinitionTransaction::new(
         deadline,
         MosaicNonce::random(),
-        account.clone().public_account,
+        account.to_owned().public_account,
         MosaicProperties::new(
             true, true, 6, Uint64::new(0)
         ).unwrap(),

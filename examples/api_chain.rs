@@ -12,13 +12,13 @@ async fn main() {
 
     let client = SiriusClient::new(NODE_URL, Client::new());
 
-    let blockchain_height = client.clone().chain.get_blockchain_height().await;
+    let blockchain_height = client.to_owned().chain.get_blockchain_height().await;
     match blockchain_height {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{:?}", err),
     }
 
-    let blockchain_score = client.clone().chain.get_blockchain_score().await;
+    let blockchain_score = client.to_owned().chain.get_blockchain_score().await;
     match blockchain_score {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{:?}", err),

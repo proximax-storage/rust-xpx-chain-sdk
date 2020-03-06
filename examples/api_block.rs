@@ -12,7 +12,7 @@ async fn main() {
 
     let client = SiriusClient::new(NODE_URL, Client::new());
 
-    let block_by_height = client.clone().block.get_block_by_height(1).await;
+    let block_by_height = client.to_owned().block.get_block_by_height(1).await;
     match block_by_height {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{:?}", err),

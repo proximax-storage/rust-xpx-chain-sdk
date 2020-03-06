@@ -10,7 +10,7 @@ const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF33
 async fn main() {
     let client = SiriusClient::new(NODE_URL, Client::new());
 
-    let account_info = client.clone().account.get_account_info(PUBLIC_KEY_A).await;
+    let account_info = client.to_owned().account.get_account_info(PUBLIC_KEY_A).await;
 
     match account_info {
         Ok(resp) => println!("{}", resp),

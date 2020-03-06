@@ -3,9 +3,11 @@ use ::std::sync::Arc;
 use hyper::client::connect::Connect;
 use hyper::Method;
 
-use crate::models::account::{AccountInfo, AccountInfoDto, AccountsId};
-use crate::models::errors::ERR_EMPTY_ADDRESSES_IDS;
-use crate::models::utils::is_hex;
+use crate::models::{
+    account::{AccountInfo, AccountInfoDto, AccountsId},
+    errors::ERR_EMPTY_ADDRESSES_IDS,
+    utils::is_hex
+};
 
 use super::{internally::valid_vec_len, request as __internal_request, Result, sirius_client::ApiClient};
 

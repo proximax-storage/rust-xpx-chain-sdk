@@ -52,7 +52,7 @@ async fn main() {
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
     println!("Hash: \t\t{}", sig_transaction.hash.to_uppercase());
 
-    let response_root = client.clone().transaction.announce_transaction(&sig_transaction).await;
+    let response_root = client.to_owned().transaction.announce_transaction(&sig_transaction).await;
 
     match response_root {
         Ok(response) => println!("{}\n", response),
