@@ -1,8 +1,7 @@
-pub use self::network_config_dto::*;
-pub use self::network_type_dto::NetworkTypeDto;
+pub(crate) use self::network_internal::*;
 pub use self::network_type_model::*;
 
-pub mod network_internal;
-pub mod network_config_dto;
-pub mod network_type_dto;
-pub mod network_type_model;
+mod network_internal;
+mod network_config_dto;
+mod network_type_dto;
+mod network_type_model;

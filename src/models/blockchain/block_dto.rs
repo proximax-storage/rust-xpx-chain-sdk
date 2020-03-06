@@ -1,7 +1,7 @@
 use crate::models::account::{EMPTY_PUBLIC_KEY, PublicAccount};
-use crate::models::network::network_internal::extract_network_type;
+use crate::models::network::extract_network_type;
 use crate::models::transaction::BlockchainTimestamp;
-use crate::models::transaction::internal::extract_version;
+use crate::models::transaction::extract_version;
 use crate::models::uint_64::Uint64Dto;
 use crate::Result;
 

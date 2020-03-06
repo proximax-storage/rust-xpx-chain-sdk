@@ -1,5 +1,5 @@
-pub use self::internal::*;
-pub use self::namespace_dto::*;
+pub(crate) use self::internal::*;
+pub(crate) use self::namespace_dto::*;
 pub use self::namespace_id::*;
 pub use self::namespace_model::*;
 

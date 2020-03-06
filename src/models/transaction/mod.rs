@@ -10,10 +10,11 @@ pub use self::transaction_mosaic_supply_change::*;
 pub use self::transaction_register_namespace::*;
 pub use self::transaction_transfer::*;
 pub(crate) use self::transaction_type::*;
+pub(crate) use self::internal::*;
 
 mod deadline;
 mod transaction_dto;
-pub(crate) mod internal;
+mod internal;
 mod transaction_transfer;
 mod transaction_mosaic_definition;
 mod transaction_mosaic_supply_change;

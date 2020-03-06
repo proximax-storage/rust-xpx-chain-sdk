@@ -4,7 +4,6 @@ pub use self::account_model::*;
 pub use self::account_type::*;
 pub use self::address_model::*;
 pub(crate) use self::internally::*;
-pub(crate) use self::internally::EMPTY_PUBLIC_KEY;
 pub use self::public_account_model::*;
 
 mod internally;
