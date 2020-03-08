@@ -1,15 +1,6 @@
 use crate::models::multisig::CosignatoryModificationDto;
 use crate::models::uint_64::Uint64Dto;
-
-/// MultisigModificationTypeEnum : The type of the modification: * 0 - Add cosignatory. * 1 - Remove cosignatory.
-/// The type of the modification: * 0 - Add cosignatory. * 1 - Remove cosignatory.
-#[derive(Serialize, Deserialize)]
-pub enum MultisigModificationTypeEnum {
-    #[serde(rename = "0")]
-    _0,
-    #[serde(rename = "1")]
-    _1,
-}
+use crate::models::transaction::TransactionMetaDto;
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct MultisigDto {
@@ -33,19 +24,6 @@ pub(crate) struct MultisigDto {
     pub multisig_accounts: Vec<String>,
 }
 
-impl MultisigDto {
-    pub fn new(account: String, min_approval: i32, min_removal: i32, cosignatories: Vec<String>, multisig_accounts: Vec<String>) -> MultisigDto {
-        MultisigDto {
-            account,
-            account_address: None,
-            min_approval,
-            min_removal,
-            cosignatories,
-            multisig_accounts,
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 pub(crate) struct MultisigAccountGraphInfoDto {
     /// The level of the multisig account.
@@ -53,53 +31,20 @@ pub(crate) struct MultisigAccountGraphInfoDto {
     pub level: i32,
     /// The array of multisig accounts for this level.
     #[serde(rename = "multisigEntries")]
-    pub multisig_entries: Vec<crate::models::multisig::MultisigAccountInfoDto>,
-}
-
-impl MultisigAccountGraphInfoDto {
-    pub fn new(level: i32, multisig_entries: Vec<crate::models::multisig::MultisigAccountInfoDto>) -> MultisigAccountGraphInfoDto {
-        MultisigAccountGraphInfoDto {
-            level,
-            multisig_entries,
-        }
-    }
+    pub multisig_entries: Vec<MultisigAccountInfoDto>,
 }
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct MultisigAccountInfoDto {
     #[serde(rename = "multisig")]
-    pub multisig: crate::models::multisig::MultisigDto,
-}
-
-impl MultisigAccountInfoDto {
-    pub fn new(multisig: crate::models::multisig::MultisigDto) -> MultisigAccountInfoDto {
-        MultisigAccountInfoDto {
-            multisig,
-        }
-    }
+    pub multisig: MultisigDto,
 }
 
 #[derive(Serialize, Deserialize)]
-pub(crate) struct ModifyMultisigAccountTransactionBodyDto {
-    /// The number of signatures needed to remove a cosignatory. If we are modifying an existing multisig account, this indicates the relative change of the minimum cosignatories.
-    #[serde(rename = "minRemovalDelta")]
-    pub min_removal_delta: i32,
-    /// The number of signatures needed to approve a transaction. If we are modifying an existing multisig account, this indicates the relative change of the minimum cosignatories.
-    #[serde(rename = "minApprovalDelta")]
-    pub min_approval_delta: i32,
-    /// The array of cosignatory accounts to add or delete.
-    #[serde(rename = "modifications")]
-    pub modifications: Vec<crate::models::multisig::CosignatoryModificationDto>,
-}
-
-impl ModifyMultisigAccountTransactionBodyDto {
-    pub fn new(min_removal_delta: i32, min_approval_delta: i32, modifications: Vec<crate::models::multisig::CosignatoryModificationDto>) -> ModifyMultisigAccountTransactionBodyDto {
-        ModifyMultisigAccountTransactionBodyDto {
-            min_removal_delta,
-            min_approval_delta,
-            modifications,
-        }
-    }
+#[serde(rename_all = "camelCase")]
+pub(crate) struct ModifyMultisigAccountTransactionInfoDto {
+    pub meta: TransactionMetaDto,
+    pub transaction: ModifyMultisigAccountTransactionDto,
 }
 
 /// ModifyMultisigAccountTransactionDto : Transaction that creates or modifies a multisig account.
@@ -121,35 +66,10 @@ pub(crate) struct ModifyMultisigAccountTransactionDto {
     #[serde(rename = "deadline")]
     pub deadline: Uint64Dto,
     /// The number of signatures needed to remove a cosignatory. If we are modifying an existing multisig account, this indicates the relative change of the minimum cosignatories.
-    #[serde(rename = "minRemovalDelta")]
+    #[serde(rename = "min_removal_delta")]
     pub min_removal_delta: i32,
     /// The number of signatures needed to approve a transaction. If we are modifying an existing multisig account, this indicates the relative change of the minimum cosignatories.
-    #[serde(rename = "minApprovalDelta")]
-    pub min_approval_delta: i32,
-    /// The array of cosignatory accounts to add or delete.
-    #[serde(rename = "modifications")]
-    pub modifications: Vec<CosignatoryModificationDto>,
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) struct EmbeddedModifyMultisigAccountTransactionDto {
-    /// The public key of the entity signer formatted as hexadecimal.
-    #[serde(rename = "signer")]
-    pub signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    #[serde(rename = "version")]
-    pub version: i32,
-    #[serde(rename = "type")]
-    pub _type: u16,
-    #[serde(rename = "max_fee")]
-    pub max_fee: Uint64Dto,
-    #[serde(rename = "deadline")]
-    pub deadline: Uint64Dto,
-    /// The number of signatures needed to remove a cosignatory. If we are modifying an existing multisig account, this indicates the relative change of the minimum cosignatories.
-    #[serde(rename = "minRemovalDelta")]
-    pub min_removal_delta: i32,
-    /// The number of signatures needed to approve a transaction. If we are modifying an existing multisig account, this indicates the relative change of the minimum cosignatories.
-    #[serde(rename = "minApprovalDelta")]
+    #[serde(rename = "min_approval_delta")]
     pub min_approval_delta: i32,
     /// The array of cosignatory accounts to add or delete.
     #[serde(rename = "modifications")]

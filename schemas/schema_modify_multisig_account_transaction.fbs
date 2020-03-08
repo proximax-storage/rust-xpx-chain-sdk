@@ -2,7 +2,7 @@ namespace Sirius.Buffers;
 
 table CosignatoryModificationBuffer {
     type: ubyte;
-    cosignatoryPublicKey: [ubyte];
+    cosignatory_public_key: [ubyte];
 }
 
 table ModifyMultisigAccountTransactionBuffer {
@@ -13,9 +13,9 @@ table ModifyMultisigAccountTransactionBuffer {
     type: ushort;
     max_fee: [uint];
     deadline:[uint];
-    minRemovalDelta: byte;
-    minApprovalDelta: byte;
-    numModifications: ubyte;
+    min_removal_delta: byte;
+    _minApprovalDelta: byte;
+    num_modifications: ubyte;
     modifications: [CosignatoryModificationBuffer];
 }
 

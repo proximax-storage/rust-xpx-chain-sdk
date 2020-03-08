@@ -8,6 +8,7 @@ pub use self::transaction_model::*;
 pub use self::transaction_mosaic_definition::*;
 pub use self::transaction_mosaic_supply_change::*;
 pub use self::transaction_register_namespace::*;
+pub use self::transaction_modify_multisig_account::*;
 pub use self::transaction_transfer::*;
 pub use self::transaction_type::*;
 pub use self::internal::*;
@@ -20,6 +21,8 @@ mod transaction_transfer;
 mod transaction_mosaic_definition;
 mod transaction_mosaic_supply_change;
 mod transaction_register_namespace;
+mod transaction_modify_multisig_account;
+
 mod transaction_model;
 mod transaction_info;
 mod transaction_type;

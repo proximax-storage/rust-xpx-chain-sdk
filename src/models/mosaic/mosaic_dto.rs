@@ -74,15 +74,6 @@ struct MosaicMetaDto {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub(crate) struct MosaicMetadataBodyDto {
-    metadata_id: Uint64Dto,
-    metadata_type: u16,
-    /// The array of metadata modifications.
-    modifications: Vec<MetadataModificationDto>,
-}
-
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicMetadataDto {
     pub metadata_type: i32,
     pub fields: Vec<FieldDto>,

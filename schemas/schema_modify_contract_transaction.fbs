@@ -2,7 +2,7 @@ namespace Sirius.Buffers;
 
 table CosignatoryModificationBuffer {
     type: ubyte;
-    cosignatoryPublicKey: [ubyte];
+    cosignatory_public_key: [ubyte];
 }
 
 table ModifyContractTransactionBuffer {

@@ -69,6 +69,13 @@ impl AbstractTransaction {
         }
     }
 
+    pub(crate) fn get_hash(&self) -> &str {
+        match &self.transaction_info {
+            Some(h) => &h.transaction_hash
+            _ => ""
+        }
+    }
+
     pub fn new_from_type(deadline: Deadline,
                          version: EntityVersion,
                          transaction_type: EntityTypeEnum, network_type: NetworkType) -> Self {

@@ -20,6 +20,7 @@ pub static ERR_NIL_MOSAIC_PROPERTIES: &str = "Mosaic Properties is not valid.";
 // Transaction errors
 pub static ERR_EMPTY_TRANSACTION_HASHES: &str = "Transaction hashes vec must not by empty";
 pub static ERR_EMPTY_TRANSACTION_IDS: &str = "Transaction ids vec must not by empty";
+pub static ERR_EMPTY_MODIFICATIONS: &str = "modifications must not empty";
 
 // Common errors
 pub static ERR_NIL_ASSET_ID: &str = "AssetId should not be null.";
@@ -35,3 +36,4 @@ pub static ERR_INVALID_KEY_LENGTH: &str = "The length of key is invalid.";
 pub static ERR_INVALID_KEY_HEX: &str = "Invalid hex key string.";
 pub static ERR_INVALID_SIGNATURE_LENGTH: &str = "The length of Signature is invalid.";
 pub static ERR_INVALID_SIGNATURE_HEX: &str = "Signature must be hexadecimal.";
+pub static ERR_UNKNOWN_TYPE: &str = "Not supported value Type.";

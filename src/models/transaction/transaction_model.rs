@@ -22,7 +22,7 @@ pub trait Transaction: Downcast + Sync + erased_serde::Serialize
     where
         Self: fmt::Debug,
 {
-    fn transaction_hash(&self) -> String;
+    fn transaction_hash(&self) -> &str;
 
     fn abs_transaction(&self) -> AbstractTransaction;
 

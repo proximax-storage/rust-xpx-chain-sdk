@@ -119,12 +119,7 @@ impl RegisterNamespaceTransaction {
 
 impl Transaction for RegisterNamespaceTransaction {
     fn transaction_hash(&self) -> String {
-        let mut hash = "".to_owned();
-
-        if let Some(h) = self.abs_transaction().transaction_info {
-            hash.push_str(&h.transaction_hash);
-        }
-        hash
+        self.abs_transaction.get_hash()
     }
 
     fn abs_transaction(&self) -> AbstractTransaction {
