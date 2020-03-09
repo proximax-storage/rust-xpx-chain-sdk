@@ -5,8 +5,8 @@ use hyper::body::Bytes;
 use serde_json::Value;
 
 use crate::models::{errors, transaction::EntityTypeEnum as Entity, utils::is_hex};
-use crate::Result;
 use crate::models::transaction::TransactionDto;
+use crate::Result;
 
 pub(super) fn valid_hash(hash: &str) -> Result<bool> {
     ensure!(
@@ -109,11 +109,11 @@ pub(super) fn map_transaction_dto(body: Bytes) -> Result<String> {
 
 pub(crate) fn map_aggregate_transactions_dto(transactions: Vec<Value>) -> Result<Vec<Box<dyn TransactionDto>>> {
     let mut txs_dto: Vec<Box<dyn TransactionDto>> = vec![];
-    for  item in transactions.iter(){
-        let body:  Bytes = Bytes::from(item["AggregateTransactionInfoDto"].to_string());
+    for item in transactions.iter() {
+        let body: Bytes = Bytes::from(item["AggregateTransactionInfoDto"].to_string());
         let map_dto = map_transaction_dto(body)?;
-        let dto: Box<dyn TransactionDto> = serde_json::from_str(&map_dto)?;
-        txs_dto.push(dto);
+        txs_dto.push(serde_json::from_str(&map_dto)?);
     };
+
     Ok(txs_dto)
 }
