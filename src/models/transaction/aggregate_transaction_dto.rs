@@ -1,6 +1,4 @@
-use failure::_core::any::Any;
 use serde_json::Value;
-use hyper::body::Bytes;
 
 use crate::models::multisig::CosignatureDto;
 use crate::models::transaction::{AbstractTransactionDto, AggregateTransaction, Transaction, TransactionDto, TransactionMetaDto};
@@ -42,7 +40,7 @@ impl TransactionDto for AggregateTransactionInfoDto {
 
         let info = self.meta.to_struct();
 
-        let mut txs_dto = map_aggregate_transactions_dto(dto.transactions)?;
+        let txs_dto = map_aggregate_transactions_dto(dto.transactions)?;
 
         let abs_transaction = AbstractTransactionDto::new(
             dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline,

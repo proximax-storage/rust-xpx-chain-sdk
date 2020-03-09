@@ -8,7 +8,7 @@ use crate::models::network::NetworkType;
 use crate::models::Uint64;
 
 use super::{
-    buffer::transfer::buffers, deadline::Deadline,
+    deadline::Deadline,
     EntityTypeEnum,
     EntityVersion,
     Hash,

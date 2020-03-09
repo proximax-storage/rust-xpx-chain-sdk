@@ -11,16 +11,6 @@ pub(crate) struct AliasDto {
     pub address: Option<String>,
 }
 
-impl AliasDto {
-    fn new(_type: u16) -> Self {
-        AliasDto {
-            _type,
-            mosaic_id: None,
-            address: None,
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 struct AddressAliasTransactionBodyDto {
     #[serde(rename = "aliasAction")]

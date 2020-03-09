@@ -5,14 +5,3 @@ pub struct FieldDto {
     #[serde(rename = "value")]
     pub value: String,
 }
-
-impl FieldDto {
-    pub fn new(key: String, value: String) -> FieldDto {
-        FieldDto {
-            key,
-            value,
-        }
-    }
-}
-
-

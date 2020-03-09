@@ -30,48 +30,17 @@ pub struct MetadataDto {
     pub fields: Vec<FieldDto>,
 }
 
-impl MetadataDto {
-    pub fn new(metadata_type: i32, fields: Vec<FieldDto>) -> Self {
-        MetadataDto {
-            metadata_type,
-            fields,
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 pub struct MetadataIds {
     #[serde(rename = "metadataIds", skip_serializing_if = "Option::is_none")]
     pub metadata_ids: Option<Vec<String>>,
 }
 
-impl MetadataIds {
-    pub fn new() -> Self {
-        MetadataIds {
-            metadata_ids: None,
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 pub struct MetadataModificationDto {
-    #[serde(rename = "modificationType")]
     pub modification_type: MetadataModificationTypeEnum,
     /// The key of metadata modification.
-    #[serde(rename = "key")]
     pub key: String,
     /// The value of metadata modification.
-    #[serde(rename = "value")]
     pub value: String,
 }
-
-impl MetadataModificationDto {
-    pub fn new(modification_type: MetadataModificationTypeEnum, key: String, value: String) -> Self {
-        MetadataModificationDto {
-            modification_type,
-            key,
-            value,
-        }
-    }
-}
-

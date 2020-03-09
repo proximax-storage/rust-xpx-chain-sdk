@@ -41,54 +41,21 @@ pub struct ReceiptDto {
     pub _type: ReceiptTypeEnum,
 }
 
-impl ReceiptDto {
-    pub fn new(version: i32, _type: ReceiptTypeEnum) -> ReceiptDto {
-        ReceiptDto {
-            version,
-            _type,
-        }
-    }
-}
-
 /// InflationReceiptDto : Native currency mosaics were created due to inflation.
 #[derive(Serialize, Deserialize)]
-pub struct InflationReceiptDto {
+pub(crate) struct InflationReceiptDto {
     /// The version of the receipt.
-    #[serde(rename = "version")]
     pub version: i32,
     #[serde(rename = "type")]
     pub _type: ReceiptTypeEnum,
-    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
-    #[serde(rename = "amount")]
     pub amount: Vec<i32>,
-}
-
-impl InflationReceiptDto {
-    /// Native currency mosaics were created due to inflation.
-    pub fn new(version: i32, _type: ReceiptTypeEnum, mosaic_id: Vec<i32>, amount: Vec<i32>) -> InflationReceiptDto {
-        InflationReceiptDto {
-            version,
-            _type,
-            mosaic_id,
-            amount,
-        }
-    }
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct InflationReceiptDtoAllOf {
+pub(crate) struct InflationReceiptDtoAllOf {
     #[serde(rename = "mosaic_id")]
     pub mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
     pub amount: Vec<i32>,
-}
-
-impl InflationReceiptDtoAllOf {
-    pub fn new(mosaic_id: Vec<i32>, amount: Vec<i32>) -> InflationReceiptDtoAllOf {
-        InflationReceiptDtoAllOf {
-            mosaic_id,
-            amount,
-        }
-    }
 }

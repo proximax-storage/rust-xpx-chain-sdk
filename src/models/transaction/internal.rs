@@ -1,8 +1,5 @@
-use std::rc::Rc;
-
 use ::sha3::Sha3_256;
 use fb::FlatBufferBuilder;
-use hyper::body::Buf;
 use sha3::Digest;
 use xpx_crypto::Keypair;
 
@@ -13,7 +10,7 @@ use crate::models::{
     multisig::CosignatoryModification,
     utils::vec_u8_to_hex,
 };
-use crate::models::consts::{DEAD_LINE_SIZE, MAX_FEE_SIZE, TRANSACTION_HEADER_SIZE, TYPE_SIZE, VERSION_SIZE};
+use crate::models::consts::{TRANSACTION_HEADER_SIZE, TYPE_SIZE, VERSION_SIZE};
 use crate::models::errors::ERR_EMPTY_TRANSACTION_SIGNER;
 use crate::models::utils::u32_to_array_u8;
 

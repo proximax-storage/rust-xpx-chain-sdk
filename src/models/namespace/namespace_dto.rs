@@ -45,29 +45,12 @@ pub(crate) struct NamespaceIds {
     pub namespace_ids: Option<Vec<String>>,
 }
 
-impl NamespaceIds {
-    pub fn new() -> NamespaceIds {
-        NamespaceIds {
-            namespace_ids: None,
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceInfoDto {
     #[serde(rename = "meta")]
     pub meta: crate::models::namespace::NamespaceMetaDto,
     #[serde(rename = "namespace")]
     pub namespace: crate::models::namespace::NamespaceDto,
-}
-
-impl NamespaceInfoDto {
-    pub fn new(meta: crate::models::namespace::NamespaceMetaDto, namespace: crate::models::namespace::NamespaceDto) -> NamespaceInfoDto {
-        NamespaceInfoDto {
-            meta,
-            namespace,
-        }
-    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -91,27 +74,6 @@ impl NamespaceMetaDto {
 }
 
 #[derive(Serialize, Deserialize)]
-pub(crate) struct NamespaceMetadataBodyDto {
-    #[serde(rename = "metadataId")]
-    pub metadata_id: Uint64Dto,
-    #[serde(rename = "metadataType")]
-    pub metadata_type: MetadataTypeEnum,
-    /// The array of metadata modifications.
-    #[serde(rename = "modifications")]
-    pub modifications: Vec<MetadataModificationDto>,
-}
-
-impl NamespaceMetadataBodyDto {
-    pub fn new(metadata_id: Uint64Dto, metadata_type: MetadataTypeEnum, modifications: Vec<MetadataModificationDto>) -> NamespaceMetadataBodyDto {
-        NamespaceMetadataBodyDto {
-            metadata_id,
-            metadata_type,
-            modifications,
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceMetadataDto {
     #[serde(rename = "metadataType")]
     pub metadata_type: i32,
@@ -119,16 +81,6 @@ pub(crate) struct NamespaceMetadataDto {
     pub fields: Vec<FieldDto>,
     #[serde(rename = "metadataId")]
     pub metadata_id: Uint64Dto,
-}
-
-impl NamespaceMetadataDto {
-    pub fn new(metadata_type: i32, fields: Vec<FieldDto>, metadata_id: Uint64Dto) -> NamespaceMetadataDto {
-        NamespaceMetadataDto {
-            metadata_type,
-            fields,
-            metadata_id,
-        }
-    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -139,27 +91,10 @@ pub(crate) struct NamespaceMetadataDtoAllOf {
     pub metadata_id: Uint64Dto,
 }
 
-impl NamespaceMetadataDtoAllOf {
-    pub fn new(metadata_id: Uint64Dto) -> NamespaceMetadataDtoAllOf {
-        NamespaceMetadataDtoAllOf {
-            metadata_type: None,
-            metadata_id,
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceMetadataInfoDto {
     #[serde(rename = "metadata")]
     pub metadata: NamespaceMetadataDto,
-}
-
-impl NamespaceMetadataInfoDto {
-    pub fn new(metadata: NamespaceMetadataDto) -> NamespaceMetadataInfoDto {
-        NamespaceMetadataInfoDto {
-            metadata,
-        }
-    }
 }
 
 /// NamespaceMetadataTransactionDto : Transaction that addes metadata to namespace.
@@ -188,15 +123,6 @@ pub(crate) struct NamespaceNameDto {
     /// The full name of the namespace.
     #[serde(rename = "name")]
     pub name: String,
-}
-
-impl NamespaceNameDto {
-    pub fn new(namespace_id: Uint64Dto, name: String) -> NamespaceNameDto {
-        NamespaceNameDto {
-            namespace_id,
-            name,
-        }
-    }
 }
 
 #[derive(Serialize, Deserialize)]

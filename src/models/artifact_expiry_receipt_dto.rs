@@ -13,29 +13,8 @@ pub(crate) struct ArtifactExpiryReceiptDto {
     pub artifact_id: Uint64Dto,
 }
 
-impl ArtifactExpiryReceiptDto {
-    /// An artifact namespace or mosaic expired.
-    pub fn new(version: i32, _type: ReceiptTypeEnum, artifact_id: Uint64Dto) -> ArtifactExpiryReceiptDto {
-        ArtifactExpiryReceiptDto {
-            version,
-            _type,
-            artifact_id,
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 pub(crate) struct ArtifactExpiryReceiptDtoAllOf {
     #[serde(rename = "artifactId")]
     pub artifact_id: Uint64Dto,
 }
-
-impl ArtifactExpiryReceiptDtoAllOf {
-    pub fn new(artifact_id: Uint64Dto) -> ArtifactExpiryReceiptDtoAllOf {
-        ArtifactExpiryReceiptDtoAllOf {
-            artifact_id,
-        }
-    }
-}
-
-

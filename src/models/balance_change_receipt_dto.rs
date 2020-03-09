@@ -34,22 +34,9 @@ impl BalanceChangeReceiptDto {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct BalanceChangeReceiptDtoAllOf {
     /// The target account public key.
-    #[serde(rename = "account")]
     pub account: String,
-    #[serde(rename = "mosaic_id")]
     pub mosaic_id: Uint64Dto,
-    #[serde(rename = "amount")]
     pub amount: Uint64Dto,
-}
-
-impl BalanceChangeReceiptDtoAllOf {
-    pub fn new(account: String, mosaic_id: Uint64Dto, amount: Uint64Dto) -> BalanceChangeReceiptDtoAllOf {
-        BalanceChangeReceiptDtoAllOf {
-            account,
-            mosaic_id,
-            amount,
-        }
-    }
 }
 
 /// BalanceTransferReceiptDto : The invisible state change triggered a mosaic transfer.

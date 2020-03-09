@@ -1,17 +1,7 @@
 extern crate flatbuffers;
 
-use std::cmp::Ordering;
-use std::mem;
-
-use self::flatbuffers::EndianScalar;
-
 #[allow(unused_imports, dead_code)]
 pub mod modify_multisig_account {
-    use std::cmp::Ordering;
-    use std::mem;
-
-    use self::flatbuffers::EndianScalar;
-
     extern crate flatbuffers;
 
     #[allow(unused_imports, dead_code)]
