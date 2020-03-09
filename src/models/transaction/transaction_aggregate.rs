@@ -47,12 +47,7 @@ impl AggregateTransaction {
             network_type
         );
 
-        Ok(AggregateTransaction
-        {
-            abs_transaction: abs_tx,
-            cosignatures: vec![],
-            inner_transactions: inner_txs
-        })
+        Ok(Self { abs_transaction: abs_tx, cosignatures: vec![], inner_transactions: inner_txs })
     }
 
     pub fn new_bonded(deadline: Deadline, inner_txs: Vec<Box<dyn Transaction>>,

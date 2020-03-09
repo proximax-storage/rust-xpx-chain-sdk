@@ -71,23 +71,3 @@ pub(crate) struct BlockchainUpgradeTransactionDto {
     new_block_chain_version: Uint64Dto,
 }
 
-#[derive(Serialize, Deserialize)]
-pub(crate) struct EmbeddedBlockchainUpgradeTransactionDto {
-    /// The public key of the entity signer formatted as hexadecimal.
-    #[serde(rename = "signer")]
-    signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    #[serde(rename = "version")]
-    version: i32,
-    #[serde(rename = "type")]
-    _type: u16,
-    #[serde(rename = "max_fee")]
-    max_fee: Uint64Dto,
-    #[serde(rename = "deadline")]
-    deadline: Uint64Dto,
-    #[serde(rename = "upgradePeriod")]
-    upgrade_period: Uint64Dto,
-    #[serde(rename = "newBlockChainVersion")]
-    new_block_chain_version: Uint64Dto,
-}
-

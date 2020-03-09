@@ -1,6 +1,5 @@
 use crate::models::{
     account::{Address, PublicAccount},
-    blockchain::EmbeddedBlockchainUpgradeTransactionDto,
     message::MessageDto,
     mosaic::{Mosaic, MosaicDto},
     network::extract_network_type,
@@ -23,22 +22,25 @@ pub(crate) trait TransactionDto {
 
 #[derive(Clone, Serialize, Deserialize)]
 pub(crate) struct AbstractTransactionDto {
-    pub signature: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signature: Option<String>,
     pub signer: String,
     pub version: i32,
     #[serde(rename = "type")]
     pub _type: u16,
-    pub max_fee: Uint64Dto,
-    pub deadline: Uint64Dto,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_fee: Option<Uint64Dto>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deadline: Option<Uint64Dto>
 }
 
 impl AbstractTransactionDto {
-    pub(crate) fn new(signature: String,
+    pub(crate) fn new(signature: Option<String>,
                       signer: String,
                       version: i32,
                       _type: u16,
-                      max_fee: Uint64Dto,
-                      deadline: Uint64Dto,
+                      max_fee: Option<Uint64Dto>,
+                      deadline: Option<Uint64Dto>,
     ) -> Self {
         AbstractTransactionDto {
             signature,
@@ -60,11 +62,17 @@ impl AbstractTransactionDto {
         let signer = PublicAccount::from_public_key(
             &dto.signer, network_type)?;
 
-        let blockchain_timestamp = BlockchainTimestamp::new(
-            dto.deadline.to_struct().0 as i64);
+        let mut deadline = None;
+        if let Some(item) = &dto.deadline{
+            let timestamp = BlockchainTimestamp::new(
+                item.to_struct().0 as i64);
+            deadline = Some(Deadline::from(timestamp))
+        }
 
-        let deadline = Deadline::from(blockchain_timestamp);
-        let max_fee = dto.max_fee.to_struct();
+        let mut max_fee = None;
+        if let Some(item) = &dto.max_fee{
+            max_fee = Some(item.to_struct());
+        }
 
         let transaction_type = EntityTypeEnum::from(dto._type as u64);
 
@@ -80,24 +88,22 @@ impl AbstractTransactionDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
-pub(crate) struct TransactionInfoDto {
-    #[serde(rename = "meta")]
-    meta: TransactionMetaDto,
-    #[serde(rename = "transaction")]
-    transaction: EmbeddedBlockchainUpgradeTransactionDto,
-}
-
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct TransactionMetaDto {
     height: Uint64Dto,
-    hash: String,
-    merkle_component_hash: String,
     index: u32,
     id: String,
+    #[serde(rename = "hash", skip_serializing_if = "Option::is_none")]
+    transaction_hash: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    merkle_component_hash: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     aggregate_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     aggregate_hash: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unique_aggregate_hash: Option<String>
 }
 
 impl TransactionMetaDto {
@@ -114,14 +120,30 @@ impl TransactionMetaDto {
             aggregate_id = Some(t)
         }
 
+        let mut unique_aggregate_hash = None;
+        if let Some(t) = dto.unique_aggregate_hash.clone() {
+            unique_aggregate_hash = Some(t)
+        }
+
+        let mut transaction_hash = None;
+        if let Some(t) = dto.transaction_hash.clone() {
+            transaction_hash = Some(t)
+        }
+
+        let mut merkle_component_hash = None;
+        if let Some(t) = dto.merkle_component_hash.clone() {
+            merkle_component_hash = Some(t)
+        }
+
         TransactionInfo {
             height: dto.height.to_struct(),
             index: dto.index,
             id: dto.id.clone(),
-            transaction_hash: dto.hash.clone(),
-            merkle_component_hash: dto.merkle_component_hash.clone(),
+            transaction_hash,
+            merkle_component_hash,
             agregate_hash,
-            aggregate_id
+            aggregate_id,
+            unique_aggregate_hash
         }
     }
 }
@@ -207,36 +229,18 @@ impl TransactionDto for TransferTransactionInfoDto {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct TransferTransactionDto {
-    pub signature: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signature: Option<String>,
     pub signer: String,
     pub version: i32,
     #[serde(rename = "type")]
     pub _type: u16,
-    pub max_fee: Uint64Dto,
-    pub deadline: Uint64Dto,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_fee: Option<Uint64Dto>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deadline: Option<Uint64Dto>,
     pub recipient: String,
     pub mosaics: Vec<MosaicDto>,
     pub message: MessageDto,
 }
 
-#[derive(Serialize, Deserialize)]
-pub(crate) struct EmbeddedTransactionInfoDto {
-    #[serde(rename = "meta")]
-    pub meta: EmbeddedTransactionMetaDto,
-    #[serde(rename = "transaction")]
-    pub transaction: EmbeddedBlockchainUpgradeTransactionDto,
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) struct EmbeddedTransactionMetaDto {
-    #[serde(rename = "height")]
-    pub height: Uint64Dto,
-    #[serde(rename = "hash")]
-    pub hash: String,
-    #[serde(rename = "merkle_component_hash")]
-    pub merkle_component_hash: String,
-    #[serde(rename = "index")]
-    pub index: i32,
-    #[serde(rename = "id")]
-    pub id: String,
-}

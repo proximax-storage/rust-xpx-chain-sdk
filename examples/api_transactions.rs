@@ -9,7 +9,6 @@ const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
 #[tokio::main]
 async fn main() {
-
     let client = SiriusClient::new(NODE_URL, Client::new());
 
     let transaction_status = client.clone().transaction.get_transaction_status(
@@ -36,7 +35,7 @@ async fn main() {
     }
 
     let transaction = client.clone().transaction.get_transaction(
-        "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").await;
+        "11E02159CEFD13AF6518BD9989CED74D2D94B741C85790B3AEC4F072DA10623D").await;
     match transaction {
         Ok(tx) => println!("{}", tx),
         Err(err) => eprintln!("{:?}", err),

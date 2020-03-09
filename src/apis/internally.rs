@@ -6,6 +6,7 @@ use serde_json::Value;
 
 use crate::models::{errors, transaction::EntityTypeEnum as Entity, utils::is_hex};
 use crate::Result;
+use crate::models::transaction::TransactionDto;
 
 pub(super) fn valid_hash(hash: &str) -> Result<bool> {
     ensure!(
@@ -81,8 +82,8 @@ pub(super) fn map_transaction_dto(body: Bytes) -> Result<String> {
         Entity::AccountRestrictionMosaic => "AccountRestrictionMosaic",
         Entity::AccountRestrictionOperation => "AccountRestrictionOperation",
         Entity::AddressAlias => "AddressAlias",
-        Entity::AggregateBonded => "AggregateBonded",
-        Entity::AggregateComplete => "AggregateComplete",
+        Entity::AggregateBonded => "Aggregate",
+        Entity::AggregateComplete => "Aggregate",
         Entity::Block => "Block",
         Entity::BlockchainUpgrade => "BlockchainUpgrade",
         Entity::Lock => "Lock",
@@ -104,4 +105,15 @@ pub(super) fn map_transaction_dto(body: Bytes) -> Result<String> {
     Ok(format!("{}", value_dto)
         .replace(r#"{"meta":"#, &info_dto)
         .replace("}}", r#"}}}"#))
+}
+
+pub(crate) fn map_aggregate_transactions_dto(transactions: Vec<Value>) -> Result<Vec<Box<dyn TransactionDto>>> {
+    let mut txs_dto: Vec<Box<dyn TransactionDto>> = vec![];
+    for  item in transactions.iter(){
+        let body:  Bytes = Bytes::from(item["AggregateTransactionInfoDto"].to_string());
+        let map_dto = map_transaction_dto(body)?;
+        let dto: Box<dyn TransactionDto> = serde_json::from_str(&map_dto)?;
+        txs_dto.push(dto);
+    };
+    Ok(txs_dto)
 }

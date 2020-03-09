@@ -40,12 +40,12 @@ impl ModifyMultisigAccountTransaction {
         let abs_tx = AbstractTransaction {
             transaction_info: None,
             network_type,
-            signature: "".to_string(),
+            signature: None,
             signer: Default::default(),
             version: MODIFY_MULTISIG_VERSION,
             transaction_type: EntityTypeEnum::ModifyMultisigAccount,
-            max_fee: Default::default(),
-            deadline,
+            max_fee: None,
+            deadline: Some(deadline),
         };
 
         Ok(Self { abs_transaction: abs_tx, min_removal_delta, min_approval_delta, modifications })
