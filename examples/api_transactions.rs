@@ -12,7 +12,7 @@ async fn main() {
     let client = SiriusClient::new(NODE_URL, Client::new());
 
     let transaction_status = client.clone().transaction.get_transaction_status(
-        "A5215CA0D024B50F59B6A19354638F2A366B44B08A95DA59A926250400BBE86E").await;
+        "261315CC8B71698D4BC2115FBD4FF3DCAB98FA606F8C5820CE3905216680B51B").await;
     match transaction_status {
         Ok(status) => println!("{}", status),
         Err(err) => eprintln!("{:?}", err),

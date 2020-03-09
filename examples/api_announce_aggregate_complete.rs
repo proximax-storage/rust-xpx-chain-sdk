@@ -59,7 +59,7 @@ async fn main() {
 
     let aggregate_complete = AggregateTransaction::new_complete(
         deadline,
-        vec![transfer_a, transfer_b],
+        vec![Box::new(transfer_a), Box::new(transfer_b)],
         network_type
     );
 
