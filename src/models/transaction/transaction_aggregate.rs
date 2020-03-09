@@ -32,7 +32,7 @@ pub struct AggregateTransaction {
 }
 
 impl AggregateTransaction {
-    pub fn new_complete(deadline: Deadline, inner_txs: Vec<impl Transaction>,
+    pub fn new_complete(deadline: Deadline, inner_txs: Vec<Box<dyn Transaction>>,
                         network_type: NetworkType) -> crate::Result<AggregateTransaction>
     {
         ensure!(
@@ -47,18 +47,11 @@ impl AggregateTransaction {
             network_type
         );
 
-        let mut inner: Transactions = vec![];
-        inner_txs.into_iter().for_each(|item|
-            {
-                inner.push(Box::new(item));
-            }
-        );
-
         Ok(AggregateTransaction
         {
             abs_transaction: abs_tx,
             cosignatures: vec![],
-            inner_transactions: inner
+            inner_transactions: inner_txs
         })
     }
 

@@ -42,7 +42,7 @@ async fn main() {
         panic!("{}", err)
     }
 
-    let sig_mosaic_supply = account.sign(&mosaic_supply.unwrap(), &generation_hash);
+    let sig_mosaic_supply = account.sign(mosaic_supply.unwrap(), &generation_hash);
 
     if let Err(err) = &sig_mosaic_supply {
         panic!("{}", err)

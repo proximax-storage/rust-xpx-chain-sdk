@@ -4,6 +4,7 @@
 use hyper::Client;
 
 use xpx_chain_sdk::account::Account;
+use xpx_chain_sdk::namespace::NamespaceId;
 use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::sirius_client::SiriusClient;
 use xpx_chain_sdk::transaction::{Deadline, RegisterNamespaceTransaction};
@@ -15,7 +16,6 @@ const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB
 
 #[tokio::main]
 async fn main() {
-
     let client = SiriusClient::new(NODE_URL, Client::new());
 
     let generation_hash = client.generation_hash().await;
@@ -36,7 +36,7 @@ async fn main() {
         network_type
     );
 
-    let namespace_root = match &register_namespace_root {
+    let namespace_root = match register_namespace_root {
         Ok(register_namespace) => register_namespace,
         Err(err) => panic!("{}", err),
     };
@@ -62,7 +62,7 @@ async fn main() {
     let register_namespace_sub = RegisterNamespaceTransaction::create_sub(
         deadline,
         "latam",
-        namespace_root.namespace_id,
+        NamespaceId::from_name("rustnamespace").unwrap(),
         network_type
     );
 
@@ -70,7 +70,7 @@ async fn main() {
         panic!("{}", err)
     }
 
-    let sig_transaction_sub = account.sign(&register_namespace_sub.unwrap(), &generation_hash);
+    let sig_transaction_sub = account.sign(register_namespace_sub.unwrap(), &generation_hash);
 
     if let Err(err) = &sig_transaction_sub {
         panic!("{}", err)
