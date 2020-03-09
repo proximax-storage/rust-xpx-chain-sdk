@@ -58,7 +58,7 @@ impl Account {
     }
 
     /// Signs 'Transaction'.
-    pub fn sign(&self, tx: &dyn Transaction, generation_hash: &str) -> crate::Result<SignedTransaction> {
+    pub fn sign(&self, tx: impl Transaction, generation_hash: &str) -> crate::Result<SignedTransaction> {
         tx.sign_transaction_with(self.to_owned(), generation_hash.parse().unwrap())
     }
 

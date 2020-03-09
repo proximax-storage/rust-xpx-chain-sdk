@@ -5,11 +5,12 @@ pub use self::scala_attribute::*;
 pub use self::schema::*;
 pub use self::schema_attribute::*;
 pub use self::table_array_attribute::*;
+pub use self::transaction_aggregate::*;
+pub use self::transaction_modify_multisig_account::*;
 pub use self::transaction_mosaic_definition::*;
 pub use self::transaction_mosaic_supply_change::*;
 pub use self::transaction_register_namespace::*;
 pub use self::transaction_transafer::*;
-pub use self::transaction_modify_multisig_account::*;
 
 mod schema;
 mod constants;
@@ -25,5 +26,7 @@ mod transaction_mosaic_definition;
 mod transaction_mosaic_supply_change;
 mod transaction_register_namespace;
 mod transaction_modify_multisig_account;
+mod transaction_aggregate;
+
 
 

@@ -12,7 +12,6 @@ pub mod node;
 pub(crate) mod errors;
 pub(crate) mod utils;
 
-mod aggregate_transaction_dto;
 mod alias;
 mod artifact_expiry_receipt_dto;
 mod balance_change_receipt_dto;

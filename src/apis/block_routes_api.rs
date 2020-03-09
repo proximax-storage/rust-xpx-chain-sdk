@@ -146,9 +146,8 @@ impl<C: Connect> BlockRoutes<C>
         let dto: Vec<BlockInfoDto> = req.execute(self.client).await?;
 
         let mut blocks_info: Vec<BlockInfo> = Vec::with_capacity(dto.len());
-        for i in dto {
-            let block_info = i;
-            blocks_info.push(block_info.to_struct()?);
+        for block_info_dto in dto {
+            blocks_info.push(block_info_dto.to_struct()?);
         }
 
         Ok(blocks_info)
@@ -217,8 +216,7 @@ impl<C: Connect> BlockRoutes<C>
 
         let mut transactions_info: Vec<Box<dyn Transaction>> = Vec::with_capacity(dto.len());
         for transaction_dto in dto {
-            let transaction_info = transaction_dto;
-            transactions_info.push(transaction_info.to_struct()?);
+            transactions_info.push(transaction_dto.to_struct()?);
         }
 
         Ok(transactions_info)

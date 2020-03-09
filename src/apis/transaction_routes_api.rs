@@ -145,9 +145,8 @@ impl<C: Connect> TransactionRoutes<C> where
         let dto: Vec<TransactionStatusDto> = req.execute(self.client).await?;
 
         let mut statuses: Vec<TransactionStatus> = Vec::with_capacity(dto.len());
-        for i in dto {
-            let statuse = i;
-            statuses.push(statuse.to_struct());
+        for status_dto in dto {
+            statuses.push(status_dto.to_struct());
         }
 
         Ok(statuses)
@@ -256,9 +255,8 @@ impl<C: Connect> TransactionRoutes<C> where
         let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.client).await?;
 
         let mut transactions_info: Vec<Box<dyn Transaction>> = Vec::with_capacity(dto.len());
-        for i in dto {
-            let transaction_info = i;
-            transactions_info.push(transaction_info.to_struct()?);
+        for transaction_info_dto in dto {
+            transactions_info.push(transaction_info_dto.to_struct()?);
         }
 
         Ok(transactions_info)

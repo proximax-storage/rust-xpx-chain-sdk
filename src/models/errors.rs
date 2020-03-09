@@ -20,7 +20,9 @@ pub static ERR_NIL_MOSAIC_PROPERTIES: &str = "Mosaic Properties is not valid.";
 // Transaction errors
 pub static ERR_EMPTY_TRANSACTION_HASHES: &str = "Transaction hashes vec must not by empty";
 pub static ERR_EMPTY_TRANSACTION_IDS: &str = "Transaction ids vec must not by empty";
+pub static ERR_EMPTY_INNER_TRANSACTION: &str = "innerTransactions must not be empty";
 pub static ERR_EMPTY_MODIFICATIONS: &str = "modifications must not empty";
+pub static ERR_EMPTY_TRANSACTION_SIGNER: &str = "some of the transaction does not have a signer";
 
 // Common errors
 pub static ERR_NIL_ASSET_ID: &str = "AssetId should not be null.";

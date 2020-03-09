@@ -38,25 +38,17 @@ impl MosaicSupplyChangeTransaction {
         asset_id: impl Id + 'static,
         delta: Uint64,
         network_type: NetworkType,
-    ) -> crate::Result<MosaicSupplyChangeTransaction> {
-        let abs_tx = AbstractTransaction {
-            transaction_info: None,
-            network_type,
-            signature: "".to_string(),
-            signer: Default::default(),
-            version: MOSAIC_SUPPLY_CHANGE_VERSION,
-            transaction_type: EntityTypeEnum::MosaicSupplyChange,
-            max_fee: Default::default(),
+    ) -> crate::Result<Self> {
+        let abs_tx = AbstractTransaction::new_from_type(
             deadline,
-        };
+            MOSAIC_SUPPLY_CHANGE_VERSION,
+            EntityTypeEnum::MosaicSupplyChange,
+            network_type
+        );
 
         let id = Box::new(asset_id);
-        Ok(MosaicSupplyChangeTransaction {
-            abs_transaction: abs_tx,
-            supply_type,
-            asset_id: id,
-            delta
-        })
+
+        Ok(Self { abs_transaction: abs_tx, supply_type, asset_id: id, delta })
     }
 
     pub fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -130,9 +122,9 @@ impl Transaction for MosaicSupplyChangeTransaction {
         unimplemented!()
     }
 
-    fn sign_transaction_with(&self, account: Account, generation_hash: String)
+    fn sign_transaction_with(self, account: Account, generation_hash: String)
                              -> crate::Result<SignedTransaction> {
-        sign_transaction(self as &dyn Transaction, account, generation_hash)
+        sign_transaction(self, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {

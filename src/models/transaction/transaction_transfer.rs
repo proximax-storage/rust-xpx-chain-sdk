@@ -23,6 +23,8 @@ use super::{
     Transaction,
     TRANSFER_VERSION
 };
+use std::ops::Deref;
+use std::rc::Rc;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -45,7 +47,7 @@ impl TransferTransaction {
         mosaics: Vec<Mosaic>,
         message: impl Message + 'static,
         network_type: NetworkType,
-    ) -> crate::Result<TransferTransaction> {
+    ) -> crate::Result<Self> {
         ensure!(
             !recipient.is_empty(),
             "address string is empty."
@@ -56,24 +58,14 @@ impl TransferTransaction {
             errors::ERR_EMPTY_MOSAIC_ID
          );
 
-
-        let abs_tx = AbstractTransaction {
-            transaction_info: None,
-            network_type,
-            signature: "".to_string(),
-            signer: Default::default(),
-            version: TRANSFER_VERSION,
-            transaction_type: EntityTypeEnum::Transfer,
-            max_fee: Default::default(),
+        let abs_tx = AbstractTransaction::new_from_type(
             deadline,
-        };
+            TRANSFER_VERSION,
+            EntityTypeEnum::Transfer,
+            network_type
+        );
 
-        Ok(TransferTransaction {
-            abs_transaction: abs_tx,
-            recipient,
-            mosaics,
-            message: Box::new(message),
-        })
+        Ok(Self { abs_transaction: abs_tx, recipient, mosaics, message: Box::new(message) })
     }
 
     pub fn message_size(&self) -> usize {
@@ -183,9 +175,9 @@ impl Transaction for TransferTransaction {
         unimplemented!()
     }
 
-    fn sign_transaction_with(&self, account: Account, generation_hash: String)
+    fn sign_transaction_with(self, account: Account, generation_hash: String)
                              -> crate::Result<SignedTransaction> {
-        sign_transaction(self as &dyn Transaction, account, generation_hash)
+        sign_transaction(self, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {
@@ -204,10 +196,3 @@ impl fmt::Display for TransferTransaction {
         )
     }
 }
-//
-//impl From<Value> for TransferTransaction {
-//    fn from(e: Value) -> Self {
-//        let algo: TransferTransaction = serde_json::from_value(e).unwrap();
-//        return algo
-//    }
-//}

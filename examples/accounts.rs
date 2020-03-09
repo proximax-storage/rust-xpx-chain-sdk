@@ -5,6 +5,7 @@ use xpx_chain_sdk::account::{Account, Address, PublicAccount};
 use xpx_chain_sdk::network::PUBLIC_TEST;
 
 fn main() {
+
     let network_type = PUBLIC_TEST;
 
     let private_key = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";

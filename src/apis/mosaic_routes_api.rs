@@ -136,9 +136,8 @@ impl<C: Connect> MosaicRoutes<C> where
         let dto: Vec<MosaicInfoDto> = req.execute(self.client).await?;
 
         let mut mosaics_info: Vec<MosaicInfo> = Vec::with_capacity(dto.len());
-        for i in dto {
-            let mosaic_info = i;
-            mosaics_info.push(mosaic_info.to_struct()?);
+        for mosaic_info_dto in dto {
+            mosaics_info.push(mosaic_info_dto.to_struct()?);
         }
 
         Ok(mosaics_info)
@@ -199,9 +198,8 @@ impl<C: Connect> MosaicRoutes<C> where
         let dto: Vec<MosaicNamesDto> = req.execute(self.client).await?;
 
         let mut mosaics_names: Vec<MosaicNames> = Vec::with_capacity(dto.len());
-        for i in dto {
-            let mosaic_name = i;
-            mosaics_names.push(mosaic_name.to_struct());
+        for mosaic_name_dto in dto {
+            mosaics_names.push(mosaic_name_dto.to_struct());
         }
 
         Ok(mosaics_names)

@@ -153,9 +153,8 @@ impl<C: Connect> AccountRoutes<C>
         let dto: Vec<AccountInfoDto> = req.execute(self.client).await?;
 
         let mut accounts_info: Vec<AccountInfo> = Vec::with_capacity(dto.len());
-        for i in dto {
-            let account_info = i;
-            accounts_info.push(account_info.to_struct()?);
+        for account_dto in dto {
+            accounts_info.push(account_dto.to_struct()?);
         }
 
         Ok(accounts_info)

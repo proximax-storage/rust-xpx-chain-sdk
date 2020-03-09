@@ -30,7 +30,7 @@ impl BlockchainTimestamp {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
-pub(crate) struct Timestamp(SystemTime);
+pub struct Timestamp(SystemTime);
 
 impl Timestamp {
     /// returns new timestamp from passed milliseconds value

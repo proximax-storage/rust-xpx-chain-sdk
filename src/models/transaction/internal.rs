@@ -1,28 +1,33 @@
+use std::rc::Rc;
+
 use ::sha3::Sha3_256;
 use fb::FlatBufferBuilder;
+use hyper::body::Buf;
 use sha3::Digest;
 use xpx_crypto::Keypair;
 
 use crate::models::{
     account::Account,
     consts::{HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE},
-    utils::vec_u8_to_hex,
     mosaic::MosaicProperty,
     multisig::CosignatoryModification,
+    utils::vec_u8_to_hex,
 };
-
-use super::buffer::{
-    mosaic_definition,
-    modify_multisig_account
-};
+use crate::models::consts::{DEAD_LINE_SIZE, MAX_FEE_SIZE, TRANSACTION_HEADER_SIZE, TYPE_SIZE, VERSION_SIZE};
+use crate::models::errors::ERR_EMPTY_TRANSACTION_SIGNER;
+use crate::models::utils::u32_to_array_u8;
 
 use super::{EntityVersion, SignedTransaction, Transaction};
+use super::buffer::{
+    modify_multisig_account,
+    mosaic_definition
+};
 
 pub(crate) fn extract_version(version: i32) -> EntityVersion {
     return version & 0xFFFFFF;
 }
 
-pub(crate) fn sign_transaction(tx: &dyn Transaction, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
+pub(crate) fn sign_transaction(tx: impl Transaction, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
     let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
 
     let mut bytes = tx.generate_bytes();
@@ -87,11 +92,11 @@ pub(crate) fn mosaic_property_array_to_buffer(
 }
 
 pub(crate) fn cosignatory_modification_array_to_buffer(
-    builder: &mut FlatBufferBuilder, modifications: Vec<CosignatoryModification> ) -> fb::UOffsetT {
+    builder: &mut FlatBufferBuilder, modifications: Vec<CosignatoryModification>) -> fb::UOffsetT {
     let mut p_buffer: Vec<fb::UOffsetT> = Vec::with_capacity(modifications.len());
 
     for modification in modifications {
-        let public_key =  modification.public_account;
+        let public_key = modification.public_account;
         let public_key_vector = builder.create_vector(&public_key.to_array());
 
         let mut modify_multisig = modify_multisig_account::buffers::CosignatoryModificationBufferBuilder::new(builder);
@@ -101,4 +106,32 @@ pub(crate) fn cosignatory_modification_array_to_buffer(
     }
 
     builder.create_vector(&p_buffer).value()
+}
+
+pub(crate) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate::Result<Vec<u8>> {
+    ensure!(
+        tx.abs_transaction().signer.public_key != "",
+        ERR_EMPTY_TRANSACTION_SIGNER
+    );
+
+    let mut signer_bytes = tx.abs_transaction().signer.to_array();
+
+    let mut tx_vec = tx.generate_bytes();
+
+    let mut r_b: Vec<u8> = Vec::with_capacity(tx_vec.len());
+    r_b.append(&mut [0, 0, 0, 0].to_vec());
+    r_b.append(&mut signer_bytes[..].to_vec());
+    r_b.append(&mut tx_vec[
+        SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE + VERSION_SIZE
+            + TYPE_SIZE].to_vec());
+
+    r_b.append(&mut tx_vec[TRANSACTION_HEADER_SIZE..].to_vec());
+
+    let s = u32_to_array_u8(r_b.len() as u32);
+
+    for (i, b) in s.iter().enumerate() {
+        r_b[i] = *b;
+    };
+
+    Ok(r_b)
 }

@@ -18,6 +18,7 @@ impl Schema {
             let temp: &Vec<u8> = &self.definition[i].serialize(
                 buffer, 4 + (i * 2), buffer[0] as usize,
             );
+
             let temp = Rc::new(temp);
             result_bytes.append(&mut temp.to_vec());
         }

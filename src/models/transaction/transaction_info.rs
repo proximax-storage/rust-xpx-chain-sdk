@@ -71,7 +71,7 @@ impl AbstractTransaction {
 
     pub(crate) fn get_hash(&self) -> &str {
         match &self.transaction_info {
-            Some(h) => &h.transaction_hash
+            Some(h) => &h.transaction_hash,
             _ => ""
         }
     }

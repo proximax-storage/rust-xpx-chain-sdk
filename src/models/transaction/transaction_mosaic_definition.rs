@@ -37,29 +37,20 @@ impl MosaicDefinitionTransaction {
         owner_public_account: PublicAccount,
         properties: MosaicProperties,
         network_type: NetworkType,
-    ) -> crate::Result<MosaicDefinitionTransaction> {
-        let abs_tx = AbstractTransaction {
-            transaction_info: None,
-            network_type,
-            signature: "".to_string(),
-            signer: Default::default(),
-            version: MOSAIC_DEFINITION_VERSION,
-            transaction_type: EntityTypeEnum::MosaicDefinition,
-            max_fee: Default::default(),
+    ) -> crate::Result<Self> {
+        let abs_tx = AbstractTransaction::new_from_type(
             deadline,
-        };
+            MOSAIC_DEFINITION_VERSION,
+            EntityTypeEnum::MosaicDefinition,
+            network_type
+        );
 
         let mosaic_id = MosaicId::from_nonce_and_owner(
             nonce.clone(),
             owner_public_account
         );
 
-        Ok(MosaicDefinitionTransaction {
-            abs_transaction: abs_tx,
-            properties,
-            mosaic_nonce: nonce,
-            mosaic_id
-        })
+        Ok(Self { abs_transaction: abs_tx, properties, mosaic_nonce: nonce, mosaic_id })
     }
 
     pub fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -150,9 +141,9 @@ impl Transaction for MosaicDefinitionTransaction {
         unimplemented!()
     }
 
-    fn sign_transaction_with(&self, account: Account, generation_hash: String)
+    fn sign_transaction_with(self, account: Account, generation_hash: String)
                              -> crate::Result<SignedTransaction> {
-        sign_transaction(self as &dyn Transaction, account, generation_hash)
+        sign_transaction(self, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {

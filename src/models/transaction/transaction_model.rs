@@ -42,7 +42,7 @@ pub trait Transaction: Downcast + Sync + erased_serde::Serialize
 
     /// Serialize and sign 'Transaction' with the given 'Account' and network generationHash and
     /// create a new SignedTransaction.
-    fn sign_transaction_with(&self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
+    fn sign_transaction_with(self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
 
     fn entity_type(&self) -> EntityTypeEnum;
 

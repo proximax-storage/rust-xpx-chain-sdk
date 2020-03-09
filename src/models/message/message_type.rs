@@ -10,7 +10,7 @@ pub(crate) const ENCRYPTED_MESSAGE: MessageType = MessageType::SecureMessageType
 /// The type of the message:
 /// * 0 - Plain text or unencrypted message.
 /// * 1 - Secured text or encrypted message.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Copy)]
 #[repr(u8)]
 pub enum MessageType {
     #[serde(rename = "0")]

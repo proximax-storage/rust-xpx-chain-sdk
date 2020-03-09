@@ -71,7 +71,7 @@ impl RegisterNamespaceTransaction {
         namespace_name: &'static str,
         parent_id: NamespaceId,
         network_type: NetworkType,
-    ) -> crate::Result<RegisterNamespaceTransaction> {
+    ) -> crate::Result<Self> {
         ensure!(
             namespace_name.len() != 0 && namespace_name.len() <= 64 ,
             errors::ERR_INVALID_NAMESPACE_NAME
@@ -90,7 +90,7 @@ impl RegisterNamespaceTransaction {
 
         let namespace_id = generate_namespace_id(namespace_name, parent_id)?;
 
-        Ok(RegisterNamespaceTransaction {
+        Ok(Self {
             abs_transaction: abs_tx,
             namespace_type: NamespaceType::Sub,
             namespace_id,
@@ -118,7 +118,7 @@ impl RegisterNamespaceTransaction {
 }
 
 impl Transaction for RegisterNamespaceTransaction {
-    fn transaction_hash(&self) -> String {
+    fn transaction_hash(&self) -> &str {
         self.abs_transaction.get_hash()
     }
 
@@ -184,9 +184,9 @@ impl Transaction for RegisterNamespaceTransaction {
         unimplemented!()
     }
 
-    fn sign_transaction_with(&self, account: Account, generation_hash: String)
+    fn sign_transaction_with(self, account: Account, generation_hash: String)
                              -> crate::Result<SignedTransaction> {
-        sign_transaction(self as &dyn Transaction, account, generation_hash)
+        sign_transaction(self, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {

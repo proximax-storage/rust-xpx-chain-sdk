@@ -1,18 +1,20 @@
 use std::any::Any;
+use std::rc::Rc;
 
 use serde_json::Value;
 
 use crate::models::account::Account;
 use crate::models::consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE};
+use crate::models::errors::ERR_EMPTY_MODIFICATIONS;
 use crate::models::multisig::CosignatoryModification;
 use crate::models::network::NetworkType;
 use crate::models::transaction::{AbstractTransaction, cosignatory_modification_array_to_buffer, Deadline, EntityTypeEnum, MODIFY_MULTISIG_VERSION, SignedTransaction, Transaction};
 use crate::models::transaction::buffer::modify_multisig_account::buffers;
 use crate::transaction::sign_transaction;
 
-use super::schema::transfer_transaction_schema;
+use super::schema::modify_multisig_account_transaction_schema;
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ModifyMultisigAccountTransaction {
     pub abs_transaction: AbstractTransaction,
@@ -46,12 +48,7 @@ impl ModifyMultisigAccountTransaction {
             deadline,
         };
 
-        Ok(ModifyMultisigAccountTransaction {
-            abs_transaction: abs_tx,
-            min_removal_delta,
-            min_approval_delta,
-            modifications
-        })
+        Ok(Self { abs_transaction: abs_tx, min_removal_delta, min_approval_delta, modifications })
     }
 }
 
@@ -73,8 +70,10 @@ impl Transaction for ModifyMultisigAccountTransaction {
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
 
+        let modifications = self.clone().modifications;
+
         let modification_vector = cosignatory_modification_array_to_buffer(
-            builder, tx.Modifications);
+            &mut _builder, modifications);
 
         let abs_vector = &self.abs_transaction.generate_vector(&mut _builder);
 
@@ -91,13 +90,13 @@ impl Transaction for ModifyMultisigAccountTransaction {
         txn_builder.add_min_removal_delta(self.min_removal_delta);
         txn_builder.add_min_approval_delta(self.min_approval_delta);
         txn_builder.add_num_modifications(self.modifications.len() as u8);
-        txn_builder.add_modifications(fb::WIPOffset::new(*modification_vector));
+        txn_builder.add_modifications(fb::WIPOffset::new(modification_vector));
 
         let t = txn_builder.finish();
         _builder.finish(t, None);
 
         let buf = _builder.finished_data();
-        modify_multisig_account_transaction().serialize(&mut Vec::from(buf))
+        modify_multisig_account_transaction_schema().serialize(&mut Vec::from(buf))
     }
 
     fn generate_embedded_bytes(&self) -> Vec<u8> {
@@ -112,9 +111,9 @@ impl Transaction for ModifyMultisigAccountTransaction {
         unimplemented!()
     }
 
-    fn sign_transaction_with(&self, account: Account, generation_hash: String)
+    fn sign_transaction_with(self, account: Account, generation_hash: String)
                              -> crate::Result<SignedTransaction> {
-        sign_transaction(self as &dyn Transaction, account, generation_hash)
+        sign_transaction(self, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {
