@@ -53,7 +53,7 @@ async fn main() {
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
     println!("Hash: \t\t{}", sig_transaction.hash.to_uppercase());
 
-    let response = client.transaction.announce_transaction(&sig_transaction).await;
+    let response = client.transaction.announce(&sig_transaction).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

@@ -325,7 +325,7 @@ impl<C: Connect> TransactionRoutes<C> where
     ///        Err(err) => panic!("{}", err),
     ///    };
     ///
-    ///    let response = client.transaction.announce_transaction(&sig_tx).await;
+    ///    let response = client.transaction.announce(&sig_tx).await;
     ///
     ///    match response {
     ///        Ok(resp) => println!("{}", resp),
@@ -338,7 +338,7 @@ impl<C: Connect> TransactionRoutes<C> where
     ///
     /// Returns a Future `Result` whose okay value is an [AnnounceTransactionInfo] or whose error
     /// value is an `Error<Value>` describing the error that occurred.
-    pub async fn announce_transaction(self, transaction_signed: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
+    pub async fn announce(self, transaction_signed: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
         let mut req = __internal_request::Request::new(
             Method::PUT,
             "/transaction".to_string(),
@@ -349,7 +349,7 @@ impl<C: Connect> TransactionRoutes<C> where
         req.execute(self.client).await
     }
 
-    pub async fn announce_cosignature_transaction(self, cosignature: String) -> Result<AnnounceTransactionInfo> {
+    pub async fn announce_cosignature(self, cosignature: String) -> Result<AnnounceTransactionInfo> {
         let mut req = __internal_request::Request::new(
             Method::PUT,
             "/transaction/cosignature".to_string(),
@@ -361,7 +361,7 @@ impl<C: Connect> TransactionRoutes<C> where
 //        req.execute(self.client).await
     }
 
-    pub async fn announce_partial_transaction(self, transaction_payload: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
+    pub async fn announce_partial(self, transaction_payload: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
         let mut req = __internal_request::Request::new(
             Method::PUT,
             "/transaction/partial".to_string(),

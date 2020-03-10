@@ -1,6 +1,8 @@
 use hyper::Client;
 
 use xpx_chain_sdk::sirius_client::SiriusClient;
+use xpx_chain_sdk::account::PublicAccount;
+use xpx_chain_sdk::network::PUBLIC_TEST;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 const PUBLIC_KEY_A: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
@@ -10,20 +12,33 @@ const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF33
 async fn main() {
     let client = SiriusClient::new(NODE_URL, Client::new());
 
-    let account_info = client.to_owned().account.get_account_info(PUBLIC_KEY_A).await;
+    let public_account = PublicAccount::from_public_key(PUBLIC_KEY_B, PUBLIC_TEST).unwrap();
 
-    match account_info {
-        Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
-    }
+//    let account_info = client.to_owned().account.account_info(PUBLIC_KEY_A).await;
+//
+//    match account_info {
+//        Ok(resp) => println!("{}", resp),
+//        Err(err) => eprintln!("{:?}", err),
+//    }
 
-    let accounts_info = client.account.get_accounts_info(
+    let accounts_info = client.clone().account.accounts_info(
         vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
 
     match accounts_info {
         Ok(tx) => {
             for info in tx {
                 println!("{}", info)
+            }
+        },
+        Err(err) => eprintln!("{:?}", err),
+    }
+
+    let accounts_transactions = client.account.incoming_transactions(
+        public_account, None, None, Some("id")).await;
+    match accounts_transactions {
+        Ok(tx) => {
+            for i in tx {
+                println!("{}", i)
             }
         },
         Err(err) => eprintln!("{:?}", err),

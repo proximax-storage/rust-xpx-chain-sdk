@@ -99,19 +99,39 @@ impl core::fmt::Display for Account {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Default, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub(crate) struct AccountsId<'a> {
+pub(crate) struct AccountsId {
     /// The array of addresses.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub addresses: Option<Vec<&'a str>>,
+    pub addresses: Option<Vec<String>>,
     /// The array of public keys.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub public_keys: Option<Vec<&'a str>>
+    pub public_keys: Option<Vec<String>>
 }
 
-impl<'a> AccountsId<'a> {
-    pub(crate) fn new(addresses: Option<Vec<&'a str>>, public_keys: Option<Vec<&'a str>>) -> Self {
-        AccountsId { addresses, public_keys }
+impl From<Vec<&str>> for AccountsId {
+    fn from(ids: Vec<&str>) -> Self {
+        let mut public_keys = vec![];
+        let mut addresses = vec![];
+
+        let mut accounts = AccountsId::default();
+
+        for (i, id) in ids.iter().enumerate() {
+            if is_hex(id) && id.len() == 64 {
+                public_keys.push(id.to_string());
+            } else {
+                addresses.push(id.to_string());
+            }
+
+            if i == ids.len() - 1 {
+                if !public_keys.is_empty() {
+                    accounts.public_keys = Some(public_keys.to_owned())
+                } else if !addresses.is_empty() {
+                    accounts.addresses = Some(addresses.to_owned())
+                }
+            }
+        };
+        accounts
     }
 }

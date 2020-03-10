@@ -8,6 +8,49 @@ use crate::models::{errors, transaction::EntityTypeEnum as Entity, utils::is_hex
 use crate::models::transaction::TransactionDto;
 use crate::Result;
 
+static TRANSACTION_ORDER_ASC: &str = "id";
+
+static TRANSACTION_ORDER_DESC: &str = "-id";
+
+pub(super) struct AccountTransactionsOption {
+    pub page_size: Option<i32>,
+    pub id: Option<String>,
+    pub ordering: Option<String>
+}
+
+impl AccountTransactionsOption {
+    pub fn new(page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> crate::Result<Self> {
+        if ordering.is_some() {
+            ensure!(
+                    ordering.unwrap() == TRANSACTION_ORDER_ASC ||
+                    ordering.unwrap() == TRANSACTION_ORDER_DESC,
+                    "Invalid value { } ordering", ordering.unwrap()
+            );
+        }
+
+        Ok(Self {
+            page_size,
+            id: match id {
+                Some(i) => Some(i.to_string()),
+                _ => None
+            },
+            ordering: match ordering {
+                Some(i) => Some(i.to_string()),
+                _ => None
+            }
+        })
+    }
+}
+
+pub(super) fn valid_account_id(id: &str) -> Result<bool> {
+    ensure!(
+        !id.is_empty(),
+        errors::ERR_EMPTY_ADDRESSES_ID
+    );
+
+    Ok(true)
+}
+
 pub(super) fn valid_hash(hash: &str) -> Result<bool> {
     ensure!(
         !hash.is_empty(),
