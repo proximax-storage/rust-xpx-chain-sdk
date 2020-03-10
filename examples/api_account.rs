@@ -14,12 +14,12 @@ async fn main() {
 
     let public_account = PublicAccount::from_public_key(PUBLIC_KEY_B, PUBLIC_TEST).unwrap();
 
-//    let account_info = client.to_owned().account.account_info(PUBLIC_KEY_A).await;
-//
-//    match account_info {
-//        Ok(resp) => println!("{}", resp),
-//        Err(err) => eprintln!("{:?}", err),
-//    }
+    let account_info = client.to_owned().account.account_info(PUBLIC_KEY_A).await;
+
+    match account_info {
+        Ok(resp) => println!("{}", resp),
+        Err(err) => eprintln!("{:?}", err),
+    }
 
     let accounts_info = client.clone().account.accounts_info(
         vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
