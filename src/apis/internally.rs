@@ -12,7 +12,7 @@ static TRANSACTION_ORDER_ASC: &str = "id";
 
 static TRANSACTION_ORDER_DESC: &str = "-id";
 
-pub(super) struct AccountTransactionsOption {
+pub(crate) struct AccountTransactionsOption {
     pub page_size: Option<i32>,
     pub id: Option<String>,
     pub ordering: Option<String>
@@ -42,7 +42,7 @@ impl AccountTransactionsOption {
     }
 }
 
-pub(super) fn valid_account_id(id: &str) -> Result<bool> {
+pub(crate) fn valid_account_id(id: &str) -> Result<bool> {
     ensure!(
         !id.is_empty(),
         errors::ERR_EMPTY_ADDRESSES_ID
@@ -51,7 +51,7 @@ pub(super) fn valid_account_id(id: &str) -> Result<bool> {
     Ok(true)
 }
 
-pub(super) fn valid_hash(hash: &str) -> Result<bool> {
+pub(crate) fn valid_hash(hash: &str) -> Result<bool> {
     ensure!(
         !hash.is_empty(),
         errors::ERR_INVALID_HASH_HEX
@@ -67,7 +67,7 @@ pub(super) fn valid_hash(hash: &str) -> Result<bool> {
     Ok(true)
 }
 
-pub(super) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()> where T: Debug
+pub(crate) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()> where T: Debug
 {
     ensure!(
         !vector.is_empty(),
@@ -76,14 +76,14 @@ pub(super) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()> where T
     Ok(())
 }
 
-pub(super) fn valid_vec_hash(vector: &Vec<&str>) -> Result<()> {
+pub(crate) fn valid_vec_hash(vector: &Vec<&str>) -> Result<()> {
     for hash in vector {
         valid_hash(hash)?;
     }
     Ok(())
 }
 
-pub(super) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
+pub(crate) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
     let value_dto_vec: Value = serde_json::from_slice(&body)?;
 
     let mut value_dto_vec_str: String = "".to_string();
@@ -112,7 +112,7 @@ pub(super) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
     Ok(value_dto_vec_str)
 }
 
-pub(super) fn map_transaction_dto(body: Bytes) -> Result<String> {
+pub(crate) fn map_transaction_dto(body: Bytes) -> Result<String> {
     let value_dto: Value = serde_json::from_slice(&body)?;
 
     let entity_type = Entity::from(

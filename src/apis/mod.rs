@@ -12,5 +12,4 @@ mod transaction_routes_api;
 pub mod sirius_client;
 pub mod internally;
 
-
 type Result<T> = std::result::Result<T, Error<serde_json::Value>>;

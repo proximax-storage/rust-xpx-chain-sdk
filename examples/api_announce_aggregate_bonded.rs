@@ -3,7 +3,7 @@
 
 use hyper::Client;
 
-use xpx_chain_sdk::account::{Account, Address};
+use xpx_chain_sdk::account::{Account, PublicAccount};
 use xpx_chain_sdk::message::PlainMessage;
 use xpx_chain_sdk::mosaic::Mosaic;
 use xpx_chain_sdk::network::PUBLIC_TEST;
@@ -13,6 +13,7 @@ use xpx_chain_sdk::transaction::{Deadline, TransferTransaction, AggregateTransac
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
 const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
+const PUBLIC_KEY: &str = "CC2A4AFB1985C90DAF1FBC2B3BA8DB606ACF95FF6683A81C516132B3080FDA0D";
 
 #[tokio::main]
 async fn main() {
@@ -30,41 +31,42 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
-    let transfer_transaction_a = TransferTransaction::new(
+    let public_account = PublicAccount::from_public_key(PUBLIC_KEY, network_type).unwrap();
+
+    let ttx_one = TransferTransaction::new(
         deadline,
-        Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap(),
+        account.public_account.address.clone(),
         vec![Mosaic::xpx(15)],
         PlainMessage::new("Transfer A From ProximaX Rust SDK"),
         network_type,
     );
-    let mut transfer_a = match transfer_transaction_a {
+    let mut transfer_one = match ttx_one {
         Ok(t) => t,
         Err(err) => panic!("{}", err)
     };
-    transfer_a.to_aggregate(account.public_account.clone());
+    transfer_one.to_aggregate(public_account.clone());
 
-    let transfer_transaction_b = TransferTransaction::new(
+    let ttx_two = TransferTransaction::new(
         deadline,
-        Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap(),
+        public_account.address,
         vec![Mosaic::xpx(15)],
         PlainMessage::new("Transfer B From ProximaX Rust SDK"),
         network_type,
     );
-
-    let mut transfer_b = match transfer_transaction_b {
+    let mut transfer_two = match ttx_two {
         Ok(t) => t,
         Err(err) => panic!("{}", err)
     };
-    transfer_b.to_aggregate(account.public_account.clone());
+    transfer_two.to_aggregate(account.public_account.clone());
 
-    let aggregate_complete = AggregateTransaction::new_complete(
+    let aggregate_bonded = AggregateTransaction::new_bonded(
         deadline,
-        vec![Box::new(transfer_a), Box::new(transfer_b)],
+        vec![Box::new(transfer_one), Box::new(transfer_two)],
         network_type
     );
 
     let sig_transaction = account.sign(
-        aggregate_complete.unwrap(), &generation_hash);
+        aggregate_bonded.unwrap(), &generation_hash);
 
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,

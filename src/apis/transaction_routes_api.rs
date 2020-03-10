@@ -349,6 +349,17 @@ impl<C: Connect> TransactionRoutes<C> where
         req.execute(self.client).await
     }
 
+    pub async fn announce_partial(self, signed_transaction: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
+        let mut req = __internal_request::Request::new(
+            Method::PUT,
+            "/transaction/partial".to_string(),
+        );
+
+        req = req.with_body_param(signed_transaction);
+
+        req.execute(self.client).await
+    }
+
     pub async fn announce_cosignature(self, cosignature: String) -> Result<AnnounceTransactionInfo> {
         let mut req = __internal_request::Request::new(
             Method::PUT,
@@ -359,17 +370,6 @@ impl<C: Connect> TransactionRoutes<C> where
         unimplemented!()
 
 //        req.execute(self.client).await
-    }
-
-    pub async fn announce_partial(self, transaction_payload: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
-        let mut req = __internal_request::Request::new(
-            Method::PUT,
-            "/transaction/partial".to_string(),
-        );
-
-        req = req.with_body_param(transaction_payload);
-
-        req.execute(self.client).await
     }
 }
 

@@ -9,6 +9,7 @@ use crate::models::{
     account::{AccountInfo, AccountInfoDto, AccountsId},
     errors::ERR_EMPTY_ADDRESSES_IDS,
 };
+
 use crate::models::account::PublicAccount;
 use crate::models::transaction::{Transaction, TransactionDto};
 
