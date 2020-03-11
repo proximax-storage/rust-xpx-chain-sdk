@@ -266,7 +266,7 @@ impl<C: Connect> TransactionRoutes<C> where
     ///
     /// # Inputs
     ///
-    /// * `transaction_signed` =    An [SignedTransaction].
+    /// * `transaction_signed` =    An [signed_transaction].
     ///
     /// # Example
     ///

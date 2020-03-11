@@ -5,7 +5,7 @@ use crate::models::{
     network::extract_network_type,
     uint_64::Uint64Dto,
 };
-use crate::models::transaction::TransactionInfo;
+use crate::models::transaction::{LockFundsTransaction, SignedTransaction, TransactionInfo};
 
 use super::{
     AbstractTransaction, deadline::{
@@ -14,6 +14,22 @@ use super::{
     TransactionStatus,
     TransferTransaction,
 };
+use crate::models::mosaic::MosaicId;
+
+/// HashAlgorithmEnum : The hash algorithm used to hash te proof: * 0 (Op_Sha3_256)  - The proof is hashed using sha3 256. * 1 (Op_Keccak_256)  - The proof is hashed using Keccak (ETH compatibility). * 2 (Op_Hash_160)  - The proof is hashed twice: first with Sha-256 and then with RIPEMD-160 (bitcoin’s OP_HASH160). * 3 (Op_Hash_256)  - The proof is hashed twice with Sha-256 (bitcoin’s OP_HASH256).
+/// The hash algorithm used to hash te proof: * 0 (Op_Sha3_256)  - The proof is hashed using sha3 256. * 1 (Op_Keccak_256)  - The proof is hashed using Keccak (ETH compatibility). * 2 (Op_Hash_160)  - The proof is hashed twice: first with Sha-256 and then with RIPEMD-160 (bitcoin’s OP_HASH160). * 3 (Op_Hash_256)  - The proof is hashed twice with Sha-256 (bitcoin’s OP_HASH256).
+#[derive(Serialize, Deserialize)]
+pub enum HashAlgorithmEnum {
+    #[serde(rename = "0")]
+    _0,
+    #[serde(rename = "1")]
+    _1,
+    #[serde(rename = "2")]
+    _2,
+    #[serde(rename = "3")]
+    _3,
+
+}
 
 #[typetag::serde]
 pub(crate) trait TransactionDto {
@@ -63,14 +79,14 @@ impl AbstractTransactionDto {
             &dto.signer, network_type)?;
 
         let mut deadline = None;
-        if let Some(item) = &dto.deadline{
+        if let Some(item) = &dto.deadline {
             let timestamp = BlockchainTimestamp::new(
                 item.to_struct().0 as i64);
             deadline = Some(Deadline::from(timestamp))
         }
 
         let mut max_fee = None;
-        if let Some(item) = &dto.max_fee{
+        if let Some(item) = &dto.max_fee {
             max_fee = Some(item.to_struct());
         }
 
@@ -244,3 +260,57 @@ pub(crate) struct TransferTransactionDto {
     pub message: MessageDto,
 }
 
+/// HashLockTransactionDto :
+/// Transaction to lock funds before sending an aggregate bonded transaction.
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct HashLockTransactionDto {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signature: Option<String>,
+    pub signer: String,
+    pub version: i32,
+    #[serde(rename = "type")]
+    pub _type: u16,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_fee: Option<Uint64Dto>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deadline: Option<Uint64Dto>,
+    pub mosaic_id: Uint64Dto,
+    pub amount: Uint64Dto,
+    pub duration: Uint64Dto,
+    pub hash: String,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct HashLockTransactionInfoDto {
+    pub meta: TransactionMetaDto,
+    pub transaction: HashLockTransactionDto,
+}
+
+#[typetag::serde]
+impl TransactionDto for HashLockTransactionInfoDto {
+    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
+        let dto = self.transaction.clone();
+        let info = self.meta.to_struct();
+
+        let abs = AbstractTransactionDto::new(
+            dto.signature, dto.signer, dto.version, dto._type, dto.max_fee, dto.deadline,
+        ).to_struct(info)?;
+
+        let mosaic = Mosaic::new(
+            MosaicId::from(dto.mosaic_id.to_struct()), dto.amount.to_struct()
+        );
+
+        Ok(Box::new(LockFundsTransaction {
+            abs_transaction: abs,
+            mosaic,
+            duration: dto.duration.to_struct(),
+            signed_transaction: SignedTransaction {
+                entity_type: EntityTypeEnum::AggregateBonded,
+                payload: None,
+                hash: dto.hash.to_string()
+            }
+        }))
+    }
+}

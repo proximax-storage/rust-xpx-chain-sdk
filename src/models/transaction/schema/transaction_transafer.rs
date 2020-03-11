@@ -16,8 +16,8 @@ pub fn transfer_transaction_schema() -> Schema {
 
     let mut transfer_schema_definition: Vec<Box<dyn SchemaAttribute>> = vec![
         Box::new(ArrayAttribute::new("recipient", SIZEOF_BYTE)),
-        Box::new(ScalarAttribute::new("messageSize", SIZEOF_SHORT)),
-        Box::new(ScalarAttribute::new("numMosaics", SIZEOF_BYTE)),
+        Box::new(ScalarAttribute::new("message_size", SIZEOF_SHORT)),
+        Box::new(ScalarAttribute::new("num_mosaics", SIZEOF_BYTE)),
         Box::new(TableAttribute::new(
             "message",
             vec![

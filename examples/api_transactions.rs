@@ -35,7 +35,7 @@ async fn main() {
     }
 
     let transaction = client.clone().transaction.get_transaction(
-        "11E02159CEFD13AF6518BD9989CED74D2D94B741C85790B3AEC4F072DA10623D").await;
+        "78AB5720985CEEABE54B7608E84BE688B163D2BD70A23E909C929608DC7B8D9E").await;
     match transaction {
         Ok(tx) => println!("{}", tx),
         Err(err) => eprintln!("{:?}", err),

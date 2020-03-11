@@ -11,6 +11,7 @@ pub use self::transaction_mosaic_definition::*;
 pub use self::transaction_mosaic_supply_change::*;
 pub use self::transaction_register_namespace::*;
 pub use self::transaction_transafer::*;
+pub use self::transaction_hash_lock::*;
 
 mod schema;
 mod constants;
@@ -27,6 +28,8 @@ mod transaction_mosaic_supply_change;
 mod transaction_register_namespace;
 mod transaction_modify_multisig_account;
 mod transaction_aggregate;
+mod transaction_hash_lock;
+
 
 
 

@@ -41,7 +41,7 @@ pub trait Transaction: Downcast + Sync + erased_serde::Serialize
     fn has_missing_signatures(&self) -> bool;
 
     /// Serialize and sign 'Transaction' with the given 'Account' and network generationHash and
-    /// create a new SignedTransaction.
+    /// create a new signed_transaction.
     fn sign_transaction_with(self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
 
     fn entity_type(&self) -> EntityTypeEnum;

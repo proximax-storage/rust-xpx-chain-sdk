@@ -3,12 +3,12 @@
 
 use hyper::Client;
 
-use xpx_chain_sdk::account::{Account, Address};
-use xpx_chain_sdk::message::PlainMessage;
+use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::mosaic::Mosaic;
 use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::sirius_client::SiriusClient;
-use xpx_chain_sdk::transaction::{Deadline, TransferTransaction};
+use xpx_chain_sdk::transaction::{Deadline, EntityTypeEnum, LockFundsTransaction, SignedTransaction};
+use xpx_chain_sdk::Uint64;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
@@ -16,7 +16,6 @@ const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB
 
 #[tokio::main]
 async fn main() {
-
     let client = SiriusClient::new(NODE_URL, Client::new());
 
     let generation_hash = client.generation_hash().await;
@@ -30,24 +29,24 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
-    let recipient = Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap();
-
-    let message = PlainMessage::new("Transfer From ProximaX Rust SDK");
-
-    let transfer_transaction = TransferTransaction::new(
+    let lock_transaction = LockFundsTransaction::new(
         deadline,
-        recipient,
-        vec![Mosaic::xpx(11)],
-        message,
+        Mosaic::xpx_relative(10),
+        Uint64::new(100),
+        SignedTransaction {
+            entity_type: EntityTypeEnum::AggregateBonded,
+            payload: None,
+            hash: "1731245d3bd7af58e065a6971e75845cc4a4cc5f102629c84f0dade6b2a8d56f".to_string()
+        },
         network_type,
     );
 
-    if let Err(err) = &transfer_transaction {
+    if let Err(err) = &lock_transaction {
         panic!("{}", err)
     }
 
     let sig_transaction = account.sign(
-        transfer_transaction.unwrap(), &generation_hash);
+        lock_transaction.unwrap(), &generation_hash);
 
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,

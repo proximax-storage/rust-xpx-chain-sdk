@@ -72,6 +72,7 @@ async fn main() {
         Ok(sig) => sig,
         Err(err) => panic!("{}", err),
     };
+    println!("Hash: \t\t{}", sig_tx);
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
     println!("Hash: \t\t{}", &sig_tx.hash.to_uppercase());

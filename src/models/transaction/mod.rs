@@ -1,6 +1,8 @@
 pub use self::deadline::*;
 pub use self::signed_transaction::*;
 pub use self::transaction_dto::*;
+pub use self::transaction_hash_lock::*;
+
 pub use self::transaction_hashes::*;
 pub use self::transaction_ids::*;
 pub use self::transaction_info::*;
@@ -19,6 +21,7 @@ mod deadline;
 mod internal;
 mod signed_transaction;
 mod transaction_dto;
+mod transaction_hash_lock;
 mod aggregate_transaction_dto;
 mod transaction_transfer;
 mod transaction_aggregate;

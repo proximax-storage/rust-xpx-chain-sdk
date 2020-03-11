@@ -12,7 +12,7 @@ pub fn aggregate_transaction_schema() -> Schema {
     let mut schema_definition = schema_common_definition();
 
     let mut aggregate: Vec<Box<dyn SchemaAttribute>> = vec![
-        Box::new(ScalarAttribute::new("transactionsSize", SIZEOF_INT)),
+        Box::new(ScalarAttribute::new("transactions_size", SIZEOF_INT)),
         Box::new(ArrayAttribute::new("transactions", SIZEOF_BYTE)),
     ];
 

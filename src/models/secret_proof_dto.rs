@@ -1,5 +1,5 @@
-use crate::models::hash_lock_dto::HashAlgorithmEnum;
 use crate::models::uint_64::Uint64Dto;
+use crate::models::transaction::HashAlgorithmEnum;
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct SecretProofTransactionBodyDto {

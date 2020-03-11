@@ -38,7 +38,7 @@ table RemoveExchangeOfferTransactionBuffer {
 
 table AddExchangeOfferBuffer {
     mosaic_id:[uint];
-    mosaicAmount:[uint];
+    mosaic_amount:[uint];
     cost:[uint];
     type:ubyte;
     duration:[uint];
@@ -46,7 +46,7 @@ table AddExchangeOfferBuffer {
 
 table ExchangeOfferBuffer {
     mosaic_id:[uint];
-    mosaicAmount:[uint];
+    mosaic_amount:[uint];
     cost:[uint];
     type:ubyte;
     owner:[ubyte];

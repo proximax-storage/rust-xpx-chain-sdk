@@ -9,7 +9,7 @@ table LockFundsTransactionBuffer {
     max_fee: [uint];
     deadline:[uint];
     mosaic_id:[uint];
-    mosaicAmount:[uint];
+    mosaic_amount:[uint];
     duration:[uint];
     hash:[ubyte];
 }

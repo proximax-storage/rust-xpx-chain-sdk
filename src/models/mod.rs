@@ -20,7 +20,6 @@ mod consts;
 mod contract;
 mod exchange;
 mod field_dto;
-mod hash_lock_dto;
 mod id_model;
 mod merkle_dto;
 mod merkle_model;

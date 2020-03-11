@@ -18,19 +18,6 @@ pub(crate) struct BalanceChangeReceiptDto {
     pub amount: Uint64Dto,
 }
 
-impl BalanceChangeReceiptDto {
-    /// The invisible state change changed an account balance.
-    pub fn new(version: i32, _type: ReceiptTypeEnum, account: String, mosaic_id: Uint64Dto, amount: Uint64Dto) -> Self {
-        BalanceChangeReceiptDto {
-            version,
-            _type,
-            account,
-            mosaic_id,
-            amount,
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 pub(crate) struct BalanceChangeReceiptDtoAllOf {
     /// The target account public key.
@@ -85,15 +72,4 @@ pub(crate) struct BalanceTransferReceiptDtoAllOf {
     pub mosaic_id: Uint64Dto,
     #[serde(rename = "amount")]
     pub amount: Uint64Dto,
-}
-
-impl BalanceTransferReceiptDtoAllOf {
-    pub fn new(sender: String, recipient: String, mosaic_id: Uint64Dto, amount: Uint64Dto) -> BalanceTransferReceiptDtoAllOf {
-        BalanceTransferReceiptDtoAllOf {
-            sender,
-            recipient,
-            mosaic_id,
-            amount,
-        }
-    }
 }

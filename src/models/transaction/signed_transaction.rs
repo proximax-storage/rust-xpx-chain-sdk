@@ -8,7 +8,8 @@ pub struct SignedTransaction {
     pub entity_type: EntityTypeEnum,
 
     /// The serialized transaction data.
-    pub payload: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payload: Option<String>,
 
     /// The transaction hash.
     pub hash: String,
@@ -17,10 +18,14 @@ pub struct SignedTransaction {
 impl SignedTransaction {
     pub(crate) fn new(entity_type: EntityTypeEnum, payload: String, hash: String) -> Self {
         SignedTransaction {
-            payload,
+            payload: Some(payload),
             hash,
             entity_type,
         }
+    }
+
+    pub fn hash_to_bytes(&self) -> Vec<u8> {
+        hex::decode(&self.hash ).unwrap()
     }
 }
 

@@ -32,7 +32,7 @@ impl<C: Connect> MosaicRoutes<C> where
 
     /// Get [Mosaic] information.
     ///
-    /// Gets the mosaic definition for a given mosaicId.
+    /// Gets the mosaic definition for a given mosaic_id.
     ///
     /// # Inputs
     ///

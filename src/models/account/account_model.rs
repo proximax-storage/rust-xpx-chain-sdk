@@ -79,7 +79,7 @@ impl Account {
         todo!();
     }
 
-    /// Sign transaction with cosignatories creating a new SignedTransaction.
+    /// Sign transaction with cosignatories creating a new signed_transaction.
     pub fn sign_transaction_with_cosignatories(&self) {
         todo!();
     }
