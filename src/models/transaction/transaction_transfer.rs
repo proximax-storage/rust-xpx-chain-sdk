@@ -137,7 +137,7 @@ impl Transaction for TransferTransaction {
         let payload_vec = _builder.create_vector_direct(self.message.payload_to_bytes());
 
         let mut message_buffer = buffers::MessageBufferBuilder::new(&mut _builder);
-        message_buffer.add_type_(self.message.message_type().get_value());
+        message_buffer.add_type_(self.message.message_type().value());
         message_buffer.add_payload(payload_vec);
         let message_vec = message_buffer.finish();
 

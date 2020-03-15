@@ -1,14 +1,43 @@
-use crate::models::{Uint64, uint_64::Uint64Dto};
+use crate::models::uint_64::Uint64Dto;
+use crate::models::namespace::NamespaceAlias;
+use crate::models::account::Address;
+use crate::models::mosaic::MosaicId;
+
+// AliasType enums
+const NONE_ALIAS_TYPE: u16 = 0;
+const MOSAIC_ALIAS_TYPE: u16 = 1;
+const ADDRESS_ALIAS_TYPE: u16 = 2;
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub(crate) struct AliasDto {
     #[serde(rename = "type")]
     pub _type: u16,
-    #[serde(rename = "mosaic_id", skip_serializing_if = "Option::is_none")]
-    pub mosaic_id: Option<Uint64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mosaic_id: Option<Uint64Dto>,
     /// The aliased address in hexadecimal.
-    #[serde(rename = "address", skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
+}
+
+impl AliasDto {
+    pub fn to_struct(&self)-> crate::Result<NamespaceAlias> {
+
+        let mut alias = NamespaceAlias::default();
+        alias.type_ = self._type as u8;
+
+        if let Some(a) = &self.address {
+                let address = Address::from_encoded(a)?;
+                alias.address = Some(address)
+        };
+
+        if let Some(m) = &self.mosaic_id {
+            let mosaic_id = MosaicId::from(m.to_struct());
+            alias.mosaic_id = Some(mosaic_id)
+        }
+
+        Ok(alias)
+    }
 }
 
 #[derive(Serialize, Deserialize)]

@@ -9,11 +9,11 @@ pub const SIZEOF_SHORT: usize = size_of::<u16>();
 /// The number of bytes in an `int`.
 pub const SIZEOF_INT: usize = size_of::<u32>();
 
-/// The number of bytes in an `float`.
-pub const SIZEOF_FLOAT: usize = size_of::<f32>();
+///// The number of bytes in an `float`.
+//pub const SIZEOF_FLOAT: usize = size_of::<f32>();
 
-/// The number of bytes in an `long`.
-pub const SIZEOF_LONG: usize = size_of::<u64>();
+///// The number of bytes in an `long`.
+//pub const SIZEOF_LONG: usize = size_of::<u64>();
 
 ///// The number of bytes in an `double`.
 //pub const SIZEOF_DOUBLE: usize = size_of::<f64>();

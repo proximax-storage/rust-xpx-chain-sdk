@@ -22,3 +22,14 @@ pub enum AccountLinkTypeEnum {
     #[serde(rename = "3")]
     _3,
 }
+
+impl AccountLinkTypeEnum {
+    pub fn new(value: u8) -> Self {
+        match value {
+            1 => AccountLinkTypeEnum::_1,
+            2 => AccountLinkTypeEnum::_2,
+            3 => AccountLinkTypeEnum::_3,
+            _ => AccountLinkTypeEnum::_0
+        }
+    }
+}

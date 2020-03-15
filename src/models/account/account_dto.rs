@@ -34,7 +34,7 @@ impl AccountInfoDto {
     pub(crate) fn to_struct(&self) -> Result<AccountInfo> {
         let dto = &self.account;
         let add = Address::from_encoded(&dto.clone().address)?;
-        let acc_type = AccountLinkTypeEnum::nem(dto.clone().account_type);
+        let acc_type = AccountLinkTypeEnum::new(dto.clone().account_type);
         let mut mosaics: Vec<Mosaic> = Vec::with_capacity(dto.clone().mosaics.len());
         for i in dto.clone().mosaics {
             let mosaic = i;
