@@ -1,3 +1,11 @@
+use std::fmt;
+
+use crate::models::account::{Address, PublicAccount};
+use crate::models::alias::AliasType;
+use crate::models::mosaic::MosaicId;
+use crate::models::namespace::NamespaceId;
+use crate::models::transaction::Height;
+
 /// NamespaceTypeEnum :
 /// The namespace type:
 /// * 0 -  Root namespace.
@@ -12,5 +20,40 @@ impl From<u8> for NamespaceType {
             1 => NamespaceType::Sub,
             _ => NamespaceType::Root
         }
+    }
+}
+
+// NamespaceAlias contains aliased mosaicId or address and type of alias
+#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NamespaceAlias {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mosaic_id: Option<MosaicId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<Address>,
+    pub type_: u8
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NamespaceInfo {
+    pub namespace_id: NamespaceId,
+    pub active: bool,
+    pub type_space: NamespaceType,
+    pub depth: u8,
+    pub levels: Vec<NamespaceId>,
+    pub alias: NamespaceAlias,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parent: Option<Box<NamespaceInfo>>,
+    pub owner: PublicAccount,
+    pub start_height: Height,
+    pub end_height: Height,
+}
+
+impl fmt::Display for NamespaceInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+               serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
     }
 }

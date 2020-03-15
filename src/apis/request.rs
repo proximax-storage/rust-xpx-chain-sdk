@@ -20,6 +20,7 @@ use crate::apis::{
     sirius_client::ApiClient,
 };
 
+#[derive(Clone)]
 pub(crate) struct Request {
     method: hyper::Method,
     path: String,

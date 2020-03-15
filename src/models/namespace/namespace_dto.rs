@@ -1,6 +1,15 @@
+use std::future::Future;
+
+use hyper::client::connect::Connect;
+
+use crate::apis::namespace_routes_api::NamespaceRoutes;
+use crate::models::account::PublicAccount;
+use crate::models::errors;
 use crate::models::field_dto::FieldDto;
+use crate::models::id_model::Id;
 use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
-use super::{NamespaceId, NamespaceType};
+use crate::models::namespace::NamespaceInfo;
+use crate::models::network::NetworkType;
 use crate::models::transaction::{
     AbstractTransactionDto,
     RegisterNamespaceTransaction,
@@ -8,34 +17,57 @@ use crate::models::transaction::{
     TransactionMetaDto
 };
 use crate::models::uint_64::Uint64Dto;
+use crate::Uint64;
+
+use super::{NamespaceId, NamespaceType};
+
+type NamespaceIdDto = Option<Uint64Dto>;
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceDto {
     /// The public key of the owner of the namespace.
-    #[serde(rename = "owner")]
     pub owner: String,
     /// The address of the owner of the namespace in hexadecimal.
-    #[serde(rename = "ownerAddress")]
     pub owner_address: String,
-    #[serde(rename = "startHeight")]
     pub start_height: Uint64Dto,
-    #[serde(rename = "endHeight")]
     pub end_height: Uint64Dto,
-    /// The level of the namespace.
     #[serde(rename = "depth")]
-    pub depth: i32,
-    #[serde(rename = "level0")]
-    pub level0: Uint64Dto,
-    #[serde(rename = "level1", skip_serializing_if = "Option::is_none")]
-    pub level1: Option<Uint64Dto>,
-    #[serde(rename = "level2", skip_serializing_if = "Option::is_none")]
-    pub level2: Option<Uint64Dto>,
+    pub depth: u8,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub level0: NamespaceIdDto,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub level1: NamespaceIdDto,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub level2: NamespaceIdDto,
     #[serde(rename = "type")]
     pub _type: u8,
-    #[serde(rename = "alias")]
     pub alias: crate::models::alias::AliasDto,
-    #[serde(rename = "parentId")]
     pub parent_id: Uint64Dto,
+}
+
+impl NamespaceDto {
+    fn extract_levels(&self) -> crate::Result<Vec<NamespaceId>> {
+        let mut levels: Vec<NamespaceId> = Vec::new();
+
+        let mut extract_level = |level: NamespaceIdDto| {
+            if let Some(l) = level {
+                let nemsapce_id = NamespaceId::from(l.to_struct());
+                levels.push(nemsapce_id)
+            }
+        };
+
+        extract_level(self.level0.to_owned());
+        extract_level(self.level1.to_owned());
+        extract_level(self.level2.to_owned());
+
+        ensure!(
+            !levels.is_empty(),
+            errors::ERR_NULL_NAMESPACE_ID
+         );
+
+        Ok(levels)
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -48,9 +80,53 @@ pub(crate) struct NamespaceIds {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceInfoDto {
     #[serde(rename = "meta")]
-    pub meta: crate::models::namespace::NamespaceMetaDto,
+    pub meta: NamespaceMetaDto,
     #[serde(rename = "namespace")]
-    pub namespace: crate::models::namespace::NamespaceDto,
+    pub namespace: NamespaceDto,
+}
+
+impl NamespaceInfoDto {
+    pub fn to_struct(&self) -> crate::Result<NamespaceInfo>
+    {
+        let public_account = PublicAccount::from_public_key(
+            &self.namespace.owner, NetworkType::from(self.namespace._type))?;
+
+        let parent_id = NamespaceId::from(self.namespace.parent_id.to_struct());
+
+        let levels = self.namespace.extract_levels()?;
+
+        let alias = self.namespace.alias.to_struct()?;
+
+        let mut namespace = NamespaceInfo {
+            namespace_id: levels[levels.len() - 1],
+            active: self.meta.active,
+            type_space: NamespaceType::from(self.namespace._type),
+            depth: self.namespace.depth,
+            levels,
+            alias,
+            parent: None,
+            owner: public_account,
+            start_height: self.namespace.start_height.to_struct(),
+            end_height: self.namespace.end_height.to_struct()
+        };
+
+        if parent_id.to_id() != Uint64::default() {
+            let mut parent = NamespaceInfo {
+                namespace_id: parent_id,
+                active: false,
+                type_space: NamespaceType::Root,
+                depth: 1,
+                levels: Default::default(),
+                alias: Default::default(),
+                parent: None,
+                owner: Default::default(),
+                start_height: Default::default(),
+                end_height: Default::default()
+            };
+            namespace.parent = Some(Box::new(parent));
+        }
+        Ok(namespace)
+    }
 }
 
 #[derive(Serialize, Deserialize)]

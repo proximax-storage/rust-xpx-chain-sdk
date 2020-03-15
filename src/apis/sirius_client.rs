@@ -13,6 +13,7 @@ use super::{
     mosaic_routes_api::MosaicRoutes,
     node_routes_api::NodeRoutes,
     transaction_routes_api::TransactionRoutes,
+    namespace_routes_api::NamespaceRoutes
 };
 
 #[derive(Clone)]
@@ -23,6 +24,7 @@ pub struct SiriusClient<C: Connect> {
     pub chain: Box<ChainRoutes<C>>,
     pub node: Box<NodeRoutes<C>>,
     pub mosaic: Box<MosaicRoutes<C>>,
+    pub namespace: Box<NamespaceRoutes<C>>,
     pub transaction: Box<TransactionRoutes<C>>,
 }
 
@@ -42,6 +44,7 @@ impl<C: Connect> SiriusClient<C> where
             chain: Box::new(ChainRoutes::new(rc.clone())),
             node: Box::new(NodeRoutes::new(rc.clone())),
             mosaic: Box::new(MosaicRoutes::new(rc.clone())),
+            namespace: Box::new(NamespaceRoutes::new(rc.clone())),
             transaction: Box::new(TransactionRoutes::new(rc.clone())),
         })
     }

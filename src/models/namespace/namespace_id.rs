@@ -4,8 +4,9 @@ use serde::{Serialize, Serializer};
 
 use crate::models::{errors, Uint64};
 use crate::models::id_model::Id;
-use super::{generate_namespace_path, NAMESPACE_BIT};
 use crate::models::utils::has_bits;
+
+use super::{generate_namespace_path, NAMESPACE_BIT};
 
 /// The `MosaicId` id structure describes mosaic id.
 #[derive(Default, Debug, Clone, PartialEq, Deserialize, Copy)]
