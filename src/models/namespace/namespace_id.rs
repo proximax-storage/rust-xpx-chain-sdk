@@ -91,3 +91,9 @@ impl From<Uint64> for NamespaceId {
         return NamespaceId(e);
     }
 }
+
+impl From<&str> for NamespaceId {
+    fn from(hex: &str) -> Self {
+        return NamespaceId::from(Uint64::from_hex(hex).unwrap());
+    }
+}

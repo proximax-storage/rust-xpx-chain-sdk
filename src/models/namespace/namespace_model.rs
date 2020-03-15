@@ -5,6 +5,7 @@ use crate::models::alias::AliasType;
 use crate::models::mosaic::MosaicId;
 use crate::models::namespace::NamespaceId;
 use crate::models::transaction::Height;
+use crate::Uint64;
 
 /// NamespaceTypeEnum :
 /// The namespace type:
@@ -55,5 +56,39 @@ impl fmt::Display for NamespaceInfo {
         write!(f, "{}",
                serde_json::to_string_pretty(&self).unwrap_or_default()
         )
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NamespaceName {
+    #[serde(rename = "namespace_id")]
+    pub namespace_id: NamespaceId,
+    /// The full name of the namespace.
+    #[serde(rename = "name")]
+    pub name: String,
+}
+
+impl fmt::Display for NamespaceName {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+               serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
+    }
+}
+
+#[derive(Serialize, Default, Deserialize)]
+pub(crate) struct NamespaceIds {
+    /// The array of namespace identifiers.
+    #[serde(rename = "namespaceIds")]
+    pub namespace_ids: Vec<String>,
+}
+
+impl From<Vec<NamespaceId>> for NamespaceIds {
+    fn from(e: Vec<NamespaceId>) -> Self {
+        let mut ids = NamespaceIds::default();
+        for m in e {
+            ids.namespace_ids.push(m.to_string())
+        }
+        return ids;
     }
 }

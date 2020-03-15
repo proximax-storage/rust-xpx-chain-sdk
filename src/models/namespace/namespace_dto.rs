@@ -8,7 +8,7 @@ use crate::models::errors;
 use crate::models::field_dto::FieldDto;
 use crate::models::id_model::Id;
 use crate::models::metadata_dto::{MetadataModificationDto, MetadataTypeEnum};
-use crate::models::namespace::NamespaceInfo;
+use crate::models::namespace::{NamespaceInfo, NamespaceName};
 use crate::models::network::NetworkType;
 use crate::models::transaction::{
     AbstractTransactionDto,
@@ -68,13 +68,6 @@ impl NamespaceDto {
 
         Ok(levels)
     }
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) struct NamespaceIds {
-    /// The array of namespace identifiers.
-    #[serde(rename = "namespaceIds", skip_serializing_if = "Option::is_none")]
-    pub namespace_ids: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -184,11 +177,19 @@ pub(crate) struct NamespaceMetadataTransactionDto {
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceNameDto {
-    #[serde(rename = "namespace_id")]
+    #[serde(rename = "namespaceId")]
     pub namespace_id: Uint64Dto,
     /// The full name of the namespace.
     #[serde(rename = "name")]
     pub name: String,
+}
+
+impl NamespaceNameDto {
+    pub fn to_struct(&self) -> crate::Result<NamespaceName> {
+        Ok(NamespaceName{ namespace_id: NamespaceId::from(
+            self.namespace_id.to_struct()),
+            name: self.name.to_owned() })
+    }
 }
 
 #[derive(Serialize, Deserialize)]
