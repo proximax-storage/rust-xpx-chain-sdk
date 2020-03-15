@@ -1,11 +1,13 @@
 use crate::models::errors::ERR_UNKNOWN_TYPE;
 use crate::models::account::PublicAccount;
 
+use num_enum::IntoPrimitive;
+
 /// MultisigModificationTypeEnum :
 /// The type of the modification:
 /// * 0 - Add cosignatory.
 /// * 1 - Remove cosignatory.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, IntoPrimitive)]
 #[repr(u8)]
 pub enum MultisigModificationType {
     Add,
@@ -13,11 +15,8 @@ pub enum MultisigModificationType {
 }
 
 impl MultisigModificationType {
-    pub fn value(&self) -> u8 {
-        match self {
-            MultisigModificationType::Add => 0,
-            MultisigModificationType::Remove => 1,
-        }
+    pub fn value(self) -> u8 {
+        self.into()
     }
 }
 

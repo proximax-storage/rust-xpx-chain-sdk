@@ -135,15 +135,15 @@ impl AbstractTransaction {
         self.signer = signer
     }
 
-    pub fn generate_vector(&self, builder: &mut FlatBufferBuilder) -> HashMap<&str, fb::UOffsetT> {
+    pub(crate) fn generate_vector(&self, builder: &mut FlatBufferBuilder) -> HashMap<&str, fb::UOffsetT> {
         let mut data: HashMap<&str, fb::UOffsetT> = HashMap::new();
 
-        let max_fee = match self.max_fee{
+        let max_fee = match self.max_fee {
             Some(item) => item,
             _ => Uint64::default()
         };
 
-        let deadline = match self.deadline{
+        let deadline = match self.deadline {
             Some(item) => item,
             _ => Deadline::default()
         };
@@ -159,16 +159,6 @@ impl AbstractTransaction {
 
         return data;
     }
-//    pub fn build_vector(&self, builder: &mut FlatBufferBuilder, vector: &HashMap<&str, fb::UOffsetT>,
-//    ) {
-//        let mut transaction = buffers::TransferTransactionBufferBuilder::new(builder);
-//        transaction.add_signature(fb::WIPOffset::new(*vector.get("signatureV").unwrap()));
-//        transaction.add_signer(fb::WIPOffset::new(*vector.get("signerV").unwrap()));
-//        transaction.add_version(*vector.get("versionV").unwrap());
-//        transaction.add_type_(self.transaction_type.get_value());
-//        transaction.add_max_fee(fb::WIPOffset::new(*vector.get("feeV").unwrap()));
-//        transaction.add_deadline(fb::WIPOffset::new(*vector.get("deadlineV").unwrap()));
-//    }
 }
 
 impl core::fmt::Display for AbstractTransaction {

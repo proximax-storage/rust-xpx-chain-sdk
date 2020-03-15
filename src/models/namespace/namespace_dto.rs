@@ -63,16 +63,6 @@ pub(crate) struct NamespaceMetaDto {
     pub index: i32,
 }
 
-impl NamespaceMetaDto {
-    pub fn new(id: String, active: bool, index: i32) -> NamespaceMetaDto {
-        NamespaceMetaDto {
-            id,
-            active,
-            index,
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceMetadataDto {
     #[serde(rename = "metadataType")]

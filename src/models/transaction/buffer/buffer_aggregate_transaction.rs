@@ -2,12 +2,10 @@ extern crate flatbuffers;
 
 #[allow(unused_imports, dead_code)]
 pub mod aggregate {
-
     extern crate flatbuffers;
 
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-
         extern crate flatbuffers;
 
         pub enum AggregateTransactionBufferOffset {}

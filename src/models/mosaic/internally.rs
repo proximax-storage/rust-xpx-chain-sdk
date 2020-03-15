@@ -9,10 +9,6 @@ use crate::models::mosaic::{MosaicProperties, MosaicPropertyDto, SUPPLY_MUTABLE,
 
 use super::MosaicNonce;
 
-static GET_SUPPLY_MUTABLE: u8 = 0x01;
-
-static GET_TRANSFERABLE: u8 = 0x02;
-
 pub(crate) static XPX_DIVISIBILITY: u64 = 1000000;
 
 pub(crate) static XPX_MAX_VALUE: u64 = XPX_MAX_RELATIVE_VALUE * XPX_DIVISIBILITY;

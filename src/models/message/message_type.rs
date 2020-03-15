@@ -1,11 +1,5 @@
 use std::fmt;
 
-/// Plain text or unencrypted message.
-pub(crate) const PLAIN_MESSAGE: MessageType = MessageType::PlainMessageType; // 0
-
-/// Secured text or encrypted message.
-pub(crate) const ENCRYPTED_MESSAGE: MessageType = MessageType::SecureMessageType; // 1
-
 /// MessageType:
 /// The type of the message:
 /// * 0 - Plain text or unencrypted message.
@@ -13,8 +7,10 @@ pub(crate) const ENCRYPTED_MESSAGE: MessageType = MessageType::SecureMessageType
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Copy)]
 #[repr(u8)]
 pub enum MessageType {
+    /// Plain text or unencrypted message.
     #[serde(rename = "0")]
     PlainMessageType = 0x00,
+    /// Secured text or encrypted message.
     #[serde(rename = "1")]
     SecureMessageType = 0x01,
 }
@@ -31,7 +27,7 @@ impl MessageType {
         }
     }
 
-    pub fn get_value(&self) -> u8 {
+    pub fn value(&self) -> u8 {
         match &self {
             MessageType::PlainMessageType => 0x00,
             MessageType::SecureMessageType => 0x01,

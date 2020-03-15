@@ -7,11 +7,10 @@
 pub enum NamespaceType { Root, Sub }
 
 impl From<u8> for NamespaceType {
-    fn from(e: u8) -> Self {
-        let mut _type = NamespaceType::Root;
-        if e != 0 {
-            _type = NamespaceType::Sub;
+    fn from(num: u8) -> Self {
+        match num {
+            1 => NamespaceType::Sub,
+            _ => NamespaceType::Root
         }
-        _type
     }
 }

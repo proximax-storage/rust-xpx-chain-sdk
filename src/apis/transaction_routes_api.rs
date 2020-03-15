@@ -365,7 +365,7 @@ impl<C: Connect> TransactionRoutes<C> where
             Method::PUT,
             "/transaction/cosignature".to_string(),
         );
-        req = req.with_body_param(cosignature);
+        req.with_body_param(cosignature);
 
         unimplemented!()
 

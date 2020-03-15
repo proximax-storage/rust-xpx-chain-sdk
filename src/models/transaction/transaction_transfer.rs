@@ -11,6 +11,7 @@ use crate::{fb, models::{
     mosaic::Mosaic,
     network::NetworkType,
 }};
+use crate::models::transaction::AbsTransaction;
 
 use super::{
     AbstractTransaction,
@@ -27,7 +28,7 @@ use super::{
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransferTransaction {
-    pub abs_transaction: AbstractTransaction,
+    pub(crate) abs_transaction: AbstractTransaction,
     /// If the bit 0 of byte 0 is not set (like in 0x90), then it is a regular address.
     /// Else (e.g. 0x91) it represents a namespace id which starts at byte 1.
     pub recipient: Address,
@@ -73,34 +74,45 @@ impl TransferTransaction {
     pub fn to_aggregate(&mut self, signer: PublicAccount) {
         self.abs_transaction.to_aggregate(signer)
     }
+}
 
-    pub fn is_unconfirmed(&self) -> bool {
+impl AbsTransaction for TransferTransaction {
+    fn transaction_hash(&self) -> &str {
+        self.abs_transaction.get_hash()
+    }
+
+    fn has_missing_signatures(&self) -> bool {
+        self.abs_transaction.has_missing_signatures()
+    }
+
+    fn is_unconfirmed(&self) -> bool {
         self.abs_transaction.is_unconfirmed()
     }
 
-    pub fn is_confirmed(&self) -> bool {
+    fn is_confirmed(&self) -> bool {
         self.abs_transaction.is_confirmed()
-    }
-
-    pub fn has_missing_signatures(&self) -> bool {
-        self.abs_transaction.has_missing_signatures()
-    }
-}
-
-impl Transaction for TransferTransaction {
-    fn transaction_hash(&self) -> &str {
-        self.abs_transaction.get_hash()
     }
 
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
+}
 
+impl Transaction for TransferTransaction {
     fn size(&self) -> usize {
         TRANSFER_HEADER_SIZE + ((MOSAIC_ID_SIZE + AMOUNT_SIZE) * self.mosaics.len()) + self.message_size()
     }
 
-    fn generate_bytes<'a>(&self) -> Vec<u8> {
+    fn to_json(&self) -> Value {
+        serde_json::to_value(self).unwrap_or_default()
+    }
+
+    fn sign_transaction_with(self, account: Account, generation_hash: String)
+                             -> crate::Result<SignedTransaction> {
+        sign_transaction(self, account, generation_hash)
+    }
+
+    fn embedded_to_bytes<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
@@ -144,7 +156,7 @@ impl Transaction for TransferTransaction {
         txn_builder.add_signature(fb::WIPOffset::new(*abs_vector.get("signatureV").unwrap()));
         txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
         txn_builder.add_version(*abs_vector.get("versionV").unwrap());
-        txn_builder.add_type_(self.abs_transaction.transaction_type.get_value());
+        txn_builder.add_type_(self.abs_transaction.transaction_type.value());
         txn_builder.add_max_fee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
         txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
         txn_builder.add_recipient(recipient_vec);
@@ -154,28 +166,12 @@ impl Transaction for TransferTransaction {
         txn_builder.add_mosaics(fb::WIPOffset::new(*mosaic_vec));
 
         let t = txn_builder.finish();
+
         _builder.finish(t, None);
 
         let buf = _builder.finished_data();
 
         transfer_transaction_schema().serialize(&mut Vec::from(buf))
-    }
-
-    fn generate_embedded_bytes(&self) -> Vec<u8> {
-        unimplemented!()
-    }
-
-    fn to_json(&self) -> Value {
-        serde_json::to_value(self).unwrap_or_default()
-    }
-
-    fn has_missing_signatures(&self) -> bool {
-        unimplemented!()
-    }
-
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {

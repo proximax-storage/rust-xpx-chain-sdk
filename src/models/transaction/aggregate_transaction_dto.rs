@@ -1,9 +1,9 @@
 use serde_json::Value;
 
+use crate::apis::internally::map_aggregate_transactions_dto;
 use crate::models::multisig::CosignatureDto;
 use crate::models::transaction::{AbstractTransactionDto, AggregateTransaction, Transaction, TransactionDto, TransactionMetaDto};
 use crate::models::uint_64::Uint64Dto;
-use crate::apis::internally::map_aggregate_transactions_dto;
 
 /// AggregateTransactionDto : Transaction that combines multiple transactions together.
 #[derive(Clone, Serialize, Deserialize)]
@@ -35,7 +35,6 @@ pub(crate) struct AggregateTransactionInfoDto {
 #[typetag::serde]
 impl TransactionDto for AggregateTransactionInfoDto {
     fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
-
         let dto = self.transaction.clone();
 
         let info = self.meta.to_struct();

@@ -27,7 +27,7 @@ pub(crate) fn extract_version(version: i32) -> EntityVersion {
 pub(crate) fn sign_transaction(tx: impl Transaction, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
     let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
 
-    let mut bytes = tx.generate_bytes();
+    let mut bytes = tx.embedded_to_bytes();
 
     let generation_hash_bytes = hex::decode(&generation_hash);
 
@@ -79,7 +79,7 @@ pub(crate) fn mosaic_property_array_to_buffer(
         let value_v = builder.create_vector(&p.value.to_int_array());
 
         let mut mosaic_property = mosaic_definition::buffers::MosaicPropertyBuilder::new(builder);
-        mosaic_property.add_mosaic_property_id(p.id);
+        mosaic_property.add_mosaic_property_id(p.id.value());
         mosaic_property.add_value(value_v);
 
         p_buffer.push(mosaic_property.finish().value());
@@ -113,7 +113,7 @@ pub(crate) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate
 
     let mut signer_bytes = tx.abs_transaction().signer.to_array();
 
-    let mut tx_vec = tx.generate_bytes();
+    let mut tx_vec = tx.embedded_to_bytes();
 
     let mut r_b: Vec<u8> = Vec::with_capacity(tx_vec.len());
     r_b.append(&mut [0, 0, 0, 0].to_vec());

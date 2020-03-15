@@ -1,6 +1,6 @@
 use std::fmt;
 
-pub trait SchemaAttribute:  Sync + erased_serde::Serialize
+pub trait SchemaAttribute: Sync + erased_serde::Serialize
     where
         Self: fmt::Debug
 {

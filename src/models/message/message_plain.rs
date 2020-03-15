@@ -1,6 +1,6 @@
 use ::std::borrow::Borrow;
 
-use super::{Message, MessageType, PLAIN_MESSAGE};
+use super::{Message, MessageType};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PlainMessage {
@@ -12,7 +12,7 @@ pub struct PlainMessage {
 impl PlainMessage {
     pub fn new(payload: &str) -> Self {
         PlainMessage {
-            _type: PLAIN_MESSAGE,
+            _type: MessageType::PlainMessageType,
             payload: payload.to_owned(),
         }
     }

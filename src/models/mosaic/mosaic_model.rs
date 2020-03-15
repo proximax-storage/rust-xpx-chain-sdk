@@ -1,5 +1,7 @@
 use ::core::fmt;
 
+use num_enum::IntoPrimitive;
+
 use crate::models::{id_model::Id, Uint64};
 use crate::models::mosaic::MosaicId;
 
@@ -8,6 +10,7 @@ use super::internally::{
     XPX_MAX_RELATIVE_VALUE,
     XPX_MAX_VALUE,
 };
+use crate::models::errors::ERR_INVALID_MOSAIC_PROPERTY_ID;
 
 pub(crate) const SUPPLY_MUTABLE: u8 = 0x01;
 pub(crate) const TRANSFERABLE: u8 = 0x02;
@@ -16,8 +19,8 @@ pub(crate) const TRANSFERABLE: u8 = 0x02;
 /// The mosaic propery id means:
 /// * 0 - MosaicFlags
 /// * 1 - Divisibility
-/// * 2 - duration
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+/// * 2 - Duration
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, IntoPrimitive)]
 #[repr(u8)]
 pub enum MosaicPropertyId {
     MosaicFlags,
@@ -25,15 +28,20 @@ pub enum MosaicPropertyId {
     Duration,
 }
 
+impl MosaicPropertyId {
+    pub fn value(self) -> u8 {
+        self.into()
+    }
+}
+
 impl From<u8> for MosaicPropertyId {
-    fn from(e: u8) -> Self {
-        let mut property_id = MosaicPropertyId::MosaicFlags;
-        if e == 1 {
-            property_id = MosaicPropertyId::Divisibility;
-        } else {
-            property_id = MosaicPropertyId::Duration;
+    fn from(id: u8) -> Self {
+        assert!(id <= 2, ERR_INVALID_MOSAIC_PROPERTY_ID);
+        match id {
+            1 => MosaicPropertyId::Divisibility,
+            2 => MosaicPropertyId::Duration,
+            _ => MosaicPropertyId::MosaicFlags
         }
-        property_id
     }
 }
 
@@ -41,17 +49,22 @@ impl From<u8> for MosaicPropertyId {
 /// The supply modification direction:
 /// * 0  - Decrease.
 /// * 1  - Increase.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, IntoPrimitive)]
 #[repr(u8)]
 pub enum MosaicSupplyType { Decrease, Increase }
 
+impl MosaicSupplyType {
+    pub fn value(self) -> u8 {
+        self.into()
+    }
+}
+
 impl From<u8> for MosaicSupplyType {
-    fn from(e: u8) -> Self {
-        let mut direction = MosaicSupplyType::Decrease;
-        if e != 0 {
-            direction = MosaicSupplyType::Increase;
+    fn from(num: u8) -> Self {
+        match num {
+            1 => MosaicSupplyType::Increase,
+            _ => MosaicSupplyType::Decrease
         }
-        direction
     }
 }
 

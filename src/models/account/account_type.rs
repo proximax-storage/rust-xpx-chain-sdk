@@ -1,5 +1,9 @@
-/// AccountLinkTypeEnum : The account link types: * 0 -  Unlinked. Account is not linked to another account. * 1 -  Main. Account is a balance-holding account that is linked to a remote harvester account. * 2 -  Remote. Account is a remote harvester account that is linked to a balance-holding account. * 3 -  Remote_Unlinked. Account is a remote harvester eligible account that is unlinked.
-/// The account link types: * 0 -  Unlinked. Account is not linked to another account. * 1 -  Main. Account is a balance-holding account that is linked to a remote harvester account. * 2 -  Remote. Account is a remote harvester account that is linked to a balance-holding account. * 3 -  Remote_Unlinked. Account is a remote harvester eligible account that is unlinked.
+/// AccountLinkTypeEnum :
+/// The account link types:
+/// * 0 -  Unlinked. Account is not linked to another account.
+/// * 1 -  Main. Account is a balance-holding account that is linked to a remote harvester account.
+/// * 2 -  Remote. Account is a remote harvester account that is linked to a balance-holding account.
+/// * 3 -  Remote_Unlinked. Account is a remote harvester eligible account that is unlinked.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum AccountLinkTypeEnum {
     /// Unlinked.
@@ -17,15 +21,4 @@ pub enum AccountLinkTypeEnum {
     /// Remote harvester eligible account that is unlinked.
     #[serde(rename = "3")]
     _3,
-}
-
-impl AccountLinkTypeEnum {
-    pub fn nem(value: u8) -> Self {
-        match value {
-            1 => AccountLinkTypeEnum::_1,
-            2 => AccountLinkTypeEnum::_2,
-            3 => AccountLinkTypeEnum::_3,
-            _ => AccountLinkTypeEnum::_0
-        }
-    }
 }

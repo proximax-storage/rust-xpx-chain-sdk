@@ -12,37 +12,42 @@ use super::{
     SignedTransaction,
 };
 
+pub type Amount = Uint64;
+
 pub type Height = Uint64;
 
 pub type Hash = String;
 
 pub type Transactions = Vec<Box<dyn Transaction>>;
 
-pub trait Transaction: Downcast + Sync + erased_serde::Serialize
-    where
-        Self: fmt::Debug,
-{
+pub trait AbsTransaction {
     fn transaction_hash(&self) -> &str;
-
-    fn abs_transaction(&self) -> AbstractTransaction;
-
-    fn size(&self) -> usize;
-
-    /// An abstract method to generate the transaction bytes.
-    fn generate_bytes(&self) -> Vec<u8>;
-
-    /// An abstract method to generate the embedded transaction bytes.
-    fn generate_embedded_bytes(&self) -> Vec<u8>;
-
-    /// Serialize this transaction object.
-    fn to_json(&self) -> Value;
 
     /// Returns `true` if this transaction has missing signatures.
     fn has_missing_signatures(&self) -> bool;
 
-    /// Serialize and sign 'Transaction' with the given 'Account' and network generationHash and
+    fn is_unconfirmed(&self) -> bool;
+
+    fn is_confirmed(&self) -> bool;
+
+    fn abs_transaction(&self) -> AbstractTransaction;
+}
+
+pub trait Transaction: AbsTransaction + Downcast + Sync + erased_serde::Serialize
+    where
+        Self: fmt::Debug,
+{
+    fn size(&self) -> usize;
+
+    /// Serialize this transaction object.
+    fn to_json(&self) -> Value;
+
+    /// Serialize and sign [Transaction] with the given [Account] and network generationHash and
     /// create a new signed_transaction.
     fn sign_transaction_with(self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
+
+    /// An abstract method to generate the embedded transaction bytes.
+    fn embedded_to_bytes(&self) -> Vec<u8>;
 
     fn entity_type(&self) -> EntityTypeEnum;
 
@@ -55,7 +60,7 @@ serialize_trait_object!(Transaction);
 
 impl<'a> PartialEq for &'a dyn Transaction {
     fn eq(&self, other: &Self) -> bool {
-        &self.generate_bytes() == &other.generate_bytes()
+        &self.embedded_to_bytes() == &other.embedded_to_bytes()
     }
 }
 
@@ -76,11 +81,11 @@ pub struct TransactionStatus {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deadline: Option<Deadline>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub height: Option<Uint64>,
+    pub height: Option<Height>,
 }
 
 impl TransactionStatus {
-    pub fn new(group: String, status: String, hash: String, deadline: Option<Deadline>, height: Option<Uint64>) -> Self {
+    pub fn new(group: String, status: String, hash: String, deadline: Option<Deadline>, height: Option<Height>) -> Self {
         TransactionStatus {
             group,
             status,

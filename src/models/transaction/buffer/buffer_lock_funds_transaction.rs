@@ -2,12 +2,10 @@ extern crate flatbuffers;
 
 #[allow(unused_imports, dead_code)]
 pub mod lock_funds {
-
     extern crate flatbuffers;
 
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-
         extern crate flatbuffers;
 
         pub enum LockFundsTransactionBufferOffset {}

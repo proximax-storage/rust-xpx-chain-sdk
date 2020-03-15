@@ -1,4 +1,4 @@
-pub use self::account_dto::*;
+pub(crate) use self::account_dto::*;
 pub use self::account_info::*;
 pub use self::account_model::*;
 pub use self::account_type::*;

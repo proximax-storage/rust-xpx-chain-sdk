@@ -222,7 +222,7 @@ impl<C: Connect> AccountRoutes<C>
             MULTISIG_ACCOUNT_ROUTE.to_string(),
         );
 
-        req = req.with_path_param("accountId".to_string(), account_id.to_string());
+        req.with_path_param("accountId".to_string(), account_id.to_string());
         unimplemented!()
     }
 
@@ -234,7 +234,7 @@ impl<C: Connect> AccountRoutes<C>
             MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE.to_string(),
         );
 
-        req = req.with_path_param("accountId".to_string(), account_id.to_string());
+        req.with_path_param("accountId".to_string(), account_id.to_string());
         unimplemented!()
     }
 
@@ -246,7 +246,7 @@ impl<C: Connect> AccountRoutes<C>
             ACCOUNT_PROPERTIES_ROUTE.to_string(),
         );
 
-        req = req.with_path_param("accountId".to_string(), account_id.to_string());
+        req.with_path_param("accountId".to_string(), account_id.to_string());
         unimplemented!()
     }
 
@@ -260,7 +260,7 @@ impl<C: Connect> AccountRoutes<C>
             ACCOUNTS_PROPERTIES_ROUTE.to_string(),
         );
 
-        req = req.with_body_param(&accounts);
+        req.with_body_param(&accounts);
 
         unimplemented!()
     }
@@ -275,7 +275,7 @@ impl<C: Connect> AccountRoutes<C>
             ACCOUNT_NAMES_ROUTE.to_string(),
         );
 
-        req = req.with_body_param(&accounts);
+        req.with_body_param(&accounts);
 
         unimplemented!()
     }

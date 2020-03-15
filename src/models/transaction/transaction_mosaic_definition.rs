@@ -8,6 +8,7 @@ use crate::models::consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OP
 use crate::models::id_model::Id;
 use crate::models::mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE};
 use crate::models::network::NetworkType;
+use crate::models::transaction::AbsTransaction;
 
 use super::{
     AbstractTransaction,
@@ -70,21 +71,44 @@ impl MosaicDefinitionTransaction {
     }
 }
 
-impl Transaction for MosaicDefinitionTransaction {
+impl AbsTransaction for MosaicDefinitionTransaction {
     fn transaction_hash(&self) -> &str {
         self.abs_transaction.get_hash()
+    }
+
+    fn has_missing_signatures(&self) -> bool {
+        self.abs_transaction.has_missing_signatures()
+    }
+
+    fn is_unconfirmed(&self) -> bool {
+        self.abs_transaction.is_unconfirmed()
+    }
+
+    fn is_confirmed(&self) -> bool {
+        self.abs_transaction.is_confirmed()
     }
 
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
+}
 
+impl Transaction for MosaicDefinitionTransaction {
     fn size(&self) -> usize {
         MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE
             + self.properties.optional_properties.len() * MOSAIC_OPTIONAL_PROPERTY_SIZE
     }
 
-    fn generate_bytes<'a>(&self) -> Vec<u8> {
+    fn to_json(&self) -> Value {
+        serde_json::to_value(self).unwrap_or_default()
+    }
+
+    fn sign_transaction_with(self, account: Account, generation_hash: String)
+                             -> crate::Result<SignedTransaction> {
+        sign_transaction(self, account, generation_hash)
+    }
+
+    fn embedded_to_bytes<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
@@ -111,7 +135,7 @@ impl Transaction for MosaicDefinitionTransaction {
         txn_builder.add_signature(fb::WIPOffset::new(*abs_vector.get("signatureV").unwrap()));
         txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
         txn_builder.add_version(*abs_vector.get("versionV").unwrap());
-        txn_builder.add_type_(self.abs_transaction.transaction_type.get_value());
+        txn_builder.add_type_(self.abs_transaction.transaction_type.value());
         txn_builder.add_max_fee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
         txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
 
@@ -127,23 +151,6 @@ impl Transaction for MosaicDefinitionTransaction {
 
         let buf = builder.finished_data();
         mosaic_definition_transaction_schema().serialize(&mut Vec::from(buf))
-    }
-
-    fn generate_embedded_bytes(&self) -> Vec<u8> {
-        unimplemented!()
-    }
-
-    fn to_json(&self) -> Value {
-        serde_json::to_value(self).unwrap_or_default()
-    }
-
-    fn has_missing_signatures(&self) -> bool {
-        unimplemented!()
-    }
-
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {

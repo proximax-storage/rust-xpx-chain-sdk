@@ -1,5 +1,4 @@
-pub use self::cosignature_dto::*;
-pub use self::multisig_dto::*;
+pub(crate) use self::cosignature_dto::*;
 pub use self::multisig_model::*;
 
 mod multisig_model;

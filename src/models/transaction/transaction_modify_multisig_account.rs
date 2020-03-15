@@ -7,7 +7,7 @@ use crate::models::consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE};
 use crate::models::errors::ERR_EMPTY_MODIFICATIONS;
 use crate::models::multisig::CosignatoryModification;
 use crate::models::network::NetworkType;
-use crate::models::transaction::{AbstractTransaction, cosignatory_modification_array_to_buffer, Deadline, EntityTypeEnum, MODIFY_MULTISIG_VERSION, SignedTransaction, Transaction};
+use crate::models::transaction::{AbstractTransaction, AbsTransaction, cosignatory_modification_array_to_buffer, Deadline, EntityTypeEnum, MODIFY_MULTISIG_VERSION, SignedTransaction, Transaction};
 use crate::models::transaction::buffer::modify_multisig_account::buffers;
 use crate::transaction::sign_transaction;
 
@@ -51,20 +51,43 @@ impl ModifyMultisigAccountTransaction {
     }
 }
 
-impl Transaction for ModifyMultisigAccountTransaction {
+impl AbsTransaction for ModifyMultisigAccountTransaction {
     fn transaction_hash(&self) -> &str {
         self.abs_transaction.get_hash()
+    }
+
+    fn has_missing_signatures(&self) -> bool {
+        self.abs_transaction.has_missing_signatures()
+    }
+
+    fn is_unconfirmed(&self) -> bool {
+        self.abs_transaction.is_unconfirmed()
+    }
+
+    fn is_confirmed(&self) -> bool {
+        self.abs_transaction.is_confirmed()
     }
 
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
+}
 
+impl Transaction for ModifyMultisigAccountTransaction {
     fn size(&self) -> usize {
         MODIFY_MULTISIG_HEADER_SIZE + ((KEY_SIZE + 1) * self.modifications.len())
     }
 
-    fn generate_bytes(&self) -> Vec<u8> {
+    fn to_json(&self) -> Value {
+        serde_json::to_value(self).unwrap_or_default()
+    }
+
+    fn sign_transaction_with(self, account: Account, generation_hash: String)
+                             -> crate::Result<SignedTransaction> {
+        sign_transaction(self, account, generation_hash)
+    }
+
+    fn embedded_to_bytes(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
@@ -83,7 +106,7 @@ impl Transaction for ModifyMultisigAccountTransaction {
         txn_builder.add_signature(fb::WIPOffset::new(*abs_vector.get("signatureV").unwrap()));
         txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
         txn_builder.add_version(*abs_vector.get("versionV").unwrap());
-        txn_builder.add_type_(self.abs_transaction.transaction_type.get_value());
+        txn_builder.add_type_(self.abs_transaction.transaction_type.value());
         txn_builder.add_max_fee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
         txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
         txn_builder.add_min_removal_delta(self.min_removal_delta);
@@ -96,23 +119,6 @@ impl Transaction for ModifyMultisigAccountTransaction {
 
         let buf = _builder.finished_data();
         modify_multisig_account_transaction_schema().serialize(&mut Vec::from(buf))
-    }
-
-    fn generate_embedded_bytes(&self) -> Vec<u8> {
-        unimplemented!()
-    }
-
-    fn to_json(&self) -> Value {
-        serde_json::to_value(self).unwrap_or_default()
-    }
-
-    fn has_missing_signatures(&self) -> bool {
-        unimplemented!()
-    }
-
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {

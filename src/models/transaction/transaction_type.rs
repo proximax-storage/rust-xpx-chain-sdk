@@ -1,4 +1,7 @@
+use num_enum::IntoPrimitive;
 use serde::Serialize;
+
+pub(crate) type EntityVersion = i32;
 
 /// entity_type The entity type:
 /// * 0x4158 (16728 decimal) - Blockchain Upgrade Transaction.
@@ -24,8 +27,7 @@ use serde::Serialize;
 /// * 0x414C (16716 decimal) - Account Link Transaction.
 /// * 0x8043 (32835 decimal) - Nemesis block.
 /// * 0x8143 (33091 decimal) - Regular block.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-#[serde(from = "u64")]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, IntoPrimitive)]
 #[repr(u16)]
 pub enum EntityTypeEnum {
     #[serde(rename = "16728")]
@@ -79,37 +81,18 @@ pub enum EntityTypeEnum {
 }
 
 impl EntityTypeEnum {
-    pub fn get_value(&self) -> u16 {
-        match self {
-            EntityTypeEnum::AccountLink => 0x414C,
-            EntityTypeEnum::AccountRestrictionAddress => 0x4150,
-            EntityTypeEnum::AccountRestrictionMosaic => 0x4250,
-            EntityTypeEnum::AccountRestrictionOperation => 0x4350,
-            EntityTypeEnum::AddressAlias => 0x424E,
-            EntityTypeEnum::AggregateBonded => 0x4241,
-            EntityTypeEnum::AggregateComplete => 0x4141,
-            EntityTypeEnum::Block => 0x8143,
-            EntityTypeEnum::BlockchainUpgrade => 0x4158,
-            EntityTypeEnum::Lock => 0x4148,
-            EntityTypeEnum::ModifyMultisigAccount => 0x4155,
-            EntityTypeEnum::MosaicAlias => 0x434E,
-            EntityTypeEnum::MosaicDefinition => 0x414D,
-            EntityTypeEnum::MosaicSupplyChange => 0x424D,
-            EntityTypeEnum::NamespaceRegistration => 0x414E,
-            EntityTypeEnum::NemesisBlock => 0x8043,
-            EntityTypeEnum::NetworkConfigEntityType => 0x4159,
-            EntityTypeEnum::SecretLock => 0x4152,
-            EntityTypeEnum::SecretProof => 0x4252,
-            EntityTypeEnum::Transfer => 0x4154,
+    pub fn value(self) -> u16 {
+        self.into()
+    }
 
-            _ => 0
-        }
+    pub fn to_string(&self) -> String {
+        format!("{:?}", self)
     }
 }
 
-impl From<u64> for EntityTypeEnum {
-    fn from(e: u64) -> Self {
-        return match e {
+impl From<u16> for EntityTypeEnum {
+    fn from(num: u16) -> Self {
+        match num {
             0x4141 => EntityTypeEnum::AggregateComplete,
             0x4148 => EntityTypeEnum::Lock,
             0x414C => EntityTypeEnum::AccountLink,
@@ -132,11 +115,18 @@ impl From<u64> for EntityTypeEnum {
             0x8143 => EntityTypeEnum::Block,
 
             _ => EntityTypeEnum::EntityTypeUnknown
-        };
+        }
     }
 }
 
-pub(crate) type EntityVersion = i32;
+impl core::fmt::Display for EntityTypeEnum {
+    fn fmt(&self, e: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(
+            e, "{}",
+            serde_json::to_string(&self).unwrap_or_default()
+        )
+    }
+}
 
 pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
 pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;

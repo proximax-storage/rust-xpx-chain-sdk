@@ -3,10 +3,9 @@ use super::{
     ScalarAttribute,
     Schema,
     SchemaAttribute,
-    TableArrayAttribute,
     SIZEOF_BYTE,
+    TableArrayAttribute,
 };
-
 use super::schema_common_definition::schema_common_definition;
 
 pub fn modify_multisig_account_transaction_schema() -> Schema {

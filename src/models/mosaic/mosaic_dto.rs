@@ -48,7 +48,7 @@ impl MosaicInfoDto {
     pub fn to_struct(&self) -> Result<MosaicInfo> {
         ensure!(
             self.mosaic.properties.len() > 0,
-            errors::ERR_NIL_MOSAIC_PROPERTIES
+            errors::ERR_INVALID_MOSAIC_PROPERTIES
          );
 
         let mosaic_id = MosaicId::from(self.mosaic.mosaic_id.to_struct());

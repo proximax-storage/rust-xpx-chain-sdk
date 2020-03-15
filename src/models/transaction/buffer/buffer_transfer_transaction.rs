@@ -12,6 +12,8 @@ pub mod transfer {
         use std::cmp::Ordering;
         use std::mem;
 
+        use crate::transaction::buffer::abstc::buffers::AbsTransactionBufferBuilder;
+
         use self::flatbuffers::EndianScalar;
 
         extern crate flatbuffers;

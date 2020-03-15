@@ -52,7 +52,7 @@ async fn main() {
     let sig_transaction = &sig_mosaic_definition.unwrap();
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
-    println!("Hash: \t\t{}", sig_transaction.hash.to_uppercase());
+    println!("Hash: \t\t{}", sig_transaction.get_hash().to_uppercase());
 
     let response = client.transaction.announce(sig_transaction).await;
 

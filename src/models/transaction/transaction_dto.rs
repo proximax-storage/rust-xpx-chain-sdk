@@ -5,6 +5,7 @@ use crate::models::{
     network::extract_network_type,
     uint_64::Uint64Dto,
 };
+use crate::models::mosaic::MosaicId;
 use crate::models::transaction::{LockFundsTransaction, SignedTransaction, TransactionInfo};
 
 use super::{
@@ -14,7 +15,6 @@ use super::{
     TransactionStatus,
     TransferTransaction,
 };
-use crate::models::mosaic::MosaicId;
 
 /// HashAlgorithmEnum : The hash algorithm used to hash te proof: * 0 (Op_Sha3_256)  - The proof is hashed using sha3 256. * 1 (Op_Keccak_256)  - The proof is hashed using Keccak (ETH compatibility). * 2 (Op_Hash_160)  - The proof is hashed twice: first with Sha-256 and then with RIPEMD-160 (bitcoin’s OP_HASH160). * 3 (Op_Hash_256)  - The proof is hashed twice with Sha-256 (bitcoin’s OP_HASH256).
 /// The hash algorithm used to hash te proof: * 0 (Op_Sha3_256)  - The proof is hashed using sha3 256. * 1 (Op_Keccak_256)  - The proof is hashed using Keccak (ETH compatibility). * 2 (Op_Hash_160)  - The proof is hashed twice: first with Sha-256 and then with RIPEMD-160 (bitcoin’s OP_HASH160). * 3 (Op_Hash_256)  - The proof is hashed twice with Sha-256 (bitcoin’s OP_HASH256).
@@ -90,7 +90,7 @@ impl AbstractTransactionDto {
             max_fee = Some(item.to_struct());
         }
 
-        let transaction_type = EntityTypeEnum::from(dto._type as u64);
+        let transaction_type = EntityTypeEnum::from(dto._type);
 
         Ok(AbstractTransaction::new(Some(info),
                                     network_type,
@@ -306,11 +306,11 @@ impl TransactionDto for HashLockTransactionInfoDto {
             abs_transaction: abs,
             mosaic,
             duration: dto.duration.to_struct(),
-            signed_transaction: SignedTransaction {
-                entity_type: EntityTypeEnum::AggregateBonded,
-                payload: None,
-                hash: dto.hash.to_string()
-            }
+            signed_transaction: SignedTransaction::new(
+                EntityTypeEnum::AggregateBonded,
+                "".to_string(),
+                dto.hash.to_string()
+            )
         }))
     }
 }

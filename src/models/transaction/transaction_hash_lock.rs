@@ -7,6 +7,7 @@ use crate::models::account::Account;
 use crate::models::consts::LOCK_SIZE;
 use crate::models::mosaic::Mosaic;
 use crate::models::network::NetworkType;
+use crate::models::transaction::AbsTransaction;
 use crate::Uint64;
 
 use super::{
@@ -33,7 +34,7 @@ impl LockFundsTransaction {
         network_type: NetworkType,
     ) -> crate::Result<Self> {
         ensure!(
-            signed_tx.entity_type == EntityTypeEnum::AggregateBonded,
+            signed_tx.get_type() == EntityTypeEnum::AggregateBonded,
             "signed_tx must be of type AggregateBonded."
          );
 
@@ -48,18 +49,42 @@ impl LockFundsTransaction {
     }
 }
 
-impl Transaction for LockFundsTransaction {
+impl AbsTransaction for LockFundsTransaction {
     fn transaction_hash(&self) -> &str {
         self.abs_transaction.get_hash()
+    }
+
+    fn has_missing_signatures(&self) -> bool {
+        self.abs_transaction.has_missing_signatures()
+    }
+
+    fn is_unconfirmed(&self) -> bool {
+        self.abs_transaction.is_unconfirmed()
+    }
+
+    fn is_confirmed(&self) -> bool {
+        self.abs_transaction.is_confirmed()
     }
 
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
+}
 
+impl Transaction for LockFundsTransaction {
     fn size(&self) -> usize { LOCK_SIZE }
 
-    fn generate_bytes<'a>(&self) -> Vec<u8> {
+    fn to_json(&self) -> Value {
+        serde_json::to_value(self).unwrap_or_default()
+    }
+
+
+    fn sign_transaction_with(self, account: Account, generation_hash: String)
+                             -> crate::Result<SignedTransaction> {
+        sign_transaction(self, account, generation_hash)
+    }
+
+    fn embedded_to_bytes<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
@@ -78,7 +103,7 @@ impl Transaction for LockFundsTransaction {
         txn_builder.add_signature(fb::WIPOffset::new(*abs_vector.get("signatureV").unwrap()));
         txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
         txn_builder.add_version(*abs_vector.get("versionV").unwrap());
-        txn_builder.add_type_(self.abs_transaction.transaction_type.get_value());
+        txn_builder.add_type_(self.abs_transaction.transaction_type.value());
         txn_builder.add_max_fee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
         txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
         txn_builder.add_mosaic_id(mosaic_id_vector);
@@ -92,23 +117,6 @@ impl Transaction for LockFundsTransaction {
         let buf = _builder.finished_data();
 
         lock_funds_transaction_schema().serialize(&mut Vec::from(buf))
-    }
-
-    fn generate_embedded_bytes(&self) -> Vec<u8> {
-        unimplemented!()
-    }
-
-    fn to_json(&self) -> Value {
-        serde_json::to_value(self).unwrap_or_default()
-    }
-
-    fn has_missing_signatures(&self) -> bool {
-        unimplemented!()
-    }
-
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {

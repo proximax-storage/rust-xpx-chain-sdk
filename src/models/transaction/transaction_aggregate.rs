@@ -10,15 +10,14 @@ use crate::models::{
 };
 use crate::models::account::Account;
 use crate::models::consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE};
-use crate::models::transaction::{sign_transaction, SignedTransaction, to_aggregate_transaction_bytes};
-
-use super::buffer::aggregate::buffers;
+use crate::models::transaction::{AbsTransaction, sign_transaction, SignedTransaction, to_aggregate_transaction_bytes};
+use crate::models::transaction::schema::aggregate_transaction_schema;
 
 use super::{
     AbstractTransaction,
     AGGREGATE_BONDED_VERSION,
     AGGREGATE_COMPLETED_VERSION, Deadline, EntityTypeEnum, Transaction, Transactions};
-use crate::models::transaction::schema::aggregate_transaction_schema;
+use super::buffer::aggregate::buffers;
 
 /// AggregateTransaction:
 /// Transaction that combines multiple transactions together.
@@ -77,15 +76,29 @@ impl fmt::Display for AggregateTransaction {
     }
 }
 
-impl Transaction for AggregateTransaction {
+impl AbsTransaction for AggregateTransaction {
     fn transaction_hash(&self) -> &str {
         self.abs_transaction.get_hash()
+    }
+
+    fn has_missing_signatures(&self) -> bool {
+        self.abs_transaction.has_missing_signatures()
+    }
+
+    fn is_unconfirmed(&self) -> bool {
+        self.abs_transaction.is_unconfirmed()
+    }
+
+    fn is_confirmed(&self) -> bool {
+        self.abs_transaction.is_confirmed()
     }
 
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
+}
 
+impl Transaction for AggregateTransaction {
     fn size(&self) -> usize {
         let mut size_of_inner_transactions = 0;
         self.inner_transactions.iter().for_each(|itx|
@@ -94,7 +107,16 @@ impl Transaction for AggregateTransaction {
         AGGREGATE_BONDED_HEADER + size_of_inner_transactions
     }
 
-    fn generate_bytes(&self) -> Vec<u8> {
+    fn to_json(&self) -> Value {
+        serde_json::to_value(self).unwrap_or_default()
+    }
+
+    fn sign_transaction_with(self, account: Account, generation_hash: String)
+                             -> crate::Result<SignedTransaction> {
+        sign_transaction(self, account, generation_hash)
+    }
+
+    fn embedded_to_bytes(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
@@ -116,7 +138,7 @@ impl Transaction for AggregateTransaction {
         txn_builder.add_signature(fb::WIPOffset::new(*abs_vector.get("signatureV").unwrap()));
         txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
         txn_builder.add_version(*abs_vector.get("versionV").unwrap());
-        txn_builder.add_type_(self.abs_transaction.transaction_type.get_value());
+        txn_builder.add_type_(self.abs_transaction.transaction_type.value());
         txn_builder.add_max_fee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
         txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
         txn_builder.add_transactions_size(txsb.len() as u32);
@@ -128,23 +150,6 @@ impl Transaction for AggregateTransaction {
         let buf = _builder.finished_data();
 
         aggregate_transaction_schema().serialize(&mut Vec::from(buf))
-    }
-
-    fn generate_embedded_bytes(&self) -> Vec<u8> {
-        unimplemented!()
-    }
-
-    fn to_json(&self) -> Value {
-        serde_json::to_value(self).unwrap_or_default()
-    }
-
-    fn has_missing_signatures(&self) -> bool {
-        unimplemented!()
-    }
-
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
     }
 
     fn entity_type(&self) -> EntityTypeEnum {

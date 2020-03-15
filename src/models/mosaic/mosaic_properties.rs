@@ -1,10 +1,5 @@
 use crate::models::Uint64;
-
-type MosaicPropertyId = u8;
-
-const MOSAIC_PROPERTY_FLAGS_ID: MosaicPropertyId = 0;
-const MOSAIC_PROPERTY_DIVISIBILITY_ID: MosaicPropertyId = 1;
-const MOSAIC_PROPERTY_DURATION_ID: MosaicPropertyId = 1;
+use crate::models::mosaic::MosaicPropertyId;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicProperty {
@@ -46,7 +41,7 @@ impl MosaicProperties {
 
         let mut properties = vec![];
         if duration.0 != 0 {
-            properties.push(MosaicProperty { id: MOSAIC_PROPERTY_DURATION_ID, value: duration });
+            properties.push(MosaicProperty { id: MosaicPropertyId::Duration, value: duration });
         }
 
         Ok(MosaicProperties {
