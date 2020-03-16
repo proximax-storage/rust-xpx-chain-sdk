@@ -7,15 +7,23 @@ pub trait Id: Sync + erased_serde::Serialize
     where
         Self: fmt::Debug,
 {
-    fn to_bytes(&self) -> [u8; 8];
+    fn to_uint64(&self) -> Uint64;
 
-    fn to_hex(&self) -> String;
+    fn to_u64(&self) -> u64 {
+        self.to_uint64().to_u64()
+    }
 
-    fn to_id(&self) -> Uint64;
+    fn to_bytes(&self) -> [u8; 8] {
+        self.to_uint64().to_bytes()
+    }
 
-    fn to_int_array(&self) -> [u32; 2];
+    fn to_hex(&self) -> String {
+        self.to_uint64().to_hex()
+    }
 
-    fn eq(&self, other: &dyn Id) -> bool;
+    fn to_u32_array(&self) -> [u32; 2] {
+        self.to_uint64().to_int_array()
+    }
 }
 
 serialize_trait_object!(Id);
