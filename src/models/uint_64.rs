@@ -62,6 +62,11 @@ impl Uint64 {
         let higher = (self.0 >> 32) as u32;
         return [lower, higher];
     }
+
+    /// Converts to u64 Primitive.
+    pub fn to_u64(&self) -> u64 {
+         self.0
+    }
 }
 
 impl fmt::LowerHex for Uint64 {
