@@ -72,22 +72,6 @@ impl MosaicDefinitionTransaction {
 }
 
 impl AbsTransaction for MosaicDefinitionTransaction {
-    fn transaction_hash(&self) -> &str {
-        self.abs_transaction.get_hash()
-    }
-
-    fn has_missing_signatures(&self) -> bool {
-        self.abs_transaction.has_missing_signatures()
-    }
-
-    fn is_unconfirmed(&self) -> bool {
-        self.abs_transaction.is_unconfirmed()
-    }
-
-    fn is_confirmed(&self) -> bool {
-        self.abs_transaction.is_confirmed()
-    }
-
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
@@ -122,7 +106,7 @@ impl Transaction for MosaicDefinitionTransaction {
             f += TRANSFERABLE;
         }
 
-        let mosaic_vec = builder.create_vector(&self.mosaic_id.to_int_array());
+        let mosaic_vec = builder.create_vector(&self.mosaic_id.to_u32_array());
         let property_vec = mosaic_property_array_to_buffer(
             &mut builder, self.properties.clone().optional_properties
         );

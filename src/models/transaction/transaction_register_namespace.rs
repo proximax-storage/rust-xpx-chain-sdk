@@ -79,7 +79,7 @@ impl RegisterNamespaceTransaction {
         );
 
         ensure!(
-            parent_id.to_id().0 != 0,
+            parent_id.to_u64() != 0,
             errors::ERR_NULL_NAMESPACE_ID
         );
 
@@ -119,22 +119,6 @@ impl RegisterNamespaceTransaction {
 }
 
 impl AbsTransaction for RegisterNamespaceTransaction {
-    fn transaction_hash(&self) -> &str {
-        self.abs_transaction.get_hash()
-    }
-
-    fn has_missing_signatures(&self) -> bool {
-        self.abs_transaction.has_missing_signatures()
-    }
-
-    fn is_unconfirmed(&self) -> bool {
-        self.abs_transaction.is_unconfirmed()
-    }
-
-    fn is_confirmed(&self) -> bool {
-        self.abs_transaction.is_confirmed()
-    }
-
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
@@ -159,13 +143,13 @@ impl Transaction for RegisterNamespaceTransaction {
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
 
-        let namespace_id_vec = builder.create_vector(&self.namespace_id.to_int_array());
+        let namespace_id_vec = builder.create_vector(&self.namespace_id.to_u32_array());
 
         let mut d_vec = fb::WIPOffset::new(0);
         if self.namespace_type == NamespaceType::Root {
             d_vec = builder.create_vector(&self.duration.unwrap().to_int_array());
         } else {
-            d_vec = builder.create_vector(&self.parent_id.unwrap().to_int_array());
+            d_vec = builder.create_vector(&self.parent_id.unwrap().to_u32_array());
         }
 
         let name_vec = builder.create_string(self.name.as_ref());

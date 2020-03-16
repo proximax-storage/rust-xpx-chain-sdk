@@ -47,27 +47,8 @@ impl NamespaceId {
 }
 
 impl Id for NamespaceId {
-    fn to_bytes(&self) -> [u8; 8] {
-        let id = &self.0;
-        id.to_bytes()
-    }
-
-    fn to_hex(&self) -> String {
-        let id = &self.0;
-        id.to_hex()
-    }
-
-    fn to_id(&self) -> Uint64 {
+    fn to_uint64(&self) -> Uint64 {
         self.0
-    }
-
-    fn to_int_array(&self) -> [u32; 2] {
-        let id = &self.0;
-        id.to_int_array()
-    }
-
-    fn eq(&self, other: &dyn Id) -> bool {
-        &self.to_bytes() == &other.to_bytes()
     }
 }
 

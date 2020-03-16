@@ -77,22 +77,6 @@ impl TransferTransaction {
 }
 
 impl AbsTransaction for TransferTransaction {
-    fn transaction_hash(&self) -> &str {
-        self.abs_transaction.get_hash()
-    }
-
-    fn has_missing_signatures(&self) -> bool {
-        self.abs_transaction.has_missing_signatures()
-    }
-
-    fn is_unconfirmed(&self) -> bool {
-        self.abs_transaction.is_unconfirmed()
-    }
-
-    fn is_confirmed(&self) -> bool {
-        self.abs_transaction.is_confirmed()
-    }
-
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
@@ -123,7 +107,7 @@ impl Transaction for TransferTransaction {
         let mut mosaics_buffer: Vec<fb::WIPOffset<buffers::MosaicBuffer<'a>>> = Vec::with_capacity(ml);
 
         for mosaic in &self.mosaics {
-            let mosaic_id = _builder.create_vector(&mosaic.asset_id.to_int_array());
+            let mosaic_id = _builder.create_vector(&mosaic.asset_id.to_u32_array());
             let mosaic_amount = _builder.create_vector(&mosaic.amount.to_int_array());
 
             let mut mosaic_buffer = buffers::MosaicBufferBuilder::new(&mut _builder);

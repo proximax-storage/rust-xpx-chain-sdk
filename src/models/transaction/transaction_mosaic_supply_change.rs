@@ -70,22 +70,6 @@ impl MosaicSupplyChangeTransaction {
 }
 
 impl AbsTransaction for MosaicSupplyChangeTransaction {
-    fn transaction_hash(&self) -> &str {
-        self.abs_transaction.get_hash()
-    }
-
-    fn has_missing_signatures(&self) -> bool {
-        self.abs_transaction.has_missing_signatures()
-    }
-
-    fn is_unconfirmed(&self) -> bool {
-        self.abs_transaction.is_unconfirmed()
-    }
-
-    fn is_confirmed(&self) -> bool {
-        self.abs_transaction.is_confirmed()
-    }
-
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
@@ -109,7 +93,7 @@ impl Transaction for MosaicSupplyChangeTransaction {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
-        let mosaic_vec = builder.create_vector(&self.asset_id.to_int_array());
+        let mosaic_vec = builder.create_vector(&self.asset_id.to_u32_array());
         let delta_vec = builder.create_vector(&self.delta.to_int_array());
 
         let abs_vector = &self.abs_transaction.generate_vector(&mut builder);

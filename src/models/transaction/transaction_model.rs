@@ -21,16 +21,25 @@ pub type Hash = String;
 pub type Transactions = Vec<Box<dyn Transaction>>;
 
 pub trait AbsTransaction {
-    fn transaction_hash(&self) -> &str;
-
-    /// Returns `true` if this transaction has missing signatures.
-    fn has_missing_signatures(&self) -> bool;
-
-    fn is_unconfirmed(&self) -> bool;
-
-    fn is_confirmed(&self) -> bool;
 
     fn abs_transaction(&self) -> AbstractTransaction;
+
+    fn transaction_hash(&self) -> &str {
+        self.abs_transaction().get_hash()
+    }
+
+    /// Returns `true` if this transaction has missing signatures.
+    fn has_missing_signatures(&self) -> bool {
+        self.abs_transaction().has_missing_signatures()
+    }
+
+    fn is_unconfirmed(&self) -> bool {
+        self.abs_transaction().is_unconfirmed()
+    }
+
+    fn is_confirmed(&self) -> bool {
+        self.abs_transaction().is_confirmed()
+    }
 }
 
 pub trait Transaction: AbsTransaction + Downcast + Sync + erased_serde::Serialize
