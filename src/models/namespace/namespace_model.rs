@@ -1,11 +1,9 @@
 use std::fmt;
 
 use crate::models::account::{Address, PublicAccount};
-use crate::models::alias::AliasType;
 use crate::models::mosaic::MosaicId;
 use crate::models::namespace::NamespaceId;
 use crate::models::transaction::Height;
-use crate::Uint64;
 
 /// NamespaceTypeEnum :
 /// The namespace type:
@@ -33,6 +31,14 @@ pub struct NamespaceAlias {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
     pub type_: u8
+}
+
+impl fmt::Display for NamespaceAlias {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+               serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

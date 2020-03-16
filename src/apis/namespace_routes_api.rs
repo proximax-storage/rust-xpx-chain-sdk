@@ -1,24 +1,25 @@
 use ::std::sync::Arc;
+use std::future::Future;
+use std::pin::Pin;
 
 use hyper::{client::connect::Connect, Method};
 
-use crate::{
-    apis::sirius_client::ApiClient,
-    models::{
-        errors::ERR_EMPTY_MOSAIC_IDS,
-    },
+use crate::apis::sirius_client::ApiClient;
+use crate::models::account::Address;
+use crate::models::errors::ERR_EMPTY_NAMESPACE_IDS;
+use crate::models::id_model::Id;
+use crate::models::namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceInfoDto,
+                               NamespaceName, NamespaceNameDto
 };
+use crate::Uint64;
 
 use super::{internally::valid_vec_len, request as __internal_request, Result};
-use crate::models::namespace::{NamespaceId, NamespaceInfoDto, NamespaceInfo, NamespaceNameDto, NamespaceIds, NamespaceName};
-use std::rc::Rc;
-use crate::models::errors::ERR_EMPTY_NAMESPACE_IDS;
 
 // Namespace ApiClient routes
-const NAMESPACE_ROUTE:    &str           = "/namespace/{namespaceId}";
-const NAMESPACES_FROM_ACCOUNTS_ROUTE:    &str = "/account/namespaces";
-const NAMESPACE_NAMES_ROUTE:    &str         = "/namespace/names";
-const NAMESPACES_FROM_ACCOUNT_ROUTES:    &str = "/account/{accountId}/namespaces";
+const NAMESPACE_ROUTE: &str = "/namespace/{namespaceId}";
+const NAMESPACES_FROM_ACCOUNTS_ROUTE: &str = "/account/namespaces";
+const NAMESPACE_NAMES_ROUTE: &str = "/namespace/names";
+const NAMESPACES_FROM_ACCOUNT_ROUTES: &str = "/account/{accountId}/namespaces";
 
 /// Namespace ApiClient routes.
 ///
@@ -38,7 +39,7 @@ impl<C: Connect> NamespaceRoutes<C> where
         }
     }
 
-    pub async fn get_namespace_info(self, namespace_id: NamespaceId) -> Result<NamespaceInfo> {
+    async fn __get_namespace_info(self, namespace_id: NamespaceId) -> Result<NamespaceInfo> {
         let mut req = __internal_request::Request::new(
             Method::GET,
             NAMESPACE_ROUTE.to_string(),
@@ -50,15 +51,14 @@ impl<C: Connect> NamespaceRoutes<C> where
 
         let mut dto_to_struct = dto_raw?.to_struct()?;
 
-        if let Some(parent) = dto_to_struct.parent.to_owned() {
-            req = req.with_path_param("namespaceId".to_string(), parent.namespace_id.to_string());
+        Ok(dto_to_struct)
+    }
 
-            let dto_raw_parent: Result<NamespaceInfoDto> = req.execute(self.client).await;
+    pub async fn get_namespace_info(self, namespace_id: NamespaceId) -> Result<NamespaceInfo> {
 
-            let dto_parent = dto_raw_parent?.to_struct()?;
+        let mut dto_to_struct =  self.clone().__get_namespace_info(namespace_id).await?;
 
-            dto_to_struct.parent = Some(Box::new(dto_parent));
-        }
+        self.build_namespace_hierarchy(&mut dto_to_struct).await;
 
         Ok(dto_to_struct)
     }
@@ -83,66 +83,53 @@ impl<C: Connect> NamespaceRoutes<C> where
 
         Ok(namespace_name)
     }
-//
-//    /// Get readable names for a set of mosaics
-//    ///
-//    /// # Inputs
-//    ///
-//    /// * `mosaics_id` =    The vector of mosaic identifiers.
-//    ///
-//    /// # Example
-//    ///
-//    /// ```
-//    ///use hyper::Client;
-//    ///use xpx_chain_sdk::sirius_client::SiriusClient;
-//    ///use xpx_chain_sdk::mosaic::MosaicId;
-//    ///
-//    ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-//    ///
-//    ///#[tokio::main]
-//    ///async fn main() {
-//    ///
-//    /// let client = SiriusClient::new(NODE_URL, Client::new());
-//    ///
-//    ///    let mosaic_id_a = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
-//    ///    let mosaic_id_b = MosaicId::from_hex("6208AE4D56451357").unwrap();
-//    ///
-//    ///    let mosaics_names = client.mosaic.get_mosaics_names(vec![mosaic_id_a, mosaic_id_b]).await;
-//    ///
-//    ///    match mosaics_names {
-//    ///        Ok(resp) => {
-//    ///            for mosaic in resp {
-//    ///                println!("{}", mosaic)
-//    ///            }
-//    ///        }
-//    ///        Err(err) => panic!("{:?}", err),
-//    ///    }
-//    ///}
-//    /// ```
-//    ///
-//    /// # Returns
-//    ///
-//    /// Returns a Future `Result` whose okay value is an friendly names for mosaics or
-//    /// whose error value is an `Error<Value>` describing the error that occurred.
-//    pub async fn get_mosaics_names(self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicNames>> {
-//        valid_vec_len(&mosaic_ids, ERR_EMPTY_MOSAIC_IDS)?;
-//
-//        let mosaics_ids = MosaicIds::from(mosaic_ids);
-//
-//        let mut req = __internal_request::Request::new(
-//            Method::POST,
-//            "/mosaic/names".to_string(),
-//        );
-//
-//        req = req.with_body_param(mosaics_ids);
-//
-//        let dto: Vec<MosaicNamesDto> = req.execute(self.client).await?;
-//
-//        let mut mosaics_names: Vec<MosaicNames> = Vec::with_capacity(dto.len());
-//        for mosaic_name_dto in dto {
-//            mosaics_names.push(mosaic_name_dto.to_struct());
-//        }
-//
-//        Ok(mosaics_names)
-//    }
+
+    pub async fn get_namespaces_from_account(self, address: Address, ns_id: Option<NamespaceId>, page_size: Option<i32>) -> Result<Vec<NamespaceInfo>>
+    {
+        let mut req = __internal_request::Request::new(
+            Method::GET,
+            NAMESPACES_FROM_ACCOUNT_ROUTES.to_string(),
+        );
+
+        if let Some(ref s) = page_size {
+            req = req.with_query_param("pageSize".to_string(), s.to_string());
+        }
+        if let Some(ref s) = ns_id {
+            req = req.with_query_param("id".to_string(), s.to_hex());
+        }
+
+        req = req.with_path_param("accountId".to_string(), address.address.to_string());
+
+        let dto: Vec<NamespaceInfoDto> = req.execute(self.client).await?;
+
+        let mut namespace_info: Vec<NamespaceInfo> = Vec::with_capacity(dto.len());
+        for namespace_dto in dto {
+            namespace_info.push(namespace_dto.to_struct()?);
+        }
+
+        Ok(namespace_info)
+    }
+
+    fn build_namespace_hierarchy<'b>(self, ns_info:  &'b mut NamespaceInfo) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
+        Box::pin(async move {
+            let mut info_parent = match ns_info.parent.to_owned() {
+                Some(info) => info,
+                _ => return ()
+            };
+
+            if info_parent.namespace_id.0 == Uint64::default(){
+                return ()
+            }
+
+            let rest_info = self.clone().__get_namespace_info(info_parent.namespace_id).await;
+            let mut parent_ns_info = match rest_info {
+                Ok(parent) => Box::new(parent),
+                _ => return ()
+            };
+
+            ns_info.parent = Some(parent_ns_info.to_owned());
+
+            self.build_namespace_hierarchy(&mut parent_ns_info).await
+        })
+    }
 }

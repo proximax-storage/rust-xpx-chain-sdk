@@ -20,7 +20,7 @@ mod consts;
 mod contract;
 mod exchange;
 mod field_dto;
-mod id_model;
+pub(crate) mod id_model;
 mod merkle_dto;
 mod merkle_model;
 mod metadata_dto;

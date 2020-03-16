@@ -1,8 +1,3 @@
-use std::future::Future;
-
-use hyper::client::connect::Connect;
-
-use crate::apis::namespace_routes_api::NamespaceRoutes;
 use crate::models::account::PublicAccount;
 use crate::models::errors;
 use crate::models::field_dto::FieldDto;
@@ -81,8 +76,9 @@ pub(crate) struct NamespaceInfoDto {
 impl NamespaceInfoDto {
     pub fn to_struct(&self) -> crate::Result<NamespaceInfo>
     {
+
         let public_account = PublicAccount::from_public_key(
-            &self.namespace.owner, NetworkType::from(self.namespace._type))?;
+            &self.namespace.owner, NetworkType::from(NetworkType::from(self.namespace._type)))?;
 
         let parent_id = NamespaceId::from(self.namespace.parent_id.to_struct());
 

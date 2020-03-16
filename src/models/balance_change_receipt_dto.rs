@@ -46,20 +46,6 @@ pub(crate) struct BalanceTransferReceiptDto {
     pub amount: Uint64Dto,
 }
 
-impl BalanceTransferReceiptDto {
-    /// The invisible state change triggered a mosaic transfer.
-    pub fn new(version: i32, _type: ReceiptTypeEnum, sender: String, recipient: String, mosaic_id: Uint64Dto, amount: Uint64Dto) -> BalanceTransferReceiptDto {
-        BalanceTransferReceiptDto {
-            version,
-            _type,
-            sender,
-            recipient,
-            mosaic_id,
-            amount,
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize)]
 pub(crate) struct BalanceTransferReceiptDtoAllOf {
     /// The public key of the sender.

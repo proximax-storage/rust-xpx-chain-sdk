@@ -3,11 +3,6 @@ use crate::models::namespace::NamespaceAlias;
 use crate::models::account::Address;
 use crate::models::mosaic::MosaicId;
 
-// AliasType enums
-const NONE_ALIAS_TYPE: u16 = 0;
-const MOSAIC_ALIAS_TYPE: u16 = 1;
-const ADDRESS_ALIAS_TYPE: u16 = 2;
-
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AliasDto {
