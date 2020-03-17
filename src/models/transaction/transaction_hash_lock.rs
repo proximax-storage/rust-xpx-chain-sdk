@@ -50,22 +50,6 @@ impl LockFundsTransaction {
 }
 
 impl AbsTransaction for LockFundsTransaction {
-    fn transaction_hash(&self) -> &str {
-        self.abs_transaction.get_hash()
-    }
-
-    fn has_missing_signatures(&self) -> bool {
-        self.abs_transaction.has_missing_signatures()
-    }
-
-    fn is_unconfirmed(&self) -> bool {
-        self.abs_transaction.is_unconfirmed()
-    }
-
-    fn is_confirmed(&self) -> bool {
-        self.abs_transaction.is_confirmed()
-    }
-
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }

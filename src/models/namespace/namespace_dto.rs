@@ -80,9 +80,9 @@ impl NamespaceInfoDto {
         let public_account = PublicAccount::from_public_key(
             &self.namespace.owner, NetworkType::from(NetworkType::from(self.namespace._type)))?;
 
-        let parent_id = NamespaceId::from(self.namespace.parent_id.to_struct());
-
         let levels = self.namespace.extract_levels()?;
+
+        let parent_id = NamespaceId::from(self.namespace.parent_id.to_struct());
 
         let alias = self.namespace.alias.to_struct()?;
 
@@ -99,7 +99,7 @@ impl NamespaceInfoDto {
             end_height: self.namespace.end_height.to_struct()
         };
 
-        if parent_id.to_id() != Uint64::default() {
+        if parent_id.to_u64() != 0 {
             let mut parent = NamespaceInfo {
                 namespace_id: parent_id,
                 active: false,
@@ -114,6 +114,7 @@ impl NamespaceInfoDto {
             };
             namespace.parent = Some(Box::new(parent));
         }
+
         Ok(namespace)
     }
 }

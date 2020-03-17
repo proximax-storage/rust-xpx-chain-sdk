@@ -17,9 +17,7 @@ use super::{request as __internal_request, Result, sirius_client::ApiClient};
 /// Chain ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct ChainRoutes<C: Connect> {
-    client: Arc<ApiClient<C>>,
-}
+pub struct ChainRoutes<C: Connect> (Arc<ApiClient<C>>);
 
 /// Chain related endpoints.
 ///
@@ -27,9 +25,7 @@ impl<C: Connect> ChainRoutes<C> where
     C: Clone + Send + Sync + 'static
 {
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
-        ChainRoutes {
-            client,
-        }
+        ChainRoutes(client)
     }
 
     /// Get the current height of the chain
@@ -65,7 +61,7 @@ impl<C: Connect> ChainRoutes<C> where
             Method::GET,
             "/chain/height".to_string(),
         );
-        let dto: Result<HeightInfoDto> = req.execute(self.client).await;
+        let dto: Result<HeightInfoDto> = req.execute(self.0).await;
 
         Ok(dto?.to_struct())
     }
@@ -110,7 +106,7 @@ impl<C: Connect> ChainRoutes<C> where
             "/chain/score".to_string(),
         );
 
-        let dto: Result<BlockchainScoreDto> = req.execute(self.client).await;
+        let dto: Result<BlockchainScoreDto> = req.execute(self.0).await;
 
         Ok(dto?.to_struct())
     }
@@ -150,6 +146,6 @@ impl<C: Connect> ChainRoutes<C> where
             "/diagnostic/storage".to_string(),
         );
 
-        req.execute(self.client).await
+        req.execute(self.0).await
     }
 }

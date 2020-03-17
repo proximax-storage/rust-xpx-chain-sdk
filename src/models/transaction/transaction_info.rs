@@ -72,16 +72,16 @@ impl AbstractTransaction {
         }
     }
 
-    pub(crate) fn get_hash(&self) -> &str {
-        match &self.transaction_info {
+    pub(crate) fn get_hash(&self) -> Hash {
+        match self.transaction_info.to_owned() {
             Some(h) => {
-                let hash = match &h.transaction_hash {
+                let hash = match h.transaction_hash {
                     Some(hs) => hs,
-                    _ => ""
+                    _ => "".to_string()
                 };
                 hash
             },
-            _ => ""
+            _ => "".to_string()
         }
     }
 

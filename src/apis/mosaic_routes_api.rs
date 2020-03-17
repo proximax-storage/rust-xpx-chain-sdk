@@ -15,9 +15,7 @@ use super::{internally::valid_vec_len, request as __internal_request, Result};
 /// Mosaic ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct MosaicRoutes<C: Connect> {
-    client: Arc<ApiClient<C>>,
-}
+pub struct MosaicRoutes<C: Connect> (Arc<ApiClient<C>>);
 
 /// Mosaic related endpoints.
 ///
@@ -25,9 +23,7 @@ impl<C: Connect> MosaicRoutes<C> where
     C: Clone + Send + Sync + 'static
 {
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
-        MosaicRoutes {
-            client,
-        }
+        MosaicRoutes(client)
     }
 
     /// Get [Mosaic] information.
@@ -75,7 +71,7 @@ impl<C: Connect> MosaicRoutes<C> where
 
         req = req.with_path_param("mosaic_id".to_string(), mosaic_id.to_string());
 
-        let dto: Result<MosaicInfoDto> = req.execute(self.client).await;
+        let dto: Result<MosaicInfoDto> = req.execute(self.0).await;
 
         Ok(dto?.to_struct()?)
     }
@@ -133,7 +129,7 @@ impl<C: Connect> MosaicRoutes<C> where
 
         req = req.with_body_param(mosaics_ids);
 
-        let dto: Vec<MosaicInfoDto> = req.execute(self.client).await?;
+        let dto: Vec<MosaicInfoDto> = req.execute(self.0).await?;
 
         let mut mosaics_info: Vec<MosaicInfo> = Vec::with_capacity(dto.len());
         for mosaic_info_dto in dto {
@@ -195,7 +191,7 @@ impl<C: Connect> MosaicRoutes<C> where
 
         req = req.with_body_param(mosaics_ids);
 
-        let dto: Vec<MosaicNamesDto> = req.execute(self.client).await?;
+        let dto: Vec<MosaicNamesDto> = req.execute(self.0).await?;
 
         let mut mosaics_names: Vec<MosaicNames> = Vec::with_capacity(dto.len());
         for mosaic_name_dto in dto {

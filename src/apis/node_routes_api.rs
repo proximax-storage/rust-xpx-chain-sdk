@@ -17,9 +17,7 @@ use super::{request as __internal_request, Result};
 /// Node ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NodeRoutes<C: Connect> {
-    client: Arc<ApiClient<C>>,
-}
+pub struct NodeRoutes<C: Connect> (Arc<ApiClient<C>>);
 
 /// Node related endpoints.
 ///
@@ -27,9 +25,7 @@ impl<C: Connect> NodeRoutes<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
-        NodeRoutes {
-            client,
-        }
+        NodeRoutes(client)
     }
 
     /// Get the node information.
@@ -66,7 +62,7 @@ impl<C: Connect> NodeRoutes<C> where
             Method::GET,
             "/node/info".to_string());
 
-        req.execute(self.client).await
+        req.execute(self.0).await
     }
 
     /// Get the node time.
@@ -103,7 +99,7 @@ impl<C: Connect> NodeRoutes<C> where
             Method::GET,
             "/node/time".to_string());
 
-        let dto: Result<NodeTimeDto> = req.execute(self.client).await;
+        let dto: Result<NodeTimeDto> = req.execute(self.0).await;
 
         Ok(dto?.to_struct())
     }

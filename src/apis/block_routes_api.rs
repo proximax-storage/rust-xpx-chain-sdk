@@ -16,9 +16,7 @@ use super::{
 /// Block ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct BlockRoutes<C: Connect> {
-    client: Arc<ApiClient<C>>,
-}
+pub struct BlockRoutes<C: Connect> (Arc<ApiClient<C>>);
 
 ///  Block related endpoints.
 ///
@@ -27,9 +25,7 @@ impl<C: Connect> BlockRoutes<C>
         C: Clone + Send + Sync + 'static
 {
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
-        BlockRoutes {
-            client,
-        }
+        BlockRoutes(client)
     }
 
     /// Get [BlockInfo] information
@@ -75,7 +71,7 @@ impl<C: Connect> BlockRoutes<C>
 
         req = req.with_path_param("height".to_string(), height.to_string());
 
-        let dto: Result<BlockInfoDto> = req.execute(self.client).await;
+        let dto: Result<BlockInfoDto> = req.execute(self.0).await;
 
         Ok(dto?.to_struct()?)
     }
@@ -143,7 +139,7 @@ impl<C: Connect> BlockRoutes<C>
 
         req = req.with_path_param("limit".to_string(), limit.to_string());
 
-        let dto: Vec<BlockInfoDto> = req.execute(self.client).await?;
+        let dto: Vec<BlockInfoDto> = req.execute(self.0).await?;
 
         let mut blocks_info: Vec<BlockInfo> = Vec::with_capacity(dto.len());
         for block_info_dto in dto {
@@ -212,7 +208,7 @@ impl<C: Connect> BlockRoutes<C>
         }
         req = req.with_path_param("height".to_string(), height.to_string());
 
-        let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.client).await?;
+        let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
 
         let mut transactions_info: Vec<Box<dyn Transaction>> = Vec::with_capacity(dto.len());
         for transaction_dto in dto {

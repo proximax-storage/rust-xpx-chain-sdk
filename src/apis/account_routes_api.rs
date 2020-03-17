@@ -32,9 +32,7 @@ const AGGREGATE_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/pa
 /// Account ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct AccountRoutes<C: Connect> {
-    client: Arc<ApiClient<C>>,
-}
+pub struct AccountRoutes<C: Connect> (Arc<ApiClient<C>>);
 
 /// Account related endpoints.
 ///
@@ -43,9 +41,7 @@ impl<C: Connect> AccountRoutes<C>
         C: Clone + Send + Sync + 'static
 {
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
-        AccountRoutes {
-            client,
-        }
+        AccountRoutes(client)
     }
 
     /// Get [Account] information
@@ -91,7 +87,7 @@ impl<C: Connect> AccountRoutes<C>
 
         req = req.with_path_param("accountId".to_string(), account_id.to_string());
 
-        let dto: Result<AccountInfoDto> = req.execute(self.client).await;
+        let dto: Result<AccountInfoDto> = req.execute(self.0).await;
 
         Ok(dto?.to_struct()?)
     }
@@ -146,7 +142,7 @@ impl<C: Connect> AccountRoutes<C>
 
         req = req.with_body_param(&accounts);
 
-        let dto: Vec<AccountInfoDto> = req.execute(self.client).await?;
+        let dto: Vec<AccountInfoDto> = req.execute(self.0).await?;
 
         let mut accounts_info: Vec<AccountInfo> = Vec::with_capacity(dto.len());
         for account_dto in dto {
@@ -304,7 +300,7 @@ impl<C: Connect> AccountRoutes<C>
         req = req.is_transaction_vec();
 
         async {
-            let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.client).await?;
+            let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
 
             let mut transactions_info: Vec<Box<dyn Transaction>> = Vec::with_capacity(dto.len());
             for transaction_info_dto in dto {

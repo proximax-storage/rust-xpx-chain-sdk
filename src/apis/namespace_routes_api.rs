@@ -24,9 +24,7 @@ const NAMESPACES_FROM_ACCOUNT_ROUTES: &str = "/account/{accountId}/namespaces";
 /// Namespace ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NamespaceRoutes<C: Connect> {
-    client: Arc<ApiClient<C>>,
-}
+pub struct NamespaceRoutes<C: Connect> (Arc<ApiClient<C>>);
 
 /// Namespace related endpoints.
 ///
@@ -34,12 +32,45 @@ impl<C: Connect> NamespaceRoutes<C> where
     C: Clone + Send + Sync + 'static
 {
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
-        NamespaceRoutes {
-            client,
-        }
+        NamespaceRoutes(client)
     }
 
-    async fn __get_namespace_info(self, namespace_id: NamespaceId) -> Result<NamespaceInfo> {
+    fn __build_namespace_hierarchy<'b>(self, ns_info: &'b mut NamespaceInfo) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
+        Box::pin(async move {
+            let mut info_parent = match &ns_info.parent {
+                Some(info) => info,
+                _ => return ()
+            };
+
+            if info_parent.namespace_id.to_u64() == 0 {
+                return ()
+            }
+
+            let rest_info = self.clone().get_namespace_info(info_parent.namespace_id).await;
+            let mut parent_ns_info = match rest_info {
+                Ok(parent) => Box::new(parent),
+                _ => return ()
+            };
+
+            ns_info.parent = Some(parent_ns_info.to_owned());
+
+            if let None = parent_ns_info.to_owned().parent {
+                return ()
+            }
+
+            self.__build_namespace_hierarchy(&mut parent_ns_info).await
+        })
+    }
+
+    fn __build_namespaces_hierarchy<'b>(self, ns_infos: &'b mut Vec<NamespaceInfo>) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
+        Box::pin(async move {
+            for ns_info in ns_infos.iter_mut() {
+                self.clone().__build_namespace_hierarchy(ns_info).await
+            }
+        })
+    }
+
+    pub async fn get_namespace_info(self, namespace_id: NamespaceId) -> Result<NamespaceInfo> {
         let mut req = __internal_request::Request::new(
             Method::GET,
             NAMESPACE_ROUTE.to_string(),
@@ -47,18 +78,11 @@ impl<C: Connect> NamespaceRoutes<C> where
 
         req = req.with_path_param("namespaceId".to_string(), namespace_id.to_string());
 
-        let dto_raw: Result<NamespaceInfoDto> = req.clone().execute(self.client.to_owned()).await;
+        let dto_raw: Result<NamespaceInfoDto> = req.clone().execute(self.0.to_owned()).await;
 
         let mut dto_to_struct = dto_raw?.to_struct()?;
 
-        Ok(dto_to_struct)
-    }
-
-    pub async fn get_namespace_info(self, namespace_id: NamespaceId) -> Result<NamespaceInfo> {
-
-        let mut dto_to_struct =  self.clone().__get_namespace_info(namespace_id).await?;
-
-        self.build_namespace_hierarchy(&mut dto_to_struct).await;
+        self.__build_namespace_hierarchy(&mut dto_to_struct).await;
 
         Ok(dto_to_struct)
     }
@@ -74,7 +98,7 @@ impl<C: Connect> NamespaceRoutes<C> where
 
         req = req.with_body_param(namespace_ids_);
 
-        let dto: Vec<NamespaceNameDto> = req.execute(self.client).await?;
+        let dto: Vec<NamespaceNameDto> = req.execute(self.0).await?;
 
         let mut namespace_name: Vec<NamespaceName> = Vec::with_capacity(dto.len());
         for namespace_name_dto in dto {
@@ -100,36 +124,15 @@ impl<C: Connect> NamespaceRoutes<C> where
 
         req = req.with_path_param("accountId".to_string(), address.address.to_string());
 
-        let dto: Vec<NamespaceInfoDto> = req.execute(self.client).await?;
+        let dto: Vec<NamespaceInfoDto> = req.execute(self.0.to_owned()).await?;
 
         let mut namespace_info: Vec<NamespaceInfo> = Vec::with_capacity(dto.len());
         for namespace_dto in dto {
             namespace_info.push(namespace_dto.to_struct()?);
         }
 
+        self.__build_namespaces_hierarchy(&mut namespace_info).await;
+
         Ok(namespace_info)
-    }
-
-    fn build_namespace_hierarchy<'b>(self, ns_info:  &'b mut NamespaceInfo) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
-        Box::pin(async move {
-            let mut info_parent = match ns_info.parent.to_owned() {
-                Some(info) => info,
-                _ => return ()
-            };
-
-            if info_parent.namespace_id.0 == Uint64::default(){
-                return ()
-            }
-
-            let rest_info = self.clone().__get_namespace_info(info_parent.namespace_id).await;
-            let mut parent_ns_info = match rest_info {
-                Ok(parent) => Box::new(parent),
-                _ => return ()
-            };
-
-            ns_info.parent = Some(parent_ns_info.to_owned());
-
-            self.build_namespace_hierarchy(&mut parent_ns_info).await
-        })
     }
 }

@@ -21,12 +21,9 @@ pub type Hash = String;
 pub type Transactions = Vec<Box<dyn Transaction>>;
 
 pub trait AbsTransaction {
-
     fn abs_transaction(&self) -> AbstractTransaction;
 
-    fn transaction_hash(&self) -> &str {
-        self.abs_transaction().get_hash()
-    }
+    fn transaction_hash(&self) -> Hash { self.abs_transaction().get_hash() }
 
     /// Returns `true` if this transaction has missing signatures.
     fn has_missing_signatures(&self) -> bool {

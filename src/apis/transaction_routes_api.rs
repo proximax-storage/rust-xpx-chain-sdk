@@ -26,9 +26,7 @@ use super::{
 /// Transaction ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct TransactionRoutes<C: Connect> {
-    client: Arc<ApiClient<C>>,
-}
+pub struct TransactionRoutes<C: Connect> (Arc<ApiClient<C>>);
 
 /// Transaction related endpoints.
 ///
@@ -36,9 +34,7 @@ impl<C: Connect> TransactionRoutes<C> where
     C: Clone + Send + Sync + 'static,
 {
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
-        TransactionRoutes {
-            client,
-        }
+        TransactionRoutes(client)
     }
 
     /// Get transaction status
@@ -84,7 +80,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         req = req.with_path_param("hash".to_string(), hash.to_string());
 
-        let dto: Result<TransactionStatusDto> = req.execute(self.client).await;
+        let dto: Result<TransactionStatusDto> = req.execute(self.0).await;
 
         Ok(dto?.to_struct())
     }
@@ -142,7 +138,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         req = req.with_body_param(transaction_hashes);
 
-        let dto: Vec<TransactionStatusDto> = req.execute(self.client).await?;
+        let dto: Vec<TransactionStatusDto> = req.execute(self.0).await?;
 
         let mut statuses: Vec<TransactionStatus> = Vec::with_capacity(dto.len());
         for status_dto in dto {
@@ -195,7 +191,7 @@ impl<C: Connect> TransactionRoutes<C> where
         req = req.with_path_param("transactionId".to_string(), transaction_id.to_string())
             .is_transaction();
 
-        let version: Box<dyn TransactionDto> = req.execute(self.client).await?;
+        let version: Box<dyn TransactionDto> = req.execute(self.0).await?;
 
         Ok(version.to_struct()?)
     }
@@ -252,7 +248,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         req = req.with_body_param(ids).is_transaction_vec();
 
-        let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.client).await?;
+        let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
 
         let mut transactions_info: Vec<Box<dyn Transaction>> = Vec::with_capacity(dto.len());
         for transaction_info_dto in dto {
@@ -346,7 +342,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         req = req.with_body_param(transaction_signed);
 
-        req.execute(self.client).await
+        req.execute(self.0).await
     }
 
     pub async fn announce_partial(self, signed_transaction: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
@@ -357,7 +353,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         req = req.with_body_param(signed_transaction);
 
-        req.execute(self.client).await
+        req.execute(self.0).await
     }
 
     pub async fn announce_cosignature(self, cosignature: String) -> Result<AnnounceTransactionInfo> {

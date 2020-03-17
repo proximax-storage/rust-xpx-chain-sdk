@@ -57,6 +57,12 @@ pub struct NamespaceInfo {
     pub end_height: Height,
 }
 
+impl NamespaceInfo {
+    pub fn get_parent(&self) -> Option<Box<NamespaceInfo>> {
+        self.parent.to_owned()
+    }
+}
+
 impl fmt::Display for NamespaceInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}",
