@@ -30,10 +30,10 @@ async fn main() {
         vec![mosaic02.clone(), mosaic03.clone()]).await;
 
     match mosaics_info {
-        Ok(resp) => {
-            for mosaic in resp {
-                println!("{}", mosaic)
-            }
+        Ok(mosaics) => {
+            mosaics.iter().for_each(|mosaic_info|{
+                println!("{}", mosaic_info)
+            })
         }
         Err(err) => panic!("{:?}", err),
     }
@@ -42,10 +42,10 @@ async fn main() {
         vec![mosaic02, mosaic03]).await;
 
     match mosaics_names {
-        Ok(resp) => {
-            for mosaic in resp {
-                println!("{}", mosaic)
-            }
+        Ok(mosaic) => {
+            mosaic.iter().for_each(|name|{
+                println!("{}", name)
+            })
         }
         Err(err) => panic!("{:?}", err),
     }

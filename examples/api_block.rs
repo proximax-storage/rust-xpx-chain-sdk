@@ -20,10 +20,10 @@ async fn main() {
 
     let blocks_by_height_with_limit = client.block.get_blocks_by_height_with_limit(1, 25).await;
     match blocks_by_height_with_limit {
-        Ok(resp) => {
-            for i in resp {
-                println!("{}", i)
-            }
+        Ok(blocks) => {
+            blocks.iter().for_each(|block_info|{
+                println!("{}", block_info)
+            })
         }
         Err(err) => eprintln!("{:?}", err),
     }

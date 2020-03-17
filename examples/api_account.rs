@@ -15,32 +15,28 @@ async fn main() {
     let public_account = PublicAccount::from_public_key(PUBLIC_KEY_B, PUBLIC_TEST).unwrap();
 
     let account_info = client.to_owned().account.account_info(PUBLIC_KEY_A).await;
-
     match account_info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{:?}", err),
     }
 
-    let accounts_info = client.clone().account.accounts_info(
-        vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
-
+    let accounts_info = client.clone().account.accounts_info(vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
     match accounts_info {
-        Ok(tx) => {
-            for info in tx {
-                println!("{}", info)
-            }
-        },
+        Ok(accounts) => {
+            accounts.iter().for_each(|account_info|{
+                println!("{}", account_info)
+            })
+        }
         Err(err) => eprintln!("{:?}", err),
     }
 
-    let accounts_transactions = client.account.incoming_transactions(
-        public_account, None, None, Some("id")).await;
+    let accounts_transactions = client.account.incoming_transactions( public_account, None, None, Some("id")).await;
     match accounts_transactions {
-        Ok(tx) => {
-            for i in tx {
-                println!("{}", i)
-            }
-        },
+        Ok(accounts) => {
+            accounts.iter().for_each(|account_txs|{
+                println!("{}", account_txs)
+            })
+        }
         Err(err) => eprintln!("{:?}", err),
     }
 }

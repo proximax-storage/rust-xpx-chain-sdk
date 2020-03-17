@@ -31,7 +31,7 @@ async fn main() {
 
     let register_namespace_root = RegisterNamespaceTransaction::create_root(
         deadline,
-        "rustnamespace",
+        "rust",
         Uint64::new(100),
         network_type
     );
@@ -52,17 +52,17 @@ async fn main() {
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
     println!("Hash: \t\t{}", sig_transaction.get_hash().to_uppercase());
 
-    let response_root = client.to_owned().transaction.announce(&sig_transaction).await;
-
-    match response_root {
-        Ok(response) => println!("{}\n", response),
-        Err(err) => eprintln!("{:?}", err),
-    }
+//    let response_root = client.to_owned().transaction.announce(&sig_transaction).await;
+//
+//    match response_root {
+//        Ok(response) => println!("{}\n", response),
+//        Err(err) => eprintln!("{:?}", err),
+//    }
 
     let register_namespace_sub = RegisterNamespaceTransaction::create_sub(
         deadline,
-        "latam",
-        NamespaceId::from_name("rustnamespace").unwrap(),
+        "colombia",
+        NamespaceId::from_name("rust.latam").unwrap(),
         network_type
     );
 

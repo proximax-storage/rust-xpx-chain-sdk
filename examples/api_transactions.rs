@@ -27,9 +27,9 @@ async fn main() {
         transactions_ids.clone()).await;
     match transactions_statuses {
         Ok(statuses) => {
-            for status in statuses {
+            statuses.iter().for_each(|status|{
                 println!("{}", status)
-            }
+            })
         }
         Err(err) => eprintln!("{:?}", err),
     }
@@ -43,11 +43,11 @@ async fn main() {
 
     let transactions = client.clone().transaction.get_transactions(transactions_ids).await;
     match transactions {
-        Ok(tx) => {
-            for i in tx {
-                println!("{}", i)
-            }
-        },
+        Ok(txs) => {
+            txs.iter().for_each(|tx_info|{
+                println!("{}", tx_info)
+            })
+        }
         Err(err) => eprintln!("{:?}", err),
     }
 }
