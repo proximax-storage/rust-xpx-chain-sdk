@@ -100,7 +100,7 @@ impl NamespaceInfoDto {
         };
 
         if parent_id.to_u64() != 0 {
-            let mut parent = NamespaceInfo {
+            let parent = NamespaceInfo {
                 namespace_id: parent_id,
                 active: false,
                 type_space: NamespaceType::Root,

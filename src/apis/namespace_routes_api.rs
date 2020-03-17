@@ -37,7 +37,7 @@ impl<C: Connect> NamespaceRoutes<C> where
 
     fn __build_namespace_hierarchy<'b>(self, ns_info: &'b mut NamespaceInfo) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
         Box::pin(async move {
-            let mut info_parent = match &ns_info.parent {
+            let info_parent = match &ns_info.parent {
                 Some(info) => info,
                 _ => return ()
             };
