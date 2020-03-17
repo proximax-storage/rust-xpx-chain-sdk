@@ -15,7 +15,6 @@ use crate::models::transaction::{Transaction, TransactionDto};
 
 use super::{internally::valid_vec_len, request as __internal_request, Result, sirius_client::ApiClient};
 
-// routes Account ApiClient routes.
 const ACCOUNTS_ROUTE: &str = "/account";
 const ACCOUNT_ROUTE: &str = "/account/{accountId}";
 const ACCOUNT_NAMES_ROUTE: &str = "/account/names";

@@ -28,6 +28,13 @@ use super::{
 #[derive(Clone)]
 pub struct TransactionRoutes<C: Connect> (Arc<ApiClient<C>>);
 
+const TRANSACTIONS_ROUTE: &str = "/transaction";
+const TRANSACTION_ROUTE: &str = "/transaction/{transactionId}";
+const TRANSACTION_STATUS_ROUTE: &str = "/transaction/{hash}/status";
+const TRANSACTIONS_STATUS_ROUTE: &str = "/transaction/statuses";
+const ANNOUNCE_AGGREGATE_ROUTE: &str = "/transaction/partial";
+const ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE: &str = "/transaction/cosignature";
+
 /// Transaction related endpoints.
 ///
 impl<C: Connect> TransactionRoutes<C> where
@@ -75,7 +82,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         let mut req = __internal_request::Request::new(
             Method::GET,
-            "/transaction/{hash}/status".to_string(),
+            TRANSACTION_STATUS_ROUTE.to_string(),
         );
 
         req = req.with_path_param("hash".to_string(), hash.to_string());
@@ -133,7 +140,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
-            "/transaction/statuses".to_string(),
+            TRANSACTIONS_STATUS_ROUTE.to_string(),
         );
 
         req = req.with_body_param(transaction_hashes);
@@ -243,7 +250,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         let mut req = __internal_request::Request::new(
             Method::POST,
-            "/transaction".to_string(),
+            TRANSACTIONS_ROUTE.to_string(),
         );
 
         req = req.with_body_param(ids).is_transaction_vec();
@@ -348,7 +355,7 @@ impl<C: Connect> TransactionRoutes<C> where
     pub async fn announce_partial(self, signed_transaction: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
         let mut req = __internal_request::Request::new(
             Method::PUT,
-            "/transaction/partial".to_string(),
+            ANNOUNCE_AGGREGATE_ROUTE.to_string(),
         );
 
         req = req.with_body_param(signed_transaction);
@@ -359,7 +366,7 @@ impl<C: Connect> TransactionRoutes<C> where
     pub async fn announce_cosignature(self, cosignature: String) -> Result<AnnounceTransactionInfo> {
         let mut req = __internal_request::Request::new(
             Method::PUT,
-            "/transaction/cosignature".to_string(),
+            ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE.to_string(),
         );
         req.with_body_param(cosignature);
 

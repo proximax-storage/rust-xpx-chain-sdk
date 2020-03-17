@@ -15,7 +15,6 @@ use crate::Uint64;
 
 use super::{internally::valid_vec_len, request as __internal_request, Result};
 
-// Namespace ApiClient routes
 const NAMESPACE_ROUTE: &str = "/namespace/{namespaceId}";
 const NAMESPACES_FROM_ACCOUNTS_ROUTE: &str = "/account/namespaces";
 const NAMESPACE_NAMES_ROUTE: &str = "/namespace/names";

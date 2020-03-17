@@ -14,6 +14,9 @@ use crate::{
 
 use super::{request as __internal_request, Result};
 
+const NODE_INFO: &str = "/node/info";
+const NODE_TIME: &str = "/node/time";
+
 /// Node ApiClient routes.
 ///
 #[derive(Clone)]
@@ -60,7 +63,7 @@ impl<C: Connect> NodeRoutes<C> where
     pub async fn get_node_info(self) -> Result<NodeInfo> {
         let req = __internal_request::Request::new(
             Method::GET,
-            "/node/info".to_string());
+            NODE_INFO.to_string());
 
         req.execute(self.0).await
     }
@@ -97,7 +100,7 @@ impl<C: Connect> NodeRoutes<C> where
     pub async fn get_node_time(self) -> Result<NodeTime> {
         let req = __internal_request::Request::new(
             Method::GET,
-            "/node/time".to_string());
+            NODE_TIME.to_string());
 
         let dto: Result<NodeTimeDto> = req.execute(self.0).await;
 

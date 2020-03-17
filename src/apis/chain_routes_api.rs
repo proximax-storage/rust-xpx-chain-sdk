@@ -14,6 +14,10 @@ use crate::{
 
 use super::{request as __internal_request, Result, sirius_client::ApiClient};
 
+const CHAIN_STORAGE_ROUTE: &str = "/diagnostic/storage";
+const CHAIN_SCORE_ROUTE: &str = "/chain/score";
+const CHAIN_HEIGHT_ROUTE: &str = "/chain/height";
+
 /// Chain ApiClient routes.
 ///
 #[derive(Clone)]
@@ -59,7 +63,7 @@ impl<C: Connect> ChainRoutes<C> where
     pub async fn get_blockchain_height(self) -> Result<HeightInfo> {
         let req = __internal_request::Request::new(
             Method::GET,
-            "/chain/height".to_string(),
+            CHAIN_HEIGHT_ROUTE.to_string(),
         );
         let dto: Result<HeightInfoDto> = req.execute(self.0).await;
 
@@ -103,7 +107,7 @@ impl<C: Connect> ChainRoutes<C> where
     pub async fn get_blockchain_score(self) -> Result<BlockchainScore> {
         let req = __internal_request::Request::new(
             Method::GET,
-            "/chain/score".to_string(),
+            CHAIN_SCORE_ROUTE.to_string(),
         );
 
         let dto: Result<BlockchainScoreDto> = req.execute(self.0).await;
@@ -143,7 +147,7 @@ impl<C: Connect> ChainRoutes<C> where
     pub async fn get_blockchain_storage(self) -> Result<StorageInfo> {
         let req = __internal_request::Request::new(
             Method::GET,
-            "/diagnostic/storage".to_string(),
+            CHAIN_STORAGE_ROUTE.to_string(),
         );
 
         req.execute(self.0).await

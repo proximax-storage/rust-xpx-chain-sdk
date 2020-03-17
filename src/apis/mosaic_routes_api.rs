@@ -12,6 +12,10 @@ use crate::{
 
 use super::{internally::valid_vec_len, request as __internal_request, Result};
 
+const MOSAICS_ROUTE: &str = "/mosaic";
+const MOSAIC_ROUTE: &str = "/mosaic/{mosaic_id}";
+const MOSAIC_NAMES_ROUTE: &str = "/mosaic/names";
+
 /// Mosaic ApiClient routes.
 ///
 #[derive(Clone)]
@@ -66,7 +70,7 @@ impl<C: Connect> MosaicRoutes<C> where
     pub async fn get_mosaic_info(self, mosaic_id: MosaicId) -> Result<MosaicInfo> {
         let mut req = __internal_request::Request::new(
             Method::GET,
-            "/mosaic/{mosaic_id}".to_string(),
+            MOSAIC_ROUTE.to_string(),
         );
 
         req = req.with_path_param("mosaic_id".to_string(), mosaic_id.to_string());
@@ -124,7 +128,7 @@ impl<C: Connect> MosaicRoutes<C> where
         let mosaics_ids = MosaicIds::from(mosaic_ids);
         let mut req = __internal_request::Request::new(
             Method::POST,
-            "/mosaic".to_string(),
+            MOSAICS_ROUTE.to_string(),
         );
 
         req = req.with_body_param(mosaics_ids);
@@ -186,7 +190,7 @@ impl<C: Connect> MosaicRoutes<C> where
 
         let mut req = __internal_request::Request::new(
             Method::POST,
-            "/mosaic/names".to_string(),
+            MOSAIC_NAMES_ROUTE.to_string(),
         );
 
         req = req.with_body_param(mosaics_ids);

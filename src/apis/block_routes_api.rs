@@ -13,6 +13,10 @@ use super::{
     sirius_client::ApiClient,
 };
 
+const BLOCK_BY_HEIGHT_ROUTE: &str = "/block/{height}";
+const BLOCK_GET_TRANSACTION_ROUTE: &str = "/block/{height}/transactions";
+const BLOCK_INFO_ROUTE: &str = "/blocks/{height}/limit/{limit}";
+
 /// Block ApiClient routes.
 ///
 #[derive(Clone)]
@@ -66,7 +70,7 @@ impl<C: Connect> BlockRoutes<C>
 
         let mut req = __internal_request::Request::new(
             Method::GET,
-            "/block/{height}".to_string(),
+            BLOCK_BY_HEIGHT_ROUTE.to_string(),
         );
 
         req = req.with_path_param("height".to_string(), height.to_string());
@@ -132,7 +136,7 @@ impl<C: Connect> BlockRoutes<C>
 
         let mut req = __internal_request::Request::new(
             Method::GET,
-            "/blocks/{height}/limit/{limit}".to_string(),
+            BLOCK_INFO_ROUTE.to_string(),
         );
 
         req = req.with_path_param("height".to_string(), height.to_string());
@@ -197,7 +201,7 @@ impl<C: Connect> BlockRoutes<C>
         self, height: u64, page_size: Option<i32>, id: Option<&str>) -> Result<Transactions> {
         let mut req = __internal_request::Request::new(
             Method::GET,
-            "/block/{height}/transactions".to_string(),
+            BLOCK_GET_TRANSACTION_ROUTE.to_string(),
         );
 
         if let Some(ref s) = page_size {
