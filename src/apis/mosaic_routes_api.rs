@@ -135,10 +135,12 @@ impl<C: Connect> MosaicRoutes<C> where
 
         let dto: Vec<MosaicInfoDto> = req.execute(self.0).await?;
 
-        let mut mosaics_info: Vec<MosaicInfo> = Vec::with_capacity(dto.len());
-        for mosaic_info_dto in dto {
-            mosaics_info.push(mosaic_info_dto.to_struct()?);
-        }
+        let mosaics_info = dto.into_iter()
+            .map(move |mosaic_dto|
+                {
+                    mosaic_dto.to_struct().unwrap()
+                }
+            ).collect();
 
         Ok(mosaics_info)
     }
@@ -197,10 +199,12 @@ impl<C: Connect> MosaicRoutes<C> where
 
         let dto: Vec<MosaicNamesDto> = req.execute(self.0).await?;
 
-        let mut mosaics_names: Vec<MosaicNames> = Vec::with_capacity(dto.len());
-        for mosaic_name_dto in dto {
-            mosaics_names.push(mosaic_name_dto.to_struct());
-        }
+        let mosaics_names = dto.into_iter()
+            .map(move |name_dto|
+                {
+                    name_dto.to_struct()
+                }
+            ).collect();
 
         Ok(mosaics_names)
     }

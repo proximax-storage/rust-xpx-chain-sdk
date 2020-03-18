@@ -145,10 +145,12 @@ impl<C: Connect> BlockRoutes<C>
 
         let dto: Vec<BlockInfoDto> = req.execute(self.0).await?;
 
-        let mut blocks_info: Vec<BlockInfo> = Vec::with_capacity(dto.len());
-        for block_info_dto in dto {
-            blocks_info.push(block_info_dto.to_struct()?);
-        }
+        let blocks_info: Vec<BlockInfo> = dto.into_iter()
+            .map(move |block_inf|
+                {
+                    block_inf.to_struct().unwrap()
+                }
+            ).collect();
 
         Ok(blocks_info)
     }
@@ -210,14 +212,16 @@ impl<C: Connect> BlockRoutes<C>
         if let Some(ref s) = id {
             req = req.with_query_param("id".to_string(), s.to_string());
         }
-        req = req.with_path_param("height".to_string(), height.to_string());
+        req = req.with_path_param("height".to_string(), height.to_string()).is_transaction_vec();
 
         let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
 
-        let mut transactions_info: Vec<Box<dyn Transaction>> = Vec::with_capacity(dto.len());
-        for transaction_dto in dto {
-            transactions_info.push(transaction_dto.to_struct()?);
-        }
+        let transactions_info: Transactions = dto.into_iter()
+            .map(move |transaction_dto|
+                {
+                    transaction_dto.to_struct().unwrap()
+                }
+            ).collect();
 
         Ok(transactions_info)
     }

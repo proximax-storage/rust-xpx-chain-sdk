@@ -11,7 +11,7 @@ use crate::models::{
 };
 
 use crate::models::account::PublicAccount;
-use crate::models::transaction::{Transaction, TransactionDto};
+use crate::models::transaction::{Transaction, TransactionDto, Transactions};
 
 use super::{internally::valid_vec_len, request as __internal_request, Result, sirius_client::ApiClient};
 
@@ -143,17 +143,19 @@ impl<C: Connect> AccountRoutes<C>
 
         let dto: Vec<AccountInfoDto> = req.execute(self.0).await?;
 
-        let mut accounts_info: Vec<AccountInfo> = Vec::with_capacity(dto.len());
-        for account_dto in dto {
-            accounts_info.push(account_dto.to_struct()?);
-        }
+        let accounts_info = dto.into_iter()
+            .map(move |account_dto|
+                {
+                    account_dto.to_struct().unwrap()
+                }
+            ).collect();
 
         Ok(accounts_info)
     }
 
     pub async fn transactions(self, public_account: PublicAccount, page_size: Option<i32>,
                               id: Option<&str>, ordering: Option<&str>) ->
-                              Result<Vec<Box<dyn Transaction>>>
+                              Result<Transactions>
     {
         let transactions_options = AccountTransactionsOption::new(
             page_size, id, ordering
@@ -165,7 +167,7 @@ impl<C: Connect> AccountRoutes<C>
 
     pub async fn incoming_transactions(self, public_account: PublicAccount, page_size: Option<i32>,
                                        id: Option<&str>, ordering: Option<&str>) ->
-                                       Result<Vec<Box<dyn Transaction>>>
+                                       Result<Transactions>
     {
         let transactions_options = AccountTransactionsOption::new(
             page_size, id, ordering
@@ -177,7 +179,7 @@ impl<C: Connect> AccountRoutes<C>
 
     pub async fn outgoing_transactions(self, public_account: PublicAccount, page_size: Option<i32>,
                                        id: Option<&str>, ordering: Option<&str>) ->
-                                       Result<Vec<Box<dyn Transaction>>>
+                                       Result<Transactions>
     {
         let transactions_options = AccountTransactionsOption::new(
             page_size, id, ordering
@@ -189,7 +191,7 @@ impl<C: Connect> AccountRoutes<C>
 
     pub async fn unconfirmed_transactions(self, public_account: PublicAccount, page_size: Option<i32>,
                                           id: Option<&str>, ordering: Option<&str>) ->
-                                          Result<Vec<Box<dyn Transaction>>> {
+                                          Result<Transactions> {
         let transactions_options = AccountTransactionsOption::new(
             page_size, id, ordering
         )?;
@@ -200,7 +202,7 @@ impl<C: Connect> AccountRoutes<C>
 
     pub async fn partial_transactions(self, public_account: PublicAccount, page_size: Option<i32>,
                                       id: Option<&str>, ordering: Option<&str>) ->
-                                      Result<Vec<Box<dyn Transaction>>> {
+                                      Result<Transactions> {
         let transactions_options = AccountTransactionsOption::new(
             page_size, id, ordering
         )?;
@@ -277,7 +279,7 @@ impl<C: Connect> AccountRoutes<C>
 
     fn __internal_transactions(self, public_account: PublicAccount, route: &str,
                                options: AccountTransactionsOption) ->
-                               impl Future<Output = Result<Vec<Box<dyn Transaction>>>>
+                               impl Future<Output = Result<Transactions>>
     {
         let mut req = __internal_request::Request::new(
             Method::GET, route.to_string(),
@@ -301,10 +303,12 @@ impl<C: Connect> AccountRoutes<C>
         async {
             let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
 
-            let mut transactions_info: Vec<Box<dyn Transaction>> = Vec::with_capacity(dto.len());
-            for transaction_info_dto in dto {
-                transactions_info.push(transaction_info_dto.to_struct()?);
-            }
+            let transactions_info: Transactions = dto.into_iter()
+                .map(move |transaction_dto|
+                    {
+                        transaction_dto.to_struct().unwrap()
+                    }
+                ).collect();
 
             Ok(transactions_info)
         }

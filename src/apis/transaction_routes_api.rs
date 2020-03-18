@@ -22,6 +22,7 @@ use super::{
     Result,
     sirius_client::ApiClient
 };
+use crate::models::transaction::{Transactions, TransactionsStatus};
 
 /// Transaction ApiClient routes.
 ///
@@ -131,7 +132,7 @@ impl<C: Connect> TransactionRoutes<C> where
     /// Returns a Future `Result` whose okay value is an vector of [TransactionStatus] for a 
     /// given vector of transaction hashes or whose error value is an `Error<Value>` describing the
     /// error that occurred.
-    pub async fn get_transactions_statuses(self, hashes: Vec<&str>) -> Result<Vec<TransactionStatus>> {
+    pub async fn get_transactions_statuses(self, hashes: Vec<&str>) -> Result<TransactionsStatus> {
         valid_vec_len(&hashes, ERR_EMPTY_TRANSACTION_HASHES)?;
 
         valid_vec_hash(&hashes)?;
@@ -147,10 +148,12 @@ impl<C: Connect> TransactionRoutes<C> where
 
         let dto: Vec<TransactionStatusDto> = req.execute(self.0).await?;
 
-        let mut statuses: Vec<TransactionStatus> = Vec::with_capacity(dto.len());
-        for status_dto in dto {
-            statuses.push(status_dto.to_struct());
-        }
+        let statuses: TransactionsStatus = dto.into_iter()
+            .map(move |status_dto|
+                {
+                    status_dto.to_struct()
+                }
+            ).collect();
 
         Ok(statuses)
     }
@@ -241,7 +244,7 @@ impl<C: Connect> TransactionRoutes<C> where
     ///
     /// Returns a Future `Result` whose okay value is an [Transactions] for a given vector of
     /// transactionIds or whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn get_transactions(self, transaction_ids: Vec<&str>) -> Result<Vec<Box<dyn Transaction>>> {
+    pub async fn get_transactions(self, transaction_ids: Vec<&str>) -> Result<Transactions> {
         valid_vec_len(&transaction_ids, ERR_EMPTY_TRANSACTION_IDS)?;
 
         valid_vec_hash(&transaction_ids)?;
@@ -257,10 +260,12 @@ impl<C: Connect> TransactionRoutes<C> where
 
         let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
 
-        let mut transactions_info: Vec<Box<dyn Transaction>> = Vec::with_capacity(dto.len());
-        for transaction_info_dto in dto {
-            transactions_info.push(transaction_info_dto.to_struct()?);
-        }
+        let transactions_info: Transactions = dto.into_iter()
+            .map(move |transaction_dto|
+                {
+                    transaction_dto.to_struct().unwrap()
+                }
+            ).collect();
 
         Ok(transactions_info)
     }
@@ -378,7 +383,6 @@ impl<C: Connect> TransactionRoutes<C> where
 
 #[derive(Debug, Deserialize)]
 pub struct AnnounceTransactionInfo {
-    #[serde(rename = "message")]
     pub message: String,
 }
 

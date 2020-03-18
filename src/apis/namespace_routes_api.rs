@@ -99,10 +99,12 @@ impl<C: Connect> NamespaceRoutes<C> where
 
         let dto: Vec<NamespaceNameDto> = req.execute(self.0).await?;
 
-        let mut namespace_name: Vec<NamespaceName> = Vec::with_capacity(dto.len());
-        for namespace_name_dto in dto {
-            namespace_name.push(namespace_name_dto.to_struct()?);
-        }
+        let namespace_name: Vec<NamespaceName> = dto.into_iter()
+            .map(move |namespace_name_dto|
+                {
+                    namespace_name_dto.to_struct().unwrap()
+                }
+            ).collect();
 
         Ok(namespace_name)
     }
@@ -125,10 +127,12 @@ impl<C: Connect> NamespaceRoutes<C> where
 
         let dto: Vec<NamespaceInfoDto> = req.execute(self.0.to_owned()).await?;
 
-        let mut namespace_info: Vec<NamespaceInfo> = Vec::with_capacity(dto.len());
-        for namespace_dto in dto {
-            namespace_info.push(namespace_dto.to_struct()?);
-        }
+        let mut namespace_info: Vec<NamespaceInfo> = dto.into_iter()
+            .map(move |namespace_dto|
+                {
+                    namespace_dto.to_struct().unwrap()
+                }
+            ).collect();
 
         self.__build_namespaces_hierarchy(&mut namespace_info).await;
 

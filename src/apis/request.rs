@@ -84,20 +84,25 @@ impl Request {
         let headers: HeaderMap = HeaderMap::new();
 
         let mut path = self.path;
-        for (k, v) in self.path_params {
-            // replace {id} with the value of the id path param
-            path = path.replace(&format!("{{{}}}", k), &v);
-        }
 
-        for (k, v) in self.header_params {
-            raw_headers.insert(k, v);
-        }
+        self.path_params.into_iter().for_each(|(key, val)|
+            {
+                // replace {id} with the value of the id path param
+                path = path.replace(&format!("{{{}}}", key), &val);
+            });
+
+
+        self.header_params.into_iter().for_each(|(key, val)|
+            {
+                raw_headers.insert(key, val);
+            });
 
         let mut query_string = ::url::form_urlencoded::Serializer::new("".to_owned());
 
-        for (key, val) in self.query_params {
-            query_string.append_pair(&key, &val);
-        }
+        self.query_params.iter().for_each(|(key, val)|
+            {
+                query_string.append_pair(key, val);
+            });
 
         let mut uri_str = format!("{}{}", api.base_path, path);
 

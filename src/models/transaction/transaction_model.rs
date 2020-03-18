@@ -20,6 +20,8 @@ pub type Hash = String;
 
 pub type Transactions = Vec<Box<dyn Transaction>>;
 
+pub type TransactionsStatus = Vec<TransactionStatus>;
+
 pub trait AbsTransaction {
     fn abs_transaction(&self) -> AbstractTransaction;
 

@@ -18,11 +18,21 @@ async fn main() {
         Err(err) => eprintln!("{:?}", err),
     }
 
-    let blocks_by_height_with_limit = client.block.get_blocks_by_height_with_limit(1, 25).await;
+    let blocks_by_height_with_limit = client.to_owned().block.get_blocks_by_height_with_limit(1, 25).await;
     match blocks_by_height_with_limit {
         Ok(blocks) => {
             blocks.iter().for_each(|block_info|{
                 println!("{}", block_info)
+            })
+        }
+        Err(err) => eprintln!("{:?}", err),
+    }
+
+    let block_transactions = client.block.get_block_transactions(929413, None, None).await;
+    match block_transactions {
+        Ok(transactions) => {
+            transactions.iter().for_each(|tx_info|{
+                println!("{}", tx_info)
             })
         }
         Err(err) => eprintln!("{:?}", err),
