@@ -15,7 +15,7 @@ async fn main() {
     let block_by_height = client.to_owned().block.get_block_by_height(1).await;
     match block_by_height {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let blocks_by_height_with_limit = client.to_owned().block.get_blocks_by_height_with_limit(1, 25).await;
@@ -25,7 +25,7 @@ async fn main() {
                 println!("{}", block_info)
             })
         }
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let block_transactions = client.block.get_block_transactions(929413, None, None).await;
@@ -35,6 +35,6 @@ async fn main() {
                 println!("{}", tx_info)
             })
         }
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 }

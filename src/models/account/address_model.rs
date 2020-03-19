@@ -57,7 +57,7 @@ impl Address {
             PREFIX_PUBLIC_TEST => Ok(Address { address: _address, network_type: PUBLIC_TEST }),
             PREFIX_PRIVATE => Ok(Address { address: _address, network_type: PRIVATE }),
             PREFIX_PRIVATE_TEST => Ok(Address { address: _address, network_type: PRIVATE_TEST }),
-            _ => Err(format_err!("Wrong address"))
+            _ => bail!("Wrong address")
         }
     }
 

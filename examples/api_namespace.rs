@@ -22,7 +22,7 @@ async fn main() {
     let namespace_info = client.clone().namespace.get_namespace_info(namespace_one).await;
     match namespace_info {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let from_account = client.clone().namespace.get_namespaces_from_account(address, None, None).await;
@@ -32,7 +32,7 @@ async fn main() {
                 println!("{}", namespace_info)
             })
         }
-        Err(err) => eprintln!("{:?}", err)
+        Err(err) => eprintln!("{}", err)
     }
 
     let namespaces_names = client.namespace.get_namespaces_names(vec![namespace_one, namespace_two]).await;
@@ -42,6 +42,6 @@ async fn main() {
                 println!("{}", namespace_name)
             })
         }
-        Err(err) => panic!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 }

@@ -12,10 +12,10 @@ async fn main() {
     let client = SiriusClient::new(NODE_URL, Client::new());
 
     let transaction_status = client.clone().transaction.get_transaction_status(
-        "261315CC8B71698D4BC2115FBD4FF3DCAB98FA606F8C5820CE3905216680B51B").await;
+        "233E7A126483C4707FA57D366AF1D5A77F816607F06A74A460A3F7B84BB63648").await;
     match transaction_status {
         Ok(status) => println!("{}", status),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let transactions_ids = vec![
@@ -31,14 +31,14 @@ async fn main() {
                 println!("{}", status)
             })
         }
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let transaction = client.clone().transaction.get_transaction(
         "81F4D14A79A9902D1E74E6CEAE839F8FCC3B43A60667DFBE627805A486D4D99C").await;
     match transaction {
         Ok(tx) => println!("{}", tx),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let transactions = client.clone().transaction.get_transactions(transactions_ids).await;
@@ -48,6 +48,6 @@ async fn main() {
                 println!("{}", tx_info)
             })
         }
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 }

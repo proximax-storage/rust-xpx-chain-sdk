@@ -93,9 +93,9 @@ pub(crate) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
 
         let to_string = format!("{}", to_array);
 
-        let transaction_dto = map_transaction_dto(Bytes::from(to_string)).unwrap();
+        let transaction_dto = map_transaction_dto(Bytes::from(to_string))?;
 
-        value_dto_vec_str.push_str(&serde_json::to_string(&transaction_dto).unwrap());
+        value_dto_vec_str.push_str(&serde_json::to_string(&transaction_dto)?);
 
         if value_dto_vec.as_array().unwrap().len() != dto + 1 {
             value_dto_vec_str.write_char(',')?;
@@ -152,7 +152,7 @@ pub(crate) fn map_transaction_dto(body: Bytes) -> Result<String> {
 
 pub(crate) fn map_aggregate_transactions_dto(transactions: Vec<Value>) -> Result<Vec<Box<dyn TransactionDto>>> {
     let mut txs_dto: Vec<Box<dyn TransactionDto>> = vec![];
-    for item in transactions.iter() {
+    for item in transactions.into_iter() {
         let body: Bytes = Bytes::from(item["AggregateTransactionInfoDto"].to_string());
         let map_dto = map_transaction_dto(body)?;
         txs_dto.push(serde_json::from_str(&map_dto)?);

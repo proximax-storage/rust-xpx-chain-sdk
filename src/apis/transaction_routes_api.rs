@@ -260,12 +260,10 @@ impl<C: Connect> TransactionRoutes<C> where
 
         let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
 
-        let transactions_info: Transactions = dto.into_iter()
-            .map(move |transaction_dto|
-                {
-                    transaction_dto.to_struct().unwrap()
-                }
-            ).collect();
+        let mut transactions_info: Transactions = vec![];
+        for transaction_dto in dto.into_iter() {
+            transactions_info.push(transaction_dto.to_struct()?);
+        }
 
         Ok(transactions_info)
     }

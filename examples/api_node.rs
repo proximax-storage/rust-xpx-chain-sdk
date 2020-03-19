@@ -15,12 +15,12 @@ async fn main() {
     let node_info = client.clone().node.get_node_info().await;
     match node_info {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let node_time = client.node.get_node_time().await;
     match node_time {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 }

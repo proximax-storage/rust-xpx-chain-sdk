@@ -17,7 +17,7 @@ async fn main() {
     let account_info = client.to_owned().account.account_info(PUBLIC_KEY_A).await;
     match account_info {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let accounts_info = client.clone().account.accounts_info(vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
@@ -27,7 +27,7 @@ async fn main() {
                 println!("{}", account_info)
             })
         }
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let accounts_transactions = client.account.incoming_transactions( public_account, None, None, Some("id")).await;
@@ -37,6 +37,6 @@ async fn main() {
                 println!("{}", account_txs)
             })
         }
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 }

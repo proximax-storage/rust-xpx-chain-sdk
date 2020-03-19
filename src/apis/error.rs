@@ -1,4 +1,6 @@
 use hyper::http::uri::InvalidUri;
+use std::fmt::Display;
+use std::fmt;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -8,68 +10,61 @@ pub struct SiriusError {
 }
 
 #[derive(Debug)]
-pub enum Error<T> {
+pub enum Error {
     SiriusError(SiriusError),
     UriError(InvalidUri),
     Hyper(hyper::Error),
     Serde(serde_json::Error),
-    ApiError(ApiError<T>),
     Failure(failure::Error),
 }
 
+impl ::failure::Fail for Error {}
+
 #[derive(Debug)]
-pub struct ApiError<T> {
+pub struct ApiError {
     pub code: hyper::StatusCode,
-    pub content: Option<T>,
+    pub content: Option<String>,
 }
 
-impl<'de, T> From<(hyper::StatusCode, &'de [u8])> for Error<T>
-    where T: serde::Deserialize<'de> {
-    fn from(e: (hyper::StatusCode, &'de [u8])) -> Self {
-        if e.1.len() == 0 {
-            return Error::ApiError(ApiError {
-                code: e.0,
-                content: None,
-            });
-        }
-        match serde_json::from_slice::<T>(e.1) {
-            Ok(t) => Error::ApiError(ApiError {
-                code: e.0,
-                content: Some(t),
-            }),
-            Err(e) => {
-                Error::from(e)
-            }
-        }
-    }
-}
-
-impl<T> From<hyper::Error> for Error<T> {
+impl From<hyper::Error> for Error {
     fn from(e: hyper::Error) -> Self {
         return Error::Hyper(e);
     }
 }
 
-impl<T> From<serde_json::Error> for Error<T> {
+impl From<serde_json::Error> for Error {
     fn from(e: serde_json::Error) -> Self {
         return Error::Serde(e);
     }
 }
 
-impl<T> From<failure::Error> for Error<T> {
+impl From<failure::Error> for Error {
     fn from(e: failure::Error) -> Self {
         return Error::Failure(e);
     }
 }
 
-impl<T> From<SiriusError> for Error<T> {
+impl From<SiriusError> for Error {
     fn from(e: SiriusError) -> Self {
         return Error::SiriusError(e);
     }
 }
 
-impl<T> From<InvalidUri> for Error<T> {
+impl From<InvalidUri> for Error {
     fn from(e: InvalidUri) -> Self {
         return Error::UriError(e);
+    }
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.to_owned() {
+            Error::SiriusError(e) => write!(f, "{{ code: \"{}\", message: \"{}\" }}", e.code, e.message),
+            Error::UriError(e) => write!(f, "{}", e),
+            Error::Hyper(e) => write!(f, "{}", e),
+            Error::Serde(e) => write!(f, "{}", e),
+            Error::Failure(e) => write!(f, "{}", e),
+            _ => write!(f, "Unknown error {}", self.to_owned())
+        }
     }
 }

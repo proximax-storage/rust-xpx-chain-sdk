@@ -4,9 +4,6 @@ use crate::Result;
 
 use super::{AccountInfo, AccountLinkTypeEnum, Address};
 
-#[derive(Serialize, Deserialize)]
-struct AccountMetaDto {}
-
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct AccountDto {
@@ -24,9 +21,6 @@ struct AccountDto {
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct AccountInfoDto {
-    #[serde(rename = "meta")]
-    meta: AccountMetaDto,
-    #[serde(rename = "account")]
     account: AccountDto,
 }
 
@@ -35,11 +29,13 @@ impl AccountInfoDto {
         let dto = &self.account;
         let add = Address::from_encoded(&dto.clone().address)?;
         let acc_type = AccountLinkTypeEnum::new(dto.clone().account_type);
-        let mut mosaics: Vec<Mosaic> = Vec::with_capacity(dto.clone().mosaics.len());
-        for i in dto.clone().mosaics {
-            let mosaic = i;
-            mosaics.push(mosaic.to_struct());
-        }
+
+        let mosaics: Vec<Mosaic> = dto.mosaics.iter()
+            .map(move |mosaic_dto|
+                {
+                    mosaic_dto.to_struct()
+                }
+            ).collect();
 
         Ok(AccountInfo::new(
             add,

@@ -72,7 +72,7 @@ impl Request {
         self
     }
 
-    pub async fn execute<'a, C, U>(self, api: Arc<ApiClient<C>>) -> Result<U, Error<serde_json::Value>>
+    pub async fn execute<'a, C, U>(self, api: Arc<ApiClient<C>>) -> super::Result<U>
         where
             C: hyper::client::connect::Connect + Send + Clone + Sync + 'static,
             for<'de> U: serde::Deserialize<'de>,
@@ -131,25 +131,22 @@ impl Request {
             .uri(uri)
             .body(req_body)
             .expect("request builder");
+
         {
             let req_headers = req.headers_mut();
             if let Some(ref user_agent) = api.user_agent {
                 req_headers.insert(USER_AGENT, user_agent.clone().parse()
-                    .map_err(|_err| {
-                        Error::from(format_err!("{}", _err))
+                    .map_err(|err| {
+                        Error::from(format_err!("{}", err))
                     })?);
             }
 
             req_headers.extend(headers);
 
-//            for (key, val) in raw_headers {
-//                req_headers.append(key, hyper::http::HeaderValue::from_str(&val).unwrap());
-//            }
-
             if let Some(body) = self.serialized_body {
                 req.headers_mut().insert(CONTENT_TYPE, "application/json".parse()
-                    .map_err(|_err| {
-                        Error::from(format_err!("{}", _err))
+                    .map_err(|err| {
+                        Error::from(format_err!("{}", err))
                     })?);
 
                 req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
@@ -182,9 +179,7 @@ impl Request {
 
                     let err: SiriusError = serde_json::from_slice(&body)?;
 
-                    let resp_err: Result<U, _> = Err(Error::from(err));
-
-                    return resp_err;
+                    Err(Error::from(err))
                 }
             }
         }

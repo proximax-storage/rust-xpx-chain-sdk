@@ -68,7 +68,7 @@ impl PublicAccount {
         if verify.is_ok() {
             Ok(())
         } else {
-            Err(format_err!("{}", verify.unwrap_err()))
+            bail!(verify.unwrap_err())
         }
     }
 

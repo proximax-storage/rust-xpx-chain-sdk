@@ -40,7 +40,7 @@ pub(crate) fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> crate::Result<M
     let mut divisibility: u8 = 0;
     let mut duration: Uint64 = Uint64::default();
 
-    for property in dto {
+    for property in dto.into_iter() {
         match property.id {
             0 => flags = property.value.to_struct(),
             1 => divisibility = property.value.to_struct().0 as u8,

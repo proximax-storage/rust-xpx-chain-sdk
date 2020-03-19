@@ -15,18 +15,18 @@ async fn main() {
     let blockchain_height = client.to_owned().chain.get_blockchain_height().await;
     match blockchain_height {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let blockchain_score = client.to_owned().chain.get_blockchain_score().await;
     match blockchain_score {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 
     let blockchain_storage = client.chain.get_blockchain_storage().await;
     match blockchain_storage {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 }

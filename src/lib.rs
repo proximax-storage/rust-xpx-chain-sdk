@@ -30,5 +30,5 @@ pub use self::models::Uint64;
 mod apis;
 mod models;
 
-type Result<T> = ::std::result::Result<T, failure::Error>;
+pub type Result<T> = ::std::result::Result<T, failure::Error>;
 

@@ -20,7 +20,7 @@ async fn main() {
 
     match mosaic_info {
         Ok(resp) => println!("{}", resp),
-        Err(err) => panic!("{:?}", err),
+        Err(err) => panic!("{}", err),
     }
 
     let mosaic_two = MosaicId::from_hex("13bfc518e40549d7").unwrap();
@@ -35,7 +35,7 @@ async fn main() {
                 println!("{}", mosaic_info)
             })
         }
-        Err(err) => panic!("{:?}", err),
+        Err(err) => panic!("{}", err),
     }
 
     let mosaics_names = client.clone().mosaic.get_mosaics_names(
@@ -47,6 +47,6 @@ async fn main() {
                 println!("{}", name)
             })
         }
-        Err(err) => panic!("{:?}", err),
+        Err(err) => panic!("{}", err),
     }
 }

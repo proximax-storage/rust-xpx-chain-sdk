@@ -145,12 +145,10 @@ impl<C: Connect> BlockRoutes<C>
 
         let dto: Vec<BlockInfoDto> = req.execute(self.0).await?;
 
-        let blocks_info: Vec<BlockInfo> = dto.into_iter()
-            .map(move |block_inf|
-                {
-                    block_inf.to_struct().unwrap()
-                }
-            ).collect();
+        let mut blocks_info: Vec<BlockInfo> = vec![];
+        for block_inf in dto.into_iter() {
+            blocks_info.push(block_inf.to_struct()?);
+        }
 
         Ok(blocks_info)
     }
@@ -216,12 +214,10 @@ impl<C: Connect> BlockRoutes<C>
 
         let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
 
-        let transactions_info: Transactions = dto.into_iter()
-            .map(move |transaction_dto|
-                {
-                    transaction_dto.to_struct().unwrap()
-                }
-            ).collect();
+        let mut transactions_info: Transactions = vec![];
+        for transaction_dto in dto.into_iter() {
+            transactions_info.push(transaction_dto.to_struct()?);
+        }
 
         Ok(transactions_info)
     }

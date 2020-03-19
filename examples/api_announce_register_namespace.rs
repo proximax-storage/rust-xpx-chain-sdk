@@ -52,17 +52,17 @@ async fn main() {
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
     println!("Hash: \t\t{}", sig_transaction.get_hash().to_uppercase());
 
-//    let response_root = client.to_owned().transaction.announce(&sig_transaction).await;
-//
-//    match response_root {
-//        Ok(response) => println!("{}\n", response),
-//        Err(err) => eprintln!("{:?}", err),
-//    }
+    let response_root = client.to_owned().transaction.announce(&sig_transaction).await;
+
+    match response_root {
+        Ok(response) => println!("{}\n", response),
+        Err(err) => eprintln!("{}", err),
+    }
 
     let register_namespace_sub = RegisterNamespaceTransaction::create_sub(
         deadline,
-        "colombia",
-        NamespaceId::from_name("rust.latam").unwrap(),
+        "latam",
+        NamespaceId::from_name("rust").unwrap(),
         network_type
     );
 
@@ -85,6 +85,6 @@ async fn main() {
 
     match response_sub {
         Ok(response) => println!("{}", response),
-        Err(err) => eprintln!("{:?}", err),
+        Err(err) => eprintln!("{}", err),
     }
 }
