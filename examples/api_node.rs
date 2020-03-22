@@ -9,7 +9,6 @@ const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
 #[tokio::main]
 async fn main() {
-
     let client = SiriusClient::new(NODE_URL, Client::new());
 
     let node_info = client.clone().node.get_node_info().await;

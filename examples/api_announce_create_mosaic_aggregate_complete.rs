@@ -7,9 +7,8 @@ use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::mosaic::{MosaicNonce, MosaicProperties, MosaicSupplyType};
 use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::sirius_client::SiriusClient;
-use xpx_chain_sdk::transaction::{AggregateTransaction,
-                                 Deadline, MosaicDefinitionTransaction,
-                                 MosaicSupplyChangeTransaction};
+use xpx_chain_sdk::transaction::{AggregateTransaction, Deadline, MosaicDefinitionTransaction,
+                                 MosaicSupplyChangeTransaction, Transaction};
 use xpx_chain_sdk::Uint64;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";

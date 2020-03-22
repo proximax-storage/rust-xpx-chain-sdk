@@ -8,7 +8,7 @@ use crate::models::{
     multisig::Cosignature,
     network::NetworkType,
 };
-use crate::models::account::Account;
+use crate::models::account::{Account, PublicAccount};
 use crate::models::consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE};
 use crate::models::transaction::{AbsTransaction, sign_transaction, SignedTransaction, to_aggregate_transaction_bytes};
 use crate::models::transaction::schema::aggregate_transaction_schema;
@@ -136,8 +136,8 @@ impl Transaction for AggregateTransaction {
         aggregate_transaction_schema().serialize(&mut Vec::from(buf))
     }
 
-    fn entity_type(&self) -> EntityTypeEnum {
-        self.abs_transaction.transaction_type.to_owned()
+    fn to_aggregate(&mut self, signer: PublicAccount) {
+        self.abs_transaction.to_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

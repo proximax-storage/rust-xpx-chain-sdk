@@ -8,7 +8,7 @@ use xpx_chain_sdk::message::PlainMessage;
 use xpx_chain_sdk::mosaic::Mosaic;
 use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::sirius_client::SiriusClient;
-use xpx_chain_sdk::transaction::{Deadline, TransferTransaction, AggregateTransaction};
+use xpx_chain_sdk::transaction::{AggregateTransaction, Deadline, Transaction, TransferTransaction};
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
@@ -16,7 +16,6 @@ const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB
 
 #[tokio::main]
 async fn main() {
-
     let client = SiriusClient::new(NODE_URL, Client::new());
 
     let generation_hash = client.generation_hash().await;

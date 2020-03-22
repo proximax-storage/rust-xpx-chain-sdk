@@ -132,7 +132,7 @@ impl AbstractTransaction {
     }
 
     pub(crate) fn to_aggregate(&mut self, signer: PublicAccount) {
-        self.signer = signer
+        self.signer = signer;
     }
 
     pub(crate) fn generate_vector(&self, builder: &mut FlatBufferBuilder) -> HashMap<&str, fb::UOffsetT> {

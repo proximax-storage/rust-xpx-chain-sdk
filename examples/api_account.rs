@@ -1,8 +1,8 @@
 use hyper::Client;
 
-use xpx_chain_sdk::sirius_client::SiriusClient;
 use xpx_chain_sdk::account::PublicAccount;
 use xpx_chain_sdk::network::PUBLIC_TEST;
+use xpx_chain_sdk::sirius_client::SiriusClient;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 const PUBLIC_KEY_A: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
@@ -23,17 +23,17 @@ async fn main() {
     let accounts_info = client.clone().account.accounts_info(vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
     match accounts_info {
         Ok(accounts) => {
-            accounts.iter().for_each(|account_info|{
+            accounts.iter().for_each(|account_info| {
                 println!("{}", account_info)
             })
         }
         Err(err) => eprintln!("{}", err),
     }
 
-    let accounts_transactions = client.account.incoming_transactions( public_account, None, None, Some("id")).await;
+    let accounts_transactions = client.account.incoming_transactions(public_account, None, None, Some("id")).await;
     match accounts_transactions {
         Ok(accounts) => {
-            accounts.iter().for_each(|account_txs|{
+            accounts.iter().for_each(|account_txs| {
                 println!("{}", account_txs)
             })
         }

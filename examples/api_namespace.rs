@@ -3,9 +3,9 @@
 
 use hyper::Client;
 
-use xpx_chain_sdk::sirius_client::SiriusClient;
 use xpx_chain_sdk::account::Address;
 use xpx_chain_sdk::namespace::NamespaceId;
+use xpx_chain_sdk::sirius_client::SiriusClient;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
@@ -28,7 +28,7 @@ async fn main() {
     let from_account = client.clone().namespace.get_namespaces_from_account(address, None, None).await;
     match from_account {
         Ok(namespaces) => {
-            namespaces.iter().for_each(|namespace_info|{
+            namespaces.iter().for_each(|namespace_info| {
                 println!("{}", namespace_info)
             })
         }
@@ -38,7 +38,7 @@ async fn main() {
     let namespaces_names = client.namespace.get_namespaces_names(vec![namespace_one, namespace_two]).await;
     match namespaces_names {
         Ok(namespaces) => {
-            namespaces.iter().for_each(|namespace_name|{
+            namespaces.iter().for_each(|namespace_name| {
                 println!("{}", namespace_name)
             })
         }

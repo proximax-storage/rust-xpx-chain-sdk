@@ -14,6 +14,7 @@ pub use self::transaction_mosaic_supply_change::*;
 pub use self::transaction_register_namespace::*;
 pub use self::transaction_transfer::*;
 pub use self::transaction_type::*;
+pub use self::signed_transaction::*;
 
 mod deadline;
 mod internal;

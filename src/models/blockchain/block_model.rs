@@ -30,7 +30,7 @@ pub struct BlockInfo {
 
     /// The transaction type.
     #[serde(rename = "type")]
-    pub ver_type: u16,
+    pub ver_type: u32,
 
     /// The height of which this block was confirmed.
     ///
@@ -84,7 +84,7 @@ pub struct BlockInfo {
 
 impl BlockInfo {
     pub fn new(network_type: NetworkType, signature: String, signer: PublicAccount,
-               version: EntityVersion, ver_type: u16, height: Height, timestamp: Timestamp,
+               version: EntityVersion, ver_type: u32, height: Height, timestamp: Timestamp,
                difficulty: Uint64, num_transactions: u64, fee_multiplier: i32,
                generation_hash: Hash, previous_block_hash: Hash, block_transactions_hash: Hash,
                block_receipts_hash: Hash, state_hash: String, beneficiary: Option<PublicAccount>,

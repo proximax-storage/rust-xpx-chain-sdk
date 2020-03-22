@@ -84,7 +84,6 @@ impl EntityTypeEnum {
     pub fn value(self) -> u16 {
         self.into()
     }
-
     pub fn to_string(&self) -> String {
         format!("{:?}", self)
     }
@@ -120,11 +119,9 @@ impl From<u16> for EntityTypeEnum {
 }
 
 impl core::fmt::Display for EntityTypeEnum {
-    fn fmt(&self, e: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(
-            e, "{}",
-            serde_json::to_string(&self).unwrap_or_default()
-        )
+    fn fmt(&self, e: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+    {
+        write!( e, "{}", self.value() )
     }
 }
 

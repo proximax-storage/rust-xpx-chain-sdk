@@ -24,7 +24,7 @@ pub(crate) fn extract_version(version: i32) -> EntityVersion {
     return version & 0xFFFFFF;
 }
 
-pub(crate) fn sign_transaction(tx: impl Transaction, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
+pub(crate) fn sign_transaction(mut tx: impl Transaction, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
     let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
 
     let mut bytes = tx.embedded_to_bytes();
@@ -111,7 +111,7 @@ pub(crate) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate
         ERR_EMPTY_TRANSACTION_SIGNER
     );
 
-    let mut signer_bytes = tx.abs_transaction().signer.to_array();
+    let mut signer_bytes = tx.to_owned().abs_transaction().signer.to_array();
 
     let mut tx_vec = tx.embedded_to_bytes();
 

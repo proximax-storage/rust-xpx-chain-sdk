@@ -7,11 +7,9 @@ use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::mosaic::Mosaic;
 use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::sirius_client::SiriusClient;
-use xpx_chain_sdk::transaction::{Deadline, EntityTypeEnum, LockFundsTransaction, SignedTransaction};
-use xpx_chain_sdk::Uint64;
+use xpx_chain_sdk::transaction::{Deadline, Duration, EntityTypeEnum, LockFundsTransaction, SignedTransaction};
 
-const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-
+const NODE_URL: &str = "http://bctestnet2.brimstone.xpxsirius.io:3000";
 const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
@@ -32,7 +30,7 @@ async fn main() {
     let lock_transaction = LockFundsTransaction::new(
         deadline,
         Mosaic::xpx_relative(10),
-        Uint64::new(100),
+        Duration::new(100),
         SignedTransaction {
             entity_type: EntityTypeEnum::AggregateBonded,
             payload: None,

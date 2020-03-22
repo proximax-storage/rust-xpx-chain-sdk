@@ -27,7 +27,7 @@ async fn main() {
         transactions_ids.clone()).await;
     match transactions_statuses {
         Ok(statuses) => {
-            statuses.iter().for_each(|status|{
+            statuses.iter().for_each(|status| {
                 println!("{}", status)
             })
         }
@@ -44,7 +44,7 @@ async fn main() {
     let transactions = client.clone().transaction.get_transactions(transactions_ids).await;
     match transactions {
         Ok(txs) => {
-            txs.iter().for_each(|tx_info|{
+            txs.iter().for_each(|tx_info| {
                 println!("{}", tx_info)
             })
         }

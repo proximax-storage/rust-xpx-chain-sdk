@@ -1,23 +1,28 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use hyper::Client;
+use std::fmt::Debug;
+use std::thread::sleep;
+use std::time::Duration;
+
+use hyper::{Client, client::connect::Connect};
 
 use xpx_chain_sdk::account::{Account, PublicAccount};
 use xpx_chain_sdk::message::PlainMessage;
 use xpx_chain_sdk::mosaic::Mosaic;
 use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::sirius_client::SiriusClient;
-use xpx_chain_sdk::transaction::{Deadline, TransferTransaction, AggregateTransaction};
+use xpx_chain_sdk::transaction::{AggregateTransaction, Deadline, Duration  as LockDuration,
+                                 EntityTypeEnum, LockFundsTransaction, SignedTransaction,
+                                 Transaction, TransferTransaction
+};
 
-const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-
+const NODE_URL: &str = "http://bctestnet3.brimstone.xpxsirius.io:3000";
 const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 const PUBLIC_KEY: &str = "CC2A4AFB1985C90DAF1FBC2B3BA8DB606ACF95FF6683A81C516132B3080FDA0D";
 
 #[tokio::main]
 async fn main() {
-
     let client = SiriusClient::new(NODE_URL, Client::new());
 
     let generation_hash = client.generation_hash().await;
@@ -37,7 +42,7 @@ async fn main() {
         deadline,
         account.public_account.address.clone(),
         vec![Mosaic::xpx(15)],
-        PlainMessage::new("Transfer A From ProximaX Rust SDK"),
+        PlainMessage::new("Transfer One From ProximaX Rust SDK"),
         network_type,
     );
     let mut transfer_one = match ttx_one {
@@ -50,7 +55,7 @@ async fn main() {
         deadline,
         public_account.address,
         vec![Mosaic::xpx(15)],
-        PlainMessage::new("Transfer B From ProximaX Rust SDK"),
+        PlainMessage::new("Transfer Two From ProximaX Rust SDK"),
         network_type,
     );
     let mut transfer_two = match ttx_two {
@@ -72,7 +77,11 @@ async fn main() {
         Ok(sig) => sig,
         Err(err) => panic!("{}", err),
     };
-    println!("Hash: \t\t{}", sig_tx);
+
+    let lock_fund = lock(&client, sig_tx.clone(), generation_hash).await;
+    if let Err(err) = &lock_fund {
+        panic!("{:?}", err)
+    }
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
     println!("Hash: \t\t{}", &sig_tx.get_hash().to_uppercase());
@@ -83,4 +92,68 @@ async fn main() {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
     }
+}
+
+async fn lock<C: Connect>(client: &Box<SiriusClient<C>>, signed_transaction: SignedTransaction, generation_hash: String) -> Result<(), ()> where
+    C: Clone + Send + Sync + Debug + 'static
+{
+    // let network_type = client.network_type().await;
+    let network_type = PUBLIC_TEST;
+
+    // Deadline default 1 hour
+    // let deadline = Deadline::new(1, 0, 0);
+    let deadline = Deadline::default();
+
+    let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
+
+    let lock_transaction = LockFundsTransaction::new(
+        deadline,
+        Mosaic::xpx_relative(10),
+        LockDuration::new(100),
+        SignedTransaction {
+            entity_type: EntityTypeEnum::AggregateBonded,
+            payload: None,
+            hash: signed_transaction.hash
+        },
+        network_type,
+    );
+
+    if let Err(err) = &lock_transaction {
+        panic!("{}", err)
+    }
+
+    let sig_transaction = account.sign(
+        lock_transaction.unwrap(), &generation_hash);
+
+    let sig_tx = match &sig_transaction {
+        Ok(sig) => sig,
+        Err(err) => panic!("{}", err),
+    };
+
+    println!("Singer Lock: \t{}", account.public_account.public_key.to_uppercase());
+    println!("Hash Lock: \t\t{}", &sig_tx.get_hash().to_uppercase());
+
+    let response = client.clone().transaction.announce(&sig_tx).await;
+    match response {
+        Ok(resp) => println!("{}\n", resp),
+        Err(err) => panic!("{}\n", err),
+    }
+//        sleep(Duration::from_secs(3));
+
+    let x = loop {
+        let response = client.clone().transaction.get_transaction_status(&sig_tx.get_hash()).await;
+        if let Ok(status) = response {
+            if !status.is_success() {
+                eprintln!("Status error: {}\n", status.status);
+                panic!("")
+            } else if status.is_confirmed() {
+                println!("Status: {}\n", status.group);
+                break
+            }
+            println!("Status: {}", status.group)
+        }
+
+        sleep(Duration::from_secs(10));
+    };
+    Ok(x)
 }

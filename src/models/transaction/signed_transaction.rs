@@ -7,14 +7,14 @@ use super::EntityTypeEnum;
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct SignedTransaction {
     /// The transaction type.
-    entity_type: EntityTypeEnum,
+    pub entity_type: EntityTypeEnum,
 
     /// The serialized transaction data.
     #[serde(skip_serializing_if = "Option::is_none")]
-    payload: Option<String>,
+    pub payload: Option<String>,
 
     /// The transaction hash.
-    hash: Hash,
+    pub hash: Hash,
 }
 
 impl SignedTransaction {

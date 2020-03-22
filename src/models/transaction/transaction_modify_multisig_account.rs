@@ -2,7 +2,7 @@ use std::any::Any;
 
 use serde_json::Value;
 
-use crate::models::account::Account;
+use crate::models::account::{Account, PublicAccount};
 use crate::models::consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE};
 use crate::models::errors::ERR_EMPTY_MODIFICATIONS;
 use crate::models::multisig::CosignatoryModification;
@@ -105,8 +105,8 @@ impl Transaction for ModifyMultisigAccountTransaction {
         modify_multisig_account_transaction_schema().serialize(&mut Vec::from(buf))
     }
 
-    fn entity_type(&self) -> EntityTypeEnum {
-        self.abs_transaction.transaction_type.to_owned()
+    fn to_aggregate(&mut self, signer: PublicAccount) {
+        self.abs_transaction.to_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

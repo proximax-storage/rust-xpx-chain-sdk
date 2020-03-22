@@ -100,22 +100,6 @@ impl RegisterNamespaceTransaction {
             parent_id: Some(parent_id)
         })
     }
-
-    pub fn to_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.to_aggregate(signer)
-    }
-
-    pub fn is_unconfirmed(&self) -> bool {
-        self.abs_transaction.is_unconfirmed()
-    }
-
-    pub fn is_confirmed(&self) -> bool {
-        self.abs_transaction.is_confirmed()
-    }
-
-    pub fn has_missing_signatures(&self) -> bool {
-        self.abs_transaction.has_missing_signatures()
-    }
 }
 
 impl AbsTransaction for RegisterNamespaceTransaction {
@@ -180,8 +164,8 @@ impl Transaction for RegisterNamespaceTransaction {
         register_namespace_transaction_schema().serialize(&mut Vec::from(buf))
     }
 
-    fn entity_type(&self) -> EntityTypeEnum {
-        self.abs_transaction.transaction_type.to_owned()
+    fn to_aggregate(&mut self, signer: PublicAccount) {
+        self.abs_transaction.to_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

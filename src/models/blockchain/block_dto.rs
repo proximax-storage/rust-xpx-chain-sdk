@@ -26,7 +26,7 @@ struct BlockDto {
     signer: String,
     version: i32,
     #[serde(rename = "type")]
-    _type: u16,
+    _type: u32,
     height: Uint64Dto,
     timestamp: Uint64Dto,
     difficulty: Uint64Dto,

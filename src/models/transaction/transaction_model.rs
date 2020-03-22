@@ -11,10 +11,14 @@ use super::{
     EntityTypeEnum,
     SignedTransaction,
 };
+use crate::models::account::PublicAccount;
+use crate::models::transaction::sign_transaction;
 
 pub type Amount = Uint64;
 
 pub type Height = Uint64;
+
+pub type Duration = Uint64;
 
 pub type Hash = String;
 
@@ -25,6 +29,8 @@ pub type TransactionsStatus = Vec<TransactionStatus>;
 pub trait AbsTransaction {
     fn abs_transaction(&self) -> AbstractTransaction;
 
+    fn entity_type(&self) -> EntityTypeEnum { self.abs_transaction().transaction_type }
+
     fn transaction_hash(&self) -> Hash { self.abs_transaction().get_hash() }
 
     /// Returns `true` if this transaction has missing signatures.
@@ -32,18 +38,16 @@ pub trait AbsTransaction {
         self.abs_transaction().has_missing_signatures()
     }
 
-    fn is_unconfirmed(&self) -> bool {
-        self.abs_transaction().is_unconfirmed()
-    }
+    fn is_unconfirmed(&self) -> bool { self.abs_transaction().is_unconfirmed() }
 
     fn is_confirmed(&self) -> bool {
         self.abs_transaction().is_confirmed()
     }
 }
 
-pub trait Transaction: AbsTransaction + Downcast + Sync + erased_serde::Serialize
+pub trait Transaction
     where
-        Self: fmt::Debug,
+        Self: fmt::Debug + AbsTransaction + Downcast + Sync + erased_serde::Serialize
 {
     fn size(&self) -> usize;
 
@@ -57,7 +61,7 @@ pub trait Transaction: AbsTransaction + Downcast + Sync + erased_serde::Serializ
     /// An abstract method to generate the embedded transaction bytes.
     fn embedded_to_bytes(&self) -> Vec<u8>;
 
-    fn entity_type(&self) -> EntityTypeEnum;
+    fn to_aggregate(&mut self, signer: PublicAccount);
 
     fn as_any(&self) -> &dyn Any;
 }
@@ -102,6 +106,12 @@ impl TransactionStatus {
             height,
         }
     }
+
+    pub fn is_success(&self) -> bool { self.status == "Success" }
+
+    pub fn is_confirmed(&self) -> bool { self.is_success() && self.group == "confirmed" }
+
+    pub fn is_partial(&self) -> bool { self.is_success() && self.group == "partial" }
 }
 
 impl fmt::Display for TransactionStatus {

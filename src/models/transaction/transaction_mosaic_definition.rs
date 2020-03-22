@@ -53,22 +53,6 @@ impl MosaicDefinitionTransaction {
 
         Ok(Self { abs_transaction: abs_tx, properties, mosaic_nonce: nonce, mosaic_id })
     }
-
-    pub fn to_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.to_aggregate(signer)
-    }
-
-    pub fn is_unconfirmed(&self) -> bool {
-        self.abs_transaction.is_unconfirmed()
-    }
-
-    pub fn is_confirmed(&self) -> bool {
-        self.abs_transaction.is_confirmed()
-    }
-
-    pub fn has_missing_signatures(&self) -> bool {
-        self.abs_transaction.has_missing_signatures()
-    }
 }
 
 impl AbsTransaction for MosaicDefinitionTransaction {
@@ -137,8 +121,8 @@ impl Transaction for MosaicDefinitionTransaction {
         mosaic_definition_transaction_schema().serialize(&mut Vec::from(buf))
     }
 
-    fn entity_type(&self) -> EntityTypeEnum {
-        self.abs_transaction.transaction_type.to_owned()
+    fn to_aggregate(&mut self, signer: PublicAccount) {
+        self.abs_transaction.to_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

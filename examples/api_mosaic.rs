@@ -10,7 +10,6 @@ const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
 #[tokio::main]
 async fn main() {
-
     let client = SiriusClient::new(NODE_URL, Client::new());
 
     let mosaic_one = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
@@ -31,7 +30,7 @@ async fn main() {
 
     match mosaics_info {
         Ok(mosaics) => {
-            mosaics.iter().for_each(|mosaic_info|{
+            mosaics.iter().for_each(|mosaic_info| {
                 println!("{}", mosaic_info)
             })
         }
@@ -43,7 +42,7 @@ async fn main() {
 
     match mosaics_names {
         Ok(mosaic) => {
-            mosaic.iter().for_each(|name|{
+            mosaic.iter().for_each(|name| {
                 println!("{}", name)
             })
         }

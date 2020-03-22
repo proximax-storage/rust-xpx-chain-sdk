@@ -70,14 +70,10 @@ impl TransferTransaction {
     pub fn message_size(&self) -> usize {
         self.message.payload_to_bytes().len() + 1
     }
-
-    pub fn to_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.to_aggregate(signer)
-    }
 }
 
 impl AbsTransaction for TransferTransaction {
-    fn abs_transaction(&self) -> AbstractTransaction {
+    fn abs_transaction(&self) ->  AbstractTransaction {
         self.abs_transaction.to_owned()
     }
 }
@@ -158,8 +154,8 @@ impl Transaction for TransferTransaction {
         transfer_transaction_schema().serialize(&mut Vec::from(buf))
     }
 
-    fn entity_type(&self) -> EntityTypeEnum {
-        self.abs_transaction.transaction_type.to_owned()
+    fn to_aggregate(&mut self, signer: PublicAccount) {
+        self.abs_transaction.to_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

@@ -3,7 +3,7 @@ use std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
-use crate::models::account::Account;
+use crate::models::account::{Account, PublicAccount};
 use crate::models::consts::LOCK_SIZE;
 use crate::models::mosaic::Mosaic;
 use crate::models::network::NetworkType;
@@ -62,7 +62,6 @@ impl Transaction for LockFundsTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-
     fn sign_transaction_with(self, account: Account, generation_hash: String)
                              -> crate::Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
@@ -103,8 +102,8 @@ impl Transaction for LockFundsTransaction {
         lock_funds_transaction_schema().serialize(&mut Vec::from(buf))
     }
 
-    fn entity_type(&self) -> EntityTypeEnum {
-        self.abs_transaction.transaction_type.to_owned()
+    fn to_aggregate(&mut self, signer: PublicAccount) {
+        self.abs_transaction.to_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {
