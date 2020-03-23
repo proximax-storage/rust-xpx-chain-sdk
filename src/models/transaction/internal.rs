@@ -11,7 +11,7 @@ use crate::models::{
     utils::vec_u8_to_hex,
 };
 use crate::models::consts::{TRANSACTION_HEADER_SIZE, TYPE_SIZE, VERSION_SIZE};
-use crate::models::errors::ERR_EMPTY_TRANSACTION_SIGNER;
+use crate::models::errors::{ERR_EMPTY_TRANSACTION_SIGNER, ERR_INVALID_DATA_LENGTH};
 use crate::models::utils::u32_to_array_u8;
 
 use super::{EntityVersion, SignedTransaction, Transaction};
@@ -19,8 +19,10 @@ use super::buffer::{
     modify_multisig_account,
     mosaic_definition
 };
+use crate::models::multisig::CosignatureTransaction;
+use crate::models::transaction::Signature;
 
-pub(crate) fn extract_version(version: i32) -> EntityVersion {
+pub(crate) fn extract_version(version: u32) -> EntityVersion {
     return version & 0xFFFFFF;
 }
 

@@ -16,7 +16,7 @@ async fn main() {
     };
 
     let transaction_status = client.clone().transaction.get_transaction_status(
-        "233E7A126483C4707FA57D366AF1D5A77F816607F06A74A460A3F7B84BB63648").await;
+        "C7EE3B9FB368AAA447A02E49E2F3D1CA3190300E4CDB9E5C6370C927C64682E1").await;
     match transaction_status {
         Ok(status) => println!("{}", status),
         Err(err) => eprintln!("{}", err),
@@ -39,7 +39,7 @@ async fn main() {
     }
 
     let transaction = client.clone().transaction.get_transaction(
-        "81F4D14A79A9902D1E74E6CEAE839F8FCC3B43A60667DFBE627805A486D4D99C").await;
+        "C7EE3B9FB368AAA447A02E49E2F3D1CA3190300E4CDB9E5C6370C927C64682E1").await;
     match transaction {
         Ok(tx) => println!("{}", tx),
         Err(err) => eprintln!("{}", err),

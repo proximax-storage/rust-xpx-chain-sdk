@@ -24,7 +24,7 @@ struct BlockMetaDto {
 struct BlockDto {
     signature: String,
     signer: String,
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u32,
     height: Uint64Dto,

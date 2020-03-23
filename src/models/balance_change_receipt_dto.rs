@@ -6,7 +6,7 @@ use crate::models::uint_64::Uint64Dto;
 pub(crate) struct BalanceChangeReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
-    pub version: i32,
+    pub version: u32,
     #[serde(rename = "type")]
     pub _type: ReceiptTypeEnum,
     /// The target account public key.
@@ -31,7 +31,7 @@ pub(crate) struct BalanceChangeReceiptDtoAllOf {
 pub(crate) struct BalanceTransferReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
-    pub version: i32,
+    pub version: u32,
     #[serde(rename = "type")]
     pub _type: ReceiptTypeEnum,
     /// The public key of the sender.

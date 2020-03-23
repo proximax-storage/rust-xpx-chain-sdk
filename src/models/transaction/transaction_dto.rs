@@ -41,7 +41,7 @@ pub(crate) struct AbstractTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
     pub signer: String,
-    pub version: i32,
+    pub version: u32,
     #[serde(rename = "type")]
     pub _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -53,7 +53,7 @@ pub(crate) struct AbstractTransactionDto {
 impl AbstractTransactionDto {
     pub(crate) fn new(signature: Option<String>,
                       signer: String,
-                      version: i32,
+                      version: u32,
                       _type: u16,
                       max_fee: Option<Uint64Dto>,
                       deadline: Option<Uint64Dto>,
@@ -248,7 +248,7 @@ pub(crate) struct TransferTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
     pub signer: String,
-    pub version: i32,
+    pub version: u32,
     #[serde(rename = "type")]
     pub _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -268,7 +268,7 @@ pub(crate) struct HashLockTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
     pub signer: String,
-    pub version: i32,
+    pub version: u32,
     #[serde(rename = "type")]
     pub _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]

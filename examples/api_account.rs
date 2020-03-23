@@ -35,7 +35,7 @@ async fn main() {
         Err(err) => eprintln!("{}", err),
     }
 
-    let accounts_transactions = client.account.incoming_transactions(public_account, None, None, Some("id")).await;
+    let accounts_transactions = client.account.incoming_transactions(&public_account, None, None, Some("id")).await;
     match accounts_transactions {
         Ok(accounts) => {
             accounts.iter().for_each(|account_txs| {

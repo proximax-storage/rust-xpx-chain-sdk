@@ -21,9 +21,9 @@ use xpx_chain_sdk::transaction::{AggregateTransaction, Deadline, Duration  as Lo
                                  Transaction, TransferTransaction
 };
 
-const NODE_URL: &str = "http://bctestnet3.brimstone.xpxsirius.io:3000";
+const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
-const PUBLIC_KEY: &str = "CC2A4AFB1985C90DAF1FBC2B3BA8DB606ACF95FF6683A81C516132B3080FDA0D";
+const PUBLIC_KEY: &str = "6152520970CF9E1278BB2CEFAC47D50E4204B91695E187449BF12AE9D217F2DA";
 
 #[tokio::main]
 async fn main() {
@@ -53,6 +53,7 @@ async fn main() {
         PlainMessage::new("Transfer One From ProximaX Rust SDK"),
         network_type,
     );
+
     let mut transfer_one = match ttx_one {
         Ok(t) => t,
         Err(err) => panic!("{}", err)
@@ -94,7 +95,7 @@ async fn main() {
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
     println!("Hash: \t\t{}", &sig_tx.get_hash().to_uppercase());
 
-    let response = client.transaction.announce_partial(&sig_tx).await;
+    let response = client.transaction.announce_aggregate_bonded(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

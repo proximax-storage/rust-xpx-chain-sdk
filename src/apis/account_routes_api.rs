@@ -151,7 +151,7 @@ impl<C: Connect> AccountRoutes<C>
         Ok(accounts_info)
     }
 
-    pub async fn transactions(self, public_account: PublicAccount, page_size: Option<i32>,
+    pub async fn transactions(self, public_account: &PublicAccount, page_size: Option<i32>,
                               id: Option<&str>, ordering: Option<&str>) ->
                               Result<Transactions>
     {
@@ -163,7 +163,7 @@ impl<C: Connect> AccountRoutes<C>
             public_account, TRANSACTIONS_BY_ACCOUNT_ROUTE, transactions_options).await
     }
 
-    pub async fn incoming_transactions(self, public_account: PublicAccount, page_size: Option<i32>,
+    pub async fn incoming_transactions(self, public_account: &PublicAccount, page_size: Option<i32>,
                                        id: Option<&str>, ordering: Option<&str>) ->
                                        Result<Transactions>
     {
@@ -175,7 +175,7 @@ impl<C: Connect> AccountRoutes<C>
             public_account, INCOMING_TRANSACTIONS_ROUTE, transactions_options).await
     }
 
-    pub async fn outgoing_transactions(self, public_account: PublicAccount, page_size: Option<i32>,
+    pub async fn outgoing_transactions(self, public_account: &PublicAccount, page_size: Option<i32>,
                                        id: Option<&str>, ordering: Option<&str>) ->
                                        Result<Transactions>
     {
@@ -187,7 +187,7 @@ impl<C: Connect> AccountRoutes<C>
             public_account, OUTGOING_TRANSACTIONS_ROUTE, transactions_options).await
     }
 
-    pub async fn unconfirmed_transactions(self, public_account: PublicAccount, page_size: Option<i32>,
+    pub async fn unconfirmed_transactions(self, public_account: &PublicAccount, page_size: Option<i32>,
                                           id: Option<&str>, ordering: Option<&str>) ->
                                           Result<Transactions> {
         let transactions_options = AccountTransactionsOption::new(
@@ -198,7 +198,7 @@ impl<C: Connect> AccountRoutes<C>
             public_account, UNCONFIRMED_TRANSACTIONS_ROUTE, transactions_options).await
     }
 
-    pub async fn partial_transactions(self, public_account: PublicAccount, page_size: Option<i32>,
+    pub async fn partial_transactions(self, public_account: &PublicAccount, page_size: Option<i32>,
                                       id: Option<&str>, ordering: Option<&str>) ->
                                       Result<Transactions> {
         let transactions_options = AccountTransactionsOption::new(
@@ -275,7 +275,7 @@ impl<C: Connect> AccountRoutes<C>
         unimplemented!()
     }
 
-    fn __internal_transactions(self, public_account: PublicAccount, route: &str,
+    fn __internal_transactions(self, public_account: &PublicAccount, route: &str,
                                options: AccountTransactionsOption) ->
                                impl Future<Output = Result<Transactions>>
     {

@@ -10,6 +10,8 @@ use crate::models::{
 use crate::Result;
 
 use super::PublicAccount;
+use crate::models::multisig::CosignatureTransaction;
+use crate::models::transaction::CosignatureSignedTransaction;
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
 #[derive(Debug, Clone)]
@@ -75,7 +77,7 @@ impl Account {
 
     /// Signs 'Transaction'.
     pub fn sign(&self, tx: impl Transaction, generation_hash: &str) -> crate::Result<SignedTransaction> {
-        tx.sign_transaction_with(self.to_owned(), generation_hash.parse().unwrap())
+        tx.sign_transaction_with(self.to_owned(), generation_hash.parse()?)
     }
 
     /// Signs raw data.
@@ -101,8 +103,8 @@ impl Account {
     }
 
     /// Sign aggregate signature transaction.
-    pub fn sign_cosignature_transaction(&self) {
-        todo!();
+    pub fn sign_cosignature_transaction(&self, tx: CosignatureTransaction) -> crate::Result<CosignatureSignedTransaction> {
+        tx.sign_cosignature_transaction(self.to_owned())
     }
 }
 

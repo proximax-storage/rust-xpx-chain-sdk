@@ -6,7 +6,7 @@ use crate::models::uint_64::Uint64Dto;
 pub(crate) struct ArtifactExpiryReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
-    pub version: i32,
+    pub version: u32,
     #[serde(rename = "type")]
     pub _type: ReceiptTypeEnum,
     #[serde(rename = "artifactId")]

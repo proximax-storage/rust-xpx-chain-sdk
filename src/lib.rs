@@ -21,6 +21,7 @@ pub use self::models::account;
 pub use self::models::blockchain;
 pub use self::models::message;
 pub use self::models::mosaic;
+pub use self::models::multisig;
 pub use self::models::namespace;
 pub use self::models::network;
 pub use self::models::node;

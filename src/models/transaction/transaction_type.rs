@@ -1,7 +1,7 @@
 use num_enum::IntoPrimitive;
 use serde::Serialize;
 
-pub(crate) type EntityVersion = i32;
+pub(crate) type EntityVersion = u32;
 
 /// entity_type The entity type:
 /// * 0x4158 (16728 decimal) - Blockchain Upgrade Transaction.

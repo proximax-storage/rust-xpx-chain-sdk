@@ -1,4 +1,5 @@
 use ::std::{fmt::{Debug, Display}, sync::Arc};
+use std::future::Future;
 
 use hyper::{client::connect::Connect, Method};
 
@@ -15,6 +16,7 @@ use crate::{
         },
         errors::{ERR_EMPTY_TRANSACTION_HASHES, ERR_EMPTY_TRANSACTION_IDS}
     }};
+use crate::models::transaction::{CosignatureSignedTransaction, Transactions, TransactionsStatus};
 
 use super::{
     internally::{valid_hash, valid_vec_hash, valid_vec_len},
@@ -22,7 +24,6 @@ use super::{
     Result,
     sirius_client::ApiClient
 };
-use crate::models::transaction::{Transactions, TransactionsStatus};
 
 /// Transaction ApiClient routes.
 ///
@@ -345,37 +346,31 @@ impl<C: Connect> TransactionRoutes<C> where
     /// Returns a Future `Result` whose okay value is an [AnnounceTransactionInfo] or whose error
     /// value is an `Error<Value>` describing the error that occurred.
     pub async fn announce(self, transaction_signed: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
-        let mut req = __internal_request::Request::new(
-            Method::PUT,
-            "/transaction".to_string(),
-        );
-
-        req = req.with_body_param(transaction_signed);
-
-        req.execute(self.0).await
+        self.__announce_transaction(transaction_signed, TRANSACTIONS_ROUTE).await
     }
 
-    pub async fn announce_partial(self, signed_transaction: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
-        let mut req = __internal_request::Request::new(
-            Method::PUT,
-            ANNOUNCE_AGGREGATE_ROUTE.to_string(),
-        );
-
-        req = req.with_body_param(signed_transaction);
-
-        req.execute(self.0).await
+    pub async fn announce_aggregate_bonded(self, signed_transaction: &SignedTransaction) -> Result<AnnounceTransactionInfo> {
+        self.__announce_transaction(signed_transaction, ANNOUNCE_AGGREGATE_ROUTE).await
     }
 
-    pub async fn announce_cosignature(self, cosignature: String) -> Result<AnnounceTransactionInfo> {
+    pub async fn announce_aggregate_bonded_cosignature(self, cosignature: &CosignatureSignedTransaction) -> Result<AnnounceTransactionInfo> {
+        self.__announce_transaction(cosignature, ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE).await
+    }
+
+    fn __announce_transaction<T>(self, tx: T, route: &str) -> impl Future<Output = Result<AnnounceTransactionInfo>>
+        where
+                for<'de> T: serde::Serialize,
+    {
         let mut req = __internal_request::Request::new(
             Method::PUT,
-            ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE.to_string(),
+            route.to_string(),
         );
-        req.with_body_param(cosignature);
 
-        unimplemented!()
+        req = req.with_body_param(tx);
 
-//        req.execute(self.client).await
+        async {
+            req.execute(self.0).await
+        }
     }
 }
 
