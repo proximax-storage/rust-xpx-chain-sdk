@@ -12,7 +12,6 @@ use crate::models::transaction::{
     TransactionMetaDto
 };
 use crate::models::uint_64::Uint64Dto;
-use crate::Uint64;
 
 use super::{NamespaceId, NamespaceType};
 

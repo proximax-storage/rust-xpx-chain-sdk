@@ -114,10 +114,10 @@ impl Request {
 
         let uri: Uri = match uri_str.parse()
         {
+            Ok(u) => u,
             Err(e) => {
                 return Err(Error::from(e));
             }
-            Ok(u) => u,
         };
 
         let mut req_body = Body::empty();

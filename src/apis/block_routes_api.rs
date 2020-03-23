@@ -4,7 +4,7 @@ use hyper::{client::connect::Connect, Method};
 
 use crate::models::{
     blockchain::{BlockInfo, BlockInfoDto},
-    transaction::{Transaction, TransactionDto, Transactions},
+    transaction::{TransactionDto, Transactions},
 };
 
 use super::{

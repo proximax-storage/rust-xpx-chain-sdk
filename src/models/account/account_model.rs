@@ -1,3 +1,6 @@
+use rand::rngs::OsRng;
+use xpx_crypto::{Keypair, SecretKey};
+
 use crate::models::{
     errors,
     network::NetworkType,
@@ -18,8 +21,21 @@ pub struct Account {
 }
 
 impl Account {
+    pub fn new(network_type: NetworkType) -> Self {
+        let mut csprng: OsRng = OsRng::new().unwrap();
+        let key_pair: Keypair = Keypair::generate(&mut csprng);
+
+        let public_key_bytes = key_pair.public.as_bytes();
+
+        let public_key_hex = vec_u8_to_hex(public_key_bytes.to_vec());
+
+        let public_account = PublicAccount::from_public_key(&public_key_hex, network_type).unwrap();
+
+        Self{ key_pair, public_account }
+    }
+
     /// Create a `Account` from a private key for the given `NetworkType`.
-    pub fn from_private_key(private_key: &str, network_type: NetworkType) -> Result<Account> {
+    pub fn from_private_key(private_key: &str, network_type: NetworkType) -> Result<Self> {
         ensure!(
             !private_key.is_empty(),
             errors::ERR_INVALID_PRIVATE_KEY_LENGTH
@@ -37,9 +53,9 @@ impl Account {
 
         let sk_hex = hex::decode(private_key)?;
 
-        let secret_key = xpx_crypto::SecretKey::from_bytes(&sk_hex)?;
+        let secret_key = SecretKey::from_bytes(&sk_hex)?;
 
-        let key_pair = xpx_crypto::Keypair::from_private_key(secret_key);
+        let key_pair = Keypair::from_private_key(secret_key);
 
         let public_key_bytes = key_pair.public.as_bytes();
 
@@ -47,7 +63,7 @@ impl Account {
 
         let public_account = PublicAccount::from_public_key(&public_key_hex, network_type)?;
 
-        Ok(Account {
+        Ok(Self {
             key_pair,
             public_account,
         })

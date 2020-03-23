@@ -6,14 +6,21 @@ use hyper::Client;
 use xpx_chain_sdk::account::Address;
 use xpx_chain_sdk::namespace::NamespaceId;
 use xpx_chain_sdk::sirius_client::SiriusClient;
+use xpx_chain_sdk::network::PUBLIC_TEST;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
 #[tokio::main]
 async fn main() {
-    let client = SiriusClient::new(NODE_URL, Client::new());
+    let sirius_client = SiriusClient::new(NODE_URL, Client::new()).await;
+    let client = match sirius_client {
+        Ok(resp) => resp,
+        Err(err) => panic!("{}", err),
+    };
 
-    let address = Address::from_raw("VCVF646H3M3C5CNIVWFZ734NC2WQXWYUKBGIZAB5").unwrap();
+    let address_one = Address::from_public_key("C952A761C0D51940AE77EC44DE93662133B5A2E93F5DCADAB7F972FA91F5DFCD", PUBLIC_TEST).unwrap();
+
+    let address_two = Address::from_raw("VCVF646H3M3C5CNIVWFZ734NC2WQXWYUKBGIZAB5").unwrap();
 
     let namespace_one = NamespaceId::from_name("rust.latam.colombia").unwrap();
 
@@ -25,7 +32,7 @@ async fn main() {
         Err(err) => eprintln!("{}", err),
     }
 
-    let from_account = client.clone().namespace.get_namespaces_from_account(address, None, None).await;
+    let from_account = client.clone().namespace.get_namespaces_from_account(address_one.clone(), None, None).await;
     match from_account {
         Ok(namespaces) => {
             namespaces.iter().for_each(|namespace_info| {
@@ -35,8 +42,19 @@ async fn main() {
         Err(err) => eprintln!("{}", err)
     }
 
-    let namespaces_names = client.namespace.get_namespaces_names(vec![namespace_one, namespace_two]).await;
+    let namespaces_names = client.clone().namespace.get_namespaces_names(vec![namespace_one, namespace_two]).await;
     match namespaces_names {
+        Ok(namespaces) => {
+            namespaces.iter().for_each(|namespace_name| {
+                println!("{}", namespace_name)
+            })
+        }
+        Err(err) => eprintln!("{}", err),
+    }
+
+    let namespaces_accounts = client.namespace.get_namespaces_from_accounts(
+        vec![&address_one.address, &address_two.address], None, None).await;
+    match namespaces_accounts {
         Ok(namespaces) => {
             namespaces.iter().for_each(|namespace_name| {
                 println!("{}", namespace_name)

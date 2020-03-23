@@ -195,7 +195,7 @@ impl<C: Connect> TransactionRoutes<C> where
     {
         let mut req = __internal_request::Request::new(
             Method::GET,
-            "/transaction/{transactionId}".to_string(),
+            TRANSACTION_ROUTE.to_string(),
         );
 
         req = req.with_path_param("transactionId".to_string(), transaction_id.to_string())

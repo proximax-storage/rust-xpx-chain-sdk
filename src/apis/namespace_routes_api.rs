@@ -5,13 +5,12 @@ use std::pin::Pin;
 use hyper::{client::connect::Connect, Method};
 
 use crate::apis::sirius_client::ApiClient;
-use crate::models::account::Address;
-use crate::models::errors::ERR_EMPTY_NAMESPACE_IDS;
+use crate::models::account::{Address, AccountsId};
+use crate::models::errors::{ERR_EMPTY_NAMESPACE_IDS, ERR_EMPTY_ADDRESSES_IDS};
 use crate::models::id_model::Id;
 use crate::models::namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceInfoDto,
                                NamespaceName, NamespaceNameDto
 };
-use crate::Uint64;
 
 use super::{internally::valid_vec_len, request as __internal_request, Result};
 
@@ -122,6 +121,38 @@ impl<C: Connect> NamespaceRoutes<C> where
         }
 
         req = req.with_path_param("accountId".to_string(), address.address.to_string());
+
+        let dto: Vec<NamespaceInfoDto> = req.execute(self.0.to_owned()).await?;
+
+        let mut namespace_info: Vec<NamespaceInfo> = vec![];
+        for namespace_dto in dto.into_iter() {
+            namespace_info.push(namespace_dto.to_struct()?);
+        }
+
+        self.__build_namespaces_hierarchy(&mut namespace_info).await;
+
+        Ok(namespace_info)
+    }
+
+    pub async fn get_namespaces_from_accounts(self, accounts_id: Vec<&str>, ns_id: Option<NamespaceId>, page_size: Option<i32>) -> Result<Vec<NamespaceInfo>>
+    {
+        valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
+
+        let accounts = AccountsId::from(accounts_id);
+
+        let mut req = __internal_request::Request::new(
+            Method::POST,
+            NAMESPACES_FROM_ACCOUNTS_ROUTE.to_string(),
+        );
+
+        if let Some(ref s) = page_size {
+            req = req.with_query_param("pageSize".to_string(), s.to_string());
+        }
+        if let Some(ref s) = ns_id {
+            req = req.with_query_param("id".to_string(), s.to_hex());
+        }
+
+        req = req.with_body_param(&accounts);
 
         let dto: Vec<NamespaceInfoDto> = req.execute(self.0.to_owned()).await?;
 

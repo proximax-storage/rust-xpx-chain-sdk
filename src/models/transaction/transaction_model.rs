@@ -12,7 +12,6 @@ use super::{
     SignedTransaction,
 };
 use crate::models::account::PublicAccount;
-use crate::models::transaction::sign_transaction;
 
 pub type Amount = Uint64;
 

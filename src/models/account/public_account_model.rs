@@ -31,10 +31,8 @@ impl PublicAccount {
             errors::ERR_INVALID_KEY_LENGTH
          );
 
-        let _address = super::public_key_to_address(public_key, network_type);
-
         Ok(PublicAccount {
-            address: Address::from_public_key(public_key, network_type),
+            address: Address::from_public_key(public_key, network_type)?,
             public_key: public_key.to_string(),
         })
     }

@@ -5,7 +5,7 @@ use hyper::Client;
 
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::mosaic::{MosaicId, MosaicSupplyType};
-use xpx_chain_sdk::network::{NetworkType, PUBLIC_TEST};
+use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::sirius_client::SiriusClient;
 use xpx_chain_sdk::transaction::{Deadline, MosaicSupplyChangeTransaction};
 use xpx_chain_sdk::Uint64;
@@ -16,9 +16,13 @@ const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB
 
 #[tokio::main]
 async fn main() {
-    let client = SiriusClient::new(NODE_URL, Client::new());
+    let sirius_client = SiriusClient::new(NODE_URL, Client::new()).await;
+    let client = match sirius_client {
+        Ok(resp) => resp,
+        Err(err) => panic!("{}", err),
+    };
 
-    let generation_hash = client.generation_hash().await;
+    let generation_hash = client.generation_hash();
 
     // let network_type = client.network_type().await;
     let network_type = PUBLIC_TEST;

@@ -11,7 +11,7 @@ use crate::models::{
 };
 
 use crate::models::account::PublicAccount;
-use crate::models::transaction::{Transaction, TransactionDto, Transactions};
+use crate::models::transaction::{TransactionDto, Transactions};
 
 use super::{internally::valid_vec_len, request as __internal_request, Result, sirius_client::ApiClient};
 

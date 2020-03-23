@@ -24,7 +24,7 @@ pub(crate) fn extract_version(version: i32) -> EntityVersion {
     return version & 0xFFFFFF;
 }
 
-pub(crate) fn sign_transaction(mut tx: impl Transaction, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
+pub(crate) fn sign_transaction(tx: impl Transaction, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
     let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
 
     let mut bytes = tx.embedded_to_bytes();

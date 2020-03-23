@@ -3,6 +3,7 @@ use hyper::Client;
 use xpx_chain_sdk::account::PublicAccount;
 use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::sirius_client::SiriusClient;
+use std::time::Duration;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 const PUBLIC_KEY_A: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
@@ -10,7 +11,11 @@ const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF33
 
 #[tokio::main]
 async fn main() {
-    let client = SiriusClient::new(NODE_URL, Client::new());
+    let sirius_client = SiriusClient::new(NODE_URL, Client::new()).await;
+    let client = match sirius_client {
+        Ok(resp) => resp,
+        Err(err) => panic!("{}", err),
+    };
 
     let public_account = PublicAccount::from_public_key(PUBLIC_KEY_B, PUBLIC_TEST).unwrap();
 

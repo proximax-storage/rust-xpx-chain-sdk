@@ -64,7 +64,7 @@ impl Display for Error {
             Error::Hyper(e) => write!(f, "{}", e),
             Error::Serde(e) => write!(f, "{}", e),
             Error::Failure(e) => write!(f, "{}", e),
-            _ => write!(f, "Unknown error {}", self.to_owned())
+            err => write!(f, "Unknown error {}", err)
         }
     }
 }

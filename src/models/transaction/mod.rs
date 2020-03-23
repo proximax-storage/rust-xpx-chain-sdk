@@ -1,6 +1,5 @@
 pub use self::deadline::*;
 pub(crate) use self::internal::*;
-pub(crate) use self::signed_transaction::*;
 pub use self::transaction_aggregate::*;
 pub use self::transaction_dto::*;
 pub use self::transaction_hash_lock::*;

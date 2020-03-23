@@ -4,21 +4,21 @@ use ::std::sync::Arc;
 
 use hyper::{Client, client::connect::Connect};
 
-use crate::models::network::NetworkType;
+use crate::models::{network::NetworkType, transaction::Hash};
 
 use super::{
     account_routes_api::AccountRoutes,
     block_routes_api::BlockRoutes,
     chain_routes_api::ChainRoutes,
     mosaic_routes_api::MosaicRoutes,
+    namespace_routes_api::NamespaceRoutes,
     node_routes_api::NodeRoutes,
-    transaction_routes_api::TransactionRoutes,
-    namespace_routes_api::NamespaceRoutes
+    transaction_routes_api::TransactionRoutes
 };
 
 #[derive(Clone)]
 pub struct SiriusClient<C: Connect> {
-    generation_hash: &'static str,
+    generation_hash: Hash,
     pub account: Box<AccountRoutes<C>>,
     pub block: Box<BlockRoutes<C>>,
     pub chain: Box<ChainRoutes<C>>,
@@ -31,33 +31,47 @@ pub struct SiriusClient<C: Connect> {
 impl<C: Connect> SiriusClient<C> where
     C: Clone + Send + Sync + Debug + 'static
 {
-    pub fn new(url: &'static str, client: Client<C>) -> Box<Self>
+    fn __internal(url: &'static str, client: Client<C>) -> Box<Self>
     {
-        let sirius = ApiClient::from_url(url, client);
+        let api_client = ApiClient::from_url(url, client);
 
-        let rc = Arc::new(sirius);
+        let rc = Arc::new(api_client);
 
         Box::new(SiriusClient {
-            generation_hash: "",
-            account: Box::new(AccountRoutes::new(rc.clone())),
-            block: Box::new(BlockRoutes::new(rc.clone())),
-            chain: Box::new(ChainRoutes::new(rc.clone())),
-            node: Box::new(NodeRoutes::new(rc.clone())),
-            mosaic: Box::new(MosaicRoutes::new(rc.clone())),
-            namespace: Box::new(NamespaceRoutes::new(rc.clone())),
-            transaction: Box::new(TransactionRoutes::new(rc.clone())),
+            generation_hash: "".to_string(),
+            account: Box::new(AccountRoutes::new(rc.to_owned())),
+            block: Box::new(BlockRoutes::new(rc.to_owned())),
+            chain: Box::new(ChainRoutes::new(rc.to_owned())),
+            node: Box::new(NodeRoutes::new(rc.to_owned())),
+            mosaic: Box::new(MosaicRoutes::new(rc.to_owned())),
+            namespace: Box::new(NamespaceRoutes::new(rc.to_owned())),
+            transaction: Box::new(TransactionRoutes::new(rc.to_owned())),
         })
     }
 
-    pub fn generation_hash(&self) -> impl Future<Output = String> + '_ {
-        let client = self.block.clone();
+    pub fn __generation_hash(&self) -> impl Future<Output = super::Result<String>> + '_ {
+        let client = self.block.to_owned();
         async {
             let block_info = client.get_block_by_height(1).await;
             match block_info {
-                Ok(hash) => hash.generation_hash,
-                Err(err) => panic!("{:?}", err),
+                Ok(hash) => Ok(hash.generation_hash),
+                Err(err) => Err(err),
             }
         }
+    }
+
+    pub async fn new(url: &'static str, client: Client<C>) -> super::Result<Box<Self>> {
+        let mut api = Self::__internal(url, client);
+
+        let generation_hash = api.__generation_hash().await?;
+        if !generation_hash.is_empty() {
+            api.generation_hash = generation_hash
+        };
+        Ok(api)
+    }
+
+    pub fn generation_hash(&self) -> String {
+        self.generation_hash.to_string()
     }
 
     pub fn network_type(&self) -> impl Future<Output = NetworkType> + '_ {

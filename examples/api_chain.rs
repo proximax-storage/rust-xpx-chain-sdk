@@ -9,7 +9,11 @@ const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
 #[tokio::main]
 async fn main() {
-    let client = SiriusClient::new(NODE_URL, Client::new());
+    let sirius_client = SiriusClient::new(NODE_URL, Client::new()).await;
+    let client = match sirius_client {
+        Ok(resp) => resp,
+        Err(err) => panic!("{}", err),
+    };
 
     let blockchain_height = client.to_owned().chain.get_blockchain_height().await;
     match blockchain_height {

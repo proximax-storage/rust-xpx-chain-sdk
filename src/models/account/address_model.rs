@@ -3,6 +3,8 @@ use ::base32::Alphabet::RFC4648;
 use crate::models::network::*;
 use crate::models::utils::is_hex;
 use crate::Result;
+use crate::models::consts::{ADDRESS_ENCODE_SIZE, ADDRESS_SIZE};
+use crate::models::errors;
 
 const PREFIX_MIJIN: char = 'M';
 const PREFIX_MIJIN_TEST: char = 'S';
@@ -25,51 +27,66 @@ pub struct Address {
 
 impl Address {
     /// Creates an `Address` from a given public_key string for the given `NetworkType`.
-    pub fn from_public_key(public_key: &str, network_type: NetworkType) -> Self {
-        let _address = super::public_key_to_address(public_key, network_type);
+    pub fn from_public_key(public_key: &str, network_type: NetworkType) -> Result<Self> {
+        ensure!(
+            !public_key.is_empty(),
+            errors::ERR_INVALID_PUBLIC_KEY_LENGTH
+         );
 
-        Address {
-            address: _address,
+        ensure!(
+            is_hex(public_key),
+            errors::ERR_INVALID_KEY_HEX
+            );
+
+        ensure!(
+            public_key.len() == 64,
+            errors::ERR_INVALID_KEY_LENGTH
+         );
+
+        let address = super::public_key_to_address(public_key, network_type)?;
+
+        Ok(Self {
+            address,
             network_type,
-        }
+        })
     }
 
     /// Creates an `Address` from a given `raw_address` string.
     ///
     /// A raw address string looks like:
     /// VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU or VAWOEO-WTABXR-7O3ZAK-2XNA5G-IBNE6P-ZIXDAF-DWBU
-    pub fn from_raw(raw_address: &str) -> Result<Address> {
+    pub fn from_raw(raw_address: &str) -> Result<Self> {
         ensure!(
             !raw_address.is_empty(),
             "raw address is empty."
          );
 
-        let _address = raw_address.trim().to_uppercase().replace(REGEX_DASH, EMPTY_STRING);
+        let address = raw_address.trim().to_uppercase().replace(REGEX_DASH, EMPTY_STRING);
         ensure!(
-            _address.len() == 40,
+            address.len() == ADDRESS_ENCODE_SIZE,
             "Invalid len raw address."
          );
 
-        match _address.chars().next().unwrap() {
-            PREFIX_MIJIN => Ok(Address { address: _address, network_type: MIJIN }),
-            PREFIX_MIJIN_TEST => Ok(Address { address: _address, network_type: MIJIN_TEST }),
-            PREFIX_PUBLIC => Ok(Address { address: _address, network_type: PUBLIC }),
-            PREFIX_PUBLIC_TEST => Ok(Address { address: _address, network_type: PUBLIC_TEST }),
-            PREFIX_PRIVATE => Ok(Address { address: _address, network_type: PRIVATE }),
-            PREFIX_PRIVATE_TEST => Ok(Address { address: _address, network_type: PRIVATE_TEST }),
+        match address.chars().next().unwrap() {
+            PREFIX_MIJIN => Ok(Self { address, network_type: MIJIN }),
+            PREFIX_MIJIN_TEST => Ok(Self { address, network_type: MIJIN_TEST }),
+            PREFIX_PUBLIC => Ok(Self { address, network_type: PUBLIC }),
+            PREFIX_PUBLIC_TEST => Ok(Self { address, network_type: PUBLIC_TEST }),
+            PREFIX_PRIVATE => Ok(Self { address, network_type: PRIVATE }),
+            PREFIX_PRIVATE_TEST => Ok(Self { address, network_type: PRIVATE_TEST }),
             _ => bail!("Wrong address")
         }
     }
 
     /// Create an `Address` from the given encoded address.
-    pub fn from_encoded(encoded: &str) -> Result<Address> {
+    pub fn from_encoded(encoded: &str) -> Result<Self> {
         ensure!(
             !encoded.is_empty(),
             "address encoded string is empty."
          );
 
         ensure!(
-            encoded.len() == 50,
+            encoded.len() == ADDRESS_SIZE + ADDRESS_SIZE,
             "Invalid len address encoded string."
          );
 
@@ -78,11 +95,11 @@ impl Address {
             "Invalid hex address encoded string."
             );
 
-        let _encoded_to_bytes = hex::decode(encoded)?;
+        let encoded_to_bytes = hex::decode(encoded)?;
 
-        let _address = base32::encode(RFC4648 { padding: true }, _encoded_to_bytes.as_slice());
+        let address = base32::encode(RFC4648 { padding: true }, encoded_to_bytes.as_slice());
 
-        self::Address::from_raw(_address.as_str())
+        Self::from_raw(address.as_str())
     }
 
     /// Converts an `Address` String into a more readable/pretty format.

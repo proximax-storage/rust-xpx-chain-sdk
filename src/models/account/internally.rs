@@ -47,8 +47,8 @@ pub enum AccountPropertiesModificationTypeEnum {
 
 }
 
-pub(crate) fn public_key_to_address(public_key: &str, version: NetworkType) -> String {
-    let pk: Vec<u8> = hex::decode(public_key).unwrap();
+pub(crate) fn public_key_to_address(public_key: &str, version: NetworkType) -> crate::Result<String> {
+    let pk: Vec<u8> = hex::decode(public_key)?;
 
     // step 1: sha3 hash of the public key
     let sha3_public_key_hash = Sha3_256::digest(pk.as_slice());
@@ -70,7 +70,7 @@ pub(crate) fn public_key_to_address(public_key: &str, version: NetworkType) -> S
     let res = base32::encode(RFC4648 { padding: true },
                              concat_step_three_and_step_six.as_slice());
 
-    String::from(res)
+    Ok(String::from(res))
 }
 
 fn generate_checksum(vec: &Vec<u8>) -> Box<[u8]> {

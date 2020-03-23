@@ -18,6 +18,15 @@ pub struct SignedTransaction {
 }
 
 impl SignedTransaction {
+
+    pub fn from_hash(hash: Hash) -> Self {
+        Self {
+            payload: None,
+            hash,
+            entity_type: EntityTypeEnum::AggregateBonded,
+        }
+    }
+
     pub(crate) fn new(entity_type: EntityTypeEnum, payload: String, hash: Hash) -> Self {
         SignedTransaction {
             payload: Some(payload),
