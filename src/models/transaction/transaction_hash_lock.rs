@@ -3,6 +3,8 @@ use std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
+use crate::Result;
+
 use crate::models::account::{Account, PublicAccount};
 use crate::models::consts::LOCK_SIZE;
 use crate::models::mosaic::Mosaic;
@@ -32,7 +34,7 @@ impl LockFundsTransaction {
         duration: Uint64,
         signed_tx: SignedTransaction,
         network_type: NetworkType,
-    ) -> crate::Result<Self> {
+    ) -> Result<Self> {
         ensure!(
             signed_tx.get_type() == EntityTypeEnum::AggregateBonded,
             "signed_tx must be of type AggregateBonded."
@@ -63,11 +65,11 @@ impl Transaction for LockFundsTransaction {
     }
 
     fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
+                             -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Vec<u8> {
+    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
@@ -99,7 +101,7 @@ impl Transaction for LockFundsTransaction {
 
         let buf = _builder.finished_data();
 
-        lock_funds_transaction_schema().serialize(&mut Vec::from(buf))
+        Ok(lock_funds_transaction_schema().serialize(&mut Vec::from(buf)))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {

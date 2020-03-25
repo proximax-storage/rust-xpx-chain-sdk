@@ -3,6 +3,8 @@ use ::std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
+use crate::Result;
+
 use crate::models::account::{Account, PublicAccount};
 use crate::models::consts::REGISTER_NAMESPACE_HEADER_SIZE;
 use crate::models::errors;
@@ -43,7 +45,7 @@ impl RegisterNamespaceTransaction {
         namespace_name: &str,
         duration: Uint64,
         network_type: NetworkType,
-    ) -> crate::Result<RegisterNamespaceTransaction> {
+    ) -> Result<RegisterNamespaceTransaction> {
         ensure!(
             namespace_name.len() != 0 && namespace_name.len() <= 16 ,
             errors::ERR_INVALID_NAMESPACE_NAME
@@ -72,7 +74,7 @@ impl RegisterNamespaceTransaction {
         namespace_name: &'static str,
         parent_id: NamespaceId,
         network_type: NetworkType,
-    ) -> crate::Result<Self> {
+    ) -> Result<Self> {
         ensure!(
             namespace_name.len() != 0 && namespace_name.len() <= 64 ,
             errors::ERR_INVALID_NAMESPACE_NAME
@@ -118,11 +120,11 @@ impl Transaction for RegisterNamespaceTransaction {
     }
 
     fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
+                             -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Vec<u8> {
+    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
@@ -161,7 +163,7 @@ impl Transaction for RegisterNamespaceTransaction {
         builder.finish(t, None);
 
         let buf = builder.finished_data();
-        register_namespace_transaction_schema().serialize(&mut Vec::from(buf))
+        Ok(register_namespace_transaction_schema().serialize(&mut Vec::from(buf)))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {

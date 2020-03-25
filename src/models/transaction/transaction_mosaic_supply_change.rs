@@ -3,6 +3,8 @@ use ::std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
+use crate::Result;
+
 use crate::models::account::{Account, PublicAccount};
 use crate::models::consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE;
 use crate::models::id_model::Id;
@@ -39,7 +41,7 @@ impl MosaicSupplyChangeTransaction {
         asset_id: impl Id + 'static,
         delta: Uint64,
         network_type: NetworkType,
-    ) -> crate::Result<Self> {
+    ) -> Result<Self> {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             MOSAIC_SUPPLY_CHANGE_VERSION,
@@ -69,11 +71,11 @@ impl Transaction for MosaicSupplyChangeTransaction {
     }
 
     fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
+                             -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Vec<u8> {
+    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
@@ -99,7 +101,7 @@ impl Transaction for MosaicSupplyChangeTransaction {
         builder.finish(t, None);
 
         let buf = builder.finished_data();
-        mosaic_supply_change_transaction_schema().serialize(&mut Vec::from(buf))
+        Ok(mosaic_supply_change_transaction_schema().serialize(&mut Vec::from(buf)))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {

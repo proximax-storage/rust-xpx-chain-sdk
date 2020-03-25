@@ -58,7 +58,7 @@ pub trait Transaction
     fn sign_transaction_with(self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
 
     /// An abstract method to generate the embedded transaction bytes.
-    fn embedded_to_bytes(&self) -> Vec<u8>;
+    fn embedded_to_bytes(&self) -> crate::Result<Vec<u8>>;
 
     fn to_aggregate(&mut self, signer: PublicAccount);
 
@@ -71,7 +71,7 @@ serialize_trait_object!(Transaction);
 
 impl<'a> PartialEq for &'a dyn Transaction {
     fn eq(&self, other: &Self) -> bool {
-        &self.embedded_to_bytes() == &other.embedded_to_bytes()
+        &self.embedded_to_bytes().unwrap() == &other.embedded_to_bytes().unwrap()
     }
 }
 

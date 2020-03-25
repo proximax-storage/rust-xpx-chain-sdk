@@ -3,6 +3,8 @@ use ::std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
+use crate::Result;
+
 use crate::models::account::{Account, PublicAccount};
 use crate::models::consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE};
 use crate::models::id_model::Id;
@@ -38,7 +40,7 @@ impl MosaicDefinitionTransaction {
         owner_public_account: PublicAccount,
         properties: MosaicProperties,
         network_type: NetworkType,
-    ) -> crate::Result<Self> {
+    ) -> Result<Self> {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             MOSAIC_DEFINITION_VERSION,
@@ -72,11 +74,11 @@ impl Transaction for MosaicDefinitionTransaction {
     }
 
     fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
+                             -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Vec<u8> {
+    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
@@ -118,7 +120,7 @@ impl Transaction for MosaicDefinitionTransaction {
         builder.finish(t, None);
 
         let buf = builder.finished_data();
-        mosaic_definition_transaction_schema().serialize(&mut Vec::from(buf))
+        Ok(mosaic_definition_transaction_schema().serialize(&mut Vec::from(buf)))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {

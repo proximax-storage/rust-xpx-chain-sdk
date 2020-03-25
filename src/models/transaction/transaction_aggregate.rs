@@ -3,6 +3,8 @@ use std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
+use crate::Result;
+
 use crate::models::{
     errors::ERR_EMPTY_INNER_TRANSACTION,
     multisig::Cosignature,
@@ -32,7 +34,7 @@ pub struct AggregateTransaction {
 
 impl AggregateTransaction {
     pub fn new_complete(deadline: Deadline, inner_txs: Vec<Box<dyn Transaction>>,
-                        network_type: NetworkType) -> crate::Result<AggregateTransaction>
+                        network_type: NetworkType) -> Result<AggregateTransaction>
     {
         ensure!(
             inner_txs.len() > 0,
@@ -50,7 +52,7 @@ impl AggregateTransaction {
     }
 
     pub fn new_bonded(deadline: Deadline, inner_txs: Vec<Box<dyn Transaction>>,
-                      network_type: NetworkType) -> crate::Result<Self>
+                      network_type: NetworkType) -> Result<Self>
     {
         ensure!(
             inner_txs.len() > 0,
@@ -100,14 +102,14 @@ impl Transaction for AggregateTransaction {
         sign_transaction(self, account, generation_hash)
     }
 
-    fn embedded_to_bytes(&self) -> Vec<u8> {
+    fn embedded_to_bytes(&self) -> Result<Vec<u8>> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
 
         let mut txsb: Vec<u8> = Vec::new();
         for tx in &self.inner_transactions {
-            let mut tx_byte = to_aggregate_transaction_bytes(tx).unwrap();
+            let mut tx_byte = to_aggregate_transaction_bytes(tx)?;
             txsb.append(&mut tx_byte)
         }
 
@@ -133,7 +135,7 @@ impl Transaction for AggregateTransaction {
 
         let buf = _builder.finished_data();
 
-        aggregate_transaction_schema().serialize(&mut Vec::from(buf))
+        Ok(aggregate_transaction_schema().serialize(&mut Vec::from(buf)))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {

@@ -3,6 +3,8 @@ use ::std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
+use crate::Result;
+
 use crate::{fb, models::{
     account::{Account, Address, PublicAccount},
     consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
@@ -46,7 +48,7 @@ impl TransferTransaction {
         mosaics: Vec<Mosaic>,
         message: impl Message + 'static,
         network_type: NetworkType,
-    ) -> crate::Result<Self> {
+    ) -> Result<Self> {
         ensure!(
             !recipient.is_empty(),
             "address string is empty."
@@ -88,11 +90,11 @@ impl Transaction for TransferTransaction {
     }
 
     fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
+                             -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Vec<u8> {
+    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
@@ -102,7 +104,7 @@ impl Transaction for TransferTransaction {
 
         let mut mosaics_buffer: Vec<fb::WIPOffset<buffers::MosaicBuffer<'a>>> = Vec::with_capacity(ml);
 
-        for mosaic in &self.mosaics {
+        for mosaic in self.mosaics.iter() {
             let mosaic_id = _builder.create_vector(&mosaic.asset_id.to_u32_array());
             let mosaic_amount = _builder.create_vector(&mosaic.amount.to_int_array());
 
@@ -151,7 +153,7 @@ impl Transaction for TransferTransaction {
 
         let buf = _builder.finished_data();
 
-        transfer_transaction_schema().serialize(&mut Vec::from(buf))
+        Ok(transfer_transaction_schema().serialize(&mut Vec::from(buf)))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {

@@ -2,6 +2,8 @@ use std::any::Any;
 
 use serde_json::Value;
 
+use crate::Result;
+
 use crate::models::account::{Account, PublicAccount};
 use crate::models::consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE};
 use crate::models::errors::ERR_EMPTY_MODIFICATIONS;
@@ -28,7 +30,7 @@ impl ModifyMultisigAccountTransaction {
                min_removal_delta: i8,
                modifications: Vec<CosignatoryModification>,
                network_type: NetworkType
-    ) -> crate::Result<Self> {
+    ) -> Result<Self> {
         ensure!(
         modifications.len() != 0 &&
         min_approval_delta != 0 &&
@@ -67,11 +69,11 @@ impl Transaction for ModifyMultisigAccountTransaction {
     }
 
     fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
+                             -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
-    fn embedded_to_bytes(&self) -> Vec<u8> {
+    fn embedded_to_bytes(&self) -> Result<Vec<u8>> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
@@ -85,7 +87,6 @@ impl Transaction for ModifyMultisigAccountTransaction {
 
         let mut txn_builder =
             buffers::ModifyMultisigAccountTransactionBufferBuilder::new(&mut _builder);
-
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(fb::WIPOffset::new(*abs_vector.get("signatureV").unwrap()));
         txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
@@ -102,7 +103,8 @@ impl Transaction for ModifyMultisigAccountTransaction {
         _builder.finish(t, None);
 
         let buf = _builder.finished_data();
-        modify_multisig_account_transaction_schema().serialize(&mut Vec::from(buf))
+
+        Ok(modify_multisig_account_transaction_schema().serialize(&mut Vec::from(&buf[..])))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -111,5 +113,14 @@ impl Transaction for ModifyMultisigAccountTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+}
+
+impl core::fmt::Display for ModifyMultisigAccountTransaction {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
     }
 }

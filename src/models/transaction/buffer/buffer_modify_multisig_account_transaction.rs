@@ -245,6 +245,10 @@ pub mod modify_multisig_account {
 
         impl<'a: 'b, 'b> ModifyMultisigAccountTransactionBufferBuilder<'a, 'b> {
             #[inline]
+            pub fn buffer(&self) {
+                println!("{:?}", self.fbb_.unfinished_data());
+            }
+            #[inline]
             pub fn add_size_(&mut self, size_: u32) {
                 self.fbb_.push_slot::<u32>(ModifyMultisigAccountTransactionBuffer::VT_SIZE_, size_, 0);
             }

@@ -33,14 +33,14 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
-    let recipient = Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap();
+    let recipient = Address::from_raw("VBUNLDUS5KHX6JOCRWACFEPPO3PFAPHR3IY6RV7Y").unwrap();
 
     let message = PlainMessage::new("Transfer From ProximaX Rust SDK");
 
     let transfer_transaction = TransferTransaction::new(
         deadline,
         recipient,
-        vec![Mosaic::xpx(1)],
+        vec![Mosaic::xpx_relative(15)],
         message,
         network_type,
     );
