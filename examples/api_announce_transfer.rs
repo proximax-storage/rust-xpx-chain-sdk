@@ -11,7 +11,6 @@ use xpx_chain_sdk::sirius_client::SiriusClient;
 use xpx_chain_sdk::transaction::{Deadline, TransferTransaction};
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-
 const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
@@ -40,7 +39,7 @@ async fn main() {
     let transfer_transaction = TransferTransaction::new(
         deadline,
         recipient,
-        vec![Mosaic::xpx_relative(15)],
+        vec![Mosaic::xpx(1)],
         message,
         network_type,
     );

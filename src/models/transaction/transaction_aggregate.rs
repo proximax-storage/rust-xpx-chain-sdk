@@ -115,18 +115,18 @@ impl Transaction for AggregateTransaction {
 
         let tx_vec = _builder.create_vector(&txsb);
 
-        let abs_vector = &self.abs_transaction.generate_vector(&mut _builder);
+        let abs_vector = self.abs_transaction.generate_vector(&mut _builder);
 
         let mut txn_builder =
             buffers::AggregateTransactionBufferBuilder::new(&mut _builder);
 
         txn_builder.add_size_(self.size() as u32);
-        txn_builder.add_signature(fb::WIPOffset::new(*abs_vector.get("signatureV").unwrap()));
-        txn_builder.add_signer(fb::WIPOffset::new(*abs_vector.get("signerV").unwrap()));
-        txn_builder.add_version(*abs_vector.get("versionV").unwrap());
-        txn_builder.add_type_(self.abs_transaction.transaction_type.value());
-        txn_builder.add_max_fee(fb::WIPOffset::new(*abs_vector.get("feeV").unwrap()));
-        txn_builder.add_deadline(fb::WIPOffset::new(*abs_vector.get("deadlineV").unwrap()));
+        txn_builder.add_signature(abs_vector.signature_vec);
+        txn_builder.add_signer(abs_vector.signer_vec);
+        txn_builder.add_version(abs_vector.version_vec);
+        txn_builder.add_type_(abs_vector.type_vec);
+        txn_builder.add_max_fee(abs_vector.max_fee_vec);
+        txn_builder.add_deadline(abs_vector.deadline_vec);
         txn_builder.add_transactions_size(txsb.len() as u32);
         txn_builder.add_transactions(tx_vec);
 

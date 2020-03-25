@@ -12,6 +12,7 @@ use super::{
     SignedTransaction,
 };
 use crate::models::account::PublicAccount;
+use crate::models::consts::{SIGNATURE_SIZE, SIGNER_SIZE};
 
 pub type Amount = Uint64;
 
@@ -24,6 +25,87 @@ pub type Hash = String;
 pub type Transactions = Vec<Box<dyn Transaction>>;
 
 pub type TransactionsStatus = Vec<TransactionStatus>;
+
+pub(crate) struct AbsVector<'b> {
+    pub signature_vec: fb::WIPOffset<fb::Vector<'b, u8>>,
+    pub signer_vec: fb::WIPOffset<fb::Vector<'b, u8>>,
+    pub version_vec: fb::UOffsetT,
+    pub type_vec: u16,
+    pub max_fee_vec: fb::WIPOffset<fb::Vector<'b, u32>>,
+    pub deadline_vec: fb::WIPOffset<fb::Vector<'b, u32>>
+}
+
+impl<'b> AbsVector<'b> {
+    pub fn build_vector(abs: &AbstractTransaction, builder: &mut fb::FlatBufferBuilder<'b>) -> Self {
+        let max_fee = match abs.max_fee {
+            Some(item) => item,
+            _ => Uint64::default()
+        };
+
+        let deadline = match abs.deadline {
+            Some(item) => item,
+            _ => Deadline::default()
+        };
+
+        let network_type: fb::UOffsetT = abs.network_type.value() as u32;
+
+        let version_vec= (network_type << 24) + abs.version as fb::UOffsetT;
+        let signature_vec =  builder.create_vector_direct(&[0u8; SIGNATURE_SIZE]);
+        let signer_vec = builder.create_vector_direct(&[0u8; SIGNER_SIZE]);
+        let deadline_vec = builder.create_vector_direct(
+            &deadline.to_blockchain_timestamp().to_uint64().to_int_array());
+
+        let max_fee_vec = builder.create_vector_direct(&max_fee.to_int_array());
+
+        AbsVector {
+            signature_vec,
+            signer_vec,
+            version_vec,
+            type_vec: abs.transaction_type.value(),
+            max_fee_vec,
+            deadline_vec
+        }
+    }
+}
+
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TransactionStatus {
+    pub group: String,
+    pub status: String,
+    pub hash: Hash,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deadline: Option<Deadline>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub height: Option<Height>,
+}
+
+impl TransactionStatus {
+    pub fn new(group: String, status: String, hash: String, deadline: Option<Deadline>, height: Option<Height>) -> Self {
+        TransactionStatus {
+            group,
+            status,
+            hash,
+            deadline,
+            height,
+        }
+    }
+
+    pub fn is_success(&self) -> bool { self.status == "Success" }
+
+    pub fn is_confirmed(&self) -> bool { self.is_success() && self.group == "confirmed" }
+
+    pub fn is_partial(&self) -> bool { self.is_success() && self.group == "partial" }
+}
+
+impl fmt::Display for TransactionStatus {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}",
+               serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
+    }
+}
 
 pub trait AbsTransaction {
     fn abs_transaction(&self) -> AbstractTransaction;
@@ -76,44 +158,6 @@ impl<'a> PartialEq for &'a dyn Transaction {
 }
 
 impl fmt::Display for dyn Transaction {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TransactionStatus {
-    pub group: String,
-    pub status: String,
-    pub hash: Hash,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deadline: Option<Deadline>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub height: Option<Height>,
-}
-
-impl TransactionStatus {
-    pub fn new(group: String, status: String, hash: String, deadline: Option<Deadline>, height: Option<Height>) -> Self {
-        TransactionStatus {
-            group,
-            status,
-            hash,
-            deadline,
-            height,
-        }
-    }
-
-    pub fn is_success(&self) -> bool { self.status == "Success" }
-
-    pub fn is_confirmed(&self) -> bool { self.is_success() && self.group == "confirmed" }
-
-    pub fn is_partial(&self) -> bool { self.is_success() && self.group == "partial" }
-}
-
-impl fmt::Display for TransactionStatus {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}",
                serde_json::to_string_pretty(&self).unwrap_or_default()

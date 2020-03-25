@@ -93,15 +93,6 @@ pub mod abstc {
                     fbb_: _fbb,
                 }
             }
-
-            pub(crate) fn build_vector(&mut self, vector: HashMap<&str, fb::UOffsetT>) {
-                self.add_signature(flatbuffers::WIPOffset::new(*vector.get("signatureV").unwrap()));
-                self.add_signer(flatbuffers::WIPOffset::new(*vector.get("signerV").unwrap()));
-                self.add_version(*vector.get("versionV").unwrap());
-//                self.add_type_(self.transaction_type.value());
-                self.add_max_fee(flatbuffers::WIPOffset::new(*vector.get("feeV").unwrap()));
-                self.add_deadline(flatbuffers::WIPOffset::new(*vector.get("deadlineV").unwrap()));
-            }
         }
     }  // pub mod Buffers
 }  // pub mod Abstract

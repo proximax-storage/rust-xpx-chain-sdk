@@ -64,7 +64,6 @@ impl Display for Error {
             Error::Hyper(e) => write!(f, "{}", e),
             Error::Serde(e) => write!(f, "{}", e),
             Error::Failure(e) => write!(f, "{}", e),
-            err => write!(f, "Unknown error {}", err)
         }
     }
 }

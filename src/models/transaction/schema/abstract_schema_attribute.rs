@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use ::byteorder::{ByteOrder, LittleEndian};
 
 #[derive(Debug, Serialize)]

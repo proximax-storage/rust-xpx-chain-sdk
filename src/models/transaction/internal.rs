@@ -5,16 +5,14 @@ use xpx_crypto::Keypair;
 
 use crate::models::{
     account::Account,
-    consts::{HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE},
+    consts::{HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE, TRANSACTION_HEADER_SIZE,
+             TYPE_SIZE, VERSION_SIZE},
+    errors::ERR_EMPTY_TRANSACTION_SIGNER,
     mosaic::MosaicProperty,
     multisig::CosignatoryModification,
-    utils::vec_u8_to_hex,
+    utils::u32_to_array_u8,
+    utils::vec_u8_to_hex
 };
-use crate::models::consts::{TRANSACTION_HEADER_SIZE, TYPE_SIZE, VERSION_SIZE};
-use crate::models::errors::{ERR_EMPTY_TRANSACTION_SIGNER, ERR_INVALID_DATA_LENGTH};
-use crate::models::multisig::CosignatureTransaction;
-use crate::models::transaction::Signature;
-use crate::models::utils::u32_to_array_u8;
 
 use super::{EntityVersion, SignedTransaction, Transaction};
 use super::buffer::{
@@ -26,34 +24,38 @@ pub(crate) fn extract_version(version: u32) -> EntityVersion {
     return version & 0xFFFFFF;
 }
 
-pub(crate) fn sign_transaction(tx: impl Transaction, account: Account, generation_hash: String) -> crate::Result<SignedTransaction> {
+pub(super) fn sign_transaction(
+    tx: impl Transaction,
+    account: Account,
+    generation_hash: String) -> crate::Result<SignedTransaction>
+{
     let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
 
-    let mut bytes = tx.embedded_to_bytes()?;
+    let mut tx_bytes = tx.embedded_to_bytes()?;
 
-    let generation_hash_bytes = hex::decode(&generation_hash);
+    let generation_hash_bytes = hex::decode(&generation_hash)?;
 
-    let signing_suffix = &bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..];
+    let signing_suffix = &tx_bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..];
 
-    let signing = [generation_hash_bytes?.as_slice(), signing_suffix].concat();
+    let signing = [generation_hash_bytes.as_slice(), signing_suffix].concat();
 
     let signature = key_pair.sign(&signing);
 
-    let mut tx_vector: Vec<u8> = Vec::with_capacity(bytes.len());
+    let mut tx_vector: Vec<u8> = Vec::with_capacity(tx_bytes.len());
 
-    tx_vector.append(&mut bytes[..4].to_vec());
+    tx_vector.append(&mut tx_bytes[..4].to_vec());
     tx_vector.append(&mut signature.to_bytes().to_vec());
     tx_vector.append(&mut key_pair.public.to_bytes().to_vec());
-    tx_vector.append(&mut bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..].to_vec());
+    tx_vector.append(&mut tx_bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..].to_vec());
 
-    let p_hex = vec_u8_to_hex(tx_vector);
+    let payload = vec_u8_to_hex(tx_vector);
 
-    let hash = create_transaction_hash(p_hex.clone(), &generation_hash);
+    let hash = create_transaction_hash(payload.clone(), &generation_hash);
 
-    Ok(SignedTransaction::new(tx.entity_type(), p_hex, hash))
+    Ok(SignedTransaction::new(tx.entity_type(), payload, hash))
 }
 
-pub(crate) fn create_transaction_hash(p: String, generation_hash: &str) -> String {
+pub(super) fn create_transaction_hash(p: String, generation_hash: &str) -> String {
     let mut p_bytes = hex::decode(p).unwrap();
 
     let mut sb = Vec::new();
@@ -90,7 +92,7 @@ pub(crate) fn mosaic_property_array_to_buffer(
     builder.create_vector(&p_buffer).value()
 }
 
-pub(crate) fn cosignatory_modification_array_to_buffer<'a>(
+pub(super) fn cosignatory_modification_array_to_buffer<'a>(
     builder: &mut FlatBufferBuilder<'a>, modifications: Vec<CosignatoryModification>) -> fb::UOffsetT {
     let mut cosignatory_buffer: Vec<fb::WIPOffset<bm::buffers::CosignatoryModificationBuffer<'a>>> = Vec::with_capacity(modifications.len());
 
@@ -109,7 +111,7 @@ pub(crate) fn cosignatory_modification_array_to_buffer<'a>(
     builder.create_vector(&cosignatory_buffer).value()
 }
 
-pub(crate) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate::Result<Vec<u8>> {
+pub(super) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate::Result<Vec<u8>> {
     ensure!(
         tx.abs_transaction().signer.public_key != "",
         ERR_EMPTY_TRANSACTION_SIGNER
@@ -117,16 +119,16 @@ pub(crate) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate
 
     let mut signer_bytes = tx.to_owned().abs_transaction().signer.to_array();
 
-    let mut tx_vec = tx.embedded_to_bytes()?;
+    let mut tx_bytes = tx.embedded_to_bytes()?;
 
-    let mut r_b: Vec<u8> = Vec::with_capacity(tx_vec.len());
-    r_b.append(&mut [0, 0, 0, 0].to_vec());
+    let mut r_b: Vec<u8> = Vec::with_capacity(tx_bytes.len());
+    r_b.append(&mut [0u8; 4].to_vec());
     r_b.append(&mut signer_bytes[..].to_vec());
-    r_b.append(&mut tx_vec[
-        SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE + VERSION_SIZE
-            + TYPE_SIZE].to_vec());
+    r_b.append(&mut tx_bytes[
+        SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE
+            + VERSION_SIZE + TYPE_SIZE].to_vec());
 
-    r_b.append(&mut tx_vec[TRANSACTION_HEADER_SIZE..].to_vec());
+    r_b.append(&mut tx_bytes[TRANSACTION_HEADER_SIZE..].to_vec());
 
     let s = u32_to_array_u8(r_b.len() as u32);
 

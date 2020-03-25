@@ -1,9 +1,6 @@
-use std::collections::HashMap;
-
 use fb::FlatBufferBuilder;
 
 use crate::models::account::PublicAccount;
-use crate::models::consts::{SIGNATURE_SIZE, SIGNER_SIZE};
 use crate::models::network::NetworkType;
 use crate::models::Uint64;
 
@@ -14,6 +11,7 @@ use super::{
     Hash,
     Height
 };
+use crate::models::transaction::AbsVector;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -135,29 +133,8 @@ impl AbstractTransaction {
         self.signer = signer;
     }
 
-    pub(crate) fn generate_vector(&self, builder: &mut FlatBufferBuilder) -> HashMap<&str, fb::UOffsetT> {
-        let mut data: HashMap<&str, fb::UOffsetT> = HashMap::new();
-
-        let max_fee = match self.max_fee {
-            Some(item) => item,
-            _ => Uint64::default()
-        };
-
-        let deadline = match self.deadline {
-            Some(item) => item,
-            _ => Deadline::default()
-        };
-
-        let network_type: fb::UOffsetT = self.network_type.value() as u32;
-        data.insert("versionV", (network_type << 24) + self.version as u32);
-        data.insert("signatureV", builder.create_vector(&[0u8; SIGNATURE_SIZE]).value());
-        data.insert("signerV", builder.create_vector_direct(&[0u8; SIGNER_SIZE]).value());
-        data.insert("deadlineV", builder.create_vector(
-            &deadline.to_blockchain_timestamp().to_uint64().to_int_array()).value());
-
-        data.insert("feeV", builder.create_vector(&max_fee.to_int_array()).value());
-
-        return data;
+    pub(crate) fn generate_vector<'a>(&self, builder: &mut FlatBufferBuilder<'a>) -> AbsVector<'a> {
+        AbsVector::build_vector(self, builder)
     }
 }
 
