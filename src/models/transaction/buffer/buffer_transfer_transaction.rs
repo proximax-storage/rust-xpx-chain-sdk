@@ -15,6 +15,7 @@ pub mod transfer {
         use crate::transaction::buffer::abstc::buffers::AbsTransactionBufferBuilder;
 
         use self::flatbuffers::EndianScalar;
+        use crate::models::transaction::{AbsTransaction, AbstractTransaction};
 
         extern crate flatbuffers;
 

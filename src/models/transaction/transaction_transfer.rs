@@ -129,7 +129,7 @@ impl Transaction for TransferTransaction {
 
         let mosaic_vec = _builder.create_vector(&mosaics_buffer);
 
-        let abs_vector = self.abs_transaction.generate_vector(&mut _builder);
+        let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
         let mut txn_builder =
             buffers::TransferTransactionBufferBuilder::new(&mut _builder);

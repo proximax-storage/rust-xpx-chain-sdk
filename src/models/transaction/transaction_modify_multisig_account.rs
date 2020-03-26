@@ -83,7 +83,7 @@ impl Transaction for ModifyMultisigAccountTransaction {
         let modification_vector = cosignatory_modification_array_to_buffer(
             &mut _builder, modifications);
 
-        let abs_vector = self.abs_transaction.generate_vector(&mut _builder);
+        let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
         let mut txn_builder =
             buffers::ModifyMultisigAccountTransactionBufferBuilder::new(&mut _builder);

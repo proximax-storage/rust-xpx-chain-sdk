@@ -82,7 +82,7 @@ impl Transaction for MosaicSupplyChangeTransaction {
         let mosaic_vec = builder.create_vector(&self.asset_id.to_u32_array());
         let delta_vec = builder.create_vector(&self.delta.to_int_array());
 
-        let abs_vector = self.abs_transaction.generate_vector(&mut builder);
+        let abs_vector = self.abs_transaction.build_vector(&mut builder);
 
         let mut txn_builder =
             buffers::MosaicSupplyChangeTransactionBufferBuilder::new(&mut builder);

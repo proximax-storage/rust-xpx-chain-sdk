@@ -97,7 +97,7 @@ impl Transaction for MosaicDefinitionTransaction {
             &mut builder, self.properties.clone().optional_properties
         );
 
-        let abs_vector = self.abs_transaction.generate_vector(&mut builder);
+        let abs_vector = self.abs_transaction.build_vector(&mut builder);
 
         let mut txn_builder =
             buffers::MosaicDefinitionTransactionBufferBuilder::new(&mut builder);

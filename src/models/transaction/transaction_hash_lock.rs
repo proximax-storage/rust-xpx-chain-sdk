@@ -79,7 +79,7 @@ impl Transaction for LockFundsTransaction {
         let duration_vector = _builder.create_vector_direct(&self.duration.to_int_array());
         let hash_vector = _builder.create_vector_direct(&self.signed_transaction.hash_to_bytes());
 
-        let abs_vector = self.abs_transaction.generate_vector(&mut _builder);
+        let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
         let mut txn_builder =
             buffers::LockFundsTransactionBufferBuilder::new(&mut _builder);

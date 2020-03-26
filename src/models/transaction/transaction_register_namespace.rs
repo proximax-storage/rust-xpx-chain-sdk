@@ -140,7 +140,7 @@ impl Transaction for RegisterNamespaceTransaction {
 
         let name_vec = builder.create_string(self.name.as_ref());
 
-        let abs_vector = self.abs_transaction.generate_vector(&mut builder);
+        let abs_vector = self.abs_transaction.build_vector(&mut builder);
 
         let mut txn_builder =
             buffers::RegisterNamespaceTransactionBufferBuilder::new(&mut builder);

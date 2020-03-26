@@ -115,7 +115,7 @@ impl Transaction for AggregateTransaction {
 
         let tx_vec = _builder.create_vector(&txsb);
 
-        let abs_vector = self.abs_transaction.generate_vector(&mut _builder);
+        let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
         let mut txn_builder =
             buffers::AggregateTransactionBufferBuilder::new(&mut _builder);

@@ -133,7 +133,7 @@ impl AbstractTransaction {
         self.signer = signer;
     }
 
-    pub(crate) fn generate_vector<'a>(&self, builder: &mut FlatBufferBuilder<'a>) -> AbsVector<'a> {
+    pub(crate) fn build_vector<'a>(&self, builder: &mut FlatBufferBuilder<'a>) -> AbsVector<'a> {
         AbsVector::build_vector(self, builder)
     }
 }
