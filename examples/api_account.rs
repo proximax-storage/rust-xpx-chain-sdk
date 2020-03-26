@@ -40,6 +40,12 @@ async fn main() {
         Err(err) => eprintln!("{}", err),
     }
 
+    let multisig = client.clone().account.account_multisig_graph("VDPZJMY6D4LDBAHTAFDPZPLH5WQD4XTYHXQVFJLB").await;
+    match multisig {
+        Ok(account_info) => println!("{}", account_info),
+        Err(err) => eprintln!("{}", err),
+    }
+
     let accounts_transactions = client.account.incoming_transactions(&public_account, None, None, Some("id")).await;
     match accounts_transactions {
         Ok(accounts) => {

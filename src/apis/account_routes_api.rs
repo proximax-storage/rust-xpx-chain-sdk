@@ -6,7 +6,7 @@ use hyper::{client::connect::Connect, Method};
 use crate::models::{
     account::{AccountInfo, AccountInfoDto, AccountsId, PublicAccount},
     errors::ERR_EMPTY_ADDRESSES_IDS,
-    multisig::{MultisigAccountInfo, MultisigAccountInfoDto},
+    multisig::{MultisigAccountInfo, MultisigAccountInfoDto, MultisigAccountGraphInfoDto},
     transaction::{TransactionDto, Transactions}
 };
 
@@ -14,6 +14,8 @@ use super::{
     internally::{AccountTransactionsOption, valid_account_id, valid_vec_len},
     request as __internal_request, Result, sirius_client::ApiClient
 };
+use crate::models::multisig::MultisigAccountGraphInfo;
+use std::collections::HashMap;
 
 const ACCOUNTS_ROUTE: &str = "/account";
 const ACCOUNT_ROUTE: &str = "/account/{accountId}";
@@ -224,7 +226,7 @@ impl<C: Connect> AccountRoutes<C>
         Ok(dto?.to_struct()?)
     }
 
-    pub async fn account_multisig_graph(self, account_id: &str) -> Result<Vec<MultisigAccountInfo>> {
+    pub async fn account_multisig_graph(self, account_id: &str) -> Result<MultisigAccountGraphInfo> {
         valid_account_id(account_id)?;
 
         let mut req = __internal_request::Request::new(
@@ -232,8 +234,17 @@ impl<C: Connect> AccountRoutes<C>
             MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE.to_string(),
         );
 
-        req.with_path_param("accountId".to_string(), account_id.to_string());
-        unimplemented!()
+        req = req.with_path_param("accountId".to_string(), account_id.to_string());
+
+        let dto: Result<Vec<MultisigAccountGraphInfoDto>> = req.execute(self.0).await;
+
+        let mut multisig_accounts: HashMap<i16, Vec<MultisigAccountInfo>> = HashMap::new();
+        for graph_info_dto in dto?.into_iter() {
+            let info = graph_info_dto.to_struct()?;
+            multisig_accounts.insert(graph_info_dto.level, info );
+        };
+
+        Ok(MultisigAccountGraphInfo{ multisig_accounts })
     }
 
     pub async fn account_properties(self, account_id: &str) -> Result<()> {

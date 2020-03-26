@@ -6,6 +6,8 @@ use crate::models::transaction::{
 };
 use crate::models::uint_64::Uint64Dto;
 use super::{CosignatoryModificationDto, MultisigAccountInfo };
+use crate::models::multisig::MultisigAccountGraphInfo;
+use std::collections::HashMap;
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -21,12 +23,21 @@ pub(crate) struct MultisigDto {
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct MultisigAccountGraphInfoDto {
-    /// The level of the multisig account.
     #[serde(rename = "level")]
-    pub level: i32,
-    /// The array of multisig accounts for this level.
+    pub level: i16,
     #[serde(rename = "multisigEntries")]
     pub multisig_entries: Vec<MultisigAccountInfoDto>,
+}
+
+impl MultisigAccountGraphInfoDto {
+    pub fn to_struct(&self) -> crate::Result<Vec<MultisigAccountInfo>> {
+
+        Ok(self.multisig_entries.iter().map(|item|
+            {
+                item.to_struct().unwrap()
+            }
+        ).collect())
+    }
 }
 
 #[derive(Serialize, Deserialize)]

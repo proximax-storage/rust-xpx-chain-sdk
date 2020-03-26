@@ -4,6 +4,8 @@ use num_enum::IntoPrimitive;
 
 use crate::models::account::PublicAccount;
 use crate::models::errors::ERR_UNKNOWN_TYPE;
+use crate::models::transaction::Hash;
+use std::collections::HashMap;
 
 /// MultisigModificationTypeEnum :
 /// The type of the modification:
@@ -82,6 +84,21 @@ pub struct MultisigAccountInfo {
 }
 
 impl fmt::Display for MultisigAccountInfo {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct MultisigAccountGraphInfo {
+    #[serde(rename = "MultisigAccounts")]
+    pub multisig_accounts: HashMap<i16, Vec<MultisigAccountInfo>>,
+}
+
+impl fmt::Display for MultisigAccountGraphInfo {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f, "{}",
