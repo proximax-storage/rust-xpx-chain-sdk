@@ -24,9 +24,9 @@ const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 const MULTI_SIG_PRIVATE_KEY: &str = "3B7660B5CB19C893694FC49B461CE489BF9588BE16DBE8DC29CF06338133DEE6";
 
 /// Cosignature public keys
-const COSIGNATORY_ONE_PRIVATE_KEY: &str = "16DBE8DC29CF06338133DEE64FC49B461CE489BF9588BE3B9670B5CB19C89369";
-const COSIGNATORY_TWO_PRIVATE_KEY: &str = "461CE489BF9588BE3B9670B5CB19C8936916DBE8DC29CF06338133DEE64FC49B";
-const COSIGNATORY_THREE_PRIVATE_KEY: &str = "29CF06338133DEE64FC49BCB19C8936916DBE8DC461CE489BF9588BE3B9670B5";
+const COSIGNATORY_ONE_PUBLIC_KEY: &str = "598B4214A70C159DD83592B0DDD5403CC36EE7DC45CFEC6530D6F218E3280AFD";
+const COSIGNATORY_TWO_PUBLIC_KEY: &str = "F893543A1B010538691834B5D09ED5F18ABBAE53E53F33341BF825822697B81C";
+const COSIGNATORY_THREE_PUBLIC_KEY: &str = "E1BADE372F48CAB5F00C40F55408DD5068BBE3B9EF2E1B780818A942C89CD0C8";
 
 /// Minimal approval count
 const MINIMAL_APPROVAL: i8 = 2;
@@ -53,9 +53,9 @@ async fn main() {
 
     let multi_sig_account = Account::from_private_key(MULTI_SIG_PRIVATE_KEY, network_type).unwrap();
 
-    let cosignatory_one = PublicAccount::from_public_key(COSIGNATORY_ONE_PRIVATE_KEY, network_type).unwrap();
-    let cosignatory_two = PublicAccount::from_public_key(COSIGNATORY_TWO_PRIVATE_KEY, network_type).unwrap();
-    let cosignatory_three = PublicAccount::from_public_key(COSIGNATORY_THREE_PRIVATE_KEY, network_type).unwrap();
+    let cosignatory_one = PublicAccount::from_public_key(COSIGNATORY_ONE_PUBLIC_KEY, network_type).unwrap();
+    let cosignatory_two = PublicAccount::from_public_key(COSIGNATORY_TWO_PUBLIC_KEY, network_type).unwrap();
+    let cosignatory_three = PublicAccount::from_public_key(COSIGNATORY_THREE_PUBLIC_KEY, network_type).unwrap();
 
     let modify_multi_sig_account_new = ModifyMultisigAccountTransaction::new(
         deadline,

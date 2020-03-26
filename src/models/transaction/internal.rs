@@ -13,12 +13,15 @@ use crate::models::{
     utils::u32_to_array_u8,
     utils::vec_u8_to_hex
 };
+use crate::models::transaction::{AbsTransaction, AggregateTransaction};
 
 use super::{EntityVersion, SignedTransaction, Transaction};
 use super::buffer::{
     modify_multisig_account as bm,
     mosaic_definition
 };
+use crate::models::network::NetworkType;
+use crate::models::multisig::CosignatoryModificationDto;
 
 pub(crate) fn extract_version(version: u32) -> EntityVersion {
     return version & 0xFFFFFF;
@@ -53,6 +56,33 @@ pub(super) fn sign_transaction(
     let hash = create_transaction_hash(payload.clone(), &generation_hash);
 
     Ok(SignedTransaction::new(tx.entity_type(), payload, hash))
+}
+
+pub(super) fn sign_transaction_with_cosignatures(tx: AggregateTransaction, account: Account, cosignatories: Vec<Account>, generation_hash: String) -> crate::Result<SignedTransaction> {
+   let entity_type = tx.entity_type();
+    let stx = sign_transaction(tx, account, generation_hash)?;
+
+    let mut payload = stx.to_owned().payload.unwrap();
+    cosignatories.iter().for_each( |mut item|
+        {
+            let key_pair: Keypair = Keypair::from_private_key(item.to_owned().key_pair.secret);
+            let hash_bytes = hex::decode(&stx.hash).unwrap();
+            let signature = key_pair.sign(&hash_bytes);
+            payload.push_str( &format!("{}{}", item.public_account.public_key, hex::encode(&signature.to_bytes()[..])));
+        }
+    );
+
+    let mut payload_bytes = hex::decode(payload)?;
+
+    let s = u32_to_array_u8(payload_bytes.len() as u32);
+
+    s.iter().enumerate().for_each(|(i, item)|
+        {
+            payload_bytes[i] = *item;
+        }
+    );
+
+    Ok(SignedTransaction::new(entity_type, hex::encode(payload_bytes), stx.hash))
 }
 
 pub(super) fn create_transaction_hash(p: String, generation_hash: &str) -> String {
@@ -92,25 +122,6 @@ pub(crate) fn mosaic_property_array_to_buffer(
     builder.create_vector(&p_buffer).value()
 }
 
-pub(super) fn cosignatory_modification_array_to_buffer<'a>(
-    builder: &mut FlatBufferBuilder<'a>, modifications: Vec<CosignatoryModification>) -> fb::UOffsetT {
-    let mut cosignatory_buffer: Vec<fb::WIPOffset<bm::buffers::CosignatoryModificationBuffer<'a>>> = Vec::with_capacity(modifications.len());
-
-    for modification in modifications {
-        let public_key = &modification.public_account;
-
-        let public_key_vector = builder.create_vector_direct(&public_key.to_array());
-
-        let mut modify_multisig = bm::buffers::CosignatoryModificationBufferBuilder::new(builder);
-        modify_multisig.add_type_(modification.modification_type.value());
-        modify_multisig.add_cosignatory_public_key(public_key_vector);
-
-        cosignatory_buffer.push(modify_multisig.finish());
-    }
-
-    builder.create_vector(&cosignatory_buffer).value()
-}
-
 pub(super) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate::Result<Vec<u8>> {
     ensure!(
         tx.abs_transaction().signer.public_key != "",
@@ -132,9 +143,35 @@ pub(super) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate
 
     let s = u32_to_array_u8(r_b.len() as u32);
 
-    for (i, b) in s.iter().enumerate() {
-        r_b[i] = *b;
+    for (i, item) in s.iter().enumerate() {
+        r_b[i] = *item;
     };
 
     Ok(r_b)
+}
+
+pub(super) fn cosignatory_modification_array_to_buffer<'a>(
+    builder: &mut FlatBufferBuilder<'a>, modifications: Vec<CosignatoryModification>) -> fb::UOffsetT {
+    let mut cosignatory_buffer: Vec<fb::WIPOffset<bm::buffers::CosignatoryModificationBuffer<'a>>> = Vec::with_capacity(modifications.len());
+
+    for modification in modifications {
+        let public_key = &modification.public_account;
+
+        let public_key_vector = builder.create_vector_direct(&public_key.to_array());
+
+        let mut modify_multisig = bm::buffers::CosignatoryModificationBufferBuilder::new(builder);
+        modify_multisig.add_type_(modification.modification_type.value());
+        modify_multisig.add_cosignatory_public_key(public_key_vector);
+
+        cosignatory_buffer.push(modify_multisig.finish());
+    }
+
+    builder.create_vector(&cosignatory_buffer).value()
+}
+
+pub(crate) fn cosignatory_dto_vec_to_struct(modifications: Vec<CosignatoryModificationDto>, network_type: NetworkType) -> Vec<CosignatoryModification> {
+    modifications.into_iter().map(|item| {
+        item.to_struct(network_type)
+    }
+    ).collect()
 }

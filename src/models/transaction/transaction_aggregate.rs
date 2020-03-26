@@ -12,7 +12,7 @@ use crate::models::{
 };
 use crate::models::account::{Account, PublicAccount};
 use crate::models::consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE};
-use crate::models::transaction::{AbsTransaction, sign_transaction, SignedTransaction, to_aggregate_transaction_bytes};
+use crate::models::transaction::{AbsTransaction, sign_transaction, SignedTransaction, to_aggregate_transaction_bytes, sign_transaction_with_cosignatures};
 use crate::models::transaction::schema::aggregate_transaction_schema;
 
 use super::{
@@ -67,6 +67,11 @@ impl AggregateTransaction {
         );
 
         Ok(Self { abs_transaction: abs_tx, cosignatures: vec![], inner_transactions: inner_txs })
+    }
+
+    pub(crate) fn sign_with_cosignatories(self, account: Account, cosignatories: Vec<Account>, generation_hash: String)
+                             -> crate::Result<SignedTransaction> {
+        sign_transaction_with_cosignatures(self, account, cosignatories, generation_hash)
     }
 }
 

@@ -25,6 +25,7 @@ pub static ERR_EMPTY_INNER_TRANSACTION: &str = "innerTransactions must not be em
 pub static ERR_EMPTY_MODIFICATIONS: &str = "modifications must not empty";
 pub static ERR_EMPTY_TRANSACTION_SIGNER: &str = "some of the transaction does not have a signer";
 pub static ERR_EMPTY_COSIGNATURE_HASH: &str = "Cosignature transaction hash it should not be empty";
+pub static ERR_EMPTY_GENERATION_HASH: &str = "Generation hash it should not be empty";
 
 // Common errors
 //pub static ERR_NIL_ASSET_ID: &str = "AssetId should not be null.";

@@ -39,6 +39,10 @@ impl SignedTransaction {
         hex::decode(&self.hash).unwrap()
     }
 
+    pub(crate) fn payload_to_bytes(&self) -> Vec<u8> {
+        hex::decode(&self.get_payload()).unwrap()
+    }
+
     pub fn get_payload(&self) -> String {
         match self.payload.to_owned() {
             Some(payload) => payload,

@@ -11,7 +11,7 @@ use crate::Result;
 
 use super::PublicAccount;
 use crate::models::multisig::CosignatureTransaction;
-use crate::models::transaction::CosignatureSignedTransaction;
+use crate::models::transaction::{CosignatureSignedTransaction, AggregateTransaction};
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
 #[derive(Debug, Clone)]
@@ -77,6 +77,11 @@ impl Account {
 
     /// Signs 'Transaction'.
     pub fn sign(&self, tx: impl Transaction, generation_hash: &str) -> crate::Result<SignedTransaction> {
+        ensure!(
+            !generation_hash.is_empty(),
+            errors::ERR_EMPTY_GENERATION_HASH
+         );
+
         tx.sign_transaction_with(self.to_owned(), generation_hash.parse()?)
     }
 
@@ -98,8 +103,13 @@ impl Account {
     }
 
     /// Sign transaction with cosignatories creating a new signed_transaction.
-    pub fn sign_transaction_with_cosignatories(&self) {
-        todo!();
+    pub fn sign_with_cosignatories(&self, tx: AggregateTransaction, cosignatories: Vec<Account>, generation_hash: &str) -> crate::Result<SignedTransaction>  {
+        ensure!(
+            !generation_hash.is_empty(),
+            errors::ERR_EMPTY_GENERATION_HASH
+         );
+
+        tx.sign_with_cosignatories(self.to_owned(), cosignatories, generation_hash.parse()?)
     }
 
     /// Sign aggregate signature transaction.
