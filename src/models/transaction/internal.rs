@@ -9,19 +9,19 @@ use crate::models::{
              TYPE_SIZE, VERSION_SIZE},
     errors::ERR_EMPTY_TRANSACTION_SIGNER,
     mosaic::MosaicProperty,
-    multisig::CosignatoryModification,
-    utils::u32_to_array_u8,
-    utils::vec_u8_to_hex
+    multisig::{CosignatoryModification, CosignatoryModificationDto},
+    network::NetworkType,
+    transaction::{AbsTransaction, AggregateTransaction},
+    utils::{u32_to_array_u8, vec_u8_to_hex}
 };
-use crate::models::transaction::{AbsTransaction, AggregateTransaction};
 
-use super::{EntityVersion, SignedTransaction, Transaction};
-use super::buffer::{
-    modify_multisig_account as bm,
-    mosaic_definition
+use super::{
+    buffer::{
+        modify_multisig_account as bm,
+        mosaic_definition
+    },
+    EntityVersion, SignedTransaction, Transaction
 };
-use crate::models::network::NetworkType;
-use crate::models::multisig::CosignatoryModificationDto;
 
 pub(crate) fn extract_version(version: u32) -> EntityVersion {
     return version & 0xFFFFFF;
@@ -59,16 +59,16 @@ pub(super) fn sign_transaction(
 }
 
 pub(super) fn sign_transaction_with_cosignatures(tx: AggregateTransaction, account: Account, cosignatories: Vec<Account>, generation_hash: String) -> crate::Result<SignedTransaction> {
-   let entity_type = tx.entity_type();
+    let entity_type = tx.entity_type();
     let stx = sign_transaction(tx, account, generation_hash)?;
 
     let mut payload = stx.to_owned().payload.unwrap();
-    cosignatories.iter().for_each( |mut item|
+    cosignatories.iter().for_each(|item|
         {
             let key_pair: Keypair = Keypair::from_private_key(item.to_owned().key_pair.secret);
             let hash_bytes = hex::decode(&stx.hash).unwrap();
             let signature = key_pair.sign(&hash_bytes);
-            payload.push_str( &format!("{}{}", item.public_account.public_key, hex::encode(&signature.to_bytes()[..])));
+            payload.push_str(&format!("{}{}", item.public_account.public_key, hex::encode(&signature.to_bytes()[..])));
         }
     );
 

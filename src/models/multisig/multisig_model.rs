@@ -1,7 +1,9 @@
-use crate::models::errors::ERR_UNKNOWN_TYPE;
-use crate::models::account::PublicAccount;
+use std::fmt;
 
 use num_enum::IntoPrimitive;
+
+use crate::models::account::PublicAccount;
+use crate::models::errors::ERR_UNKNOWN_TYPE;
 
 /// MultisigModificationTypeEnum :
 /// The type of the modification:
@@ -48,7 +50,6 @@ impl CosignatoryModification {
     }
 }
 
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Cosignature {
@@ -58,4 +59,33 @@ pub struct Cosignature {
     pub signature: String,
     /// The public account of the cosignatory.
     pub signer: PublicAccount,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MultisigAccountInfo {
+    /// The PublicAccount.
+    #[serde(rename = "account")]
+    pub account: PublicAccount,
+    /// The number of signatures needed to approve a transaction.
+    #[serde(rename = "minApproval")]
+    pub min_approval: i32,
+    /// The number of signatures needed to remove a cosignatory.
+    #[serde(rename = "minRemoval")]
+    pub min_removal: i32,
+    /// The array of PublicAccount of the cosignatory accounts.
+    #[serde(rename = "cosignatories")]
+    pub cosignatories: Vec<PublicAccount>,
+    /// The array of multisig accounts where the account is cosignatory.
+    #[serde(rename = "multisigAccounts")]
+    pub multisig_accounts: Vec<PublicAccount>,
+}
+
+impl fmt::Display for MultisigAccountInfo {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
+    }
 }

@@ -1,19 +1,19 @@
 use ::std::sync::Arc;
 use std::future::Future;
 
-use hyper::client::connect::Connect;
-use hyper::Method;
+use hyper::{client::connect::Connect, Method};
 
-use crate::apis::internally::{AccountTransactionsOption, valid_account_id};
 use crate::models::{
-    account::{AccountInfo, AccountInfoDto, AccountsId},
+    account::{AccountInfo, AccountInfoDto, AccountsId, PublicAccount},
     errors::ERR_EMPTY_ADDRESSES_IDS,
+    multisig::{MultisigAccountInfo, MultisigAccountInfoDto},
+    transaction::{TransactionDto, Transactions}
 };
 
-use crate::models::account::PublicAccount;
-use crate::models::transaction::{TransactionDto, Transactions};
-
-use super::{internally::valid_vec_len, request as __internal_request, Result, sirius_client::ApiClient};
+use super::{
+    internally::{AccountTransactionsOption, valid_account_id, valid_vec_len},
+    request as __internal_request, Result, sirius_client::ApiClient
+};
 
 const ACCOUNTS_ROUTE: &str = "/account";
 const ACCOUNT_ROUTE: &str = "/account/{accountId}";
@@ -144,7 +144,7 @@ impl<C: Connect> AccountRoutes<C>
         let dto: Vec<AccountInfoDto> = req.execute(self.0).await?;
 
         let mut accounts_info: Vec<AccountInfo> = vec![];
-        for account_dto in dto.into_iter(){
+        for account_dto in dto.into_iter() {
             accounts_info.push(account_dto.to_struct()?);
         };
 
@@ -209,7 +209,7 @@ impl<C: Connect> AccountRoutes<C>
             public_account, AGGREGATE_TRANSACTIONS_ROUTE, transactions_options).await
     }
 
-    pub async fn account_multisig(self, account_id: &str) -> Result<()> {
+    pub async fn account_multisig(self, account_id: &str) -> Result<MultisigAccountInfo> {
         valid_account_id(account_id)?;
 
         let mut req = __internal_request::Request::new(
@@ -217,11 +217,14 @@ impl<C: Connect> AccountRoutes<C>
             MULTISIG_ACCOUNT_ROUTE.to_string(),
         );
 
-        req.with_path_param("accountId".to_string(), account_id.to_string());
-        unimplemented!()
+        req = req.with_path_param("accountId".to_string(), account_id.to_string());
+
+        let dto: Result<MultisigAccountInfoDto> = req.execute(self.0).await;
+
+        Ok(dto?.to_struct()?)
     }
 
-    pub async fn account_multisig_graph(self, account_id: &str) -> Result<()> {
+    pub async fn account_multisig_graph(self, account_id: &str) -> Result<Vec<MultisigAccountInfo>> {
         valid_account_id(account_id)?;
 
         let mut req = __internal_request::Request::new(
@@ -302,7 +305,7 @@ impl<C: Connect> AccountRoutes<C>
             let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
 
             let mut transactions_info: Transactions = vec![];
-            for transaction_dto in dto.into_iter(){
+            for transaction_dto in dto.into_iter() {
                 transactions_info.push(transaction_dto.to_struct()?)
             };
 

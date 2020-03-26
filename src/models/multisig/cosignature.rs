@@ -3,7 +3,7 @@ use xpx_crypto::Keypair;
 
 use crate::models::account::Account;
 use crate::models::errors;
-use crate::models::transaction::{AbsTransaction, AggregateTransaction, CosignatureSignedTransaction, Transaction, Signature};
+use crate::models::transaction::{AbsTransaction, AggregateTransaction, CosignatureSignedTransaction, Signature, Transaction};
 
 /// Cosign an aggregate bonded transaction.
 /// [CosignatureTransaction] are used to sign announced aggregate bonded transactions with missing cosignatures.
@@ -34,7 +34,7 @@ impl CosignatureTransaction {
 
         Ok(CosignatureSignedTransaction::new(
             self.0.transaction_hash(),
-             Signature::new( signature.to_bytes()),
+            Signature::new(signature.to_bytes()),
             account.public_account.public_key
         )
         )

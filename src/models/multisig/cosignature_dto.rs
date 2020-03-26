@@ -6,8 +6,8 @@ use crate::models::network::NetworkType;
 #[serde(rename_all = "camelCase")]
 pub(crate) struct CosignatoryModificationDto {
     #[serde(rename = "type")]
-    modification_type: u8,
-    cosignatory_public_key: String,
+    pub modification_type: u8,
+    pub cosignatory_public_key: String,
 }
 
 impl CosignatoryModificationDto {

@@ -1,26 +1,21 @@
-use crate::models::multisig::CosignatoryModificationDto;
+use crate::models::account::{Address, PublicAccount};
+use crate::models::network::NetworkType;
+use crate::models::transaction::{
+    AbstractTransactionDto, cosignatory_dto_vec_to_struct, ModifyMultisigAccountTransaction,
+    Transaction, TransactionDto, TransactionMetaDto
+};
 use crate::models::uint_64::Uint64Dto;
-use crate::models::transaction::{TransactionMetaDto, ModifyMultisigAccountTransaction, AbstractTransactionDto, TransactionDto, Transaction, cosignatory_dto_vec_to_struct};
+use super::{CosignatoryModificationDto, MultisigAccountInfo };
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub(crate) struct MultisigDto {
-    /// The account public key.
-    #[serde(rename = "account")]
     pub account: String,
-    /// The account address in hexadecimal.
     #[serde(rename = "accountAddress", skip_serializing_if = "Option::is_none")]
     pub account_address: Option<String>,
-    /// The number of signatures needed to approve a transaction.
-    #[serde(rename = "minApproval")]
     pub min_approval: i32,
-    /// The number of signatures needed to remove a cosignatory.
-    #[serde(rename = "minRemoval")]
     pub min_removal: i32,
-    /// The array of public keys of the cosignatory accounts.
-    #[serde(rename = "cosignatories")]
     pub cosignatories: Vec<String>,
-    /// The array of multisig accounts where the account is cosignatory.
-    #[serde(rename = "multisigAccounts")]
     pub multisig_accounts: Vec<String>,
 }
 
@@ -38,6 +33,32 @@ pub(crate) struct MultisigAccountGraphInfoDto {
 pub(crate) struct MultisigAccountInfoDto {
     #[serde(rename = "multisig")]
     pub multisig: MultisigDto,
+}
+
+impl MultisigAccountInfoDto {
+    pub fn to_struct(&self) -> crate::Result<MultisigAccountInfo> {
+        let dto = self.multisig.to_owned();
+        let  network_type: NetworkType = Address::from_encoded(&dto.account_address.unwrap())?.network_type;
+        let account = PublicAccount::from_public_key(&dto.account, network_type)?;
+
+        let cs = dto.cosignatories.iter().map(|item|
+            {
+                PublicAccount::from_public_key(item, network_type).unwrap()
+            }).collect();
+
+        let ms = dto.multisig_accounts.iter().map(|item|
+            {
+                PublicAccount::from_public_key(item, network_type).unwrap()
+            }).collect();
+
+        Ok(MultisigAccountInfo {
+            account,
+            min_approval: dto.min_approval,
+            min_removal: dto.min_removal,
+            cosignatories: cs,
+            multisig_accounts: ms
+        })
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -78,7 +99,7 @@ impl TransactionDto for ModifyMultisigAccountTransactionInfoDto {
 
         let modifications = cosignatory_dto_vec_to_struct(dto.modifications, abs.network_type);
 
-        Ok(Box::new(ModifyMultisigAccountTransaction{
+        Ok(Box::new(ModifyMultisigAccountTransaction {
             abs_transaction: abs,
             min_removal_delta: dto.min_removal_delta,
             min_approval_delta: dto.min_approval_delta,
