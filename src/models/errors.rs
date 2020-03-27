@@ -1,10 +1,12 @@
 // Accounts errors
 pub static ERR_EMPTY_ADDRESSES_IDS: &str = "list of addresses should not be empty";
 pub static ERR_EMPTY_ADDRESSES_ID: &str = "account_id is empty";
+pub static ERR_EMPTY_ADDRESSES: &str = "address string must not be empty.";
+
 
 // Namespace errors
 pub static ERR_NAMESPACE_TOO_MANY_PART: &str = "Too many parts";
-pub static ERR_NULL_NAMESPACE_ID: &str = "Namespace_id is null or zero";
+pub static ERR_EMPTY_NAMESPACE_ID: &str = "Namespace_id must not be empty";
 pub static ERR_WRONG_BIT_NAMESPACE_ID: &str = "Namespace_id doesn't have 64th bit";
 pub static ERR_EMPTY_NAMESPACE_IDS: &str = "Namespace ids vec must not by empty";
 pub static ERR_EMPTY_NAMESPACE_NAME: &str = "Namespace name must not by empty";

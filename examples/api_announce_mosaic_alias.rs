@@ -4,14 +4,14 @@
 use hyper::Client;
 
 use xpx_chain_sdk::account::Account;
-use xpx_chain_sdk::mosaic::{MosaicNonce, MosaicProperties};
+use xpx_chain_sdk::alias::AliasActionType;
+use xpx_chain_sdk::mosaic::MosaicId;
+use xpx_chain_sdk::namespace::NamespaceId;
 use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::sirius_client::SiriusClient;
-use xpx_chain_sdk::transaction::{Deadline, MosaicDefinitionTransaction};
-use xpx_chain_sdk::Uint64;
+use xpx_chain_sdk::transaction::{Deadline, MosaicAliasTransaction};
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-
 const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
@@ -33,31 +33,34 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
-    let mosaic_definition = MosaicDefinitionTransaction::new(
+    let mosaic_id = MosaicId::from_hex("7622B206326972CF").unwrap();
+
+    let namespace_id = NamespaceId::from_name("rust").unwrap();
+
+    let alias_transaction = MosaicAliasTransaction::new(
         deadline,
-        MosaicNonce::random(),
-        account.get_public_account(),
-        MosaicProperties::new(
-            true, true, 6, Uint64::new(0)
-        ).unwrap(),
-        network_type);
+        mosaic_id,
+        namespace_id,
+        AliasActionType::AliasLink,
+        network_type,
+    );
 
-    if let Err(err) = &mosaic_definition {
+    if let Err(err) = &alias_transaction {
         panic!("{}", err)
     }
 
-    let sig_mosaic_definition = account.sign(mosaic_definition.unwrap(), &generation_hash);
+    let sig_transaction = account.sign(
+        alias_transaction.unwrap(), &generation_hash);
 
-    if let Err(err) = &sig_mosaic_definition {
-        panic!("{}", err)
-    }
-
-    let sig_transaction = &sig_mosaic_definition.unwrap();
+    let sig_tx = match &sig_transaction {
+        Ok(sig) => sig,
+        Err(err) => panic!("{}", err),
+    };
 
     println!("Singer: \t{}", account.get_public_account().public_key.to_uppercase());
-    println!("Hash: \t\t{}", sig_transaction.get_hash().to_uppercase());
+    println!("Hash: \t\t{}", &sig_tx.get_hash().to_uppercase());
 
-    let response = client.transaction.announce(sig_transaction).await;
+    let response = client.transaction.announce(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

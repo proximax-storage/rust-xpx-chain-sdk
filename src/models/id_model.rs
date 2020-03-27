@@ -24,6 +24,10 @@ pub trait Id: Sync + erased_serde::Serialize
     fn to_u32_array(&self) -> [u32; 2] {
         self.to_uint64().to_int_array()
     }
+
+    fn is_empty(&self) -> bool {
+        self.to_uint64().to_bytes().len() == 0
+    }
 }
 
 serialize_trait_object!(Id);

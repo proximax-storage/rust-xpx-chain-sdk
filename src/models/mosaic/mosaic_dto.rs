@@ -116,7 +116,7 @@ pub(crate) struct MosaicDefinitionTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     deadline: Option<Uint64Dto>,
     /// Random nonce used to generate the mosaic id.
-    mosaic_nonce: i32,
+    mosaic_nonce: u32,
     mosaic_id: Uint64Dto,
     properties: Vec<MosaicPropertyDto>,
 }
@@ -137,7 +137,7 @@ impl TransactionDto for MosaicDefinitionTransactionInfoDto {
         Ok(Box::new(MosaicDefinitionTransaction {
             abs_transaction: abs,
             properties,
-            mosaic_nonce: MosaicNonce::from(dto.mosaic_nonce as u32),
+            mosaic_nonce: MosaicNonce::from(dto.mosaic_nonce),
             mosaic_id: MosaicId::from(dto.mosaic_id.to_struct())
         }))
     }

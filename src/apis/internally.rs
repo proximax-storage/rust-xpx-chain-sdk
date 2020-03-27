@@ -131,7 +131,7 @@ pub(crate) fn map_transaction_dto(body: Bytes) -> Result<String> {
         Entity::BlockchainUpgrade => "BlockchainUpgrade",
         Entity::Lock => "HashLock",
         Entity::ModifyMultisigAccount => "ModifyMultisigAccount",
-        Entity::MosaicAlias => "ModifyMultisigAccount",
+        Entity::MosaicAlias => "MosaicAlias",
         Entity::MosaicDefinition => "MosaicDefinition",
         Entity::MosaicSupplyChange => "MosaicSupplyChange",
         Entity::NamespaceRegistration => "RegisterNamespace",

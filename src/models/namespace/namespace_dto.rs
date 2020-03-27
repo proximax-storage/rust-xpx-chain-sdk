@@ -57,7 +57,7 @@ impl NamespaceDto {
 
         ensure!(
             !levels.is_empty(),
-            errors::ERR_NULL_NAMESPACE_ID
+            errors::ERR_EMPTY_NAMESPACE_ID
          );
 
         Ok(levels)

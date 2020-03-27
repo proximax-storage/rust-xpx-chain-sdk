@@ -82,7 +82,7 @@ impl RegisterNamespaceTransaction {
 
         ensure!(
             parent_id.to_u64() != 0,
-            errors::ERR_NULL_NAMESPACE_ID
+            errors::ERR_EMPTY_NAMESPACE_ID
         );
 
         let abs_tx = AbstractTransaction::new_from_type(

@@ -3,33 +3,36 @@ use std::fmt;
 
 use serde_json::Value;
 
-use crate::models::account::{Account, Address, PublicAccount};
+use crate::models::account::{Account, PublicAccount};
 use crate::models::alias::AliasActionType;
-use crate::models::consts::ADDRESS_SIZE;
+use crate::models::consts::MOSAIC_ID_SIZE;
+use crate::models::errors;
+use crate::models::id_model::Id;
+use crate::models::mosaic::MosaicId;
 use crate::models::namespace::NamespaceId;
 use crate::models::network::NetworkType;
 use crate::Result;
 
-use super::{AbstractTransaction, AbsTransaction, ADDRESS_ALIAS_VERSION, AliasTransaction,
-            Deadline, EntityTypeEnum, sign_transaction, SignedTransaction, Transaction
+use super::{
+    AbstractTransaction, AbsTransaction, AliasTransaction,
+    Deadline, EntityTypeEnum, MOSAIC_ALIAS_VERSION, sign_transaction,
+    SignedTransaction, Transaction
 };
-use crate::models::errors;
-use crate::models::id_model::Id;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AddressAliasTransaction {
+pub struct MosaicAliasTransaction {
     pub alias_transaction: AliasTransaction,
-    pub address: Address
+    pub mosaic_id: MosaicId
 }
 
-impl AddressAliasTransaction {
-    pub fn new(deadline: Deadline, address: Address, namespace_id: NamespaceId,
+impl MosaicAliasTransaction {
+    pub fn new(deadline: Deadline, mosaic_id: MosaicId, namespace_id: NamespaceId,
                action_type: AliasActionType, network_type: NetworkType) -> Result<Self>
     {
         ensure!(
-            !address.address.is_empty(),
-            errors::ERR_EMPTY_ADDRESSES
+            !mosaic_id.is_empty(),
+            errors::ERR_EMPTY_MOSAIC_ID
          );
 
         ensure!(
@@ -39,8 +42,8 @@ impl AddressAliasTransaction {
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
-            ADDRESS_ALIAS_VERSION,
-            EntityTypeEnum::AddressAlias,
+            MOSAIC_ALIAS_VERSION,
+            EntityTypeEnum::MosaicAlias,
             network_type
         );
 
@@ -50,20 +53,20 @@ impl AddressAliasTransaction {
                 action_type,
                 namespace_id
             },
-            address
+            mosaic_id
         })
     }
 }
 
-impl AbsTransaction for AddressAliasTransaction {
+impl AbsTransaction for MosaicAliasTransaction {
     fn abs_transaction(&self) -> AbstractTransaction {
         self.alias_transaction.abs_transaction()
     }
 }
 
-impl Transaction for AddressAliasTransaction {
+impl Transaction for MosaicAliasTransaction {
     fn size(&self) -> usize {
-        self.alias_transaction.size() + ADDRESS_SIZE
+        self.alias_transaction.size() + MOSAIC_ID_SIZE
     }
 
     fn to_json(&self) -> Value {
@@ -80,11 +83,11 @@ impl Transaction for AddressAliasTransaction {
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
 
-        let address_bytes = self.address.to_decode();
+        let mosaic_bytes = self.mosaic_id.to_bytes();
 
-        let address_vector = builder.create_vector_direct(&address_bytes);
+        let mosaic_vector = builder.create_vector_direct(&mosaic_bytes);
 
-        self.alias_transaction.embedded_to_bytes(&mut builder, address_vector, ADDRESS_SIZE)
+        self.alias_transaction.embedded_to_bytes(&mut builder, mosaic_vector, MOSAIC_ID_SIZE)
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -96,7 +99,7 @@ impl Transaction for AddressAliasTransaction {
     }
 }
 
-impl fmt::Display for AddressAliasTransaction {
+impl fmt::Display for MosaicAliasTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}",
                serde_json::to_string_pretty(&self).unwrap_or_default()
