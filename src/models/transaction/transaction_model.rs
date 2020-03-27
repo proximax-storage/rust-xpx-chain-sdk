@@ -147,10 +147,6 @@ pub trait Transaction
     fn as_any(&self) -> &dyn Any;
 }
 
-impl_downcast!(Transaction);
-
-serialize_trait_object!(Transaction);
-
 impl<'a> PartialEq for &'a dyn Transaction {
     fn eq(&self, other: &Self) -> bool {
         &self.embedded_to_bytes().unwrap() == &other.embedded_to_bytes().unwrap()
@@ -164,3 +160,7 @@ impl fmt::Display for dyn Transaction {
         )
     }
 }
+
+impl_downcast!(Transaction);
+
+serialize_trait_object!(Transaction);

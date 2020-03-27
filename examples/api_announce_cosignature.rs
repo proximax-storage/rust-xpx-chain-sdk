@@ -9,7 +9,7 @@ use xpx_chain_sdk::multisig::CosignatureTransaction;
 use xpx_chain_sdk::transaction::AggregateTransaction;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-const PRIVATE_KEY: &str = "568A0ECDF7C6E3B4904090C589AA2FBB7E1409F277C25967B375143A0E687481";
+const PRIVATE_KEY: &str = "29CF06338133DEE64FC49BCB19C8936916DBE8DC461CE489BF9588BE3B9670B5";
 
 #[tokio::main]
 async fn main() {

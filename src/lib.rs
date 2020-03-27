@@ -17,6 +17,7 @@ extern crate url;
 extern crate xpx_crypto;
 
 pub use self::apis::sirius_client;
+pub use self::models::alias;
 pub use self::models::account;
 pub use self::models::blockchain;
 pub use self::models::message;

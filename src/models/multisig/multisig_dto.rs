@@ -6,8 +6,6 @@ use crate::models::transaction::{
 };
 use crate::models::uint_64::Uint64Dto;
 use super::{CosignatoryModificationDto, MultisigAccountInfo };
-use crate::models::multisig::MultisigAccountGraphInfo;
-use std::collections::HashMap;
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

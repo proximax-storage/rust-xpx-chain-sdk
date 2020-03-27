@@ -4,7 +4,6 @@ use num_enum::IntoPrimitive;
 
 use crate::models::account::PublicAccount;
 use crate::models::errors::ERR_UNKNOWN_TYPE;
-use crate::models::transaction::Hash;
 use std::collections::HashMap;
 
 /// MultisigModificationTypeEnum :

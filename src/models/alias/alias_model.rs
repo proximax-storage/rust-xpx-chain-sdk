@@ -1,34 +1,94 @@
-/// LinkActionEnum : The type of the action: * 0 - Link. * 1 - Unlink.
-/// The type of the action: * 0 - Link. * 1 - Unlink.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-enum LinkAction {
-    #[serde(rename = "0")]
-    _0,
-    #[serde(rename = "1")]
-    _1,
+use num_enum::IntoPrimitive;
+
+/// AccountLinkAction :
+/// The type of the action:
+/// * 0 - Link.
+/// * 1 - Unlink.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, IntoPrimitive)]
+#[repr(u8)]
+pub enum AccountLinkAction {
+    AccountLink,
+    AccountUnlink,
 }
 
-/// AliasTypeEnum :
+impl AccountLinkAction {
+    pub fn value(self) -> u8 {
+        self.into()
+    }
+
+    pub fn to_string(&self) -> String {
+        format!("{:?}", self)
+    }
+}
+
+impl From<u8> for AccountLinkAction {
+    fn from(num: u8) -> Self {
+        match num {
+            1 => AccountLinkAction::AccountUnlink,
+            _ => AccountLinkAction::AccountLink
+        }
+    }
+}
+
+/// AliasType :
 /// The alias type:
 /// * 0 -  No alias.
 /// * 1 -  Mosaic id alias.
 /// * 2 -  Addres alias.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, IntoPrimitive)]
+#[repr(u8)]
 pub enum AliasType {
-    #[serde(rename = "0")]
-    _0,
-    #[serde(rename = "1")]
-    _1,
-    #[serde(rename = "2")]
-    _2,
+    NoneAliasType,
+    MosaicAliasType,
+    AddressAliasType,
 }
 
-/// AliasActionEnum : The alias action: * 0 -  Link alias. * 1 -  Unlink alias.
-/// The alias action: * 0 -  Link alias. * 1 -  Unlink alias.
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-enum AliasActionEnum {
-    #[serde(rename = "0")]
-    _0,
-    #[serde(rename = "1")]
-    _1,
+impl AliasType {
+    pub fn value(self) -> u8 {
+        self.into()
+    }
+
+    pub fn to_string(&self) -> String {
+        format!("{:?}", self)
+    }
+}
+
+impl From<u8> for AliasType {
+    fn from(num: u8) -> Self {
+        match num {
+            1 => AliasType::MosaicAliasType,
+            2 => AliasType::AddressAliasType,
+            _ => AliasType::NoneAliasType
+        }
+    }
+}
+
+/// AliasActionType :
+/// The alias action:
+/// * 0 -  Link alias.
+/// * 1 -  Unlink alias.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, IntoPrimitive)]
+#[repr(u8)]
+pub enum AliasActionType {
+    AliasLink,
+    AliasUnlink,
+}
+
+impl AliasActionType {
+    pub fn value(self) -> u8 {
+        self.into()
+    }
+
+    pub fn to_string(&self) -> String {
+        format!("{:?}", self)
+    }
+}
+
+impl From<u8> for AliasActionType {
+    fn from(num: u8) -> Self {
+        match num {
+            1 => AliasActionType::AliasUnlink,
+            _ => AliasActionType::AliasLink
+        }
+    }
 }

@@ -84,6 +84,7 @@ impl EntityTypeEnum {
     pub fn value(self) -> u16 {
         self.into()
     }
+
     pub fn to_string(&self) -> String {
         format!("{:?}", self)
     }
@@ -128,7 +129,7 @@ impl core::fmt::Display for EntityTypeEnum {
 //pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
 //pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
 //pub(crate) const ACCOUNT_PROPERTY_MOSAIC_VERSION: EntityVersion = 1;
-//pub(crate) const ADDRESS_ALIAS_VERSION: EntityVersion = 1;
+pub(crate) const ADDRESS_ALIAS_VERSION: EntityVersion = 1;
 //pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 pub(crate) const AGGREGATE_BONDED_VERSION: EntityVersion = 2;
 pub(crate) const AGGREGATE_COMPLETED_VERSION: EntityVersion = 2;

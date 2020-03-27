@@ -12,6 +12,7 @@ use crate::Result;
 use super::PublicAccount;
 use crate::models::multisig::CosignatureTransaction;
 use crate::models::transaction::{CosignatureSignedTransaction, AggregateTransaction};
+use crate::models::account::Address;
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
 #[derive(Debug, Clone)]
@@ -19,7 +20,7 @@ pub struct Account {
     /// The keyPair containing the public and private key of this account.
     pub key_pair: xpx_crypto::Keypair,
     /// The public account of this account.
-    pub public_account: PublicAccount,
+    pub(crate) public_account: PublicAccount,
 }
 
 impl Account {
@@ -34,6 +35,14 @@ impl Account {
         let public_account = PublicAccount::from_public_key(&public_key_hex, network_type).unwrap();
 
         Self{ key_pair, public_account }
+    }
+
+    pub fn get_public_account(&self) -> PublicAccount {
+        self.to_owned().public_account
+    }
+
+    pub fn get_address(&self) -> Address {
+        self.get_public_account().address
     }
 
     /// Create a `Account` from a private key for the given `NetworkType`.

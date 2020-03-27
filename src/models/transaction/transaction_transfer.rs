@@ -50,7 +50,7 @@ impl TransferTransaction {
         network_type: NetworkType,
     ) -> Result<Self> {
         ensure!(
-            !recipient.is_empty(),
+            !recipient.address.is_empty(),
             "address string is empty."
          );
 

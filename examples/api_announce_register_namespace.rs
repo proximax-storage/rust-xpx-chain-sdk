@@ -53,7 +53,7 @@ async fn main() {
 
     let sig_transaction = &sig_transaction_root.unwrap();
 
-    println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
+    println!("Singer: \t{}", account.get_public_account().public_key.to_uppercase());
     println!("Hash: \t\t{}", sig_transaction.get_hash().to_uppercase());
 
     let response_root = client.to_owned().transaction.announce(&sig_transaction).await;
@@ -82,7 +82,7 @@ async fn main() {
 
     let sig_transaction = &sig_transaction_sub.unwrap();
 
-    println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
+    println!("Singer: \t{}", account.get_public_account().public_key.to_uppercase());
     println!("Hash: \t\t{}", sig_transaction.get_hash().to_uppercase());
 
     let response_sub = client.transaction.announce(&sig_transaction).await;

@@ -1,5 +1,6 @@
 pub use self::uint_64::Uint64;
 
+pub mod alias;
 pub mod account;
 pub mod message;
 pub mod mosaic;
@@ -13,7 +14,6 @@ pub mod node;
 pub(crate) mod errors;
 pub(crate) mod utils;
 
-mod alias;
 mod artifact_expiry_receipt_dto;
 mod balance_change_receipt_dto;
 mod config_dto;
