@@ -22,7 +22,7 @@ use xpx_chain_sdk::transaction::{AggregateTransaction, Deadline, Duration  as Lo
 };
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
+const PRIVATE_KEY: &str = "7D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 const PUBLIC_KEY: &str = "6152520970CF9E1278BB2CEFAC47D50E4204B91695E187449BF12AE9D217F2DA";
 
 #[tokio::main]
@@ -48,7 +48,7 @@ async fn main() {
 
     let ttx_one = TransferTransaction::new(
         deadline,
-        account.public_account.address.clone(),
+        account.address(),
         vec![Mosaic::xpx(15)],
         PlainMessage::new("Transfer One From ProximaX Rust SDK"),
         network_type,
@@ -58,7 +58,7 @@ async fn main() {
         Ok(t) => t,
         Err(err) => panic!("{}", err)
     };
-    transfer_one.to_aggregate(public_account.clone());
+    transfer_one.to_aggregate(public_account.to_owned());
 
     let ttx_two = TransferTransaction::new(
         deadline,
@@ -71,7 +71,7 @@ async fn main() {
         Ok(t) => t,
         Err(err) => panic!("{}", err)
     };
-    transfer_two.to_aggregate(account.public_account.clone());
+    transfer_two.to_aggregate(account.public_account_to_owned());
 
     let aggregate_bonded = AggregateTransaction::new_bonded(
         deadline,
@@ -87,15 +87,16 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    let lock_fund = lock_fund(&client, &account, sig_tx.clone().hash, generation_hash).await;
+    let lock_fund = lock_fund(&client, &account, sig_tx.get_hash(), generation_hash).await;
     if let Err(err) = &lock_fund {
         panic!("{}", err)
     }
 
-    println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
-    println!("Hash: \t\t{}", &sig_tx.get_hash().to_uppercase());
+    println!("Singer: \t{}", account.public_key_string());
+    println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction.announce_aggregate_bonded(&sig_tx).await;
+    let response = client.transaction_api()
+        .announce_aggregate_bonded(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),
@@ -108,7 +109,7 @@ async fn lock_fund<C: Connect>(client: &Box<SiriusClient<C>>, account: &Account,
     where
         C: Clone + Send + Sync + Debug + 'static
 {
-//    let network_type = client.network_type().await;
+    //  let network_type = client.network_type().await;
     let network_type = PUBLIC_TEST;
 
     // Deadline default 1 hour
@@ -125,10 +126,11 @@ async fn lock_fund<C: Connect>(client: &Box<SiriusClient<C>>, account: &Account,
 
     let sig_tx = account.sign(lock_transaction, &generation_hash)?;
 
-    println!("Singer Lock: \t{}", account.public_account.public_key.to_uppercase());
-    println!("Hash Lock: \t\t{}", &sig_tx.get_hash().to_uppercase());
+    println!("Singer Lock: \t{}", account.public_key_string());
+    println!("Hash Lock: \t\t{}", &sig_tx.get_hash());
 
-    let response = client.to_owned().transaction.announce(&sig_tx).await;
+    let response = client.transaction_api()
+        .announce(&sig_tx).await;
     match response {
         Ok(resp) => println!("{}\n", resp),
         Err(err) => panic!("{}\n", err),
@@ -136,7 +138,8 @@ async fn lock_fund<C: Connect>(client: &Box<SiriusClient<C>>, account: &Account,
     sleep(Duration::from_secs(3));
 
     for i in 0..6 {
-        let response = client.to_owned().transaction.get_transaction_status(&sig_tx.get_hash()).await;
+        let response = client.transaction_api()
+            .get_transaction_status(&sig_tx.get_hash()).await;
         if let Ok(status) = response {
             if !status.is_success() {
                 bail!("{}", status.status)

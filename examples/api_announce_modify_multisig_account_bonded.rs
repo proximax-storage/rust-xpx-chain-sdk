@@ -21,7 +21,7 @@ use xpx_chain_sdk::multisig::{CosignatoryModification, MultisigModificationType}
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
 /// Future multiSig private key
-const MULTI_SIG_PRIVATE_KEY: &str = "3B7660B5CB19C893694FC49B461CE489BF9588BE16DBE8DC29CF06338133DEE6";
+const MULTI_SIG_PRIVATE_KEY: &str = "3B7660B5CB19C893694FC49B461CE489BF9588BE16DBE8DC29CF06338133DEE7";
 
 /// Cosignature public keys
 const COSIGNATORY_ONE_PUBLIC_KEY: &str = "598B4214A70C159DD83592B0DDD5403CC36EE7DC45CFEC6530D6F218E3280AFD";
@@ -73,7 +73,7 @@ async fn main() {
         Err(err) => panic!("{}", err)
     };
 
-    modify_multi_sig_account.to_aggregate(multi_sig_account.to_owned().public_account);
+    modify_multi_sig_account.to_aggregate(multi_sig_account.public_account_to_owned());
 
     let aggregate_bonded = AggregateTransaction::new_bonded(
         deadline,
@@ -92,15 +92,15 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    let lock_fund = lock_fund(&client, &multi_sig_account, sig_tx.clone().hash, generation_hash).await;
+    let lock_fund = lock_fund(&client, &multi_sig_account, sig_tx.get_hash(), generation_hash).await;
     if let Err(err) = &lock_fund {
         panic!("{}", err)
     }
 
-    println!("Singer: \t{}", multi_sig_account.public_account.public_key.to_uppercase());
-    println!("Hash: \t\t{}", &sig_tx.get_hash().to_uppercase());
+    println!("Singer: \t{}", multi_sig_account.public_key_string());
+    println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction.announce_aggregate_bonded(&sig_tx).await;
+    let response = client.transaction_api().announce_aggregate_bonded(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),
@@ -130,10 +130,10 @@ async fn lock_fund<C: Connect>(client: &Box<SiriusClient<C>>, account: &Account,
 
     let sig_tx = account.sign(lock_transaction, &generation_hash)?;
 
-    println!("Singer Lock: \t{}", account.public_account.public_key.to_uppercase());
-    println!("Hash Lock: \t\t{}", &sig_tx.get_hash().to_uppercase());
+    println!("Singer Lock: \t{}", account.public_key_string());
+    println!("Hash Lock: \t\t{}", sig_tx.get_hash());
 
-    let response = client.to_owned().transaction.announce(&sig_tx).await;
+    let response = client.to_owned().transaction_api().announce(&sig_tx).await;
     match response {
         Ok(resp) => println!("{}\n", resp),
         Err(err) => panic!("{}\n", err),
@@ -141,7 +141,7 @@ async fn lock_fund<C: Connect>(client: &Box<SiriusClient<C>>, account: &Account,
     sleep(Duration::from_secs(3));
 
     for i in 0..6 {
-        let response = client.to_owned().transaction.get_transaction_status(&sig_tx.get_hash()).await;
+        let response = client.to_owned().transaction_api().get_transaction_status(&sig_tx.get_hash()).await;
         if let Ok(status) = response {
             if !status.is_success() {
                 bail!("{}", status.status)

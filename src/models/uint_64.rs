@@ -1,9 +1,8 @@
-use ::core::{fmt, mem};
+use ::core::fmt;
 
 use ::byteorder::{BigEndian, WriteBytesExt};
 use ::failure::_core::ops::BitAnd;
-
-use crate::models::utils::u64_to_array_u8;
+use crate::models::utils::SIZE_U64;
 
 #[derive(Clone, Deserialize, Serialize)]// we derive Default in order to use the clear() method in Drop
 pub(crate) struct Uint64Dto([u32; 2]);
@@ -29,7 +28,7 @@ impl Uint64 {
 
     /// Creates a `Uint64` from a pair of u32 integers.
     pub fn from_ints(lower: u32, higher: u32) -> Uint64 {
-        let mut buf = [0u8; mem::size_of::<u64>()];
+        let mut buf = [0u8; SIZE_U64];
         buf[..4].as_mut().write_u32::<BigEndian>(higher).expect("Unable to write");
         buf[4..].as_mut().write_u32::<BigEndian>(lower).expect("Unable to write");
         Uint64::from_bytes(buf)
@@ -52,8 +51,8 @@ impl Uint64 {
     }
 
     /// Converts to 64-bit byte array.
-    pub fn to_bytes(&self) -> [u8; 8] {
-        u64_to_array_u8(self.0)
+    pub fn to_bytes(&self) -> [u8; SIZE_U64] {
+        self.0.to_le_bytes()
     }
 
     /// Converts to a pair of i32 integers ([lower, higher]).

@@ -12,7 +12,6 @@ use xpx_chain_sdk::transaction::{AggregateTransaction, Deadline, MosaicDefinitio
 use xpx_chain_sdk::Uint64;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-
 const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
@@ -37,7 +36,7 @@ async fn main() {
     let mosaic_definition = MosaicDefinitionTransaction::new(
         deadline,
         MosaicNonce::random(),
-        account.to_owned().public_account,
+        account.public_account_to_owned(),
         MosaicProperties::new(
             true, true, 6, Uint64::new(0)
         ).unwrap(),
@@ -47,7 +46,7 @@ async fn main() {
         Ok(t) => t,
         Err(err) => panic!("{}", err)
     };
-    transaction_a.to_aggregate(account.public_account.clone());
+    transaction_a.to_aggregate(account.public_account_to_owned());
 
     let mosaic_supply = MosaicSupplyChangeTransaction::new(
         deadline,
@@ -61,7 +60,7 @@ async fn main() {
         Ok(t) => t,
         Err(err) => panic!("{}", err)
     };
-    transaction_b.to_aggregate(account.public_account.clone());
+    transaction_b.to_aggregate(account.public_account_to_owned());
 
     let aggregate_complete = AggregateTransaction::new_complete(
         deadline,
@@ -78,9 +77,9 @@ async fn main() {
     };
 
     println!("Singer: \t{}", account.public_account.public_key.to_uppercase());
-    println!("Hash: \t\t{}", &sig_tx.get_hash().to_uppercase());
+    println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction.announce(&sig_tx).await;
+    let response = client.transaction_api().announce(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

@@ -4,7 +4,6 @@
 use hyper::Client;
 
 use xpx_chain_sdk::sirius_client::SiriusClient;
-use xpx_chain_sdk::transaction::TransferTransaction;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
@@ -16,7 +15,7 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    let transaction_status = client.clone().transaction.get_transaction_status(
+    let transaction_status = client.transaction_api().get_transaction_status(
         "C7EE3B9FB368AAA447A02E49E2F3D1CA3190300E4CDB9E5C6370C927C64682E1").await;
     match transaction_status {
         Ok(status) => println!("{}", status),
@@ -28,7 +27,7 @@ async fn main() {
         "5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4"
     ];
 
-    let transactions_statuses = client.clone().transaction.get_transactions_statuses(
+    let transactions_statuses = client.transaction_api().get_transactions_statuses(
         transactions_ids.clone()).await;
     match transactions_statuses {
         Ok(statuses) => {
@@ -39,14 +38,14 @@ async fn main() {
         Err(err) => eprintln!("{}", err),
     }
 
-    let transaction = client.clone().transaction.get_transaction(
-        "C7EE3B9FB368AAA447A02E49E2F3D1CA3190300E4CDB9E5C6370C927C64682E1").await;
+    let transaction = client.transaction_api().get_transaction(
+        "23CCC1BC5658CBD3525F0C08AB4D62E05F02AEAD076C9023F94241E8EF9887BC").await;
     match transaction {
         Ok(tx) => println!("{}", tx),
         Err(err) => eprintln!("{}", err),
     }
 
-    let transactions = client.clone().transaction.get_transactions(transactions_ids).await;
+    let transactions = client.transaction_api().get_transactions(transactions_ids).await;
     match transactions {
         Ok(txs) => {
             txs.into_iter().for_each( |tx_info| {

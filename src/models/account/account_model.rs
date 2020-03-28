@@ -20,7 +20,7 @@ pub struct Account {
     /// The keyPair containing the public and private key of this account.
     pub key_pair: xpx_crypto::Keypair,
     /// The public account of this account.
-    pub(crate) public_account: PublicAccount,
+    pub public_account: PublicAccount,
 }
 
 impl Account {
@@ -37,12 +37,24 @@ impl Account {
         Self{ key_pair, public_account }
     }
 
-    pub fn get_public_account(&self) -> PublicAccount {
+    pub fn key_pair_to_owned(&self) -> xpx_crypto::Keypair {
+        self.key_pair.to_owned()
+    }
+
+    pub fn public_account_to_owned(&self) -> PublicAccount {
         self.to_owned().public_account
     }
 
-    pub fn get_address(&self) -> Address {
-        self.get_public_account().address
+    pub fn public_key_string(&self) -> String {
+        self.public_account_to_owned().public_key_string()
+    }
+
+    pub fn address(&self) -> Address {
+        self.public_account.address_to_owned()
+    }
+
+    pub fn address_string(&self) -> String {
+        self.address().to_string()
     }
 
     /// Create a `Account` from a private key for the given `NetworkType`.
@@ -95,6 +107,8 @@ impl Account {
     }
 
     /// Signs raw data.
+
+    #[inline]
     pub fn sign_data(&self, data: &[u8]) -> String {
         let sig = &self.key_pair.sign(data).to_bytes()[..];
 
@@ -148,6 +162,8 @@ pub(crate) struct AccountsId {
 }
 
 impl From<Vec<&str>> for AccountsId {
+
+    #[inline]
     fn from(ids: Vec<&str>) -> Self {
         let mut public_keys = vec![];
         let mut addresses = vec![];

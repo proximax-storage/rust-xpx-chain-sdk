@@ -18,13 +18,13 @@ async fn main() {
 
     let public_account = PublicAccount::from_public_key(PUBLIC_KEY_B, PUBLIC_TEST).unwrap();
 
-    let account_info = client.to_owned().account.account_info(PUBLIC_KEY_A).await;
+    let account_info = client.account_api().account_info(PUBLIC_KEY_A).await;
     match account_info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
     }
 
-    let accounts_info = client.clone().account.accounts_info(vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
+    let accounts_info = client.account_api().accounts_info(vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
     match accounts_info {
         Ok(accounts) => {
             accounts.iter().for_each(|account_info| {
@@ -34,19 +34,19 @@ async fn main() {
         Err(err) => eprintln!("{}", err),
     }
 
-    let multisig = client.clone().account.account_multisig("VDPZJMY6D4LDBAHTAFDPZPLH5WQD4XTYHXQVFJLB").await;
+    let multisig = client.account_api().account_multisig("VDPZJMY6D4LDBAHTAFDPZPLH5WQD4XTYHXQVFJLB").await;
     match multisig {
         Ok(account_info) => println!("{}", account_info),
         Err(err) => eprintln!("{}", err),
     }
 
-    let multisig = client.clone().account.account_multisig_graph("VDPZJMY6D4LDBAHTAFDPZPLH5WQD4XTYHXQVFJLB").await;
+    let multisig = client.account_api().account_multisig_graph("VDPZJMY6D4LDBAHTAFDPZPLH5WQD4XTYHXQVFJLB").await;
     match multisig {
         Ok(account_info) => println!("{}", account_info),
         Err(err) => eprintln!("{}", err),
     }
 
-    let accounts_transactions = client.account.incoming_transactions(&public_account, None, None, Some("id")).await;
+    let accounts_transactions = client.account_api().incoming_transactions(&public_account, None, None, Some("id")).await;
     match accounts_transactions {
         Ok(accounts) => {
             accounts.iter().for_each(|account_txs| {

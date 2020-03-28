@@ -3,7 +3,7 @@ use ::base32::Alphabet::RFC4648;
 use crate::models::network::*;
 use crate::models::utils::is_hex;
 use crate::Result;
-use crate::models::consts::{ADDRESS_ENCODE_SIZE, ADDRESS_SIZE};
+use crate::models::consts::{ADDRESS_DECODE_SIZE, ADDRESS_ENCODE_SIZE};
 use crate::models::errors;
 
 const PREFIX_MIJIN: char = 'M';
@@ -58,13 +58,13 @@ impl Address {
     pub fn from_raw(raw_address: &str) -> Result<Self> {
         ensure!(
             !raw_address.is_empty(),
-            "raw address is empty."
+            errors::ERR_EMPTY_ADDRESSES
          );
 
         let address = raw_address.trim().to_uppercase().replace(REGEX_DASH, EMPTY_STRING);
         ensure!(
-            address.len() == ADDRESS_ENCODE_SIZE,
-            "Invalid len raw address."
+            address.len() == ADDRESS_DECODE_SIZE,
+            errors::ERR_INVALID_ADDRESSES_LEN
          );
 
         match address.chars().next().unwrap() {
@@ -82,17 +82,17 @@ impl Address {
     pub fn from_encoded(encoded: &str) -> Result<Self> {
         ensure!(
             !encoded.is_empty(),
-            "address encoded string is empty."
+            errors::ERR_EMPTY_ADDRESSES
          );
 
         ensure!(
-            encoded.len() == ADDRESS_SIZE + ADDRESS_SIZE,
-            "Invalid len address encoded string."
+            encoded.len() == ADDRESS_ENCODE_SIZE,
+            errors::ERR_INVALID_ADDRESSES_LEN
          );
 
         ensure!(
             is_hex(encoded),
-            "Invalid hex address encoded string."
+            errors::ERR_INVALID_ADDRESSES_HEX
             );
 
         let encoded_to_bytes = hex::decode(encoded)?;
@@ -122,8 +122,13 @@ impl Address {
         self.address.is_empty() && self.network_type == NOT_SUPPORTED_NET
     }
 
+    #[inline]
     pub fn to_decode(&self) -> Vec<u8> {
         base32::decode(RFC4648 { padding: true }, &self.address).unwrap()
+    }
+
+    pub fn to_string(&self) -> String {
+        self.address.to_uppercase()
     }
 }
 

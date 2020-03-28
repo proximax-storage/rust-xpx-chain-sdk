@@ -55,7 +55,7 @@ impl SignedTransaction {
     }
 
     pub fn get_hash(&self) -> Hash {
-        self.hash.to_owned()
+        self.hash.to_owned().to_uppercase()
     }
 
     pub fn type_to_string(&self) -> String {

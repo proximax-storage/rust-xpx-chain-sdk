@@ -128,7 +128,7 @@ pub(super) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate
         ERR_EMPTY_TRANSACTION_SIGNER
     );
 
-    let mut signer_bytes = tx.to_owned().abs_transaction().signer.to_array();
+    let mut signer_bytes = tx.to_owned().abs_transaction().signer.to_bytes();
 
     let mut tx_bytes = tx.embedded_to_bytes()?;
 
@@ -157,7 +157,7 @@ pub(super) fn cosignatory_modification_array_to_buffer<'a>(
     for modification in modifications {
         let public_key = &modification.public_account;
 
-        let public_key_vector = builder.create_vector_direct(&public_key.to_array());
+        let public_key_vector = builder.create_vector_direct(&public_key.to_bytes());
 
         let mut modify_multisig = bm::buffers::CosignatoryModificationBufferBuilder::new(builder);
         modify_multisig.add_type_(modification.modification_type.value());

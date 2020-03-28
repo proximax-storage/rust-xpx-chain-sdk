@@ -26,13 +26,13 @@ async fn main() {
 
     let namespace_two = NamespaceId::from("BFFB42A19116BDF6");
 
-    let namespace_info = client.clone().namespace.get_namespace_info(namespace_one).await;
+    let namespace_info = client.namespace_api().get_namespace_info(namespace_one).await;
     match namespace_info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
     }
 
-    let from_account = client.clone().namespace.get_namespaces_from_account(address_one.clone(), None, None).await;
+    let from_account = client.namespace_api().get_namespaces_from_account(address_one.clone(), None, None).await;
     match from_account {
         Ok(namespaces) => {
             namespaces.iter().for_each(|namespace_info| {
@@ -42,7 +42,7 @@ async fn main() {
         Err(err) => eprintln!("{}", err)
     }
 
-    let namespaces_names = client.clone().namespace.get_namespaces_names(vec![namespace_one, namespace_two]).await;
+    let namespaces_names = client.namespace_api().get_namespaces_names(vec![namespace_one, namespace_two]).await;
     match namespaces_names {
         Ok(namespaces) => {
             namespaces.iter().for_each(|namespace_name| {
@@ -52,7 +52,7 @@ async fn main() {
         Err(err) => eprintln!("{}", err),
     }
 
-    let namespaces_accounts = client.namespace.get_namespaces_from_accounts(
+    let namespaces_accounts = client.namespace_api().get_namespaces_from_accounts(
         vec![&address_one.address, &address_two.address], None, None).await;
     match namespaces_accounts {
         Ok(namespaces) => {

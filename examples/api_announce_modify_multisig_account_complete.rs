@@ -53,9 +53,9 @@ async fn main() {
         MINIMAL_APPROVAL,
         MINIMAL_REMOVAL,
         vec![
-            CosignatoryModification::new(MultisigModificationType::Add, cosignatory_one.to_owned().public_account),
-            CosignatoryModification::new(MultisigModificationType::Add, cosignatory_two.to_owned().public_account),
-            CosignatoryModification::new(MultisigModificationType::Add, cosignatory_three.to_owned().public_account)
+            CosignatoryModification::new(MultisigModificationType::Add, cosignatory_one.public_account_to_owned()),
+            CosignatoryModification::new(MultisigModificationType::Add, cosignatory_two.public_account_to_owned()),
+            CosignatoryModification::new(MultisigModificationType::Add, cosignatory_three.public_account_to_owned())
         ],
         network_type,
     );
@@ -64,7 +64,7 @@ async fn main() {
         Err(err) => panic!("{}", err)
     };
 
-    modify_multi_sig_account.to_aggregate(multi_sig_account.to_owned().public_account);
+    modify_multi_sig_account.to_aggregate(multi_sig_account.public_account_to_owned());
 
     let aggregate_bonded = AggregateTransaction::new_complete(
         deadline,
@@ -86,10 +86,10 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    println!("Singer: \t{}", multi_sig_account.public_account.public_key.to_uppercase());
-    println!("Hash: \t\t{}", &sig_tx.get_hash().to_uppercase());
+    println!("Singer: \t{}", multi_sig_account.public_key_string());
+    println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction.announce(&sig_tx).await;
+    let response = client.transaction_api().announce(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

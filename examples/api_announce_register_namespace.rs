@@ -12,7 +12,7 @@ use xpx_chain_sdk::Uint64;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
-const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
+const PRIVATE_KEY: &str = "6D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
 async fn main() {
@@ -53,10 +53,10 @@ async fn main() {
 
     let sig_transaction = &sig_transaction_root.unwrap();
 
-    println!("Singer: \t{}", account.get_public_account().public_key.to_uppercase());
-    println!("Hash: \t\t{}", sig_transaction.get_hash().to_uppercase());
+    println!("Singer: \t{}", account.public_key_string());
+    println!("Hash: \t\t{}", sig_transaction.get_hash());
 
-    let response_root = client.to_owned().transaction.announce(&sig_transaction).await;
+    let response_root = client.transaction_api().announce(&sig_transaction).await;
 
     match response_root {
         Ok(response) => println!("{}\n", response),
@@ -82,10 +82,10 @@ async fn main() {
 
     let sig_transaction = &sig_transaction_sub.unwrap();
 
-    println!("Singer: \t{}", account.get_public_account().public_key.to_uppercase());
-    println!("Hash: \t\t{}", sig_transaction.get_hash().to_uppercase());
+    println!("Singer: \t{}", account.public_key_string());
+    println!("Hash: \t\t{}", sig_transaction.get_hash());
 
-    let response_sub = client.transaction.announce(&sig_transaction).await;
+    let response_sub = client.transaction_api().announce(&sig_transaction).await;
 
     match response_sub {
         Ok(response) => println!("{}", response),

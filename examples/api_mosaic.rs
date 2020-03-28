@@ -18,7 +18,7 @@ async fn main() {
 
     let mosaic_one = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
 
-    let mosaic_info = client.clone().mosaic.get_mosaic_info(
+    let mosaic_info = client.mosaic_api().get_mosaic_info(
         mosaic_one).await;
 
     match mosaic_info {
@@ -29,7 +29,7 @@ async fn main() {
     let mosaic_two = MosaicId::from_hex("13bfc518e40549d7").unwrap();
     let mosaic_three = MosaicId::from_hex("6208AE4D56451357").unwrap();
 
-    let mosaics_info = client.clone().mosaic.get_mosaics_info(
+    let mosaics_info = client.mosaic_api().get_mosaics_info(
         vec![mosaic_two.clone(), mosaic_three.clone()]).await;
 
     match mosaics_info {
@@ -41,7 +41,7 @@ async fn main() {
         Err(err) => panic!("{}", err),
     }
 
-    let mosaics_names = client.clone().mosaic.get_mosaics_names(
+    let mosaics_names = client.mosaic_api().get_mosaics_names(
         vec![mosaic_two, mosaic_three]).await;
 
     match mosaics_names {

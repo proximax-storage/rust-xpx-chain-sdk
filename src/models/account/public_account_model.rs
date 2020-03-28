@@ -2,6 +2,7 @@ use crate::models::{errors, utils::is_hex};
 use crate::Result;
 
 use super::Address;
+use crate::models::consts::PUBLIC_KEY_BYTES_SIZE;
 
 /// The `PublicAccount` account structure contains account's `Address` and public key.
 #[derive(Default, Clone, Debug, Serialize, Deserialize)]
@@ -70,13 +71,23 @@ impl PublicAccount {
         }
     }
 
-    pub fn to_array(&self) -> [u8; 32] {
-        let mut array = [0; 32];
+    /// Convert this public key to a byte array.
+    #[inline]
+    pub fn to_bytes(&self) -> [u8; PUBLIC_KEY_BYTES_SIZE] {
+        let mut array = [0; PUBLIC_KEY_BYTES_SIZE];
         let public_key_to_bytes = hex::decode(&self.public_key).unwrap();
 
         array.copy_from_slice(&public_key_to_bytes);
 
         return array;
+    }
+
+    pub fn public_key_string(&self) -> String {
+        self.public_key.to_uppercase()
+    }
+
+    pub fn address_to_owned(&self) -> Address {
+        self.address.to_owned()
     }
 }
 

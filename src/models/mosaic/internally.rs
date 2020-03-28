@@ -26,7 +26,7 @@ pub(crate) fn generate_mosaic_id(nonce: MosaicNonce, owner_public_id: PublicAcco
 
     hash.input(nonce_bytes);
 
-    let owner_bytes: [u8; 32] = owner_public_id.to_array();
+    let owner_bytes: [u8; 32] = owner_public_id.to_bytes();
 
     hash.input(owner_bytes);
 

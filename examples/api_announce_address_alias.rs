@@ -11,7 +11,7 @@ use xpx_chain_sdk::sirius_client::SiriusClient;
 use xpx_chain_sdk::transaction::{AddressAliasTransaction, Deadline};
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
+const PRIVATE_KEY: &str = "7D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
 async fn main() {
@@ -36,7 +36,7 @@ async fn main() {
 
     let alias_transaction = AddressAliasTransaction::new(
         deadline,
-        account.get_address(),
+        account.address(),
         namespace_id,
         AliasActionType::AliasLink,
         network_type,
@@ -54,10 +54,10 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    println!("Singer: \t{}", account.get_public_account().public_key.to_uppercase());
-    println!("Hash: \t\t{}", &sig_tx.get_hash().to_uppercase());
+    println!("Singer: \t{}", account.public_key_string());
+    println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction.announce(&sig_tx).await;
+    let response = client.transaction_api().announce(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

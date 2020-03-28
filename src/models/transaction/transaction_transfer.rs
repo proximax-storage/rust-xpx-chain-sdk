@@ -153,7 +153,7 @@ impl Transaction for TransferTransaction {
 
         let buf = _builder.finished_data();
 
-        Ok(transfer_transaction_schema().serialize(&mut Vec::from(buf)))
+        Ok(transfer_transaction_schema().serialize(&mut Vec::from(buf.to_vec())))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {

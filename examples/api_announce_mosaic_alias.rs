@@ -57,10 +57,10 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    println!("Singer: \t{}", account.get_public_account().public_key.to_uppercase());
-    println!("Hash: \t\t{}", &sig_tx.get_hash().to_uppercase());
+    println!("Singer: \t{}", account.public_key_string());
+    println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction.announce(&sig_tx).await;
+    let response = client.transaction_api().announce(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),
