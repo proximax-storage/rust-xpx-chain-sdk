@@ -3,7 +3,6 @@ use crate::models::{
     message::MessageDto,
     mosaic::{Mosaic, MosaicDto, MosaicId},
     network::extract_network_type,
-    transaction::{},
     uint_64::Uint64Dto
 };
 

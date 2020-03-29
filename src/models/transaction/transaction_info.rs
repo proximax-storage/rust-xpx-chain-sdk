@@ -126,14 +126,18 @@ impl AbstractTransaction {
     }
 
     pub(crate) fn is_unannounced(&self) -> bool {
-        unimplemented!()
+        return if let Some(tx_info) = &self.transaction_info {
+            tx_info.transaction_hash.is_some() || tx_info.agregate_hash.is_some()
+        } else {
+            false
+        };
     }
 
     pub(crate) fn to_aggregate(&mut self, signer: PublicAccount) {
         self.signer = signer;
     }
 
-    pub(crate) fn build_vector<'a>(&self, builder: &mut FlatBufferBuilder<'a>) -> AbsVector<'a> {
+    pub(crate) fn build_vector<'a>(&self, builder: &mut fb::FlatBufferBuilder<'a>) -> AbsVector<'a> {
         AbsVector::build_vector(self, builder)
     }
 }

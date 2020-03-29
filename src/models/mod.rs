@@ -10,6 +10,7 @@ pub mod network;
 pub mod transaction;
 pub mod blockchain;
 pub mod node;
+pub mod exchange;
 
 pub(crate) mod errors;
 pub(crate) mod utils;
@@ -19,7 +20,6 @@ mod balance_change_receipt_dto;
 mod config_dto;
 mod consts;
 mod contract;
-mod exchange;
 mod field_dto;
 pub(crate) mod id_model;
 mod merkle_dto;

@@ -29,6 +29,10 @@ impl<C: Connect> BlockRoutes<C>
         BlockRoutes(client)
     }
 
+    fn __client(self) -> Arc<ApiClient<C>> {
+        self.0
+    }
+
     /// Get [BlockInfo] information
     ///
     /// Gets a block from the chain that has the given height.
@@ -72,7 +76,7 @@ impl<C: Connect> BlockRoutes<C>
 
         req = req.with_path_param("height".to_string(), height.to_string());
 
-        let dto: Result<BlockInfoDto> = req.execute(self.0).await;
+        let dto: Result<BlockInfoDto> = req.execute(self.__client()).await;
 
         Ok(dto?.to_struct()?)
     }
@@ -140,7 +144,7 @@ impl<C: Connect> BlockRoutes<C>
 
         req = req.with_path_param("limit".to_string(), limit.to_string());
 
-        let dto: Vec<BlockInfoDto> = req.execute(self.0).await?;
+        let dto: Vec<BlockInfoDto> = req.execute(self.__client()).await?;
 
         let mut blocks_info: Vec<BlockInfo> = vec![];
         for block_inf in dto.into_iter() {
@@ -209,7 +213,7 @@ impl<C: Connect> BlockRoutes<C>
         }
         req = req.with_path_param("height".to_string(), height.to_string()).is_transaction_vec();
 
-        let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
+        let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.__client()).await?;
 
         let mut transactions_info: Transactions = vec![];
         for transaction_dto in dto.into_iter() {

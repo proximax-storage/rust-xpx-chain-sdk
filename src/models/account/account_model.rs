@@ -150,6 +150,22 @@ impl core::fmt::Display for Account {
     }
 }
 
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AccountName {
+    pub address: Address,
+    pub names:   Vec<String>
+}
+
+impl core::fmt::Display for AccountName {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
+    }
+}
+
 #[derive(Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AccountsId {

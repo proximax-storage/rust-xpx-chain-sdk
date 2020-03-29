@@ -29,6 +29,10 @@ impl<C: Connect> NodeRoutes<C> where
         NodeRoutes(client)
     }
 
+    fn __client(self) -> Arc<ApiClient<C>> {
+        self.0.to_owned()
+    }
+
     /// Get the node information.
     /// Supplies additional information about the application running on a node.
     ///
@@ -63,7 +67,7 @@ impl<C: Connect> NodeRoutes<C> where
             Method::GET,
             NODE_INFO.to_string());
 
-        req.execute(self.0).await
+        req.execute(self.__client()).await
     }
 
     /// Get the node time.
@@ -100,7 +104,7 @@ impl<C: Connect> NodeRoutes<C> where
             Method::GET,
             NODE_TIME.to_string());
 
-        let dto: Result<NodeTimeDto> = req.execute(self.0).await;
+        let dto: Result<NodeTimeDto> = req.execute(self.__client()).await;
 
         Ok(dto?.to_struct())
     }

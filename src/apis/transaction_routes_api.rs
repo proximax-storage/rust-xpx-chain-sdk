@@ -6,17 +6,13 @@ use hyper::{client::connect::Connect, Method};
 use crate::{
     models::{
         transaction::{
-            SignedTransaction,
-            Transaction,
-            TransactionHashes,
-            TransactionIds,
-            TransactionStatus,
-            TransactionStatusDto,
-            TransactionDto
+            SignedTransaction, Transaction, TransactionHashes, TransactionIds, TransactionStatus,
+            TransactionStatusDto, TransactionDto, CosignatureSignedTransaction, Transactions,
+            TransactionsStatus
         },
         errors::{ERR_EMPTY_TRANSACTION_HASHES, ERR_EMPTY_TRANSACTION_IDS}
-    }};
-use crate::models::transaction::{CosignatureSignedTransaction, Transactions, TransactionsStatus};
+    }
+};
 
 use super::{
     internally::{valid_hash, valid_vec_hash, valid_vec_len},
@@ -41,6 +37,10 @@ impl<C: Connect> TransactionRoutes<C> where
 {
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
         TransactionRoutes(client)
+    }
+
+    fn __client(self) -> Arc<ApiClient<C>> {
+        self.0.to_owned()
     }
 
     /// Get transaction status
@@ -86,7 +86,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         req = req.with_path_param("hash".to_string(), hash.to_string());
 
-        let dto: Result<TransactionStatusDto> = req.execute(self.0).await;
+        let dto: Result<TransactionStatusDto> = req.execute(self.__client()).await;
 
         Ok(dto?.to_struct())
     }
@@ -144,7 +144,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         req = req.with_body_param(transaction_hashes);
 
-        let dto: Vec<TransactionStatusDto> = req.execute(self.0).await?;
+        let dto: Vec<TransactionStatusDto> = req.execute(self.__client()).await?;
 
         let statuses: TransactionsStatus = dto.into_iter()
             .map(move |status_dto|
@@ -199,7 +199,7 @@ impl<C: Connect> TransactionRoutes<C> where
         req = req.with_path_param("transactionId".to_string(), transaction_id.to_string())
             .is_transaction();
 
-        let version: Box<dyn TransactionDto> = req.execute(self.0).await?;
+        let version: Box<dyn TransactionDto> = req.execute(self.__client()).await?;
 
         Ok(version.to_struct()?)
     }
@@ -256,7 +256,7 @@ impl<C: Connect> TransactionRoutes<C> where
 
         req = req.with_body_param(ids).is_transaction_vec();
 
-        let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
+        let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.__client()).await?;
 
         let mut transactions_info: Transactions = vec![];
         for transaction_dto in dto.into_iter() {
@@ -366,7 +366,7 @@ impl<C: Connect> TransactionRoutes<C> where
         req = req.with_body_param(tx);
 
         async {
-            req.execute(self.0).await
+            req.execute(self.__client()).await
         }
     }
 }

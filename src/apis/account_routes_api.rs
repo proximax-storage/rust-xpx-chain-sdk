@@ -5,7 +5,7 @@ use std::future::Future;
 use hyper::{client::connect::Connect, Method};
 
 use crate::models::{
-    account::{AccountInfo, AccountInfoDto, AccountsId, PublicAccount},
+    account::{AccountInfo, AccountInfoDto, AccountsId, PublicAccount, AccountName, AccountNamesDto},
     errors::ERR_EMPTY_ADDRESSES_IDS,
     multisig::{MultisigAccountGraphInfoDto, MultisigAccountInfo, MultisigAccountInfoDto},
     multisig::MultisigAccountGraphInfo,
@@ -36,6 +36,10 @@ impl<C: Connect> AccountRoutes<C>
 {
     pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
         AccountRoutes(client)
+    }
+
+    fn __client(self) -> Arc<ApiClient<C>> {
+        self.0
     }
 
     /// Get [Account] information
@@ -81,7 +85,7 @@ impl<C: Connect> AccountRoutes<C>
 
         req = req.with_path_param("accountId".to_string(), account_id.to_string());
 
-        let dto: Result<AccountInfoDto> = req.execute(self.0).await;
+        let dto: Result<AccountInfoDto> = req.execute(self.__client()).await;
 
         Ok(dto?.to_struct()?)
     }
@@ -136,7 +140,7 @@ impl<C: Connect> AccountRoutes<C>
 
         req = req.with_body_param(&accounts);
 
-        let dto: Vec<AccountInfoDto> = req.execute(self.0).await?;
+        let dto: Vec<AccountInfoDto> = req.execute(self.__client()).await?;
 
         let mut accounts_info: Vec<AccountInfo> = vec![];
         for account_dto in dto.into_iter() {
@@ -144,6 +148,28 @@ impl<C: Connect> AccountRoutes<C>
         };
 
         Ok(accounts_info)
+    }
+
+    pub async fn accounts_names(self, accounts_id: Vec<&str>) -> Result<Vec<AccountName>> {
+        valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
+
+        let accounts = AccountsId::from(accounts_id);
+
+        let mut req = __internal_request::Request::new(
+            Method::POST,
+            ACCOUNT_NAMES_ROUTE.to_string(),
+        );
+
+        req = req.with_body_param(&accounts);
+
+        let dto: Vec<AccountNamesDto> = req.execute(self.__client()).await?;
+
+        let mut accounts_names: Vec<AccountName> = vec![];
+        for accounts_dto in dto.into_iter() {
+            accounts_names.push(accounts_dto.to_struct()?);
+        };
+
+        Ok(accounts_names)
     }
 
     pub async fn account_multisig(self, account_id: &str) -> Result<MultisigAccountInfo> {
@@ -156,7 +182,7 @@ impl<C: Connect> AccountRoutes<C>
 
         req = req.with_path_param("accountId".to_string(), account_id.to_string());
 
-        let dto: Result<MultisigAccountInfoDto> = req.execute(self.0).await;
+        let dto: Result<MultisigAccountInfoDto> = req.execute(self.__client()).await;
 
         Ok(dto?.to_struct()?)
     }
@@ -171,7 +197,7 @@ impl<C: Connect> AccountRoutes<C>
 
         req = req.with_path_param("accountId".to_string(), account_id.to_string());
 
-        let dto: Result<Vec<MultisigAccountGraphInfoDto>> = req.execute(self.0).await;
+        let dto: Result<Vec<MultisigAccountGraphInfoDto>> = req.execute(self.__client()).await;
 
         let mut multisig_accounts: HashMap<i16, Vec<MultisigAccountInfo>> = HashMap::new();
         for graph_info_dto in dto?.into_iter() {
@@ -202,21 +228,6 @@ impl<C: Connect> AccountRoutes<C>
         let mut req = __internal_request::Request::new(
             Method::POST,
             ACCOUNTS_PROPERTIES_ROUTE.to_string(),
-        );
-
-        req.with_body_param(&accounts);
-
-        unimplemented!()
-    }
-
-    pub async fn accounts_names(self, accounts_id: Vec<&str>) -> Result<Vec<()>> {
-        valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
-
-        let accounts = AccountsId::from(accounts_id);
-
-        let mut req = __internal_request::Request::new(
-            Method::POST,
-            ACCOUNT_NAMES_ROUTE.to_string(),
         );
 
         req.with_body_param(&accounts);
@@ -306,7 +317,7 @@ impl<C: Connect> AccountRoutes<C>
         req = req.is_transaction_vec();
 
         async {
-            let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.0).await?;
+            let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.__client()).await?;
 
             let mut transactions_info: Transactions = vec![];
             for transaction_dto in dto.into_iter() {

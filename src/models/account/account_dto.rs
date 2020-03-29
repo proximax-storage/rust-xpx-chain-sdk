@@ -3,6 +3,7 @@ use crate::models::uint_64::Uint64Dto;
 use crate::Result;
 
 use super::{AccountInfo, AccountLinkTypeEnum, Address};
+use crate::models::account::AccountName;
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -83,14 +84,22 @@ struct AccountLinkTransactionDto {
     action: u8,
 }
 
-#[derive(Serialize, Deserialize)]
-struct AccountNamesDto {
+#[derive(Clone, Serialize, Deserialize)]
+pub(crate) struct AccountNamesDto {
     /// The address of the account in hexadecimal.
     #[serde(rename = "address")]
     address: String,
     /// The mosaic linked namespace names.
     #[serde(rename = "names")]
     names: Vec<String>,
+}
+
+impl AccountNamesDto {
+    pub fn to_struct(&self) -> Result<AccountName> {
+        let address = Address::from_encoded(&self.address)?;
+
+        Ok(AccountName{ address, names: self.to_owned().names })
+    }
 }
 
 #[derive(Serialize, Deserialize)]

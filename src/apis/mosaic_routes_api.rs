@@ -27,6 +27,10 @@ impl<C: Connect> MosaicRoutes<C> where
         MosaicRoutes(client)
     }
 
+    fn __client(self) -> Arc<ApiClient<C>> {
+        self.0
+    }
+
     /// Get [Mosaic] information.
     ///
     /// Gets the mosaic definition for a given mosaic_id.
@@ -72,7 +76,7 @@ impl<C: Connect> MosaicRoutes<C> where
 
         req = req.with_path_param("mosaic_id".to_string(), mosaic_id.to_string());
 
-        let dto: Result<MosaicInfoDto> = req.execute(self.0).await;
+        let dto: Result<MosaicInfoDto> = req.execute(self.__client()).await;
 
         Ok(dto?.to_struct()?)
     }
@@ -130,7 +134,7 @@ impl<C: Connect> MosaicRoutes<C> where
 
         req = req.with_body_param(mosaics_ids);
 
-        let dto: Vec<MosaicInfoDto> = req.execute(self.0).await?;
+        let dto: Vec<MosaicInfoDto> = req.execute(self.__client()).await?;
 
         let mut mosaics_info: Vec<MosaicInfo> = vec![];
         for mosaic_dto in dto.into_iter() {
@@ -192,7 +196,7 @@ impl<C: Connect> MosaicRoutes<C> where
 
         req = req.with_body_param(mosaics_ids);
 
-        let dto: Vec<MosaicNamesDto> = req.execute(self.0).await?;
+        let dto: Vec<MosaicNamesDto> = req.execute(self.__client()).await?;
 
         let mosaics_names = dto.into_iter()
             .map(move |name_dto|

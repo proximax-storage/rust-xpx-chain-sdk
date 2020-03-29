@@ -72,6 +72,7 @@ impl Request {
         self
     }
 
+
     pub async fn execute<'a, C, U>(self, api: Arc<ApiClient<C>>) -> super::Result<U>
         where
             C: hyper::client::connect::Connect + Send + Clone + Sync + 'static,

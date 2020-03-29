@@ -55,4 +55,14 @@ async fn main() {
         }
         Err(err) => eprintln!("{}", err),
     }
+
+    let accounts_names = client.account_api().accounts_names(vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
+    match accounts_names {
+        Ok(account_names) => {
+            account_names.into_iter().for_each(|account| {
+                println!("{}", account)
+            })
+        },
+        Err(err) => eprintln!("{}", err)
+    }
 }

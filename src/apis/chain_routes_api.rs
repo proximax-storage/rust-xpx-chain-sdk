@@ -29,6 +29,10 @@ impl<C: Connect> ChainRoutes<C> where
         ChainRoutes(client)
     }
 
+    fn __client(self) -> Arc<ApiClient<C>> {
+        self.0
+    }
+
     /// Get the current height of the chain
     ///
     /// # Example
@@ -62,7 +66,7 @@ impl<C: Connect> ChainRoutes<C> where
             Method::GET,
             CHAIN_HEIGHT_ROUTE.to_string(),
         );
-        let dto: Result<HeightInfoDto> = req.execute(self.0).await;
+        let dto: Result<HeightInfoDto> = req.execute(self.__client()).await;
 
         Ok(dto?.to_struct())
     }
@@ -107,7 +111,7 @@ impl<C: Connect> ChainRoutes<C> where
             CHAIN_SCORE_ROUTE.to_string(),
         );
 
-        let dto: Result<BlockchainScoreDto> = req.execute(self.0).await;
+        let dto: Result<BlockchainScoreDto> = req.execute(self.__client()).await;
 
         Ok(dto?.to_struct())
     }
@@ -147,6 +151,6 @@ impl<C: Connect> ChainRoutes<C> where
             CHAIN_STORAGE_ROUTE.to_string(),
         );
 
-        req.execute(self.0).await
+        req.execute(self.__client()).await
     }
 }
