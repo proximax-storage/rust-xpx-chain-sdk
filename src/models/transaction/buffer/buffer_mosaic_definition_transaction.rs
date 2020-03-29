@@ -1,69 +1,57 @@
-extern crate flatbuffers;
-
 #[allow(unused_imports, dead_code)]
 pub mod mosaic_definition {
-    use std::cmp::Ordering;
-    use std::mem;
-
-    extern crate flatbuffers;
 
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-        use std::cmp::Ordering;
-        use std::mem;
-
-        extern crate flatbuffers;
-
-        pub enum MosaicPropertyOffset {}
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct MosaicProperty<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for MosaicProperty<'a> {
+        impl<'a> fb::Follow<'a> for MosaicProperty<'a> {
             type Inner = MosaicProperty<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf, loc },
+                    _tab: fb::Table { buf, loc },
                 }
             }
         }
 
         impl<'a> MosaicProperty<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 MosaicProperty {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args MosaicPropertyArgs<'args>) -> flatbuffers::WIPOffset<MosaicProperty<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args MosaicPropertyArgs<'args>) -> fb::WIPOffset<MosaicProperty<'bldr>> {
                 let mut builder = MosaicPropertyBuilder::new(_fbb);
                 if let Some(x) = args.value { builder.add_value(x); }
                 builder.add_mosaic_property_id(args.mosaic_property_id);
                 builder.finish()
             }
 
-            pub const VT_MOSAICPROPERTYID: flatbuffers::VOffsetT = 4;
-            pub const VT_VALUE: flatbuffers::VOffsetT = 6;
+            pub const VT_MOSAICPROPERTYID: fb::VOffsetT = 4;
+            pub const VT_VALUE: fb::VOffsetT = 6;
 
             #[inline]
             pub fn mosaic_property_id(&self) -> u8 {
                 self._tab.get::<u8>(MosaicProperty::VT_MOSAICPROPERTYID, Some(0)).unwrap()
             }
             #[inline]
-            pub fn value(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(MosaicProperty::VT_VALUE, None)
+            pub fn value(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(MosaicProperty::VT_VALUE, None)
             }
         }
 
         pub struct MosaicPropertyArgs<'a> {
             pub mosaic_property_id: u8,
-            pub value: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+            pub value: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
         }
 
         impl<'a> Default for MosaicPropertyArgs<'a> {
@@ -77,8 +65,8 @@ pub mod mosaic_definition {
         }
 
         pub struct MosaicPropertyBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> MosaicPropertyBuilder<'a, 'b> {
@@ -87,11 +75,11 @@ pub mod mosaic_definition {
                 self.fbb_.push_slot::<u8>(MosaicProperty::VT_MOSAICPROPERTYID, mosaic_property_id, 0);
             }
             #[inline]
-            pub fn add_value(&mut self, value: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicProperty::VT_VALUE, value);
+            pub fn add_value(&mut self, value: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(MosaicProperty::VT_VALUE, value);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> MosaicPropertyBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> MosaicPropertyBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 MosaicPropertyBuilder {
                     fbb_: _fbb,
@@ -99,9 +87,9 @@ pub mod mosaic_definition {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<MosaicProperty<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<MosaicProperty<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -109,30 +97,30 @@ pub mod mosaic_definition {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct MosaicDefinitionTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for MosaicDefinitionTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for MosaicDefinitionTransactionBuffer<'a> {
             type Inner = MosaicDefinitionTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf, loc },
+                    _tab: fb::Table { buf, loc },
                 }
             }
         }
 
         impl<'a> MosaicDefinitionTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 MosaicDefinitionTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args MosaicDefinitionTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<MosaicDefinitionTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args MosaicDefinitionTransactionBufferArgs<'args>) -> fb::WIPOffset<MosaicDefinitionTransactionBuffer<'bldr>> {
                 let mut builder = MosaicDefinitionTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.optional_properties { builder.add_optional_properties(x); }
                 if let Some(x) = args.mosaic_id { builder.add_mosaic_id(x); }
@@ -150,19 +138,19 @@ pub mod mosaic_definition {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_MOSAICNONCE: flatbuffers::VOffsetT = 18;
-            pub const VT_MOSAICID: flatbuffers::VOffsetT = 20;
-            pub const VT_NUMOPTIONALPROPERTIES: flatbuffers::VOffsetT = 22;
-            pub const VT_FLAGS: flatbuffers::VOffsetT = 24;
-            pub const VT_DIVISIBILITY: flatbuffers::VOffsetT = 26;
-            pub const VT_OPTIONALPROPERTIES: flatbuffers::VOffsetT = 28;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_MOSAICNONCE: fb::VOffsetT = 18;
+            pub const VT_MOSAICID: fb::VOffsetT = 20;
+            pub const VT_NUMOPTIONALPROPERTIES: fb::VOffsetT = 22;
+            pub const VT_FLAGS: fb::VOffsetT = 24;
+            pub const VT_DIVISIBILITY: fb::VOffsetT = 26;
+            pub const VT_OPTIONALPROPERTIES: fb::VOffsetT = 28;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -170,11 +158,11 @@ pub mod mosaic_definition {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(MosaicDefinitionTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(MosaicDefinitionTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(MosaicDefinitionTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(MosaicDefinitionTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -185,20 +173,20 @@ pub mod mosaic_definition {
                 self._tab.get::<u16>(MosaicDefinitionTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(MosaicDefinitionTransactionBuffer::VT_MAXFEE, None)
+            pub fn max_fee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(MosaicDefinitionTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(MosaicDefinitionTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(MosaicDefinitionTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
             pub fn mosaic_nonce(&self) -> u32 {
                 self._tab.get::<u32>(MosaicDefinitionTransactionBuffer::VT_MOSAICNONCE, Some(0)).unwrap()
             }
             #[inline]
-            pub fn mosaic_id(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(MosaicDefinitionTransactionBuffer::VT_MOSAICID, None)
+            pub fn mosaic_id(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(MosaicDefinitionTransactionBuffer::VT_MOSAICID, None)
             }
             #[inline]
             pub fn num_optional_properties(&self) -> u8 {
@@ -213,25 +201,25 @@ pub mod mosaic_definition {
                 self._tab.get::<u8>(MosaicDefinitionTransactionBuffer::VT_DIVISIBILITY, Some(0)).unwrap()
             }
             #[inline]
-            pub fn optional_properties(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MosaicProperty<'a>>>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<flatbuffers::ForwardsUOffset<MosaicProperty<'a>>>>>(MosaicDefinitionTransactionBuffer::VT_OPTIONALPROPERTIES, None)
+            pub fn optional_properties(&self) -> Option<fb::Vector<'a, fb::ForwardsUOffset<MosaicProperty<'a>>>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<fb::ForwardsUOffset<MosaicProperty<'a>>>>>(MosaicDefinitionTransactionBuffer::VT_OPTIONALPROPERTIES, None)
             }
         }
 
         pub struct MosaicDefinitionTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub max_fee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+            pub max_fee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub mosaic_nonce: u32,
-            pub mosaic_id: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+            pub mosaic_id: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub num_optional_properties: u8,
             pub flags: u8,
             pub divisibility: u8,
-            pub optional_properties: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MosaicProperty<'a>>>>>,
+            pub optional_properties: Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<MosaicProperty<'a>>>>>,
         }
 
         impl<'a> Default for MosaicDefinitionTransactionBufferArgs<'a> {
@@ -256,8 +244,8 @@ pub mod mosaic_definition {
         }
 
         pub struct MosaicDefinitionTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> MosaicDefinitionTransactionBufferBuilder<'a, 'b> {
@@ -266,12 +254,12 @@ pub mod mosaic_definition {
                 self.fbb_.push_slot::<u32>(MosaicDefinitionTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -282,20 +270,20 @@ pub mod mosaic_definition {
                 self.fbb_.push_slot::<u16>(MosaicDefinitionTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_MAXFEE, max_fee);
+            pub fn add_max_fee(&mut self, max_fee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_MAXFEE, max_fee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
             pub fn add_mosaic_nonce(&mut self, mosaic_nonce: u32) {
                 self.fbb_.push_slot::<u32>(MosaicDefinitionTransactionBuffer::VT_MOSAICNONCE, mosaic_nonce, 0);
             }
             #[inline]
-            pub fn add_mosaic_id(&mut self, mosaic_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_MOSAICID, mosaic_id);
+            pub fn add_mosaic_id(&mut self, mosaic_id: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_MOSAICID, mosaic_id);
             }
             #[inline]
             pub fn add_num_optional_properties(&mut self, num_optional_properties: u8) {
@@ -310,11 +298,11 @@ pub mod mosaic_definition {
                 self.fbb_.push_slot::<u8>(MosaicDefinitionTransactionBuffer::VT_DIVISIBILITY, divisibility, 0);
             }
             #[inline]
-            pub fn add_optional_properties(&mut self, optional_properties: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<MosaicProperty<'b>>>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_OPTIONALPROPERTIES, optional_properties);
+            pub fn add_optional_properties(&mut self, optional_properties: fb::WIPOffset<fb::Vector<'b, fb::ForwardsUOffset<MosaicProperty<'b>>>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(MosaicDefinitionTransactionBuffer::VT_OPTIONALPROPERTIES, optional_properties);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> MosaicDefinitionTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> MosaicDefinitionTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 MosaicDefinitionTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -322,31 +310,31 @@ pub mod mosaic_definition {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<MosaicDefinitionTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<MosaicDefinitionTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
         #[inline]
         pub fn get_root_as_mosaic_definition_transaction_buffer<'a>(buf: &'a [u8]) -> MosaicDefinitionTransactionBuffer<'a> {
-            flatbuffers::get_root::<MosaicDefinitionTransactionBuffer<'a>>(buf)
+            fb::get_root::<MosaicDefinitionTransactionBuffer<'a>>(buf)
         }
 
         #[inline]
         pub fn get_size_prefixed_root_as_mosaic_definition_transaction_buffer<'a>(buf: &'a [u8]) -> MosaicDefinitionTransactionBuffer<'a> {
-            flatbuffers::get_size_prefixed_root::<MosaicDefinitionTransactionBuffer<'a>>(buf)
+            fb::get_size_prefixed_root::<MosaicDefinitionTransactionBuffer<'a>>(buf)
         }
 
         #[inline]
         pub fn finish_mosaic_definition_transaction_buffer_buffer<'a, 'b>(
-            fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            root: flatbuffers::WIPOffset<MosaicDefinitionTransactionBuffer<'a>>) {
+            fbb: &'b mut fb::FlatBufferBuilder<'a>,
+            root: fb::WIPOffset<MosaicDefinitionTransactionBuffer<'a>>) {
             fbb.finish(root, None);
         }
 
         #[inline]
-        pub fn finish_size_prefixed_mosaic_definition_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<MosaicDefinitionTransactionBuffer<'a>>) {
+        pub fn finish_size_prefixed_mosaic_definition_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut fb::FlatBufferBuilder<'a>, root: fb::WIPOffset<MosaicDefinitionTransactionBuffer<'a>>) {
             fbb.finish_size_prefixed(root, None);
         }
     }  // pub mod Buffers

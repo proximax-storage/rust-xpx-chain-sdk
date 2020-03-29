@@ -2,18 +2,21 @@ use std::any::Any;
 
 use serde_json::Value;
 
+use crate::models::{
+    account::{Account, PublicAccount},
+    consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE},
+    errors::ERR_EMPTY_MODIFICATIONS,
+    multisig::CosignatoryModification,
+    network::NetworkType
+};
 use crate::Result;
 
-use crate::models::account::{Account, PublicAccount};
-use crate::models::consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE};
-use crate::models::errors::ERR_EMPTY_MODIFICATIONS;
-use crate::models::multisig::CosignatoryModification;
-use crate::models::network::NetworkType;
-use crate::models::transaction::{AbstractTransaction, AbsTransaction, cosignatory_modification_array_to_buffer, Deadline, EntityTypeEnum, MODIFY_MULTISIG_VERSION, SignedTransaction, Transaction};
-use crate::models::transaction::buffer::modify_multisig_account::buffers;
-use crate::transaction::sign_transaction;
-
-use super::schema::modify_multisig_account_transaction_schema;
+use super::{
+    AbstractTransaction, AbsTransaction, buffer::modify_multisig_account::buffers,
+    cosignatory_modification_array_to_buffer, Deadline, EntityTypeEnum, MODIFY_MULTISIG_VERSION,
+    schema::modify_multisig_account_transaction_schema, sign_transaction, SignedTransaction,
+    Transaction
+};
 
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]

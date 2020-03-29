@@ -7,14 +7,14 @@ extern crate flatbuffers;
 use std::cmp::Ordering;
 use std::mem;
 
-use self::flatbuffers::EndianScalar;
+use self::fb::EndianScalar;
 
 #[allow(unused_imports, dead_code)]
 pub mod catapult {
     use std::cmp::Ordering;
     use std::mem;
 
-    use self::flatbuffers::EndianScalar;
+    use self::fb::EndianScalar;
 
     extern crate flatbuffers;
 
@@ -23,7 +23,7 @@ pub mod catapult {
         use std::cmp::Ordering;
         use std::mem;
 
-        use self::flatbuffers::EndianScalar;
+        use self::fb::EndianScalar;
 
         extern crate flatbuffers;
 
@@ -31,30 +31,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct NetworkConfigTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for NetworkConfigTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for NetworkConfigTransactionBuffer<'a> {
             type Inner = NetworkConfigTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> NetworkConfigTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 NetworkConfigTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args NetworkConfigTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<NetworkConfigTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args NetworkConfigTransactionBufferArgs<'args>) -> fb::WIPOffset<NetworkConfigTransactionBuffer<'bldr>> {
                 let mut builder = NetworkConfigTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.supportedEntityVersions { builder.add_supportedEntityVersions(x); }
                 if let Some(x) = args.networkConfig { builder.add_networkConfig(x); }
@@ -71,18 +71,18 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_APPLYHEIGHTDELTA: flatbuffers::VOffsetT = 18;
-            pub const VT_NETWORKCONFIGSIZE: flatbuffers::VOffsetT = 20;
-            pub const VT_SUPPORTEDENTITYVERSIONSSIZE: flatbuffers::VOffsetT = 22;
-            pub const VT_NETWORKCONFIG: flatbuffers::VOffsetT = 24;
-            pub const VT_SUPPORTEDENTITYVERSIONS: flatbuffers::VOffsetT = 26;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_APPLYHEIGHTDELTA: fb::VOffsetT = 18;
+            pub const VT_NETWORKCONFIGSIZE: fb::VOffsetT = 20;
+            pub const VT_SUPPORTEDENTITYVERSIONSSIZE: fb::VOffsetT = 22;
+            pub const VT_NETWORKCONFIG: fb::VOffsetT = 24;
+            pub const VT_SUPPORTEDENTITYVERSIONS: fb::VOffsetT = 26;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -90,11 +90,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(NetworkConfigTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(NetworkConfigTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(NetworkConfigTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(NetworkConfigTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -105,16 +105,16 @@ pub mod catapult {
                 self._tab.get::<u16>(NetworkConfigTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(NetworkConfigTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(NetworkConfigTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(NetworkConfigTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(NetworkConfigTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
-            pub fn applyHeightDelta(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(NetworkConfigTransactionBuffer::VT_APPLYHEIGHTDELTA, None)
+            pub fn applyHeightDelta(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(NetworkConfigTransactionBuffer::VT_APPLYHEIGHTDELTA, None)
             }
             #[inline]
             pub fn networkConfigSize(&self) -> u16 {
@@ -126,27 +126,27 @@ pub mod catapult {
             }
             #[inline]
             pub fn networkConfig(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(NetworkConfigTransactionBuffer::VT_NETWORKCONFIG, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(NetworkConfigTransactionBuffer::VT_NETWORKCONFIG, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn supportedEntityVersions(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(NetworkConfigTransactionBuffer::VT_SUPPORTEDENTITYVERSIONS, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(NetworkConfigTransactionBuffer::VT_SUPPORTEDENTITYVERSIONS, None).map(|v| v.safe_slice())
             }
         }
 
         pub struct NetworkConfigTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub applyHeightDelta: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub applyHeightDelta: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub networkConfigSize: u16,
             pub supportedEntityVersionsSize: u16,
-            pub networkConfig: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub supportedEntityVersions: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub networkConfig: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub supportedEntityVersions: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
         }
 
         impl<'a> Default for NetworkConfigTransactionBufferArgs<'a> {
@@ -170,8 +170,8 @@ pub mod catapult {
         }
 
         pub struct NetworkConfigTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> NetworkConfigTransactionBufferBuilder<'a, 'b> {
@@ -180,12 +180,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(NetworkConfigTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -196,16 +196,16 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(NetworkConfigTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
-            pub fn add_applyHeightDelta(&mut self, applyHeightDelta: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_APPLYHEIGHTDELTA, applyHeightDelta);
+            pub fn add_applyHeightDelta(&mut self, applyHeightDelta: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_APPLYHEIGHTDELTA, applyHeightDelta);
             }
             #[inline]
             pub fn add_networkConfigSize(&mut self, networkConfigSize: u16) {
@@ -216,15 +216,15 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(NetworkConfigTransactionBuffer::VT_SUPPORTEDENTITYVERSIONSSIZE, supportedEntityVersionsSize, 0);
             }
             #[inline]
-            pub fn add_networkConfig(&mut self, networkConfig: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_NETWORKCONFIG, networkConfig);
+            pub fn add_networkConfig(&mut self, networkConfig: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_NETWORKCONFIG, networkConfig);
             }
             #[inline]
-            pub fn add_supportedEntityVersions(&mut self, supportedEntityVersions: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_SUPPORTEDENTITYVERSIONS, supportedEntityVersions);
+            pub fn add_supportedEntityVersions(&mut self, supportedEntityVersions: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(NetworkConfigTransactionBuffer::VT_SUPPORTEDENTITYVERSIONS, supportedEntityVersions);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> NetworkConfigTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> NetworkConfigTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 NetworkConfigTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -232,31 +232,31 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<NetworkConfigTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<NetworkConfigTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
         #[inline]
         pub fn get_root_as_network_config_transaction_buffer<'a>(buf: &'a [u8]) -> NetworkConfigTransactionBuffer<'a> {
-            flatbuffers::get_root::<NetworkConfigTransactionBuffer<'a>>(buf)
+            fb::get_root::<NetworkConfigTransactionBuffer<'a>>(buf)
         }
 
         #[inline]
         pub fn get_size_prefixed_root_as_network_config_transaction_buffer<'a>(buf: &'a [u8]) -> NetworkConfigTransactionBuffer<'a> {
-            flatbuffers::get_size_prefixed_root::<NetworkConfigTransactionBuffer<'a>>(buf)
+            fb::get_size_prefixed_root::<NetworkConfigTransactionBuffer<'a>>(buf)
         }
 
         #[inline]
         pub fn finish_network_config_transaction_buffer_buffer<'a, 'b>(
-            fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            root: flatbuffers::WIPOffset<NetworkConfigTransactionBuffer<'a>>) {
+            fbb: &'b mut fb::FlatBufferBuilder<'a>,
+            root: fb::WIPOffset<NetworkConfigTransactionBuffer<'a>>) {
             fbb.finish(root, None);
         }
 
         #[inline]
-        pub fn finish_size_prefixed_network_config_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<NetworkConfigTransactionBuffer<'a>>) {
+        pub fn finish_size_prefixed_network_config_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut fb::FlatBufferBuilder<'a>, root: fb::WIPOffset<NetworkConfigTransactionBuffer<'a>>) {
             fbb.finish_size_prefixed(root, None);
         }
     }  // pub mod Buffers

@@ -1,9 +1,14 @@
 use serde_json::Value;
 
 use crate::apis::internally::map_aggregate_transactions_dto;
-use crate::models::multisig::CosignatureDto;
-use crate::models::transaction::{AbstractTransactionDto, AggregateTransaction, Transaction, TransactionDto, TransactionMetaDto};
-use crate::models::uint_64::Uint64Dto;
+use crate::models::{
+    multisig::CosignatureDto,
+    uint_64::Uint64Dto
+};
+
+use super::{
+    AbstractTransactionDto, AggregateTransaction, Transaction, TransactionDto, TransactionMetaDto
+};
 
 /// AggregateTransactionDto : Transaction that combines multiple transactions together.
 #[derive(Clone, Serialize, Deserialize)]

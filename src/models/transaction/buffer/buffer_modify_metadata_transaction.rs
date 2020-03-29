@@ -7,14 +7,14 @@ extern crate flatbuffers;
 use std::cmp::Ordering;
 use std::mem;
 
-use self::flatbuffers::EndianScalar;
+use self::fb::EndianScalar;
 
 #[allow(unused_imports, dead_code)]
 pub mod catapult {
     use std::cmp::Ordering;
     use std::mem;
 
-    use self::flatbuffers::EndianScalar;
+    use self::fb::EndianScalar;
 
     extern crate flatbuffers;
 
@@ -23,7 +23,7 @@ pub mod catapult {
         use std::cmp::Ordering;
         use std::mem;
 
-        use self::flatbuffers::EndianScalar;
+        use self::fb::EndianScalar;
 
         extern crate flatbuffers;
 
@@ -31,30 +31,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct MetadataModificationBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for MetadataModificationBuffer<'a> {
+        impl<'a> fb::Follow<'a> for MetadataModificationBuffer<'a> {
             type Inner = MetadataModificationBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> MetadataModificationBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 MetadataModificationBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args MetadataModificationBufferArgs<'args>) -> flatbuffers::WIPOffset<MetadataModificationBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args MetadataModificationBufferArgs<'args>) -> fb::WIPOffset<MetadataModificationBuffer<'bldr>> {
                 let mut builder = MetadataModificationBufferBuilder::new(_fbb);
                 if let Some(x) = args.value { builder.add_value(x); }
                 if let Some(x) = args.key { builder.add_key(x); }
@@ -65,12 +65,12 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_MODIFICATIONTYPE: flatbuffers::VOffsetT = 6;
-            pub const VT_KEYSIZE: flatbuffers::VOffsetT = 8;
-            pub const VT_VALUESIZE: flatbuffers::VOffsetT = 10;
-            pub const VT_KEY: flatbuffers::VOffsetT = 12;
-            pub const VT_VALUE: flatbuffers::VOffsetT = 14;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_MODIFICATIONTYPE: fb::VOffsetT = 6;
+            pub const VT_KEYSIZE: fb::VOffsetT = 8;
+            pub const VT_VALUESIZE: fb::VOffsetT = 10;
+            pub const VT_KEY: fb::VOffsetT = 12;
+            pub const VT_VALUE: fb::VOffsetT = 14;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -86,15 +86,15 @@ pub mod catapult {
             }
             #[inline]
             pub fn valueSize(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(MetadataModificationBuffer::VT_VALUESIZE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(MetadataModificationBuffer::VT_VALUESIZE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn key(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(MetadataModificationBuffer::VT_KEY, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(MetadataModificationBuffer::VT_KEY, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn value(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(MetadataModificationBuffer::VT_VALUE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(MetadataModificationBuffer::VT_VALUE, None).map(|v| v.safe_slice())
             }
         }
 
@@ -102,9 +102,9 @@ pub mod catapult {
             pub size_: u32,
             pub modificationType: u8,
             pub keySize: u8,
-            pub valueSize: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub key: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub value: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub valueSize: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub key: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub value: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
         }
 
         impl<'a> Default for MetadataModificationBufferArgs<'a> {
@@ -122,8 +122,8 @@ pub mod catapult {
         }
 
         pub struct MetadataModificationBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> MetadataModificationBufferBuilder<'a, 'b> {
@@ -140,19 +140,19 @@ pub mod catapult {
                 self.fbb_.push_slot::<u8>(MetadataModificationBuffer::VT_KEYSIZE, keySize, 0);
             }
             #[inline]
-            pub fn add_valueSize(&mut self, valueSize: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MetadataModificationBuffer::VT_VALUESIZE, valueSize);
+            pub fn add_valueSize(&mut self, valueSize: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(MetadataModificationBuffer::VT_VALUESIZE, valueSize);
             }
             #[inline]
-            pub fn add_key(&mut self, key: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MetadataModificationBuffer::VT_KEY, key);
+            pub fn add_key(&mut self, key: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(MetadataModificationBuffer::VT_KEY, key);
             }
             #[inline]
-            pub fn add_value(&mut self, value: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MetadataModificationBuffer::VT_VALUE, value);
+            pub fn add_value(&mut self, value: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(MetadataModificationBuffer::VT_VALUE, value);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> MetadataModificationBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> MetadataModificationBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 MetadataModificationBufferBuilder {
                     fbb_: _fbb,
@@ -160,9 +160,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<MetadataModificationBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<MetadataModificationBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -170,30 +170,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct ModifyMetadataTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for ModifyMetadataTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for ModifyMetadataTransactionBuffer<'a> {
             type Inner = ModifyMetadataTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> ModifyMetadataTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 ModifyMetadataTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args ModifyMetadataTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<ModifyMetadataTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args ModifyMetadataTransactionBufferArgs<'args>) -> fb::WIPOffset<ModifyMetadataTransactionBuffer<'bldr>> {
                 let mut builder = ModifyMetadataTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.modifications { builder.add_modifications(x); }
                 if let Some(x) = args.metadataId { builder.add_metadataId(x); }
@@ -208,16 +208,16 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_METADATATYPE: flatbuffers::VOffsetT = 18;
-            pub const VT_METADATAID: flatbuffers::VOffsetT = 20;
-            pub const VT_MODIFICATIONS: flatbuffers::VOffsetT = 22;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_METADATATYPE: fb::VOffsetT = 18;
+            pub const VT_METADATAID: fb::VOffsetT = 20;
+            pub const VT_MODIFICATIONS: fb::VOffsetT = 22;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -225,11 +225,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(ModifyMetadataTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(ModifyMetadataTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(ModifyMetadataTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(ModifyMetadataTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -240,12 +240,12 @@ pub mod catapult {
                 self._tab.get::<u16>(ModifyMetadataTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(ModifyMetadataTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(ModifyMetadataTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(ModifyMetadataTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(ModifyMetadataTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
             pub fn metadataType(&self) -> u8 {
@@ -254,25 +254,25 @@ pub mod catapult {
             /// In case of address it is 25 bytes array. In case of mosaic or namespace it is 8 byte array(or 2 uint32 array)
             #[inline]
             pub fn metadataId(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(ModifyMetadataTransactionBuffer::VT_METADATAID, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(ModifyMetadataTransactionBuffer::VT_METADATAID, None).map(|v| v.safe_slice())
             }
             #[inline]
-            pub fn modifications(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MetadataModificationBuffer<'a>>>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<flatbuffers::ForwardsUOffset<MetadataModificationBuffer<'a>>>>>(ModifyMetadataTransactionBuffer::VT_MODIFICATIONS, None)
+            pub fn modifications(&self) -> Option<fb::Vector<'a, fb::ForwardsUOffset<MetadataModificationBuffer<'a>>>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<fb::ForwardsUOffset<MetadataModificationBuffer<'a>>>>>(ModifyMetadataTransactionBuffer::VT_MODIFICATIONS, None)
             }
         }
 
         pub struct ModifyMetadataTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub metadataType: u8,
-            pub metadataId: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub modifications: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MetadataModificationBuffer<'a>>>>>,
+            pub metadataId: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub modifications: Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<MetadataModificationBuffer<'a>>>>>,
         }
 
         impl<'a> Default for ModifyMetadataTransactionBufferArgs<'a> {
@@ -294,8 +294,8 @@ pub mod catapult {
         }
 
         pub struct ModifyMetadataTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> ModifyMetadataTransactionBufferBuilder<'a, 'b> {
@@ -304,12 +304,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(ModifyMetadataTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -320,27 +320,27 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(ModifyMetadataTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
             pub fn add_metadataType(&mut self, metadataType: u8) {
                 self.fbb_.push_slot::<u8>(ModifyMetadataTransactionBuffer::VT_METADATATYPE, metadataType, 0);
             }
             #[inline]
-            pub fn add_metadataId(&mut self, metadataId: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_METADATAID, metadataId);
+            pub fn add_metadataId(&mut self, metadataId: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_METADATAID, metadataId);
             }
             #[inline]
-            pub fn add_modifications(&mut self, modifications: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<MetadataModificationBuffer<'b>>>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_MODIFICATIONS, modifications);
+            pub fn add_modifications(&mut self, modifications: fb::WIPOffset<fb::Vector<'b, fb::ForwardsUOffset<MetadataModificationBuffer<'b>>>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(ModifyMetadataTransactionBuffer::VT_MODIFICATIONS, modifications);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> ModifyMetadataTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> ModifyMetadataTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 ModifyMetadataTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -348,31 +348,31 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<ModifyMetadataTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<ModifyMetadataTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
         #[inline]
         pub fn get_root_as_modify_metadata_transaction_buffer<'a>(buf: &'a [u8]) -> ModifyMetadataTransactionBuffer<'a> {
-            flatbuffers::get_root::<ModifyMetadataTransactionBuffer<'a>>(buf)
+            fb::get_root::<ModifyMetadataTransactionBuffer<'a>>(buf)
         }
 
         #[inline]
         pub fn get_size_prefixed_root_as_modify_metadata_transaction_buffer<'a>(buf: &'a [u8]) -> ModifyMetadataTransactionBuffer<'a> {
-            flatbuffers::get_size_prefixed_root::<ModifyMetadataTransactionBuffer<'a>>(buf)
+            fb::get_size_prefixed_root::<ModifyMetadataTransactionBuffer<'a>>(buf)
         }
 
         #[inline]
         pub fn finish_modify_metadata_transaction_buffer_buffer<'a, 'b>(
-            fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            root: flatbuffers::WIPOffset<ModifyMetadataTransactionBuffer<'a>>) {
+            fbb: &'b mut fb::FlatBufferBuilder<'a>,
+            root: fb::WIPOffset<ModifyMetadataTransactionBuffer<'a>>) {
             fbb.finish(root, None);
         }
 
         #[inline]
-        pub fn finish_size_prefixed_modify_metadata_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<ModifyMetadataTransactionBuffer<'a>>) {
+        pub fn finish_size_prefixed_modify_metadata_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut fb::FlatBufferBuilder<'a>, root: fb::WIPOffset<ModifyMetadataTransactionBuffer<'a>>) {
             fbb.finish_size_prefixed(root, None);
         }
     }  // pub mod Buffers

@@ -3,19 +3,19 @@ use std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
+use crate::models::{
+    account::{Account, PublicAccount},
+    consts::LOCK_SIZE,
+    mosaic::Mosaic,
+    network::NetworkType,
+    uint_64::Uint64
+};
 use crate::Result;
 
-use crate::models::account::{Account, PublicAccount};
-use crate::models::consts::LOCK_SIZE;
-use crate::models::mosaic::Mosaic;
-use crate::models::network::NetworkType;
-use crate::models::transaction::AbsTransaction;
-use crate::Uint64;
-
 use super::{
-    AbstractTransaction, buffer::lock_funds::buffers, Deadline, EntityTypeEnum, LOCK_VERSION,
-    schema::lock_funds_transaction_schema, sign_transaction, SignedTransaction,
-    Transaction
+    AbstractTransaction, AbsTransaction, buffer::lock_funds::buffers, Deadline, EntityTypeEnum,
+    LOCK_VERSION, schema::lock_funds_transaction_schema, sign_transaction,
+    SignedTransaction, Transaction
 };
 
 #[derive(Debug, Serialize)]

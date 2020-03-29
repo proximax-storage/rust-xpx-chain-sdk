@@ -3,14 +3,16 @@ use std::fmt;
 
 use serde_json::Value;
 
-use crate::models::account::{Account, PublicAccount};
-use crate::models::alias::AliasActionType;
-use crate::models::consts::MOSAIC_ID_SIZE;
-use crate::models::errors;
-use crate::models::id_model::Id;
-use crate::models::mosaic::MosaicId;
-use crate::models::namespace::NamespaceId;
-use crate::models::network::NetworkType;
+use crate::models::{
+    account::{Account, PublicAccount},
+    alias::AliasActionType,
+    consts::MOSAIC_ID_SIZE,
+    errors,
+    id_model::Id,
+    mosaic::MosaicId,
+    namespace::NamespaceId,
+    network::NetworkType
+};
 use crate::Result;
 
 use super::{

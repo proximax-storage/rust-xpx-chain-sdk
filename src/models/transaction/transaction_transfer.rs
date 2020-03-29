@@ -3,19 +3,19 @@ use ::std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
-use crate::Result;
-
-use crate::{fb, models::{
+use crate::models::{
     account::{Account, Address, PublicAccount},
     consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
     errors,
     message::Message,
     mosaic::Mosaic,
     network::NetworkType,
-}};
+};
+use crate::Result;
 
 use super::{
     AbstractTransaction,
+    AbsTransaction,
     buffer::transfer::buffers,
     deadline::Deadline,
     EntityTypeEnum,
@@ -23,7 +23,6 @@ use super::{
     schema::transfer_transaction_schema,
     SignedTransaction,
     Transaction,
-    AbsTransaction,
     TRANSFER_VERSION
 };
 
@@ -75,7 +74,7 @@ impl TransferTransaction {
 }
 
 impl AbsTransaction for TransferTransaction {
-    fn abs_transaction(&self) ->  AbstractTransaction {
+    fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
 }

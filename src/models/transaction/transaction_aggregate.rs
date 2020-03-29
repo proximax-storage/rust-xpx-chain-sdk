@@ -3,23 +3,23 @@ use std::fmt;
 use failure::_core::any::Any;
 use serde_json::Value;
 
-use crate::Result;
-
 use crate::models::{
     errors::ERR_EMPTY_INNER_TRANSACTION,
     multisig::Cosignature,
     network::NetworkType,
 };
-use crate::models::account::{Account, PublicAccount};
-use crate::models::consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE};
-use crate::models::transaction::{AbsTransaction, sign_transaction, SignedTransaction, to_aggregate_transaction_bytes, sign_transaction_with_cosignatures};
-use crate::models::transaction::schema::aggregate_transaction_schema;
+use crate::models::{
+    account::{Account, PublicAccount},
+    consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE}
+};
+use crate::Result;
 
 use super::{
-    AbstractTransaction,
-    AGGREGATE_BONDED_VERSION,
-    AGGREGATE_COMPLETED_VERSION, Deadline, EntityTypeEnum, Transaction, Transactions};
-use super::buffer::aggregate::buffers;
+    AbstractTransaction, AbsTransaction, AGGREGATE_BONDED_VERSION, AGGREGATE_COMPLETED_VERSION,
+    buffer::aggregate::buffers, Deadline, EntityTypeEnum,
+    schema::aggregate_transaction_schema, sign_transaction, sign_transaction_with_cosignatures,
+    SignedTransaction, to_aggregate_transaction_bytes, Transaction, Transactions
+};
 
 /// AggregateTransaction:
 /// Transaction that combines multiple transactions together.
@@ -70,7 +70,7 @@ impl AggregateTransaction {
     }
 
     pub(crate) fn sign_with_cosignatories(self, account: Account, cosignatories: Vec<Account>, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
+                                          -> crate::Result<SignedTransaction> {
         sign_transaction_with_cosignatures(self, account, cosignatories, generation_hash)
     }
 }

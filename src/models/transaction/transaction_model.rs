@@ -3,7 +3,11 @@ use ::std::{any::Any, fmt};
 use downcast_rs::Downcast;
 use serde_json::Value;
 
-use crate::models::{account::Account, Uint64};
+use crate::models::{
+    account::{Account, PublicAccount},
+    consts::{SIGNATURE_SIZE, SIGNER_SIZE},
+    uint_64::Uint64
+};
 
 use super::{
     AbstractTransaction,
@@ -11,8 +15,6 @@ use super::{
     EntityTypeEnum,
     SignedTransaction,
 };
-use crate::models::account::PublicAccount;
-use crate::models::consts::{SIGNATURE_SIZE, SIGNER_SIZE};
 
 pub type Amount = Uint64;
 
@@ -49,8 +51,8 @@ impl<'b> AbsVector<'b> {
 
         let network_type: fb::UOffsetT = abs.network_type.value() as u32;
 
-        let version_vec= (network_type << 24) + abs.version as fb::UOffsetT;
-        let signature_vec =  builder.create_vector_direct(&[0u8; SIGNATURE_SIZE]);
+        let version_vec = (network_type << 24) + abs.version as fb::UOffsetT;
+        let signature_vec = builder.create_vector_direct(&[0u8; SIGNATURE_SIZE]);
         let signer_vec = builder.create_vector_direct(&[0u8; SIGNER_SIZE]);
         let deadline_vec = builder.create_vector_direct(
             &deadline.to_blockchain_timestamp().to_uint64().to_int_array());

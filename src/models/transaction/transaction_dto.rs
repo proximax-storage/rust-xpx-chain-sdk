@@ -1,19 +1,17 @@
 use crate::models::{
     account::{Address, PublicAccount},
     message::MessageDto,
-    mosaic::{Mosaic, MosaicDto},
+    mosaic::{Mosaic, MosaicDto, MosaicId},
     network::extract_network_type,
-    uint_64::Uint64Dto,
+    transaction::{},
+    uint_64::Uint64Dto
 };
-use crate::models::mosaic::MosaicId;
-use crate::models::transaction::{LockFundsTransaction, SignedTransaction, TransactionInfo};
 
 use super::{
     AbstractTransaction, deadline::{
         BlockchainTimestamp, Deadline,
-    }, EntityTypeEnum, internal::extract_version, Transaction,
-    TransactionStatus,
-    TransferTransaction,
+    }, EntityTypeEnum, internal::extract_version, LockFundsTransaction, SignedTransaction,
+    Transaction, TransactionInfo, TransactionStatus, TransferTransaction
 };
 
 /// HashAlgorithmEnum : The hash algorithm used to hash te proof: * 0 (Op_Sha3_256)  - The proof is hashed using sha3 256. * 1 (Op_Keccak_256)  - The proof is hashed using Keccak (ETH compatibility). * 2 (Op_Hash_160)  - The proof is hashed twice: first with Sha-256 and then with RIPEMD-160 (bitcoin’s OP_HASH160). * 3 (Op_Hash_256)  - The proof is hashed twice with Sha-256 (bitcoin’s OP_HASH256).

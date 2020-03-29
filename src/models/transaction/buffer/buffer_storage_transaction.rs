@@ -7,14 +7,14 @@ extern crate flatbuffers;
 use std::cmp::Ordering;
 use std::mem;
 
-use self::flatbuffers::EndianScalar;
+use self::fb::EndianScalar;
 
 #[allow(unused_imports, dead_code)]
 pub mod catapult {
     use std::cmp::Ordering;
     use std::mem;
 
-    use self::flatbuffers::EndianScalar;
+    use self::fb::EndianScalar;
 
     extern crate flatbuffers;
 
@@ -23,7 +23,7 @@ pub mod catapult {
         use std::cmp::Ordering;
         use std::mem;
 
-        use self::flatbuffers::EndianScalar;
+        use self::fb::EndianScalar;
 
         extern crate flatbuffers;
 
@@ -31,30 +31,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct PrepareDriveTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for PrepareDriveTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for PrepareDriveTransactionBuffer<'a> {
             type Inner = PrepareDriveTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> PrepareDriveTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 PrepareDriveTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args PrepareDriveTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<PrepareDriveTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args PrepareDriveTransactionBufferArgs<'args>) -> fb::WIPOffset<PrepareDriveTransactionBuffer<'bldr>> {
                 let mut builder = PrepareDriveTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.driveSize { builder.add_driveSize(x); }
                 if let Some(x) = args.billingPrice { builder.add_billingPrice(x); }
@@ -74,21 +74,21 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_OWNER: flatbuffers::VOffsetT = 18;
-            pub const VT_DURATION: flatbuffers::VOffsetT = 20;
-            pub const VT_BILLINGPERIOD: flatbuffers::VOffsetT = 22;
-            pub const VT_BILLINGPRICE: flatbuffers::VOffsetT = 24;
-            pub const VT_DRIVESIZE: flatbuffers::VOffsetT = 26;
-            pub const VT_REPLICAS: flatbuffers::VOffsetT = 28;
-            pub const VT_MINREPLICATORS: flatbuffers::VOffsetT = 30;
-            pub const VT_PERCENTAPPROVERS: flatbuffers::VOffsetT = 32;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_OWNER: fb::VOffsetT = 18;
+            pub const VT_DURATION: fb::VOffsetT = 20;
+            pub const VT_BILLINGPERIOD: fb::VOffsetT = 22;
+            pub const VT_BILLINGPRICE: fb::VOffsetT = 24;
+            pub const VT_DRIVESIZE: fb::VOffsetT = 26;
+            pub const VT_REPLICAS: fb::VOffsetT = 28;
+            pub const VT_MINREPLICATORS: fb::VOffsetT = 30;
+            pub const VT_PERCENTAPPROVERS: fb::VOffsetT = 32;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -96,11 +96,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(PrepareDriveTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(PrepareDriveTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(PrepareDriveTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(PrepareDriveTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -111,32 +111,32 @@ pub mod catapult {
                 self._tab.get::<u16>(PrepareDriveTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
             pub fn owner(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(PrepareDriveTransactionBuffer::VT_OWNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(PrepareDriveTransactionBuffer::VT_OWNER, None).map(|v| v.safe_slice())
             }
             #[inline]
-            pub fn duration(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_DURATION, None)
+            pub fn duration(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_DURATION, None)
             }
             #[inline]
-            pub fn billingPeriod(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_BILLINGPERIOD, None)
+            pub fn billingPeriod(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_BILLINGPERIOD, None)
             }
             #[inline]
-            pub fn billingPrice(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_BILLINGPRICE, None)
+            pub fn billingPrice(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_BILLINGPRICE, None)
             }
             #[inline]
-            pub fn driveSize(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_DRIVESIZE, None)
+            pub fn driveSize(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(PrepareDriveTransactionBuffer::VT_DRIVESIZE, None)
             }
             #[inline]
             pub fn replicas(&self) -> u16 {
@@ -154,17 +154,17 @@ pub mod catapult {
 
         pub struct PrepareDriveTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub owner: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub duration: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub billingPeriod: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub billingPrice: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub driveSize: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub owner: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub duration: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub billingPeriod: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub billingPrice: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub driveSize: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub replicas: u16,
             pub minReplicators: u16,
             pub percentApprovers: u8,
@@ -194,8 +194,8 @@ pub mod catapult {
         }
 
         pub struct PrepareDriveTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> PrepareDriveTransactionBufferBuilder<'a, 'b> {
@@ -204,12 +204,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(PrepareDriveTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -220,32 +220,32 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(PrepareDriveTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
-            pub fn add_owner(&mut self, owner: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_OWNER, owner);
+            pub fn add_owner(&mut self, owner: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_OWNER, owner);
             }
             #[inline]
-            pub fn add_duration(&mut self, duration: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_DURATION, duration);
+            pub fn add_duration(&mut self, duration: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_DURATION, duration);
             }
             #[inline]
-            pub fn add_billingPeriod(&mut self, billingPeriod: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_BILLINGPERIOD, billingPeriod);
+            pub fn add_billingPeriod(&mut self, billingPeriod: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_BILLINGPERIOD, billingPeriod);
             }
             #[inline]
-            pub fn add_billingPrice(&mut self, billingPrice: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_BILLINGPRICE, billingPrice);
+            pub fn add_billingPrice(&mut self, billingPrice: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_BILLINGPRICE, billingPrice);
             }
             #[inline]
-            pub fn add_driveSize(&mut self, driveSize: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_DRIVESIZE, driveSize);
+            pub fn add_driveSize(&mut self, driveSize: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_DRIVESIZE, driveSize);
             }
             #[inline]
             pub fn add_replicas(&mut self, replicas: u16) {
@@ -260,7 +260,7 @@ pub mod catapult {
                 self.fbb_.push_slot::<u8>(PrepareDriveTransactionBuffer::VT_PERCENTAPPROVERS, percentApprovers, 0);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> PrepareDriveTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> PrepareDriveTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 PrepareDriveTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -268,9 +268,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<PrepareDriveTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<PrepareDriveTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -278,30 +278,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct JoinToDriveTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for JoinToDriveTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for JoinToDriveTransactionBuffer<'a> {
             type Inner = JoinToDriveTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> JoinToDriveTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 JoinToDriveTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args JoinToDriveTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<JoinToDriveTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args JoinToDriveTransactionBufferArgs<'args>) -> fb::WIPOffset<JoinToDriveTransactionBuffer<'bldr>> {
                 let mut builder = JoinToDriveTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.driveKey { builder.add_driveKey(x); }
                 if let Some(x) = args.deadline { builder.add_deadline(x); }
@@ -314,14 +314,14 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_DRIVEKEY: flatbuffers::VOffsetT = 18;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_DRIVEKEY: fb::VOffsetT = 18;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -329,11 +329,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(JoinToDriveTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(JoinToDriveTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(JoinToDriveTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(JoinToDriveTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -344,28 +344,28 @@ pub mod catapult {
                 self._tab.get::<u16>(JoinToDriveTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(JoinToDriveTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(JoinToDriveTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(JoinToDriveTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(JoinToDriveTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
             pub fn driveKey(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(JoinToDriveTransactionBuffer::VT_DRIVEKEY, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(JoinToDriveTransactionBuffer::VT_DRIVEKEY, None).map(|v| v.safe_slice())
             }
         }
 
         pub struct JoinToDriveTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub driveKey: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub driveKey: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
         }
 
         impl<'a> Default for JoinToDriveTransactionBufferArgs<'a> {
@@ -385,8 +385,8 @@ pub mod catapult {
         }
 
         pub struct JoinToDriveTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> JoinToDriveTransactionBufferBuilder<'a, 'b> {
@@ -395,12 +395,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(JoinToDriveTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -411,19 +411,19 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(JoinToDriveTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
-            pub fn add_driveKey(&mut self, driveKey: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_DRIVEKEY, driveKey);
+            pub fn add_driveKey(&mut self, driveKey: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_DRIVEKEY, driveKey);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> JoinToDriveTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> JoinToDriveTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 JoinToDriveTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -431,9 +431,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<JoinToDriveTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<JoinToDriveTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -441,52 +441,52 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct AddActionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for AddActionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for AddActionBuffer<'a> {
             type Inner = AddActionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> AddActionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 AddActionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args AddActionBufferArgs<'args>) -> flatbuffers::WIPOffset<AddActionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args AddActionBufferArgs<'args>) -> fb::WIPOffset<AddActionBuffer<'bldr>> {
                 let mut builder = AddActionBufferBuilder::new(_fbb);
                 if let Some(x) = args.fileSize { builder.add_fileSize(x); }
                 if let Some(x) = args.fileHash { builder.add_fileHash(x); }
                 builder.finish()
             }
 
-            pub const VT_FILEHASH: flatbuffers::VOffsetT = 4;
-            pub const VT_FILESIZE: flatbuffers::VOffsetT = 6;
+            pub const VT_FILEHASH: fb::VOffsetT = 4;
+            pub const VT_FILESIZE: fb::VOffsetT = 6;
 
             #[inline]
             pub fn fileHash(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(AddActionBuffer::VT_FILEHASH, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(AddActionBuffer::VT_FILEHASH, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn fileSize(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(AddActionBuffer::VT_FILESIZE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(AddActionBuffer::VT_FILESIZE, None).map(|v| v.safe_slice())
             }
         }
 
         pub struct AddActionBufferArgs<'a> {
-            pub fileHash: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub fileSize: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub fileHash: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub fileSize: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
         }
 
         impl<'a> Default for AddActionBufferArgs<'a> {
@@ -500,21 +500,21 @@ pub mod catapult {
         }
 
         pub struct AddActionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> AddActionBufferBuilder<'a, 'b> {
             #[inline]
-            pub fn add_fileHash(&mut self, fileHash: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(AddActionBuffer::VT_FILEHASH, fileHash);
+            pub fn add_fileHash(&mut self, fileHash: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(AddActionBuffer::VT_FILEHASH, fileHash);
             }
             #[inline]
-            pub fn add_fileSize(&mut self, fileSize: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(AddActionBuffer::VT_FILESIZE, fileSize);
+            pub fn add_fileSize(&mut self, fileSize: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(AddActionBuffer::VT_FILESIZE, fileSize);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> AddActionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> AddActionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 AddActionBufferBuilder {
                     fbb_: _fbb,
@@ -522,9 +522,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<AddActionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<AddActionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -532,52 +532,52 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct RemoveActionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for RemoveActionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for RemoveActionBuffer<'a> {
             type Inner = RemoveActionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> RemoveActionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 RemoveActionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args RemoveActionBufferArgs<'args>) -> flatbuffers::WIPOffset<RemoveActionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args RemoveActionBufferArgs<'args>) -> fb::WIPOffset<RemoveActionBuffer<'bldr>> {
                 let mut builder = RemoveActionBufferBuilder::new(_fbb);
                 if let Some(x) = args.fileSize { builder.add_fileSize(x); }
                 if let Some(x) = args.fileHash { builder.add_fileHash(x); }
                 builder.finish()
             }
 
-            pub const VT_FILEHASH: flatbuffers::VOffsetT = 4;
-            pub const VT_FILESIZE: flatbuffers::VOffsetT = 6;
+            pub const VT_FILEHASH: fb::VOffsetT = 4;
+            pub const VT_FILESIZE: fb::VOffsetT = 6;
 
             #[inline]
             pub fn fileHash(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(RemoveActionBuffer::VT_FILEHASH, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(RemoveActionBuffer::VT_FILEHASH, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn fileSize(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(RemoveActionBuffer::VT_FILESIZE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(RemoveActionBuffer::VT_FILESIZE, None).map(|v| v.safe_slice())
             }
         }
 
         pub struct RemoveActionBufferArgs<'a> {
-            pub fileHash: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub fileSize: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub fileHash: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub fileSize: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
         }
 
         impl<'a> Default for RemoveActionBufferArgs<'a> {
@@ -591,21 +591,21 @@ pub mod catapult {
         }
 
         pub struct RemoveActionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> RemoveActionBufferBuilder<'a, 'b> {
             #[inline]
-            pub fn add_fileHash(&mut self, fileHash: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RemoveActionBuffer::VT_FILEHASH, fileHash);
+            pub fn add_fileHash(&mut self, fileHash: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(RemoveActionBuffer::VT_FILEHASH, fileHash);
             }
             #[inline]
-            pub fn add_fileSize(&mut self, fileSize: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RemoveActionBuffer::VT_FILESIZE, fileSize);
+            pub fn add_fileSize(&mut self, fileSize: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(RemoveActionBuffer::VT_FILESIZE, fileSize);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> RemoveActionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> RemoveActionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 RemoveActionBufferBuilder {
                     fbb_: _fbb,
@@ -613,9 +613,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<RemoveActionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<RemoveActionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -623,45 +623,45 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct FileBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for FileBuffer<'a> {
+        impl<'a> fb::Follow<'a> for FileBuffer<'a> {
             type Inner = FileBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> FileBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 FileBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args FileBufferArgs<'args>) -> flatbuffers::WIPOffset<FileBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args FileBufferArgs<'args>) -> fb::WIPOffset<FileBuffer<'bldr>> {
                 let mut builder = FileBufferBuilder::new(_fbb);
                 if let Some(x) = args.fileHash { builder.add_fileHash(x); }
                 builder.finish()
             }
 
-            pub const VT_FILEHASH: flatbuffers::VOffsetT = 4;
+            pub const VT_FILEHASH: fb::VOffsetT = 4;
 
             #[inline]
             pub fn fileHash(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(FileBuffer::VT_FILEHASH, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(FileBuffer::VT_FILEHASH, None).map(|v| v.safe_slice())
             }
         }
 
         pub struct FileBufferArgs<'a> {
-            pub fileHash: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub fileHash: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
         }
 
         impl<'a> Default for FileBufferArgs<'a> {
@@ -674,17 +674,17 @@ pub mod catapult {
         }
 
         pub struct FileBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> FileBufferBuilder<'a, 'b> {
             #[inline]
-            pub fn add_fileHash(&mut self, fileHash: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(FileBuffer::VT_FILEHASH, fileHash);
+            pub fn add_fileHash(&mut self, fileHash: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(FileBuffer::VT_FILEHASH, fileHash);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> FileBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> FileBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 FileBufferBuilder {
                     fbb_: _fbb,
@@ -692,9 +692,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<FileBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<FileBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -702,52 +702,52 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct UploadInfoBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for UploadInfoBuffer<'a> {
+        impl<'a> fb::Follow<'a> for UploadInfoBuffer<'a> {
             type Inner = UploadInfoBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> UploadInfoBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 UploadInfoBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args UploadInfoBufferArgs<'args>) -> flatbuffers::WIPOffset<UploadInfoBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args UploadInfoBufferArgs<'args>) -> fb::WIPOffset<UploadInfoBuffer<'bldr>> {
                 let mut builder = UploadInfoBufferBuilder::new(_fbb);
                 if let Some(x) = args.uploaded { builder.add_uploaded(x); }
                 if let Some(x) = args.replicator { builder.add_replicator(x); }
                 builder.finish()
             }
 
-            pub const VT_REPLICATOR: flatbuffers::VOffsetT = 4;
-            pub const VT_UPLOADED: flatbuffers::VOffsetT = 6;
+            pub const VT_REPLICATOR: fb::VOffsetT = 4;
+            pub const VT_UPLOADED: fb::VOffsetT = 6;
 
             #[inline]
             pub fn replicator(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(UploadInfoBuffer::VT_REPLICATOR, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(UploadInfoBuffer::VT_REPLICATOR, None).map(|v| v.safe_slice())
             }
             #[inline]
-            pub fn uploaded(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(UploadInfoBuffer::VT_UPLOADED, None)
+            pub fn uploaded(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(UploadInfoBuffer::VT_UPLOADED, None)
             }
         }
 
         pub struct UploadInfoBufferArgs<'a> {
-            pub replicator: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub uploaded: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+            pub replicator: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub uploaded: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
         }
 
         impl<'a> Default for UploadInfoBufferArgs<'a> {
@@ -761,21 +761,21 @@ pub mod catapult {
         }
 
         pub struct UploadInfoBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> UploadInfoBufferBuilder<'a, 'b> {
             #[inline]
-            pub fn add_replicator(&mut self, replicator: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(UploadInfoBuffer::VT_REPLICATOR, replicator);
+            pub fn add_replicator(&mut self, replicator: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(UploadInfoBuffer::VT_REPLICATOR, replicator);
             }
             #[inline]
-            pub fn add_uploaded(&mut self, uploaded: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(UploadInfoBuffer::VT_UPLOADED, uploaded);
+            pub fn add_uploaded(&mut self, uploaded: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(UploadInfoBuffer::VT_UPLOADED, uploaded);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> UploadInfoBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> UploadInfoBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 UploadInfoBufferBuilder {
                     fbb_: _fbb,
@@ -783,9 +783,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<UploadInfoBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<UploadInfoBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -793,30 +793,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct DriveFileSystemTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for DriveFileSystemTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for DriveFileSystemTransactionBuffer<'a> {
             type Inner = DriveFileSystemTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> DriveFileSystemTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 DriveFileSystemTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args DriveFileSystemTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<DriveFileSystemTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args DriveFileSystemTransactionBufferArgs<'args>) -> fb::WIPOffset<DriveFileSystemTransactionBuffer<'bldr>> {
                 let mut builder = DriveFileSystemTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.removeActions { builder.add_removeActions(x); }
                 if let Some(x) = args.addActions { builder.add_addActions(x); }
@@ -835,20 +835,20 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_DRIVEKEY: flatbuffers::VOffsetT = 18;
-            pub const VT_ROOTHASH: flatbuffers::VOffsetT = 20;
-            pub const VT_XORROOTHASH: flatbuffers::VOffsetT = 22;
-            pub const VT_ADDACTIONSCOUNT: flatbuffers::VOffsetT = 24;
-            pub const VT_REMOVEACTIONSCOUNT: flatbuffers::VOffsetT = 26;
-            pub const VT_ADDACTIONS: flatbuffers::VOffsetT = 28;
-            pub const VT_REMOVEACTIONS: flatbuffers::VOffsetT = 30;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_DRIVEKEY: fb::VOffsetT = 18;
+            pub const VT_ROOTHASH: fb::VOffsetT = 20;
+            pub const VT_XORROOTHASH: fb::VOffsetT = 22;
+            pub const VT_ADDACTIONSCOUNT: fb::VOffsetT = 24;
+            pub const VT_REMOVEACTIONSCOUNT: fb::VOffsetT = 26;
+            pub const VT_ADDACTIONS: fb::VOffsetT = 28;
+            pub const VT_REMOVEACTIONS: fb::VOffsetT = 30;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -856,11 +856,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -871,58 +871,58 @@ pub mod catapult {
                 self._tab.get::<u16>(DriveFileSystemTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(DriveFileSystemTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(DriveFileSystemTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(DriveFileSystemTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(DriveFileSystemTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
             pub fn driveKey(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_DRIVEKEY, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_DRIVEKEY, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn rootHash(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_ROOTHASH, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_ROOTHASH, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn xorRootHash(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_XORROOTHASH, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_XORROOTHASH, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn addActionsCount(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_ADDACTIONSCOUNT, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_ADDACTIONSCOUNT, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn removeActionsCount(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_REMOVEACTIONSCOUNT, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(DriveFileSystemTransactionBuffer::VT_REMOVEACTIONSCOUNT, None).map(|v| v.safe_slice())
             }
             #[inline]
-            pub fn addActions(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<AddActionBuffer<'a>>>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<flatbuffers::ForwardsUOffset<AddActionBuffer<'a>>>>>(DriveFileSystemTransactionBuffer::VT_ADDACTIONS, None)
+            pub fn addActions(&self) -> Option<fb::Vector<'a, fb::ForwardsUOffset<AddActionBuffer<'a>>>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<fb::ForwardsUOffset<AddActionBuffer<'a>>>>>(DriveFileSystemTransactionBuffer::VT_ADDACTIONS, None)
             }
             #[inline]
-            pub fn removeActions(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<RemoveActionBuffer<'a>>>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<flatbuffers::ForwardsUOffset<RemoveActionBuffer<'a>>>>>(DriveFileSystemTransactionBuffer::VT_REMOVEACTIONS, None)
+            pub fn removeActions(&self) -> Option<fb::Vector<'a, fb::ForwardsUOffset<RemoveActionBuffer<'a>>>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<fb::ForwardsUOffset<RemoveActionBuffer<'a>>>>>(DriveFileSystemTransactionBuffer::VT_REMOVEACTIONS, None)
             }
         }
 
         pub struct DriveFileSystemTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub driveKey: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub rootHash: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub xorRootHash: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub addActionsCount: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub removeActionsCount: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub addActions: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<AddActionBuffer<'a>>>>>,
-            pub removeActions: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<RemoveActionBuffer<'a>>>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub driveKey: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub rootHash: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub xorRootHash: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub addActionsCount: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub removeActionsCount: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub addActions: Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<AddActionBuffer<'a>>>>>,
+            pub removeActions: Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<RemoveActionBuffer<'a>>>>>,
         }
 
         impl<'a> Default for DriveFileSystemTransactionBufferArgs<'a> {
@@ -948,8 +948,8 @@ pub mod catapult {
         }
 
         pub struct DriveFileSystemTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> DriveFileSystemTransactionBufferBuilder<'a, 'b> {
@@ -958,12 +958,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(DriveFileSystemTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -974,43 +974,43 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(DriveFileSystemTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
-            pub fn add_driveKey(&mut self, driveKey: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_DRIVEKEY, driveKey);
+            pub fn add_driveKey(&mut self, driveKey: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_DRIVEKEY, driveKey);
             }
             #[inline]
-            pub fn add_rootHash(&mut self, rootHash: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_ROOTHASH, rootHash);
+            pub fn add_rootHash(&mut self, rootHash: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_ROOTHASH, rootHash);
             }
             #[inline]
-            pub fn add_xorRootHash(&mut self, xorRootHash: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_XORROOTHASH, xorRootHash);
+            pub fn add_xorRootHash(&mut self, xorRootHash: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_XORROOTHASH, xorRootHash);
             }
             #[inline]
-            pub fn add_addActionsCount(&mut self, addActionsCount: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_ADDACTIONSCOUNT, addActionsCount);
+            pub fn add_addActionsCount(&mut self, addActionsCount: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_ADDACTIONSCOUNT, addActionsCount);
             }
             #[inline]
-            pub fn add_removeActionsCount(&mut self, removeActionsCount: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_REMOVEACTIONSCOUNT, removeActionsCount);
+            pub fn add_removeActionsCount(&mut self, removeActionsCount: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_REMOVEACTIONSCOUNT, removeActionsCount);
             }
             #[inline]
-            pub fn add_addActions(&mut self, addActions: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<AddActionBuffer<'b>>>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_ADDACTIONS, addActions);
+            pub fn add_addActions(&mut self, addActions: fb::WIPOffset<fb::Vector<'b, fb::ForwardsUOffset<AddActionBuffer<'b>>>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_ADDACTIONS, addActions);
             }
             #[inline]
-            pub fn add_removeActions(&mut self, removeActions: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<RemoveActionBuffer<'b>>>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_REMOVEACTIONS, removeActions);
+            pub fn add_removeActions(&mut self, removeActions: fb::WIPOffset<fb::Vector<'b, fb::ForwardsUOffset<RemoveActionBuffer<'b>>>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_REMOVEACTIONS, removeActions);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> DriveFileSystemTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> DriveFileSystemTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 DriveFileSystemTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -1018,9 +1018,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<DriveFileSystemTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<DriveFileSystemTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -1028,30 +1028,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct FilesDepositTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for FilesDepositTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for FilesDepositTransactionBuffer<'a> {
             type Inner = FilesDepositTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> FilesDepositTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 FilesDepositTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args FilesDepositTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<FilesDepositTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args FilesDepositTransactionBufferArgs<'args>) -> fb::WIPOffset<FilesDepositTransactionBuffer<'bldr>> {
                 let mut builder = FilesDepositTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.files { builder.add_files(x); }
                 if let Some(x) = args.driveKey { builder.add_driveKey(x); }
@@ -1066,16 +1066,16 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_DRIVEKEY: flatbuffers::VOffsetT = 18;
-            pub const VT_FILESCOUNT: flatbuffers::VOffsetT = 20;
-            pub const VT_FILES: flatbuffers::VOffsetT = 22;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_DRIVEKEY: fb::VOffsetT = 18;
+            pub const VT_FILESCOUNT: fb::VOffsetT = 20;
+            pub const VT_FILES: fb::VOffsetT = 22;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -1083,11 +1083,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(FilesDepositTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(FilesDepositTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(FilesDepositTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(FilesDepositTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -1098,38 +1098,38 @@ pub mod catapult {
                 self._tab.get::<u16>(FilesDepositTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(FilesDepositTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(FilesDepositTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(FilesDepositTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(FilesDepositTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
             pub fn driveKey(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(FilesDepositTransactionBuffer::VT_DRIVEKEY, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(FilesDepositTransactionBuffer::VT_DRIVEKEY, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn filesCount(&self) -> u16 {
                 self._tab.get::<u16>(FilesDepositTransactionBuffer::VT_FILESCOUNT, Some(0)).unwrap()
             }
             #[inline]
-            pub fn files(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<FileBuffer<'a>>>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<flatbuffers::ForwardsUOffset<FileBuffer<'a>>>>>(FilesDepositTransactionBuffer::VT_FILES, None)
+            pub fn files(&self) -> Option<fb::Vector<'a, fb::ForwardsUOffset<FileBuffer<'a>>>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<fb::ForwardsUOffset<FileBuffer<'a>>>>>(FilesDepositTransactionBuffer::VT_FILES, None)
             }
         }
 
         pub struct FilesDepositTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub driveKey: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub driveKey: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub filesCount: u16,
-            pub files: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<FileBuffer<'a>>>>>,
+            pub files: Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<FileBuffer<'a>>>>>,
         }
 
         impl<'a> Default for FilesDepositTransactionBufferArgs<'a> {
@@ -1151,8 +1151,8 @@ pub mod catapult {
         }
 
         pub struct FilesDepositTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> FilesDepositTransactionBufferBuilder<'a, 'b> {
@@ -1161,12 +1161,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(FilesDepositTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -1177,27 +1177,27 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(FilesDepositTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
-            pub fn add_driveKey(&mut self, driveKey: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_DRIVEKEY, driveKey);
+            pub fn add_driveKey(&mut self, driveKey: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_DRIVEKEY, driveKey);
             }
             #[inline]
             pub fn add_filesCount(&mut self, filesCount: u16) {
                 self.fbb_.push_slot::<u16>(FilesDepositTransactionBuffer::VT_FILESCOUNT, filesCount, 0);
             }
             #[inline]
-            pub fn add_files(&mut self, files: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<FileBuffer<'b>>>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_FILES, files);
+            pub fn add_files(&mut self, files: fb::WIPOffset<fb::Vector<'b, fb::ForwardsUOffset<FileBuffer<'b>>>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_FILES, files);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> FilesDepositTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> FilesDepositTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 FilesDepositTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -1205,9 +1205,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<FilesDepositTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<FilesDepositTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -1215,30 +1215,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct EndDriveTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for EndDriveTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for EndDriveTransactionBuffer<'a> {
             type Inner = EndDriveTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> EndDriveTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 EndDriveTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args EndDriveTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<EndDriveTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args EndDriveTransactionBufferArgs<'args>) -> fb::WIPOffset<EndDriveTransactionBuffer<'bldr>> {
                 let mut builder = EndDriveTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.driveKey { builder.add_driveKey(x); }
                 if let Some(x) = args.deadline { builder.add_deadline(x); }
@@ -1251,14 +1251,14 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_DRIVEKEY: flatbuffers::VOffsetT = 18;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_DRIVEKEY: fb::VOffsetT = 18;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -1266,11 +1266,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(EndDriveTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(EndDriveTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(EndDriveTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(EndDriveTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -1281,28 +1281,28 @@ pub mod catapult {
                 self._tab.get::<u16>(EndDriveTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(EndDriveTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(EndDriveTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(EndDriveTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(EndDriveTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
             pub fn driveKey(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(EndDriveTransactionBuffer::VT_DRIVEKEY, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(EndDriveTransactionBuffer::VT_DRIVEKEY, None).map(|v| v.safe_slice())
             }
         }
 
         pub struct EndDriveTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub driveKey: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub driveKey: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
         }
 
         impl<'a> Default for EndDriveTransactionBufferArgs<'a> {
@@ -1322,8 +1322,8 @@ pub mod catapult {
         }
 
         pub struct EndDriveTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> EndDriveTransactionBufferBuilder<'a, 'b> {
@@ -1332,12 +1332,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(EndDriveTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(EndDriveTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(EndDriveTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -1348,19 +1348,19 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(EndDriveTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(EndDriveTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(EndDriveTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
-            pub fn add_driveKey(&mut self, driveKey: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(EndDriveTransactionBuffer::VT_DRIVEKEY, driveKey);
+            pub fn add_driveKey(&mut self, driveKey: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveTransactionBuffer::VT_DRIVEKEY, driveKey);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> EndDriveTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> EndDriveTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 EndDriveTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -1368,9 +1368,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<EndDriveTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<EndDriveTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -1378,30 +1378,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct DriveFilesRewardTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for DriveFilesRewardTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for DriveFilesRewardTransactionBuffer<'a> {
             type Inner = DriveFilesRewardTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> DriveFilesRewardTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 DriveFilesRewardTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args DriveFilesRewardTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<DriveFilesRewardTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args DriveFilesRewardTransactionBufferArgs<'args>) -> fb::WIPOffset<DriveFilesRewardTransactionBuffer<'bldr>> {
                 let mut builder = DriveFilesRewardTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.uploadInfos { builder.add_uploadInfos(x); }
                 if let Some(x) = args.deadline { builder.add_deadline(x); }
@@ -1415,15 +1415,15 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_UPLOADINFOSCOUNT: flatbuffers::VOffsetT = 18;
-            pub const VT_UPLOADINFOS: flatbuffers::VOffsetT = 20;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_UPLOADINFOSCOUNT: fb::VOffsetT = 18;
+            pub const VT_UPLOADINFOS: fb::VOffsetT = 20;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -1431,11 +1431,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(DriveFilesRewardTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(DriveFilesRewardTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(DriveFilesRewardTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(DriveFilesRewardTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -1446,33 +1446,33 @@ pub mod catapult {
                 self._tab.get::<u16>(DriveFilesRewardTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(DriveFilesRewardTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(DriveFilesRewardTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(DriveFilesRewardTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(DriveFilesRewardTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
             pub fn uploadInfosCount(&self) -> u16 {
                 self._tab.get::<u16>(DriveFilesRewardTransactionBuffer::VT_UPLOADINFOSCOUNT, Some(0)).unwrap()
             }
             #[inline]
-            pub fn uploadInfos(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<UploadInfoBuffer<'a>>>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<flatbuffers::ForwardsUOffset<UploadInfoBuffer<'a>>>>>(DriveFilesRewardTransactionBuffer::VT_UPLOADINFOS, None)
+            pub fn uploadInfos(&self) -> Option<fb::Vector<'a, fb::ForwardsUOffset<UploadInfoBuffer<'a>>>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<fb::ForwardsUOffset<UploadInfoBuffer<'a>>>>>(DriveFilesRewardTransactionBuffer::VT_UPLOADINFOS, None)
             }
         }
 
         pub struct DriveFilesRewardTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub uploadInfosCount: u16,
-            pub uploadInfos: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<UploadInfoBuffer<'a>>>>>,
+            pub uploadInfos: Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<UploadInfoBuffer<'a>>>>>,
         }
 
         impl<'a> Default for DriveFilesRewardTransactionBufferArgs<'a> {
@@ -1493,8 +1493,8 @@ pub mod catapult {
         }
 
         pub struct DriveFilesRewardTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> DriveFilesRewardTransactionBufferBuilder<'a, 'b> {
@@ -1503,12 +1503,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(DriveFilesRewardTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -1519,23 +1519,23 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(DriveFilesRewardTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
             pub fn add_uploadInfosCount(&mut self, uploadInfosCount: u16) {
                 self.fbb_.push_slot::<u16>(DriveFilesRewardTransactionBuffer::VT_UPLOADINFOSCOUNT, uploadInfosCount, 0);
             }
             #[inline]
-            pub fn add_uploadInfos(&mut self, uploadInfos: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<UploadInfoBuffer<'b>>>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_UPLOADINFOS, uploadInfos);
+            pub fn add_uploadInfos(&mut self, uploadInfos: fb::WIPOffset<fb::Vector<'b, fb::ForwardsUOffset<UploadInfoBuffer<'b>>>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_UPLOADINFOS, uploadInfos);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> DriveFilesRewardTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> DriveFilesRewardTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 DriveFilesRewardTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -1543,9 +1543,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<DriveFilesRewardTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<DriveFilesRewardTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -1553,30 +1553,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct StartDriveVerificationTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for StartDriveVerificationTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for StartDriveVerificationTransactionBuffer<'a> {
             type Inner = StartDriveVerificationTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> StartDriveVerificationTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 StartDriveVerificationTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args StartDriveVerificationTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<StartDriveVerificationTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args StartDriveVerificationTransactionBufferArgs<'args>) -> fb::WIPOffset<StartDriveVerificationTransactionBuffer<'bldr>> {
                 let mut builder = StartDriveVerificationTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.driveKey { builder.add_driveKey(x); }
                 if let Some(x) = args.deadline { builder.add_deadline(x); }
@@ -1589,14 +1589,14 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_DRIVEKEY: flatbuffers::VOffsetT = 18;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_DRIVEKEY: fb::VOffsetT = 18;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -1604,11 +1604,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(StartDriveVerificationTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(StartDriveVerificationTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(StartDriveVerificationTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(StartDriveVerificationTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -1619,28 +1619,28 @@ pub mod catapult {
                 self._tab.get::<u16>(StartDriveVerificationTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(StartDriveVerificationTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(StartDriveVerificationTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(StartDriveVerificationTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(StartDriveVerificationTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
             pub fn driveKey(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(StartDriveVerificationTransactionBuffer::VT_DRIVEKEY, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(StartDriveVerificationTransactionBuffer::VT_DRIVEKEY, None).map(|v| v.safe_slice())
             }
         }
 
         pub struct StartDriveVerificationTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub driveKey: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub driveKey: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
         }
 
         impl<'a> Default for StartDriveVerificationTransactionBufferArgs<'a> {
@@ -1660,8 +1660,8 @@ pub mod catapult {
         }
 
         pub struct StartDriveVerificationTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> StartDriveVerificationTransactionBufferBuilder<'a, 'b> {
@@ -1670,12 +1670,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(StartDriveVerificationTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -1686,19 +1686,19 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(StartDriveVerificationTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
-            pub fn add_driveKey(&mut self, driveKey: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_DRIVEKEY, driveKey);
+            pub fn add_driveKey(&mut self, driveKey: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_DRIVEKEY, driveKey);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> StartDriveVerificationTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> StartDriveVerificationTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 StartDriveVerificationTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -1706,9 +1706,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<StartDriveVerificationTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<StartDriveVerificationTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -1716,45 +1716,45 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct BlockHashBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for BlockHashBuffer<'a> {
+        impl<'a> fb::Follow<'a> for BlockHashBuffer<'a> {
             type Inner = BlockHashBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> BlockHashBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 BlockHashBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args BlockHashBufferArgs<'args>) -> flatbuffers::WIPOffset<BlockHashBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args BlockHashBufferArgs<'args>) -> fb::WIPOffset<BlockHashBuffer<'bldr>> {
                 let mut builder = BlockHashBufferBuilder::new(_fbb);
                 if let Some(x) = args.blockHashe { builder.add_blockHashe(x); }
                 builder.finish()
             }
 
-            pub const VT_BLOCKHASHE: flatbuffers::VOffsetT = 4;
+            pub const VT_BLOCKHASHE: fb::VOffsetT = 4;
 
             #[inline]
             pub fn blockHashe(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(BlockHashBuffer::VT_BLOCKHASHE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(BlockHashBuffer::VT_BLOCKHASHE, None).map(|v| v.safe_slice())
             }
         }
 
         pub struct BlockHashBufferArgs<'a> {
-            pub blockHashe: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub blockHashe: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
         }
 
         impl<'a> Default for BlockHashBufferArgs<'a> {
@@ -1767,17 +1767,17 @@ pub mod catapult {
         }
 
         pub struct BlockHashBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> BlockHashBufferBuilder<'a, 'b> {
             #[inline]
-            pub fn add_blockHashe(&mut self, blockHashe: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(BlockHashBuffer::VT_BLOCKHASHE, blockHashe);
+            pub fn add_blockHashe(&mut self, blockHashe: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(BlockHashBuffer::VT_BLOCKHASHE, blockHashe);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> BlockHashBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> BlockHashBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 BlockHashBufferBuilder {
                     fbb_: _fbb,
@@ -1785,9 +1785,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<BlockHashBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<BlockHashBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -1795,30 +1795,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct VerificationFailureBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for VerificationFailureBuffer<'a> {
+        impl<'a> fb::Follow<'a> for VerificationFailureBuffer<'a> {
             type Inner = VerificationFailureBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> VerificationFailureBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 VerificationFailureBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args VerificationFailureBufferArgs<'args>) -> flatbuffers::WIPOffset<VerificationFailureBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args VerificationFailureBufferArgs<'args>) -> fb::WIPOffset<VerificationFailureBuffer<'bldr>> {
                 let mut builder = VerificationFailureBufferBuilder::new(_fbb);
                 if let Some(x) = args.blockHashes { builder.add_blockHashes(x); }
                 if let Some(x) = args.replicator { builder.add_replicator(x); }
@@ -1826,9 +1826,9 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_REPLICATOR: flatbuffers::VOffsetT = 6;
-            pub const VT_BLOCKHASHES: flatbuffers::VOffsetT = 8;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_REPLICATOR: fb::VOffsetT = 6;
+            pub const VT_BLOCKHASHES: fb::VOffsetT = 8;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -1836,18 +1836,18 @@ pub mod catapult {
             }
             #[inline]
             pub fn replicator(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(VerificationFailureBuffer::VT_REPLICATOR, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(VerificationFailureBuffer::VT_REPLICATOR, None).map(|v| v.safe_slice())
             }
             #[inline]
-            pub fn blockHashes(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<BlockHashBuffer<'a>>>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<flatbuffers::ForwardsUOffset<BlockHashBuffer<'a>>>>>(VerificationFailureBuffer::VT_BLOCKHASHES, None)
+            pub fn blockHashes(&self) -> Option<fb::Vector<'a, fb::ForwardsUOffset<BlockHashBuffer<'a>>>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<fb::ForwardsUOffset<BlockHashBuffer<'a>>>>>(VerificationFailureBuffer::VT_BLOCKHASHES, None)
             }
         }
 
         pub struct VerificationFailureBufferArgs<'a> {
             pub size_: u32,
-            pub replicator: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub blockHashes: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<BlockHashBuffer<'a>>>>>,
+            pub replicator: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub blockHashes: Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<BlockHashBuffer<'a>>>>>,
         }
 
         impl<'a> Default for VerificationFailureBufferArgs<'a> {
@@ -1862,8 +1862,8 @@ pub mod catapult {
         }
 
         pub struct VerificationFailureBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> VerificationFailureBufferBuilder<'a, 'b> {
@@ -1872,15 +1872,15 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(VerificationFailureBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_replicator(&mut self, replicator: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(VerificationFailureBuffer::VT_REPLICATOR, replicator);
+            pub fn add_replicator(&mut self, replicator: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(VerificationFailureBuffer::VT_REPLICATOR, replicator);
             }
             #[inline]
-            pub fn add_blockHashes(&mut self, blockHashes: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<BlockHashBuffer<'b>>>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(VerificationFailureBuffer::VT_BLOCKHASHES, blockHashes);
+            pub fn add_blockHashes(&mut self, blockHashes: fb::WIPOffset<fb::Vector<'b, fb::ForwardsUOffset<BlockHashBuffer<'b>>>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(VerificationFailureBuffer::VT_BLOCKHASHES, blockHashes);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> VerificationFailureBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> VerificationFailureBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 VerificationFailureBufferBuilder {
                     fbb_: _fbb,
@@ -1888,9 +1888,9 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<VerificationFailureBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<VerificationFailureBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
@@ -1898,30 +1898,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct EndDriveVerificationTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for EndDriveVerificationTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for EndDriveVerificationTransactionBuffer<'a> {
             type Inner = EndDriveVerificationTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> EndDriveVerificationTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 EndDriveVerificationTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args EndDriveVerificationTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<EndDriveVerificationTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args EndDriveVerificationTransactionBufferArgs<'args>) -> fb::WIPOffset<EndDriveVerificationTransactionBuffer<'bldr>> {
                 let mut builder = EndDriveVerificationTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.failures { builder.add_failures(x); }
                 if let Some(x) = args.deadline { builder.add_deadline(x); }
@@ -1934,14 +1934,14 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_FAILURES: flatbuffers::VOffsetT = 18;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_FAILURES: fb::VOffsetT = 18;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -1949,11 +1949,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(EndDriveVerificationTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(EndDriveVerificationTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(EndDriveVerificationTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(EndDriveVerificationTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -1964,28 +1964,28 @@ pub mod catapult {
                 self._tab.get::<u16>(EndDriveVerificationTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(EndDriveVerificationTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(EndDriveVerificationTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(EndDriveVerificationTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(EndDriveVerificationTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
-            pub fn failures(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<VerificationFailureBuffer<'a>>>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<flatbuffers::ForwardsUOffset<VerificationFailureBuffer<'a>>>>>(EndDriveVerificationTransactionBuffer::VT_FAILURES, None)
+            pub fn failures(&self) -> Option<fb::Vector<'a, fb::ForwardsUOffset<VerificationFailureBuffer<'a>>>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<fb::ForwardsUOffset<VerificationFailureBuffer<'a>>>>>(EndDriveVerificationTransactionBuffer::VT_FAILURES, None)
             }
         }
 
         pub struct EndDriveVerificationTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub failures: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<VerificationFailureBuffer<'a>>>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub failures: Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<VerificationFailureBuffer<'a>>>>>,
         }
 
         impl<'a> Default for EndDriveVerificationTransactionBufferArgs<'a> {
@@ -2005,8 +2005,8 @@ pub mod catapult {
         }
 
         pub struct EndDriveVerificationTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> EndDriveVerificationTransactionBufferBuilder<'a, 'b> {
@@ -2015,12 +2015,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(EndDriveVerificationTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -2031,19 +2031,19 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(EndDriveVerificationTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
-            pub fn add_failures(&mut self, failures: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<VerificationFailureBuffer<'b>>>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_FAILURES, failures);
+            pub fn add_failures(&mut self, failures: fb::WIPOffset<fb::Vector<'b, fb::ForwardsUOffset<VerificationFailureBuffer<'b>>>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_FAILURES, failures);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> EndDriveVerificationTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> EndDriveVerificationTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 EndDriveVerificationTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -2051,31 +2051,31 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<EndDriveVerificationTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<EndDriveVerificationTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
         #[inline]
         pub fn get_root_as_end_drive_verification_transaction_buffer<'a>(buf: &'a [u8]) -> EndDriveVerificationTransactionBuffer<'a> {
-            flatbuffers::get_root::<EndDriveVerificationTransactionBuffer<'a>>(buf)
+            fb::get_root::<EndDriveVerificationTransactionBuffer<'a>>(buf)
         }
 
         #[inline]
         pub fn get_size_prefixed_root_as_end_drive_verification_transaction_buffer<'a>(buf: &'a [u8]) -> EndDriveVerificationTransactionBuffer<'a> {
-            flatbuffers::get_size_prefixed_root::<EndDriveVerificationTransactionBuffer<'a>>(buf)
+            fb::get_size_prefixed_root::<EndDriveVerificationTransactionBuffer<'a>>(buf)
         }
 
         #[inline]
         pub fn finish_end_drive_verification_transaction_buffer_buffer<'a, 'b>(
-            fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            root: flatbuffers::WIPOffset<EndDriveVerificationTransactionBuffer<'a>>) {
+            fbb: &'b mut fb::FlatBufferBuilder<'a>,
+            root: fb::WIPOffset<EndDriveVerificationTransactionBuffer<'a>>) {
             fbb.finish(root, None);
         }
 
         #[inline]
-        pub fn finish_size_prefixed_end_drive_verification_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<EndDriveVerificationTransactionBuffer<'a>>) {
+        pub fn finish_size_prefixed_end_drive_verification_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut fb::FlatBufferBuilder<'a>, root: fb::WIPOffset<EndDriveVerificationTransactionBuffer<'a>>) {
             fbb.finish_size_prefixed(root, None);
         }
     }  // pub mod Buffers

@@ -7,14 +7,14 @@ extern crate flatbuffers;
 use std::cmp::Ordering;
 use std::mem;
 
-use self::flatbuffers::EndianScalar;
+use self::fb::EndianScalar;
 
 #[allow(unused_imports, dead_code)]
 pub mod catapult {
     use std::cmp::Ordering;
     use std::mem;
 
-    use self::flatbuffers::EndianScalar;
+    use self::fb::EndianScalar;
 
     extern crate flatbuffers;
 
@@ -23,7 +23,7 @@ pub mod catapult {
         use std::cmp::Ordering;
         use std::mem;
 
-        use self::flatbuffers::EndianScalar;
+        use self::fb::EndianScalar;
 
         extern crate flatbuffers;
 
@@ -31,30 +31,30 @@ pub mod catapult {
 
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct SecretLockTransactionBuffer<'a> {
-            pub _tab: flatbuffers::Table<'a>,
+            pub _tab: fb::Table<'a>,
         }
 
-        impl<'a> flatbuffers::Follow<'a> for SecretLockTransactionBuffer<'a> {
+        impl<'a> fb::Follow<'a> for SecretLockTransactionBuffer<'a> {
             type Inner = SecretLockTransactionBuffer<'a>;
             #[inline]
             fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
                 Self {
-                    _tab: flatbuffers::Table { buf: buf, loc: loc },
+                    _tab: fb::Table { buf: buf, loc: loc },
                 }
             }
         }
 
         impl<'a> SecretLockTransactionBuffer<'a> {
             #[inline]
-            pub fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+            pub fn init_from_table(table: fb::Table<'a>) -> Self {
                 SecretLockTransactionBuffer {
                     _tab: table,
                 }
             }
             #[allow(unused_mut)]
             pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-                _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-                args: &'args SecretLockTransactionBufferArgs<'args>) -> flatbuffers::WIPOffset<SecretLockTransactionBuffer<'bldr>> {
+                _fbb: &'mut_bldr mut fb::FlatBufferBuilder<'bldr>,
+                args: &'args SecretLockTransactionBufferArgs<'args>) -> fb::WIPOffset<SecretLockTransactionBuffer<'bldr>> {
                 let mut builder = SecretLockTransactionBufferBuilder::new(_fbb);
                 if let Some(x) = args.recipient { builder.add_recipient(x); }
                 if let Some(x) = args.secret { builder.add_secret(x); }
@@ -72,19 +72,19 @@ pub mod catapult {
                 builder.finish()
             }
 
-            pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-            pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-            pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-            pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-            pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-            pub const VT_MAXFEE: flatbuffers::VOffsetT = 14;
-            pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-            pub const VT_MOSAICID: flatbuffers::VOffsetT = 18;
-            pub const VT_MOSAICAMOUNT: flatbuffers::VOffsetT = 20;
-            pub const VT_DURATION: flatbuffers::VOffsetT = 22;
-            pub const VT_HASHALGORITHM: flatbuffers::VOffsetT = 24;
-            pub const VT_SECRET: flatbuffers::VOffsetT = 26;
-            pub const VT_RECIPIENT: flatbuffers::VOffsetT = 28;
+            pub const VT_SIZE_: fb::VOffsetT = 4;
+            pub const VT_SIGNATURE: fb::VOffsetT = 6;
+            pub const VT_SIGNER: fb::VOffsetT = 8;
+            pub const VT_VERSION: fb::VOffsetT = 10;
+            pub const VT_TYPE_: fb::VOffsetT = 12;
+            pub const VT_MAXFEE: fb::VOffsetT = 14;
+            pub const VT_DEADLINE: fb::VOffsetT = 16;
+            pub const VT_MOSAICID: fb::VOffsetT = 18;
+            pub const VT_MOSAICAMOUNT: fb::VOffsetT = 20;
+            pub const VT_DURATION: fb::VOffsetT = 22;
+            pub const VT_HASHALGORITHM: fb::VOffsetT = 24;
+            pub const VT_SECRET: fb::VOffsetT = 26;
+            pub const VT_RECIPIENT: fb::VOffsetT = 28;
 
             #[inline]
             pub fn size_(&self) -> u32 {
@@ -92,11 +92,11 @@ pub mod catapult {
             }
             #[inline]
             pub fn signature(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(SecretLockTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(SecretLockTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn signer(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(SecretLockTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(SecretLockTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn version(&self) -> u32 {
@@ -107,24 +107,24 @@ pub mod catapult {
                 self._tab.get::<u16>(SecretLockTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
             }
             #[inline]
-            pub fn maxFee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(SecretLockTransactionBuffer::VT_MAXFEE, None)
+            pub fn maxFee(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(SecretLockTransactionBuffer::VT_MAXFEE, None)
             }
             #[inline]
-            pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(SecretLockTransactionBuffer::VT_DEADLINE, None)
+            pub fn deadline(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(SecretLockTransactionBuffer::VT_DEADLINE, None)
             }
             #[inline]
-            pub fn mosaicId(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(SecretLockTransactionBuffer::VT_MOSAICID, None)
+            pub fn mosaicId(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(SecretLockTransactionBuffer::VT_MOSAICID, None)
             }
             #[inline]
-            pub fn mosaicAmount(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(SecretLockTransactionBuffer::VT_MOSAICAMOUNT, None)
+            pub fn mosaicAmount(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(SecretLockTransactionBuffer::VT_MOSAICAMOUNT, None)
             }
             #[inline]
-            pub fn duration(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(SecretLockTransactionBuffer::VT_DURATION, None)
+            pub fn duration(&self) -> Option<fb::Vector<'a, u32>> {
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u32>>>(SecretLockTransactionBuffer::VT_DURATION, None)
             }
             #[inline]
             pub fn hashAlgorithm(&self) -> u8 {
@@ -132,28 +132,28 @@ pub mod catapult {
             }
             #[inline]
             pub fn secret(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(SecretLockTransactionBuffer::VT_SECRET, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(SecretLockTransactionBuffer::VT_SECRET, None).map(|v| v.safe_slice())
             }
             #[inline]
             pub fn recipient(&self) -> Option<&'a [u8]> {
-                self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(SecretLockTransactionBuffer::VT_RECIPIENT, None).map(|v| v.safe_slice())
+                self._tab.get::<fb::ForwardsUOffset<fb::Vector<'a, u8>>>(SecretLockTransactionBuffer::VT_RECIPIENT, None).map(|v| v.safe_slice())
             }
         }
 
         pub struct SecretLockTransactionBufferArgs<'a> {
             pub size_: u32,
-            pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub version: u32,
             pub type_: u16,
-            pub maxFee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub mosaicId: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub mosaicAmount: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-            pub duration: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+            pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub mosaicId: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub mosaicAmount: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
+            pub duration: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub hashAlgorithm: u8,
-            pub secret: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-            pub recipient: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+            pub secret: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
+            pub recipient: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
         }
 
         impl<'a> Default for SecretLockTransactionBufferArgs<'a> {
@@ -178,8 +178,8 @@ pub mod catapult {
         }
 
         pub struct SecretLockTransactionBufferBuilder<'a: 'b, 'b> {
-            fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+            fbb_: &'b mut fb::FlatBufferBuilder<'a>,
+            start_: fb::WIPOffset<fb::TableUnfinishedWIPOffset>,
         }
 
         impl<'a: 'b, 'b> SecretLockTransactionBufferBuilder<'a, 'b> {
@@ -188,12 +188,12 @@ pub mod catapult {
                 self.fbb_.push_slot::<u32>(SecretLockTransactionBuffer::VT_SIZE_, size_, 0);
             }
             #[inline]
-            pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(SecretLockTransactionBuffer::VT_SIGNATURE, signature);
+            pub fn add_signature(&mut self, signature: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(SecretLockTransactionBuffer::VT_SIGNATURE, signature);
             }
             #[inline]
-            pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(SecretLockTransactionBuffer::VT_SIGNER, signer);
+            pub fn add_signer(&mut self, signer: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(SecretLockTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
             pub fn add_version(&mut self, version: u32) {
@@ -204,39 +204,39 @@ pub mod catapult {
                 self.fbb_.push_slot::<u16>(SecretLockTransactionBuffer::VT_TYPE_, type_, 0);
             }
             #[inline]
-            pub fn add_maxFee(&mut self, maxFee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(SecretLockTransactionBuffer::VT_MAXFEE, maxFee);
+            pub fn add_maxFee(&mut self, maxFee: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(SecretLockTransactionBuffer::VT_MAXFEE, maxFee);
             }
             #[inline]
-            pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(SecretLockTransactionBuffer::VT_DEADLINE, deadline);
+            pub fn add_deadline(&mut self, deadline: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(SecretLockTransactionBuffer::VT_DEADLINE, deadline);
             }
             #[inline]
-            pub fn add_mosaicId(&mut self, mosaicId: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(SecretLockTransactionBuffer::VT_MOSAICID, mosaicId);
+            pub fn add_mosaicId(&mut self, mosaicId: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(SecretLockTransactionBuffer::VT_MOSAICID, mosaicId);
             }
             #[inline]
-            pub fn add_mosaicAmount(&mut self, mosaicAmount: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(SecretLockTransactionBuffer::VT_MOSAICAMOUNT, mosaicAmount);
+            pub fn add_mosaicAmount(&mut self, mosaicAmount: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(SecretLockTransactionBuffer::VT_MOSAICAMOUNT, mosaicAmount);
             }
             #[inline]
-            pub fn add_duration(&mut self, duration: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(SecretLockTransactionBuffer::VT_DURATION, duration);
+            pub fn add_duration(&mut self, duration: fb::WIPOffset<fb::Vector<'b, u32>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(SecretLockTransactionBuffer::VT_DURATION, duration);
             }
             #[inline]
             pub fn add_hashAlgorithm(&mut self, hashAlgorithm: u8) {
                 self.fbb_.push_slot::<u8>(SecretLockTransactionBuffer::VT_HASHALGORITHM, hashAlgorithm, 0);
             }
             #[inline]
-            pub fn add_secret(&mut self, secret: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(SecretLockTransactionBuffer::VT_SECRET, secret);
+            pub fn add_secret(&mut self, secret: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(SecretLockTransactionBuffer::VT_SECRET, secret);
             }
             #[inline]
-            pub fn add_recipient(&mut self, recipient: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-                self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(SecretLockTransactionBuffer::VT_RECIPIENT, recipient);
+            pub fn add_recipient(&mut self, recipient: fb::WIPOffset<fb::Vector<'b, u8>>) {
+                self.fbb_.push_slot_always::<fb::WIPOffset<_>>(SecretLockTransactionBuffer::VT_RECIPIENT, recipient);
             }
             #[inline]
-            pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> SecretLockTransactionBufferBuilder<'a, 'b> {
+            pub fn new(_fbb: &'b mut fb::FlatBufferBuilder<'a>) -> SecretLockTransactionBufferBuilder<'a, 'b> {
                 let start = _fbb.start_table();
                 SecretLockTransactionBufferBuilder {
                     fbb_: _fbb,
@@ -244,31 +244,31 @@ pub mod catapult {
                 }
             }
             #[inline]
-            pub fn finish(self) -> flatbuffers::WIPOffset<SecretLockTransactionBuffer<'a>> {
+            pub fn finish(self) -> fb::WIPOffset<SecretLockTransactionBuffer<'a>> {
                 let o = self.fbb_.end_table(self.start_);
-                flatbuffers::WIPOffset::new(o.value())
+                fb::WIPOffset::new(o.value())
             }
         }
 
         #[inline]
         pub fn get_root_as_secret_lock_transaction_buffer<'a>(buf: &'a [u8]) -> SecretLockTransactionBuffer<'a> {
-            flatbuffers::get_root::<SecretLockTransactionBuffer<'a>>(buf)
+            fb::get_root::<SecretLockTransactionBuffer<'a>>(buf)
         }
 
         #[inline]
         pub fn get_size_prefixed_root_as_secret_lock_transaction_buffer<'a>(buf: &'a [u8]) -> SecretLockTransactionBuffer<'a> {
-            flatbuffers::get_size_prefixed_root::<SecretLockTransactionBuffer<'a>>(buf)
+            fb::get_size_prefixed_root::<SecretLockTransactionBuffer<'a>>(buf)
         }
 
         #[inline]
         pub fn finish_secret_lock_transaction_buffer_buffer<'a, 'b>(
-            fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-            root: flatbuffers::WIPOffset<SecretLockTransactionBuffer<'a>>) {
+            fbb: &'b mut fb::FlatBufferBuilder<'a>,
+            root: fb::WIPOffset<SecretLockTransactionBuffer<'a>>) {
             fbb.finish(root, None);
         }
 
         #[inline]
-        pub fn finish_size_prefixed_secret_lock_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<SecretLockTransactionBuffer<'a>>) {
+        pub fn finish_size_prefixed_secret_lock_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut fb::FlatBufferBuilder<'a>, root: fb::WIPOffset<SecretLockTransactionBuffer<'a>>) {
             fbb.finish_size_prefixed(root, None);
         }
     }  // pub mod Buffers

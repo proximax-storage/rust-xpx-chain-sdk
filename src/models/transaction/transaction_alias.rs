@@ -1,13 +1,15 @@
+use crate::models::{
+    account::{Address, PublicAccount},
+    alias::AliasActionType,
+    consts::ALIAS_TRANSACTION_HEADER,
+    id_model::Id,
+    namespace::NamespaceId,
+    network::NetworkType
+};
 
-use crate::models::account::{Address, PublicAccount};
-use crate::models::alias::AliasActionType;
-use crate::models::consts::ALIAS_TRANSACTION_HEADER;
-use crate::models::id_model::Id;
-use crate::models::namespace::NamespaceId;
-use crate::models::network::NetworkType;
-
-use super::{AbstractTransaction, ADDRESS_ALIAS_VERSION, Deadline, EntityTypeEnum,
-            buffer::alias::buffers, schema::alias_transaction_schema
+use super::{
+    AbstractTransaction, ADDRESS_ALIAS_VERSION, buffer::alias::buffers, Deadline,
+    EntityTypeEnum, schema::alias_transaction_schema
 };
 
 #[derive(Debug, Serialize)]
@@ -22,7 +24,6 @@ impl AliasTransaction {
     pub fn new(deadline: Deadline, address: Address, namespace_id: NamespaceId,
                action_type: AliasActionType, network_type: NetworkType) -> crate::Result<Self>
     {
-
         ensure!(
             !address.address.is_empty(),
             "address string is empty."

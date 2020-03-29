@@ -1,6 +1,4 @@
-use crate::models::transaction::Hash;
-
-use super::EntityTypeEnum;
+use super::{EntityTypeEnum, Hash};
 
 /// Used to transfer the transaction data and the signature to a nem server in order to
 /// initiate and broadcast a transaction.
@@ -18,7 +16,6 @@ pub struct SignedTransaction {
 }
 
 impl SignedTransaction {
-
     pub fn from_hash(hash: Hash) -> Self {
         Self {
             payload: None,

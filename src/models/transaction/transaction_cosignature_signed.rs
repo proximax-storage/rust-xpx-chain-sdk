@@ -1,10 +1,13 @@
 use std::fmt;
 
-use crate::models::transaction::Hash;
-use crate::models::consts::SIGNATURE_SIZE;
 use serde::{Serialize, Serializer};
-use crate::models::errors::ERR_INVALID_DATA_LENGTH;
-use crate::models::utils::{is_hex, hex_to_vec_u8};
+
+use crate::models::{
+    consts::SIGNATURE_SIZE,
+    errors::ERR_INVALID_DATA_LENGTH,
+    transaction::Hash,
+    utils::{hex_to_vec_u8, is_hex}
+};
 
 pub struct Signature(pub(crate) [u8; SIGNATURE_SIZE]);
 

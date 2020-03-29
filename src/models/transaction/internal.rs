@@ -11,12 +11,12 @@ use crate::models::{
     mosaic::MosaicProperty,
     multisig::{CosignatoryModification, CosignatoryModificationDto},
     network::NetworkType,
-    transaction::{AbsTransaction, AggregateTransaction},
     utils::{u32_to_array_u8, vec_u8_to_hex}
 };
 
 use super::{
-    buffer::{
+    AbsTransaction,
+    AggregateTransaction, buffer::{
         modify_multisig_account as bm,
         mosaic_definition
     },

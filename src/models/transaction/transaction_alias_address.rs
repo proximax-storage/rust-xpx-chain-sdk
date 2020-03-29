@@ -3,18 +3,20 @@ use std::fmt;
 
 use serde_json::Value;
 
-use crate::models::account::{Account, Address, PublicAccount};
-use crate::models::alias::AliasActionType;
-use crate::models::consts::ADDRESS_SIZE;
-use crate::models::namespace::NamespaceId;
-use crate::models::network::NetworkType;
+use crate::models::{
+    account::{Account, Address, PublicAccount},
+    alias::AliasActionType,
+    consts::ADDRESS_SIZE,
+    errors,
+    id_model::Id,
+    namespace::NamespaceId,
+    network::NetworkType
+};
 use crate::Result;
 
 use super::{AbstractTransaction, AbsTransaction, ADDRESS_ALIAS_VERSION, AliasTransaction,
             Deadline, EntityTypeEnum, sign_transaction, SignedTransaction, Transaction
 };
-use crate::models::errors;
-use crate::models::id_model::Id;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]

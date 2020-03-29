@@ -1,17 +1,17 @@
-use fb::FlatBufferBuilder;
-
-use crate::models::account::PublicAccount;
-use crate::models::network::NetworkType;
-use crate::models::Uint64;
+use crate::models::{
+    account::PublicAccount,
+    network::NetworkType,
+    uint_64::Uint64
+};
 
 use super::{
+    AbsVector,
     deadline::Deadline,
     EntityTypeEnum,
     EntityVersion,
     Hash,
     Height
 };
-use crate::models::transaction::AbsVector;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

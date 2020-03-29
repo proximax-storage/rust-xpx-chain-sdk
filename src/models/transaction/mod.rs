@@ -1,10 +1,10 @@
 pub use self::deadline::*;
-pub(crate) use self::internal::*;
+pub use self::internal::*;
 pub use self::transaction_aggregate::*;
 pub use self::transaction_dto::*;
 pub use self::transaction_hash_lock::*;
-pub(crate) use self::transaction_hashes::*;
-pub(crate) use self::transaction_ids::*;
+pub use self::transaction_hashes::*;
+pub use self::transaction_ids::*;
 pub use self::transaction_info::*;
 pub use self::transaction_model::*;
 pub use self::transaction_alias_address::*;
