@@ -1,4 +1,5 @@
 use ::std::sync::Arc;
+use std::collections::HashMap;
 use std::future::Future;
 
 use hyper::{client::connect::Connect, Method};
@@ -6,7 +7,8 @@ use hyper::{client::connect::Connect, Method};
 use crate::models::{
     account::{AccountInfo, AccountInfoDto, AccountsId, PublicAccount},
     errors::ERR_EMPTY_ADDRESSES_IDS,
-    multisig::{MultisigAccountInfo, MultisigAccountInfoDto, MultisigAccountGraphInfoDto},
+    multisig::{MultisigAccountGraphInfoDto, MultisigAccountInfo, MultisigAccountInfoDto},
+    multisig::MultisigAccountGraphInfo,
     transaction::{TransactionDto, Transactions}
 };
 
@@ -14,21 +16,12 @@ use super::{
     internally::{AccountTransactionsOption, valid_account_id, valid_vec_len},
     request as __internal_request, Result, sirius_client::ApiClient
 };
-use crate::models::multisig::MultisigAccountGraphInfo;
-use std::collections::HashMap;
-
-const ACCOUNTS_ROUTE: &str = "/account";
-const ACCOUNT_ROUTE: &str = "/account/{accountId}";
-const ACCOUNT_NAMES_ROUTE: &str = "/account/names";
-const ACCOUNT_PROPERTIES_ROUTE: &str = "/account/{accountId}/properties/";
-const ACCOUNTS_PROPERTIES_ROUTE: &str = "/account/properties";
-const MULTISIG_ACCOUNT_ROUTE: &str = "/account/{accountId}/multisig";
-const MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE: &str = "/account/{accountId}/multisig/graph";
-const TRANSACTIONS_BY_ACCOUNT_ROUTE: &str = "/account/{publicKey}/transactions";
-const INCOMING_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/incoming";
-const OUTGOING_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/outgoing";
-const UNCONFIRMED_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/unconfirmed";
-const AGGREGATE_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/partial";
+use super::{
+    ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE, ACCOUNT_ROUTE, ACCOUNTS_PROPERTIES_ROUTE,
+    ACCOUNTS_ROUTE, AGGREGATE_TRANSACTIONS_ROUTE, INCOMING_TRANSACTIONS_ROUTE,
+    MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE, OUTGOING_TRANSACTIONS_ROUTE,
+    TRANSACTIONS_BY_ACCOUNT_ROUTE, UNCONFIRMED_TRANSACTIONS_ROUTE
+};
 
 /// Account ApiClient routes.
 ///
@@ -183,10 +176,10 @@ impl<C: Connect> AccountRoutes<C>
         let mut multisig_accounts: HashMap<i16, Vec<MultisigAccountInfo>> = HashMap::new();
         for graph_info_dto in dto?.into_iter() {
             let info = graph_info_dto.to_struct()?;
-            multisig_accounts.insert(graph_info_dto.level, info );
+            multisig_accounts.insert(graph_info_dto.level, info);
         };
 
-        Ok(MultisigAccountGraphInfo{ multisig_accounts })
+        Ok(MultisigAccountGraphInfo { multisig_accounts })
     }
 
     pub async fn account_properties(self, account_id: &str) -> Result<()> {

@@ -13,9 +13,7 @@ use crate::{
 };
 
 use super::{request as __internal_request, Result};
-
-const NODE_INFO: &str = "/node/info";
-const NODE_TIME: &str = "/node/time";
+use super::{NODE_INFO, NODE_TIME};
 
 /// Node ApiClient routes.
 ///

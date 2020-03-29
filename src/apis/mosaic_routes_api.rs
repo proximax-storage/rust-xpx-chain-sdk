@@ -11,10 +11,7 @@ use crate::{
 };
 
 use super::{internally::valid_vec_len, request as __internal_request, Result};
-
-const MOSAICS_ROUTE: &str = "/mosaic";
-const MOSAIC_ROUTE: &str = "/mosaic/{mosaic_id}";
-const MOSAIC_NAMES_ROUTE: &str = "/mosaic/names";
+use super::{MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE, MOSAICS_ROUTE};
 
 /// Mosaic ApiClient routes.
 ///

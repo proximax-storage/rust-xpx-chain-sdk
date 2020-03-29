@@ -13,10 +13,7 @@ use crate::{
 };
 
 use super::{request as __internal_request, Result, sirius_client::ApiClient};
-
-const CHAIN_STORAGE_ROUTE: &str = "/diagnostic/storage";
-const CHAIN_SCORE_ROUTE: &str = "/chain/score";
-const CHAIN_HEIGHT_ROUTE: &str = "/chain/height";
+use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
 
 /// Chain ApiClient routes.
 ///

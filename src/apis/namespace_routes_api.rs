@@ -5,19 +5,18 @@ use std::pin::Pin;
 use hyper::{client::connect::Connect, Method};
 
 use crate::apis::sirius_client::ApiClient;
-use crate::models::account::{Address, AccountsId};
-use crate::models::errors::{ERR_EMPTY_NAMESPACE_IDS, ERR_EMPTY_ADDRESSES_IDS};
+use crate::models::account::{AccountsId, Address};
+use crate::models::errors::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS};
 use crate::models::id_model::Id;
 use crate::models::namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceInfoDto,
                                NamespaceName, NamespaceNameDto
 };
 
 use super::{internally::valid_vec_len, request as __internal_request, Result};
-
-const NAMESPACE_ROUTE: &str = "/namespace/{namespaceId}";
-const NAMESPACES_FROM_ACCOUNTS_ROUTE: &str = "/account/namespaces";
-const NAMESPACE_NAMES_ROUTE: &str = "/namespace/names";
-const NAMESPACES_FROM_ACCOUNT_ROUTES: &str = "/account/{accountId}/namespaces";
+use super::{
+    NAMESPACE_NAMES_ROUTE, NAMESPACE_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES,
+    NAMESPACES_FROM_ACCOUNTS_ROUTE
+};
 
 /// Namespace ApiClient routes.
 ///

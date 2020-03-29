@@ -12,10 +12,7 @@ use super::{
     Result,
     sirius_client::ApiClient,
 };
-
-const BLOCK_BY_HEIGHT_ROUTE: &str = "/block/{height}";
-const BLOCK_GET_TRANSACTION_ROUTE: &str = "/block/{height}/transactions";
-const BLOCK_INFO_ROUTE: &str = "/blocks/{height}/limit/{limit}";
+use super::{BLOCK_BY_HEIGHT_ROUTE, BLOCK_GET_TRANSACTION_ROUTE, BLOCK_INFO_ROUTE};
 
 /// Block ApiClient routes.
 ///

@@ -24,18 +24,15 @@ use super::{
     Result,
     sirius_client::ApiClient
 };
+use super::{
+    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTION_ROUTE, TRANSACTION_STATUS_ROUTE,
+    TRANSACTIONS_ROUTE, TRANSACTIONS_STATUS_ROUTE
+};
 
 /// Transaction ApiClient routes.
 ///
 #[derive(Clone)]
 pub struct TransactionRoutes<C: Connect> (Arc<ApiClient<C>>);
-
-const TRANSACTIONS_ROUTE: &str = "/transaction";
-const TRANSACTION_ROUTE: &str = "/transaction/{transactionId}";
-const TRANSACTION_STATUS_ROUTE: &str = "/transaction/{hash}/status";
-const TRANSACTIONS_STATUS_ROUTE: &str = "/transaction/statuses";
-const ANNOUNCE_AGGREGATE_ROUTE: &str = "/transaction/partial";
-const ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE: &str = "/transaction/cosignature";
 
 /// Transaction related endpoints.
 ///
