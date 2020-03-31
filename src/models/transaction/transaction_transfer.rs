@@ -14,17 +14,11 @@ use crate::models::{
 use crate::Result;
 
 use super::{
-    AbstractTransaction,
-    AbsTransaction,
-    buffer::transfer::buffers,
-    deadline::Deadline,
-    EntityTypeEnum,
-    internal::sign_transaction,
-    schema::transfer_transaction_schema,
-    SignedTransaction,
-    Transaction,
-    TRANSFER_VERSION
+    buffer::transfer::buffers, deadline::Deadline, internal::sign_transaction,
+    schema::transfer_transaction_schema, AbsTransaction, AbstractTransaction, EntityTypeEnum,
+    SignedTransaction, Transaction, TRANSFER_VERSION,
 };
+use crate::models::errors::ERR_EMPTY_ADDRESSES;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -48,24 +42,21 @@ impl TransferTransaction {
         message: impl Message + 'static,
         network_type: NetworkType,
     ) -> Result<Self> {
-        ensure!(
-            !recipient.address.is_empty(),
-            "address string is empty."
-         );
-
-        ensure!(
-            mosaics.len() > 0,
-            errors::ERR_EMPTY_MOSAIC_ID
-         );
+        ensure!(!recipient.address.is_empty(), ERR_EMPTY_ADDRESSES);
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             TRANSFER_VERSION,
             EntityTypeEnum::Transfer,
-            network_type
+            network_type,
         );
 
-        Ok(Self { abs_transaction: abs_tx, recipient, mosaics, message: Box::new(message) })
+        Ok(Self {
+            abs_transaction: abs_tx,
+            recipient,
+            mosaics,
+            message: Box::new(message),
+        })
     }
 
     pub fn message_size(&self) -> usize {
@@ -81,15 +72,20 @@ impl AbsTransaction for TransferTransaction {
 
 impl Transaction for TransferTransaction {
     fn size(&self) -> usize {
-        TRANSFER_HEADER_SIZE + ((MOSAIC_ID_SIZE + AMOUNT_SIZE) * self.mosaics.len()) + self.message_size()
+        TRANSFER_HEADER_SIZE
+            + ((MOSAIC_ID_SIZE + AMOUNT_SIZE) * self.mosaics.len())
+            + self.message_size()
     }
 
     fn to_json(&self) -> Value {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> Result<SignedTransaction> {
+    fn sign_transaction_with(
+        self,
+        account: Account,
+        generation_hash: String,
+    ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
@@ -101,7 +97,8 @@ impl Transaction for TransferTransaction {
         // Create mosaics
         let ml = self.mosaics.len();
 
-        let mut mosaics_buffer: Vec<fb::WIPOffset<buffers::MosaicBuffer<'a>>> = Vec::with_capacity(ml);
+        let mut mosaics_buffer: Vec<fb::WIPOffset<buffers::MosaicBuffer<'a>>> =
+            Vec::with_capacity(ml);
 
         for mosaic in self.mosaics.iter() {
             let mosaic_id = _builder.create_vector(&mosaic.asset_id.to_u32_array());
@@ -112,7 +109,7 @@ impl Transaction for TransferTransaction {
             mosaic_buffer.add_amount(mosaic_amount);
 
             mosaics_buffer.push(mosaic_buffer.finish());
-        };
+        }
 
         // Create message;
         let payload_vec = _builder.create_vector_direct(self.message.payload_to_bytes());
@@ -130,8 +127,7 @@ impl Transaction for TransferTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
-        let mut txn_builder =
-            buffers::TransferTransactionBufferBuilder::new(&mut _builder);
+        let mut txn_builder = buffers::TransferTransactionBufferBuilder::new(&mut _builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
@@ -166,8 +162,10 @@ impl Transaction for TransferTransaction {
 
 impl fmt::Display for TransferTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }
