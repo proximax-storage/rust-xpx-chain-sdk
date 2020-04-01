@@ -2,25 +2,24 @@ use ::std::fmt::Debug;
 use ::std::future::Future;
 use ::std::sync::Arc;
 
-use hyper::{Client, client::connect::Connect};
+use hyper::{client::connect::Connect, Client};
 
 use crate::models::{network::NetworkType, transaction::Hash};
 
 use super::{
-    account_routes_api::AccountRoutes,
-    block_routes_api::BlockRoutes,
-    chain_routes_api::ChainRoutes,
-    mosaic_routes_api::MosaicRoutes,
-    namespace_routes_api::NamespaceRoutes,
-    node_routes_api::NodeRoutes,
-    transaction_routes_api::TransactionRoutes
+    account_routes_api::AccountRoutes, block_routes_api::BlockRoutes,
+    chain_routes_api::ChainRoutes, mosaic_routes_api::MosaicRoutes,
+    namespace_routes_api::NamespaceRoutes, node_routes_api::NodeRoutes,
+    transaction_routes_api::TransactionRoutes,
 };
+use crate::apis::exchange_routes_api::ExchangeRoutes;
 
 pub struct SiriusClient<C: Connect> {
     generation_hash: Hash,
     account: Box<AccountRoutes<C>>,
     block: Box<BlockRoutes<C>>,
     chain: Box<ChainRoutes<C>>,
+    exchange: Box<ExchangeRoutes<C>>,
     node: Box<NodeRoutes<C>>,
     mosaic: Box<MosaicRoutes<C>>,
     namespace: Box<NamespaceRoutes<C>>,
@@ -40,6 +39,10 @@ impl<C: Connect + Clone> SiriusClient<C> {
         self.chain.to_owned()
     }
 
+    pub fn exchange_api(&self) -> Box<ExchangeRoutes<C>> {
+        self.exchange.to_owned()
+    }
+
     pub fn node_api(&self) -> Box<NodeRoutes<C>> {
         self.node.to_owned()
     }
@@ -57,11 +60,11 @@ impl<C: Connect + Clone> SiriusClient<C> {
     }
 }
 
-impl<C: Connect> SiriusClient<C> where
-    C: Clone + Send + Sync + Debug + 'static
+impl<C: Connect> SiriusClient<C>
+where
+    C: Clone + Send + Sync + Debug + 'static,
 {
-    fn __internal(url: &'static str, client: Client<C>) -> Box<Self>
-    {
+    fn __internal(url: &'static str, client: Client<C>) -> Box<Self> {
         let api_client = ApiClient::from_url(url, client);
 
         let rc = Arc::new(api_client);
@@ -71,6 +74,7 @@ impl<C: Connect> SiriusClient<C> where
             account: Box::new(AccountRoutes::new(rc.to_owned())),
             block: Box::new(BlockRoutes::new(rc.to_owned())),
             chain: Box::new(ChainRoutes::new(rc.to_owned())),
+            exchange: Box::new(ExchangeRoutes::new(rc.to_owned())),
             node: Box::new(NodeRoutes::new(rc.to_owned())),
             mosaic: Box::new(MosaicRoutes::new(rc.to_owned())),
             namespace: Box::new(NamespaceRoutes::new(rc.to_owned())),
@@ -115,8 +119,6 @@ impl<C: Connect> SiriusClient<C> where
     }
 }
 
-
-
 #[derive(Clone)]
 pub struct ApiClient<C: Connect> {
     pub base_path: &'static str,
@@ -125,11 +127,10 @@ pub struct ApiClient<C: Connect> {
 }
 
 impl<C: Connect> ApiClient<C>
-    where
-        C: Send + Sync,
+where
+    C: Send + Sync,
 {
-    pub fn from_url(url: &'static str, client: Client<C>) -> Self
-    {
+    pub fn from_url(url: &'static str, client: Client<C>) -> Self {
         ApiClient {
             base_path: url,
             client,

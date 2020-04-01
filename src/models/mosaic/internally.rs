@@ -1,11 +1,9 @@
 use sha3::{Digest, Sha3_256};
 
-use crate::models::{{account::PublicAccount},
-                    namespace::NAMESPACE_BIT,
-                    Uint64,
-                    utils::array_u8_to_u64,
-};
 use crate::models::mosaic::{MosaicProperties, MosaicPropertyDto, SUPPLY_MUTABLE, TRANSFERABLE};
+use crate::models::{
+    account::PublicAccount, namespace::NAMESPACE_BIT, utils::array_u8_to_u64, Uint64,
+};
 
 use super::MosaicNonce;
 
@@ -14,6 +12,8 @@ pub(crate) static XPX_DIVISIBILITY: u64 = 1000000;
 pub(crate) static XPX_MAX_VALUE: u64 = XPX_MAX_RELATIVE_VALUE * XPX_DIVISIBILITY;
 
 pub(crate) static XPX_MAX_RELATIVE_VALUE: u64 = 9000000000;
+
+pub(crate) static PRX_XPX_U64: u64 = 13833723942089965046;
 
 pub(crate) fn has_bits(number: Uint64, bits: u8) -> bool {
     (number.0 & bits as u64) == bits as u64
@@ -45,9 +45,9 @@ pub(crate) fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> crate::Result<M
             0 => flags = property.value.to_struct(),
             1 => divisibility = property.value.to_struct().0 as u8,
             2 => duration = property.value.to_struct(),
-            _ => bail!("Unknown Property Id")
+            _ => bail!("Unknown Property Id"),
         }
-    };
+    }
 
     MosaicProperties::new(
         has_bits(flags, SUPPLY_MUTABLE),

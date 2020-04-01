@@ -2,15 +2,12 @@ use ::core::fmt;
 
 use num_enum::IntoPrimitive;
 
+use super::MosaicId;
 use crate::models::{id_model::Id, Uint64};
-use crate::models::mosaic::MosaicId;
 
-use super::internally::{
-    XPX_DIVISIBILITY,
-    XPX_MAX_RELATIVE_VALUE,
-    XPX_MAX_VALUE,
-};
+use super::internally::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE};
 use crate::models::errors::ERR_INVALID_MOSAIC_PROPERTY_ID;
+use crate::models::mosaic::internally::PRX_XPX_U64;
 
 pub(crate) const SUPPLY_MUTABLE: u8 = 0x01;
 pub(crate) const TRANSFERABLE: u8 = 0x02;
@@ -40,7 +37,7 @@ impl From<u8> for MosaicPropertyId {
         match id {
             1 => MosaicPropertyId::Divisibility,
             2 => MosaicPropertyId::Duration,
-            _ => MosaicPropertyId::MosaicFlags
+            _ => MosaicPropertyId::MosaicFlags,
         }
     }
 }
@@ -51,7 +48,10 @@ impl From<u8> for MosaicPropertyId {
 /// * 1  - Increase.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, IntoPrimitive)]
 #[repr(u8)]
-pub enum MosaicSupplyType { Decrease, Increase }
+pub enum MosaicSupplyType {
+    Decrease,
+    Increase,
+}
 
 impl MosaicSupplyType {
     pub fn value(self) -> u8 {
@@ -63,7 +63,7 @@ impl From<u8> for MosaicSupplyType {
     fn from(num: u8) -> Self {
         match num {
             1 => MosaicSupplyType::Increase,
-            _ => MosaicSupplyType::Decrease
+            _ => MosaicSupplyType::Decrease,
         }
     }
 }
@@ -85,24 +85,32 @@ impl Mosaic {
     /// The quantity is always given in smallest units for the mosaic. For example, if it has a
     /// divisibility of 3 the quantity is given in millis.
     pub fn new(asset_id: impl Id + 'static, amount: Uint64) -> Self {
-        Mosaic { asset_id: Box::new(asset_id), amount }
+        Self {
+            asset_id: Box::new(asset_id),
+            amount,
+        }
     }
 
     pub fn xpx(amount: u64) -> Self {
         assert!(
             amount <= XPX_MAX_VALUE,
-            "Maximum xpx value must be {}", XPX_MAX_VALUE
+            "Maximum xpx value must be {}",
+            XPX_MAX_VALUE
         );
 
-        let xpx_mosaic_id = Box::new(MosaicId(Uint64(13833723942089965046)));
+        let xpx_mosaic_id = Box::new(MosaicId(Uint64(PRX_XPX_U64)));
 
-        Mosaic { asset_id: xpx_mosaic_id, amount: Uint64::new(amount) }
+        Self {
+            asset_id: xpx_mosaic_id,
+            amount: Uint64::new(amount),
+        }
     }
 
     pub fn xpx_relative(amount: u64) -> Self {
         assert!(
             amount <= XPX_MAX_RELATIVE_VALUE,
-            "Maximum xpx relative value must be {}", XPX_MAX_RELATIVE_VALUE
+            "Maximum xpx relative value must be {}",
+            XPX_MAX_RELATIVE_VALUE
         );
 
         Mosaic::xpx(amount * XPX_DIVISIBILITY)
@@ -116,7 +124,8 @@ impl Mosaic {
 impl fmt::Display for Mosaic {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
-            f, "{}",
+            f,
+            "{}",
             serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
@@ -149,14 +158,15 @@ pub struct MosaicNames {
 
 impl MosaicNames {
     pub fn new(mosaic_id: MosaicId, names: Vec<String>) -> Self {
-        MosaicNames { mosaic_id, names }
+        Self { mosaic_id, names }
     }
 }
 
 impl fmt::Display for MosaicNames {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
-            f, "{}",
+            f,
+            "{}",
             serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }

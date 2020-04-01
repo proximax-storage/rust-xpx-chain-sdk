@@ -2,21 +2,14 @@ use ::std::collections::HashMap;
 use ::std::sync::Arc;
 
 use hyper::{
-    Body,
-    header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT},
-    StatusCode,
-    Uri};
+    header::{HeaderMap, CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT},
+    Body, StatusCode, Uri,
+};
 use serde_json;
 
 use crate::apis::{
-    error::{
-        Error,
-        SiriusError,
-    },
-    internally::{
-        map_transaction_dto,
-        map_transaction_dto_vec
-    },
+    error::{Error, SiriusError},
+    internally::{map_transaction_dto, map_transaction_dto_vec},
     sirius_client::ApiClient,
 };
 
@@ -72,13 +65,11 @@ impl Request {
         self
     }
 
-
     pub async fn execute<'a, C, U>(self, api: Arc<ApiClient<C>>) -> super::Result<U>
-        where
-            C: hyper::client::connect::Connect + Send + Clone + Sync + 'static,
-            for<'de> U: serde::Deserialize<'de>,
+    where
+        C: hyper::client::connect::Connect + Send + Clone + Sync + 'static,
+        for<'de> U: serde::Deserialize<'de>,
     {
-
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.
         let mut raw_headers = HashMap::new();
@@ -86,24 +77,20 @@ impl Request {
 
         let mut path = self.path;
 
-        self.path_params.into_iter().for_each(|(key, val)|
-            {
-                // replace {id} with the value of the id path param
-                path = path.replace(&format!("{{{}}}", key), &val);
-            });
+        self.path_params.into_iter().for_each(|(key, val)| {
+            // replace {id} with the value of the id path param
+            path = path.replace(&format!("{{{}}}", key), &val);
+        });
 
-
-        self.header_params.into_iter().for_each(|(key, val)|
-            {
-                raw_headers.insert(key, val);
-            });
+        self.header_params.into_iter().for_each(|(key, val)| {
+            raw_headers.insert(key, val);
+        });
 
         let mut query_string = ::url::form_urlencoded::Serializer::new("".to_owned());
 
-        self.query_params.iter().for_each(|(key, val)|
-            {
-                query_string.append_pair(key, val);
-            });
+        self.query_params.iter().for_each(|(key, val)| {
+            query_string.append_pair(key, val);
+        });
 
         let mut uri_str = format!("{}{}", api.base_path, path);
 
@@ -113,8 +100,7 @@ impl Request {
             uri_str += &query_string_str;
         }
 
-        let uri: Uri = match uri_str.parse()
-        {
+        let uri: Uri = match uri_str.parse() {
             Ok(u) => u,
             Err(e) => {
                 return Err(Error::from(e));
@@ -136,19 +122,24 @@ impl Request {
         {
             let req_headers = req.headers_mut();
             if let Some(ref user_agent) = api.user_agent {
-                req_headers.insert(USER_AGENT, user_agent.clone().parse()
-                    .map_err(|err| {
-                        Error::from(format_err!("{}", err))
-                    })?);
+                req_headers.insert(
+                    USER_AGENT,
+                    user_agent
+                        .clone()
+                        .parse()
+                        .map_err(|err| Error::from(format_err!("{}", err)))?,
+                );
             }
 
             req_headers.extend(headers);
 
             if let Some(body) = self.serialized_body {
-                req.headers_mut().insert(CONTENT_TYPE, "application/json".parse()
-                    .map_err(|err| {
-                        Error::from(format_err!("{}", err))
-                    })?);
+                req.headers_mut().insert(
+                    CONTENT_TYPE,
+                    "application/json"
+                        .parse()
+                        .map_err(|err| Error::from(format_err!("{}", err)))?,
+                );
 
                 req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
             }

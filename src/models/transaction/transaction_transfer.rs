@@ -18,7 +18,6 @@ use super::{
     schema::transfer_transaction_schema, AbsTransaction, AbstractTransaction, EntityTypeEnum,
     SignedTransaction, Transaction, TRANSFER_VERSION,
 };
-use crate::models::errors::ERR_EMPTY_ADDRESSES;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -42,7 +41,7 @@ impl TransferTransaction {
         message: impl Message + 'static,
         network_type: NetworkType,
     ) -> Result<Self> {
-        ensure!(!recipient.address.is_empty(), ERR_EMPTY_ADDRESSES);
+        ensure!(!recipient.address.is_empty(), errors::ERR_EMPTY_ADDRESSES);
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
