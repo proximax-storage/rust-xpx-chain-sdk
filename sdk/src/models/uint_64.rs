@@ -1,8 +1,8 @@
 use ::core::fmt;
 
-use crate::models::utils::SIZE_U64;
-use ::byteorder::{BigEndian, WriteBytesExt};
-use ::failure::_core::ops::BitAnd;
+use byteorder::{BigEndian, WriteBytesExt};
+use failure::_core::ops::BitAnd;
+use utils::SIZE_U64;
 
 /// Represents a 64-bit unsigned integer.
 ///

@@ -2,12 +2,9 @@ use std::fmt;
 
 use serde::{Serialize, Serializer};
 
-use crate::models::{
-    consts::SIGNATURE_SIZE,
-    errors::ERR_INVALID_DATA_LENGTH,
-    transaction::Hash,
-    utils::{hex_to_vec_u8, is_hex}
-};
+use utils::{hex_to_vec_u8, is_hex};
+
+use crate::models::{consts::SIGNATURE_SIZE, errors::ERR_INVALID_DATA_LENGTH, transaction::Hash};
 
 pub struct Signature(pub(crate) [u8; SIGNATURE_SIZE]);
 
@@ -17,19 +14,13 @@ impl Signature {
     }
     pub fn from_string(t: String) -> crate::Result<Self> {
         is_hex(&t);
-        ensure!(
-            !t.is_empty(),
-            ERR_INVALID_DATA_LENGTH
-         );
+        ensure!(!t.is_empty(), ERR_INVALID_DATA_LENGTH);
 
         Ok(Self::from_bytes(hex_to_vec_u8(&t).as_slice())?)
     }
 
     pub fn from_bytes(bytes: &[u8]) -> crate::Result<Self> {
-        ensure!(
-            bytes.len() == 64,
-            ERR_INVALID_DATA_LENGTH
-         );
+        ensure!(bytes.len() == 64, ERR_INVALID_DATA_LENGTH);
 
         let mut bits: [u8; 64] = [0u8; 64];
         bits.copy_from_slice(&bytes[..64]);
@@ -68,8 +59,8 @@ impl fmt::Debug for Signature {
 
 impl Serialize for Signature {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         serializer.serialize_str(&format!("{}", self))
     }
@@ -85,14 +76,20 @@ pub struct CosignatureSignedTransaction {
 
 impl CosignatureSignedTransaction {
     pub fn new(parent_hash: Hash, signature: Signature, signer: String) -> Self {
-        Self { parent_hash, signature, signer }
+        Self {
+            parent_hash,
+            signature,
+            signer,
+        }
     }
 }
 
 impl fmt::Display for CosignatureSignedTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }

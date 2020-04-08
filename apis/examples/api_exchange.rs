@@ -3,9 +3,9 @@
 
 use hyper::Client;
 
+use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::PublicAccount;
 use xpx_chain_sdk::network::PUBLIC_TEST;
-use xpx_chain_sdk::sirius_client::SiriusClient;
 
 const NODE_URL: &str = "http://bcstage1.xpxsirius.io:3000";
 const PUBLIC_KEY: &str = "0A233A17473F77A6DC0FA2B707D70B370B51E7E3C47A9C6D8F74341453121726";

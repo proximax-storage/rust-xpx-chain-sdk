@@ -1,4 +1,4 @@
-use ::regex::Regex;
+use regex::Regex;
 
 pub fn is_hex(input: &str) -> bool {
     if input == "" {

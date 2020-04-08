@@ -1,24 +1,27 @@
+use crypto::{Keypair, SecretKey};
 use rand::rngs::OsRng;
-use xpx_crypto::{Keypair, SecretKey};
 
-use crate::models::{
-    errors,
-    network::NetworkType,
-    transaction::{SignedTransaction, Transaction},
-    utils::{is_hex, vec_u8_to_hex},
+use utils::{is_hex, vec_u8_to_hex};
+
+use crate::{
+    models::{
+        errors,
+        multisig::CosignatureTransaction,
+        network::NetworkType,
+        transaction::{
+            AggregateTransaction, CosignatureSignedTransaction, SignedTransaction, Transaction,
+        },
+    },
+    Result,
 };
-use crate::Result;
 
-use super::PublicAccount;
-use crate::models::account::Address;
-use crate::models::multisig::CosignatureTransaction;
-use crate::models::transaction::{AggregateTransaction, CosignatureSignedTransaction};
+use super::{Address, PublicAccount};
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
 #[derive(Debug, Clone)]
 pub struct Account {
     /// The keyPair containing the public and private key of this account.
-    pub key_pair: xpx_crypto::Keypair,
+    pub key_pair: Keypair,
     /// The public account of this account.
     pub public_account: PublicAccount,
 }
@@ -40,7 +43,7 @@ impl Account {
         }
     }
 
-    pub fn key_pair_to_owned(&self) -> xpx_crypto::Keypair {
+    pub fn key_pair_to_owned(&self) -> Keypair {
         self.key_pair.to_owned()
     }
 

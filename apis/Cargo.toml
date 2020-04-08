@@ -19,6 +19,7 @@ serde_derive = "^1.0"
 serde_json = "^1.0"
 
 xpx-chain-sdk = { path = "../sdk", version = "0.1.0" }
+xpx-chain-utils = { path = "../utils" }
 
 hex = "^0.3"
 

@@ -9,12 +9,11 @@ use sdk::{
     transaction::Transactions,
 };
 
-use crate::dtos::{
-    AccountInfoDto, AccountNamesDto, MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
-    TransactionDto,
-};
-
 use crate::{
+    dtos::{
+        AccountInfoDto, AccountNamesDto, MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
+        TransactionDto,
+    },
     internally::{valid_account_id, valid_vec_len, AccountTransactionsOption},
     request as __internal_request,
     sirius_client::ApiClient,

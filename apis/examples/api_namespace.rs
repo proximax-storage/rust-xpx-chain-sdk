@@ -3,10 +3,10 @@
 
 use hyper::Client;
 
+use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::Address;
 use xpx_chain_sdk::namespace::NamespaceId;
 use xpx_chain_sdk::network::PUBLIC_TEST;
-use xpx_chain_sdk::sirius_client::SiriusClient;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 

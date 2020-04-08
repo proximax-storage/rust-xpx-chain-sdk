@@ -1,8 +1,11 @@
-use crate::models::{errors, utils::is_hex};
-use crate::Result;
+use utils::is_hex;
+
+use crate::{
+    models::{consts::PUBLIC_KEY_BYTES_SIZE, errors},
+    Result,
+};
 
 use super::Address;
-use crate::models::consts::PUBLIC_KEY_BYTES_SIZE;
 
 /// The `PublicAccount` account structure contains account's `Address` and public key.
 #[derive(Default, Clone, Debug, Serialize, Deserialize)]
@@ -16,21 +19,18 @@ pub struct PublicAccount {
 
 impl PublicAccount {
     /// Create a `PublicAccount` from a public key for the given `NetworkType`.
-    pub fn from_public_key(public_key: &str, network_type: crate::models::network::NetworkType) -> Result<PublicAccount> {
+    pub fn from_public_key(
+        public_key: &str,
+        network_type: crate::models::network::NetworkType,
+    ) -> Result<PublicAccount> {
         ensure!(
             !public_key.is_empty(),
             errors::ERR_INVALID_PUBLIC_KEY_LENGTH
-         );
+        );
 
-        ensure!(
-            is_hex(public_key),
-            errors::ERR_INVALID_KEY_HEX
-            );
+        ensure!(is_hex(public_key), errors::ERR_INVALID_KEY_HEX);
 
-        ensure!(
-            public_key.len() == 64,
-            errors::ERR_INVALID_KEY_LENGTH
-         );
+        ensure!(public_key.len() == 64, errors::ERR_INVALID_KEY_LENGTH);
 
         Ok(PublicAccount {
             address: Address::from_public_key(public_key, network_type)?,
@@ -47,20 +47,17 @@ impl PublicAccount {
         ensure!(
             super::HASH512_LENGTH == (signature.len() / 2),
             errors::ERR_INVALID_SIGNATURE_LENGTH
-            );
+        );
 
-        ensure!(
-            is_hex(signature),
-            errors::ERR_INVALID_SIGNATURE_HEX
-            );
+        ensure!(is_hex(signature), errors::ERR_INVALID_SIGNATURE_HEX);
 
         let sig_byte: Vec<u8> = hex::decode(signature)?;
 
         let pk_byte: Vec<u8> = hex::decode(&self.public_key)?;
 
-        let pk = xpx_crypto::PublicKey::from_bytes(&pk_byte)?;
+        let pk = crypto::PublicKey::from_bytes(&pk_byte)?;
 
-        let signature = xpx_crypto::Signature::from_bytes(&sig_byte)?;
+        let signature = crypto::Signature::from_bytes(&sig_byte)?;
 
         let verify = pk.verify(&data.as_bytes(), &signature);
 
@@ -94,7 +91,8 @@ impl PublicAccount {
 impl core::fmt::Display for PublicAccount {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(
-            f, "{}",
+            f,
+            "{}",
             serde_json::to_string_pretty(self).unwrap_or_default()
         )
     }

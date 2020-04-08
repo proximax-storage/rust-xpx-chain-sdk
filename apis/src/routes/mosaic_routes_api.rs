@@ -7,12 +7,15 @@ use xpx_chain_sdk::{
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},
 };
 
-use crate::dtos::{MosaicInfoDto, MosaicNamesDto};
+use crate::{
+    dtos::{MosaicInfoDto, MosaicNamesDto},
+    internally::valid_vec_len,
+    request as __internal_request,
+    sirius_client::ApiClient,
+    Result,
+};
 
 use super::{MOSAICS_ROUTE, MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE};
-use crate::{
-    internally::valid_vec_len, request as __internal_request, sirius_client::ApiClient, Result,
-};
 
 /// Mosaic ApiClient routes.
 ///

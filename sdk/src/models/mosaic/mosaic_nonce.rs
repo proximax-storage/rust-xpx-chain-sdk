@@ -1,17 +1,11 @@
 use std::fmt;
 
 use ::hex::FromHex;
-use ::rand::RngCore;
 use ::rand::rngs::OsRng;
+use ::rand::RngCore;
 use serde::{Serialize, Serializer};
 
-use crate::models::{
-    utils::{
-        array_u8_to_u32,
-        is_hex, u32_to_array_u8,
-        vec_u8_to_hex,
-    },
-};
+use utils::{array_u8_to_u32, is_hex, u32_to_array_u8, vec_u8_to_hex};
 
 const NONCE_SIZE: usize = 4;
 
@@ -27,15 +21,9 @@ impl MosaicNonce {
 
     /// Creates a new `mosaic_nonce` from a hex string.
     pub fn from_hex(string_hex: &str) -> crate::Result<MosaicNonce> {
-        ensure!(
-            !string_hex.is_empty(),
-            "The hex string must not be empty."
-         );
+        ensure!(!string_hex.is_empty(), "The hex string must not be empty.");
 
-        ensure!(
-            is_hex(string_hex),
-            "Invalid hex string."
-        );
+        ensure!(is_hex(string_hex), "Invalid hex string.");
 
         let mut decoded = <[u8; NONCE_SIZE]>::from_hex(string_hex).unwrap();
 
@@ -48,7 +36,7 @@ impl MosaicNonce {
     pub fn random() -> MosaicNonce {
         let mut rng = match OsRng::new() {
             Ok(g) => g,
-            Err(e) => panic!("Failed to obtain OS RNG: {}", e)
+            Err(e) => panic!("Failed to obtain OS RNG: {}", e),
         };
 
         let num: u32 = rng.next_u32();
@@ -80,16 +68,14 @@ impl From<u32> for MosaicNonce {
 
 impl fmt::Display for MosaicNonce {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f, "{}", &self.to_u32()
-        )
+        write!(f, "{}", &self.to_u32())
     }
 }
 
 impl Serialize for MosaicNonce {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         serializer.serialize_u32(self.to_u32())
     }

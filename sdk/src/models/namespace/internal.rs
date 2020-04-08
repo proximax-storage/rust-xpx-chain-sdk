@@ -3,7 +3,7 @@ use sha3::{Digest, Sha3_256};
 
 use crate::models::errors;
 use crate::models::id_model::Id;
-use crate::models::utils::array_u8_to_u64;
+use utils::array_u8_to_u64;
 
 use super::NamespaceId;
 
@@ -18,15 +18,9 @@ fn is_valid_namespace_name(name: &str) -> bool {
 pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<NamespaceId>> {
     let parts: Vec<&str> = name.split(".").collect();
 
-    ensure!(
-            parts.len() != 0,
-            errors::ERR_INVALID_NAMESPACE_NAME
-         );
+    ensure!(parts.len() != 0, errors::ERR_INVALID_NAMESPACE_NAME);
 
-    ensure!(
-            parts.len() <= 3,
-            errors::ERR_NAMESPACE_TOO_MANY_PART
-         );
+    ensure!(parts.len() <= 3, errors::ERR_NAMESPACE_TOO_MANY_PART);
 
     let mut namespace_id = NamespaceId::default();
 
@@ -36,7 +30,7 @@ pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<Namespace
         ensure!(
             is_valid_namespace_name(part),
             errors::ERR_INVALID_NAMESPACE_NAME
-         );
+        );
 
         namespace_id = generate_namespace_id(part, namespace_id)?;
 
@@ -46,7 +40,10 @@ pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<Namespace
     Ok(path)
 }
 
-pub(crate) fn generate_namespace_id(name: &str, parent_id: NamespaceId) -> crate::Result<NamespaceId> {
+pub(crate) fn generate_namespace_id(
+    name: &str,
+    parent_id: NamespaceId,
+) -> crate::Result<NamespaceId> {
     let mut result = Sha3_256::default();
 
     let id_to_bytes = parent_id.to_bytes();

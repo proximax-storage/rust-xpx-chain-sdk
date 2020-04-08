@@ -1,10 +1,10 @@
 use ::base32::Alphabet::RFC4648;
 
-use crate::models::network::*;
-use crate::models::utils::is_hex;
-use crate::Result;
 use crate::models::consts::{ADDRESS_DECODE_SIZE, ADDRESS_ENCODE_SIZE};
 use crate::models::errors;
+use crate::models::network::*;
+use crate::utils::is_hex;
+use crate::Result;
 
 const PREFIX_MIJIN: char = 'M';
 const PREFIX_MIJIN_TEST: char = 'S';
@@ -31,17 +31,11 @@ impl Address {
         ensure!(
             !public_key.is_empty(),
             errors::ERR_INVALID_PUBLIC_KEY_LENGTH
-         );
+        );
 
-        ensure!(
-            is_hex(public_key),
-            errors::ERR_INVALID_KEY_HEX
-            );
+        ensure!(is_hex(public_key), errors::ERR_INVALID_KEY_HEX);
 
-        ensure!(
-            public_key.len() == 64,
-            errors::ERR_INVALID_KEY_LENGTH
-         );
+        ensure!(public_key.len() == 64, errors::ERR_INVALID_KEY_LENGTH);
 
         let address = super::public_key_to_address(public_key, network_type)?;
 
@@ -56,44 +50,56 @@ impl Address {
     /// A raw address string looks like:
     /// VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU or VAWOEO-WTABXR-7O3ZAK-2XNA5G-IBNE6P-ZIXDAF-DWBU
     pub fn from_raw(raw_address: &str) -> Result<Self> {
-        ensure!(
-            !raw_address.is_empty(),
-            errors::ERR_EMPTY_ADDRESSES
-         );
+        ensure!(!raw_address.is_empty(), errors::ERR_EMPTY_ADDRESSES);
 
-        let address = raw_address.trim().to_uppercase().replace(REGEX_DASH, EMPTY_STRING);
+        let address = raw_address
+            .trim()
+            .to_uppercase()
+            .replace(REGEX_DASH, EMPTY_STRING);
         ensure!(
             address.len() == ADDRESS_DECODE_SIZE,
             errors::ERR_INVALID_ADDRESSES_LEN
-         );
+        );
 
         match address.chars().next().unwrap() {
-            PREFIX_MIJIN => Ok(Self { address, network_type: MIJIN }),
-            PREFIX_MIJIN_TEST => Ok(Self { address, network_type: MIJIN_TEST }),
-            PREFIX_PUBLIC => Ok(Self { address, network_type: PUBLIC }),
-            PREFIX_PUBLIC_TEST => Ok(Self { address, network_type: PUBLIC_TEST }),
-            PREFIX_PRIVATE => Ok(Self { address, network_type: PRIVATE }),
-            PREFIX_PRIVATE_TEST => Ok(Self { address, network_type: PRIVATE_TEST }),
-            _ => bail!("Wrong address")
+            PREFIX_MIJIN => Ok(Self {
+                address,
+                network_type: MIJIN,
+            }),
+            PREFIX_MIJIN_TEST => Ok(Self {
+                address,
+                network_type: MIJIN_TEST,
+            }),
+            PREFIX_PUBLIC => Ok(Self {
+                address,
+                network_type: PUBLIC,
+            }),
+            PREFIX_PUBLIC_TEST => Ok(Self {
+                address,
+                network_type: PUBLIC_TEST,
+            }),
+            PREFIX_PRIVATE => Ok(Self {
+                address,
+                network_type: PRIVATE,
+            }),
+            PREFIX_PRIVATE_TEST => Ok(Self {
+                address,
+                network_type: PRIVATE_TEST,
+            }),
+            _ => bail!("Wrong address"),
         }
     }
 
     /// Create an `Address` from the given encoded address.
     pub fn from_encoded(encoded: &str) -> Result<Self> {
-        ensure!(
-            !encoded.is_empty(),
-            errors::ERR_EMPTY_ADDRESSES
-         );
+        ensure!(!encoded.is_empty(), errors::ERR_EMPTY_ADDRESSES);
 
         ensure!(
             encoded.len() == ADDRESS_ENCODE_SIZE,
             errors::ERR_INVALID_ADDRESSES_LEN
-         );
+        );
 
-        ensure!(
-            is_hex(encoded),
-            errors::ERR_INVALID_ADDRESSES_HEX
-            );
+        ensure!(is_hex(encoded), errors::ERR_INVALID_ADDRESSES_HEX);
 
         let encoded_to_bytes = hex::decode(encoded)?;
 
@@ -112,7 +118,7 @@ impl Address {
         for i in 0..6 {
             res += &self.address[i * 6..i * 6 + 6];
             res.push('-');
-        };
+        }
 
         res += &self.address[&self.address.len() - 4..];
         return res;
@@ -135,7 +141,8 @@ impl Address {
 impl core::fmt::Display for Address {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
-            f, "{}",
+            f,
+            "{}",
             serde_json::to_string_pretty(self).unwrap_or_default()
         )
     }

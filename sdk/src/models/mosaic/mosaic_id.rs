@@ -2,7 +2,9 @@ use ::core::fmt;
 
 use serde::{Serialize, Serializer};
 
-use crate::models::{account::PublicAccount, id_model::Id, utils::is_hex, Uint64};
+use utils::is_hex;
+
+use crate::models::{account::PublicAccount, id_model::Id, Uint64};
 
 use super::{generate_mosaic_id, MosaicNonce};
 

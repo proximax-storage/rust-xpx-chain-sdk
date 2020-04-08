@@ -4,10 +4,9 @@ use hyper::{client::connect::Connect, Method};
 
 use sdk::node::{NodeInfo, NodeTime};
 
-use crate::dtos::NodeTimeDto;
+use crate::{dtos::NodeTimeDto, request as __internal_request, sirius_client::ApiClient, Result};
 
 use super::{NODE_INFO, NODE_TIME};
-use crate::{request as __internal_request, sirius_client::ApiClient, Result};
 
 /// Node ApiClient routes.
 ///

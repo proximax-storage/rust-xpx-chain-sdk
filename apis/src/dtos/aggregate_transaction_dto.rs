@@ -1,15 +1,12 @@
-use hyper::body::Bytes;
 use serde_json::Value;
 
-use sdk::{
-    errors,
-    transaction::{AggregateTransaction, EntityTypeEnum as Entity, Transaction},
-};
+use sdk::transaction::{AggregateTransaction, Transaction};
+
+use crate::internally::map_aggregate_transactions_dto;
 
 use super::{
     AbstractTransactionDto, CosignatureDto, TransactionDto, TransactionMetaDto, Uint64Dto,
 };
-use crate::internally::{map_aggregate_transactions_dto, map_transaction_dto};
 
 /// AggregateTransactionDto : Transaction that combines multiple transactions together.
 #[derive(Clone, Serialize, Deserialize)]

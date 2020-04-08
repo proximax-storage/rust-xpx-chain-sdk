@@ -1,8 +1,8 @@
 use sha3::{Digest, Sha3_256};
 
-use crate::models::{
-    account::PublicAccount, namespace::NAMESPACE_BIT, utils::array_u8_to_u64, Uint64,
-};
+use utils::array_u8_to_u64;
+
+use crate::models::{account::PublicAccount, namespace::NAMESPACE_BIT, Uint64};
 
 use super::MosaicNonce;
 

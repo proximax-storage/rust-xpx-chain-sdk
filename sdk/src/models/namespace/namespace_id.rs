@@ -2,9 +2,9 @@ use ::core::fmt;
 
 use serde::{Serialize, Serializer};
 
-use crate::models::{errors, Uint64};
 use crate::models::id_model::Id;
-use crate::models::utils::has_bits;
+use crate::models::{errors, Uint64};
+use utils::has_bits;
 
 use super::{generate_namespace_path, NAMESPACE_BIT};
 
@@ -25,17 +25,11 @@ impl NamespaceId {
 
     /// Creates a new `NamespaceId` from a hex string.
     pub fn from_name(string_name: &str) -> crate::Result<NamespaceId> {
-        ensure!(
-            !string_name.is_empty(),
-             errors::ERR_EMPTY_NAMESPACE_NAME
-         );
+        ensure!(!string_name.is_empty(), errors::ERR_EMPTY_NAMESPACE_NAME);
 
         let list = generate_namespace_path(string_name)?;
 
-        ensure!(
-            !list.is_empty(),
-             errors::ERR_INVALID_NAMESPACE_NAME
-         );
+        ensure!(!list.is_empty(), errors::ERR_INVALID_NAMESPACE_NAME);
 
         Ok(list[list.len() - 1])
     }
@@ -60,8 +54,8 @@ impl fmt::Display for NamespaceId {
 
 impl Serialize for NamespaceId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         serializer.serialize_str(&self.to_hex())
     }

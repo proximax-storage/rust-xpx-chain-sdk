@@ -1,7 +1,8 @@
 use ::sha3::Sha3_256;
 use fb::FlatBufferBuilder;
 use sha3::Digest;
-use xpx_crypto::Keypair;
+
+use utils::{u32_to_array_u8, vec_u8_to_hex};
 
 use crate::models::{
     account::Account,
@@ -12,7 +13,6 @@ use crate::models::{
     errors::ERR_EMPTY_TRANSACTION_SIGNER,
     mosaic::MosaicProperty,
     multisig::CosignatoryModification,
-    utils::{u32_to_array_u8, vec_u8_to_hex},
 };
 
 use super::{
@@ -29,7 +29,7 @@ pub(super) fn sign_transaction(
     account: Account,
     generation_hash: String,
 ) -> crate::Result<SignedTransaction> {
-    let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
+    let key_pair: crypto::Keypair = crypto::Keypair::from_private_key(account.key_pair.secret);
 
     let mut tx_bytes = tx.embedded_to_bytes()?;
 
@@ -66,7 +66,8 @@ pub(super) fn sign_transaction_with_cosignatures(
 
     let mut payload = stx.to_owned().payload.unwrap();
     cosignatories.iter().for_each(|item| {
-        let key_pair: Keypair = Keypair::from_private_key(item.to_owned().key_pair.secret);
+        let key_pair: crypto::Keypair =
+            crypto::Keypair::from_private_key(item.to_owned().key_pair.secret);
         let hash_bytes = hex::decode(&stx.hash).unwrap();
         let signature = key_pair.sign(&hash_bytes);
         payload.push_str(&format!(

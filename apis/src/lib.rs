@@ -2,12 +2,10 @@
 extern crate failure;
 #[macro_use]
 extern crate serde_derive;
-#[macro_use]
-extern crate std;
 extern crate xpx_chain_sdk as sdk;
+extern crate xpx_chain_utils as utils;
 
 use self::error::Error;
-use self::routes::*;
 pub use self::sirius_client::*;
 
 mod dtos;

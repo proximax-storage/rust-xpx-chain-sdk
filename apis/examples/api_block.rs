@@ -2,6 +2,7 @@
 #![warn(rust_2018_idioms)]
 
 use hyper::Client;
+use xpx_chain_apis::SiriusClient;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 

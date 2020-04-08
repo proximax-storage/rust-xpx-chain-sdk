@@ -14,10 +14,12 @@ exclude = [ ".gitignore" ]
 edition = "2018"
 
 [lib]
+name = "xpx_chain_sdk"
 crate-type = ["lib"]
 
 [dependencies]
-rust-xpx-crypto = { path = "../../rust-xpx-crypto" }
+xpx-chain-crypto = { path = "../crypto" }
+xpx-chain-utils = { path = "../utils" }
 
 serde = "^1.0"
 serde_derive = "^1.0"

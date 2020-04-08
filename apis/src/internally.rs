@@ -2,6 +2,7 @@ use std::fmt::{Debug, Write};
 
 use hyper::body::Bytes;
 use serde_json::Value;
+use utils::is_hex;
 
 use sdk::{
     errors,
@@ -9,7 +10,6 @@ use sdk::{
     multisig::CosignatoryModification,
     network::NetworkType,
     transaction::EntityTypeEnum as Entity,
-    utils::is_hex,
     Result, Uint64,
 };
 

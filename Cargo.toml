@@ -2,5 +2,7 @@
 
 members = [
     "apis",
-    "sdk"
+    "sdk",
+    "utils",
+    "crypto"
 ]
