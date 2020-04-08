@@ -1,0 +1,21 @@
+[package]
+name = "xpx-chain-example-apis"
+version = "0.1.0"
+readme = "README.md"
+license = "Apache-2.0"
+authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
+
+homepage = "https://www.proximax.io"
+repository = "https://github.com/proximax-storage/rust-xpx-chain-sdk"
+documentation = "https://github.com/proximax-storage/rust-xpx-chain-sdk/wiki"
+keywords = ["blockchain", "sdk", "examples"]
+categories = ["examples"]
+exclude = [ ".gitignore" ]
+edition = "2018"
+
+[dependencies]
+xpx-chain-sdk = { path = "../../sdk"}
+xpx-chain-apis = { path = "../../apis"}
+
+hyper = "0.13"
+tokio = { version = "0.2", features = ["macros"]}

@@ -6,3 +6,7 @@ members = [
     "utils",
     "crypto"
 ]
+
+exclude = [
+"examples"
+]
