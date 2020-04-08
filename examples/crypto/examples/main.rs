@@ -1,10 +1,4 @@
-extern crate hex;
-extern crate xpx_crypto;
-
-use xpx_crypto::PublicKey;
-use xpx_crypto::SecretKey;
-use xpx_crypto::Keypair;
-use xpx_crypto::Signature;
+use xpx_chain_crypto::{SecretKey, PublicKey, Keypair, Signature};
 
 fn main() {
     let sk_hex = hex::decode("68f50e10e5b8be2b7e9ddb687a667d6e94dd55fe02b4aed8195f51f9a242558b").unwrap();
