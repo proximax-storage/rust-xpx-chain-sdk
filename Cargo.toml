@@ -1,58 +1,6 @@
-[package]
-name = "rust-xpx-chain-sdk"
-version = "0.1.0"
-readme = "README.md"
-license = "Apache-2.0"
-authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
+[workspace]
 
-homepage = "https://www.proximax.io"
-repository = "https://github.com/proximax-storage/rust-xpx-chain-sdk"
-documentation = "https://github.com/proximax-storage/rust-xpx-chain-sdk/wiki"
-keywords = ["blockchain", "sdk"]
-categories = ["sdk"]
-exclude = [ ".gitignore" ]
-edition = "2018"
-
-[lib]
-name = "xpx_chain_sdk"
-crate-type = ["lib"]
-
-[dependencies]
-serde = "^1.0"
-serde_derive = "^1.0"
-serde_json = "^1.0"
-erased-serde = "0.3"
-
-rust-xpx-crypto = { path = "../rust-xpx-crypto" }
-
-url = "2.1"
-hyper = "0.13"
-tokio = { version = "0.2", features = ["macros"] }
-
-hex = "^0.3"
-regex = "1"
-byteorder = "1"
-chrono = "0.4.10"
-base64 = "0.7.0"
-base32 = "0.4.0"
-ripemd160 = "0.8.0"
-flatbuffers = "0.6.1"
-num_enum = "0.4.3"
-
-typetag = "0.1"
-
-downcast-rs = "1.1.1"
-
-[dependencies.rand]
-version = "0.6"
-default-features = false
-
-[dependencies.sha3]
-version = "^0.8"
-default-features = false
-
-[dependencies.failure]
-version = "0.1"
-
-[dev-dependencies]
-#tokio = "*"
+members = [
+    "apis",
+    "sdk"
+]
