@@ -14,12 +14,13 @@ use crate::dtos::{
     TransactionDto,
 };
 
-use super::{
+use crate::{
     internally::{valid_account_id, valid_vec_len, AccountTransactionsOption},
     request as __internal_request,
     sirius_client::ApiClient,
     Result,
 };
+
 use super::{
     ACCOUNTS_PROPERTIES_ROUTE, ACCOUNTS_ROUTE, ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE,
     ACCOUNT_ROUTE, AGGREGATE_TRANSACTIONS_ROUTE, INCOMING_TRANSACTIONS_ROUTE,

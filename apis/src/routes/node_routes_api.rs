@@ -6,8 +6,8 @@ use sdk::node::{NodeInfo, NodeTime};
 
 use crate::dtos::NodeTimeDto;
 
-use super::{request as __internal_request, sirius_client::ApiClient, Result};
 use super::{NODE_INFO, NODE_TIME};
+use crate::{request as __internal_request, sirius_client::ApiClient, Result};
 
 /// Node ApiClient routes.
 ///

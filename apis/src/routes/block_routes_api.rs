@@ -6,8 +6,8 @@ use sdk::{blockchain::BlockInfo, transaction::Transactions};
 
 use crate::dtos::{BlockInfoDto, TransactionDto};
 
-use super::{request as __internal_request, sirius_client::ApiClient, Result};
 use super::{BLOCK_BY_HEIGHT_ROUTE, BLOCK_GET_TRANSACTION_ROUTE, BLOCK_INFO_ROUTE};
+use crate::{request as __internal_request, sirius_client::ApiClient, Result};
 
 /// Block ApiClient routes.
 ///

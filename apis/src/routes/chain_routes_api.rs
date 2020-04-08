@@ -6,8 +6,8 @@ use sdk::blockchain::{BlockchainScore, HeightInfo, StorageInfo};
 
 use crate::dtos::{BlockchainScoreDto, HeightInfoDto};
 
-use super::{request as __internal_request, sirius_client::ApiClient, Result};
 use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
+use crate::{request as __internal_request, sirius_client::ApiClient, Result};
 
 /// Chain ApiClient routes.
 ///

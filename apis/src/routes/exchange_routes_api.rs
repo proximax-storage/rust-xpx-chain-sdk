@@ -6,8 +6,8 @@ use sdk::{account::PublicAccount, exchange::UserExchangeInfo};
 
 use crate::dtos::ExchangeInfoDto;
 
-use super::{request as __internal_request, sirius_client::ApiClient, Result};
 use super::{EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE};
+use crate::{request as __internal_request, sirius_client::ApiClient, Result};
 
 /// Node ApiClient routes.
 ///

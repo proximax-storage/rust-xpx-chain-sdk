@@ -4,7 +4,7 @@ use hyper::{client::connect::Connect, Client};
 
 use sdk::{network::NetworkType, transaction::Hash};
 
-use super::{
+use crate::routes::{
     account_routes_api::AccountRoutes, block_routes_api::BlockRoutes,
     chain_routes_api::ChainRoutes, exchange_routes_api::ExchangeRoutes,
     mosaic_routes_api::MosaicRoutes, namespace_routes_api::NamespaceRoutes,

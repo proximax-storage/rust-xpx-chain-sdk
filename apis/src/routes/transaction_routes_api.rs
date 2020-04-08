@@ -17,14 +17,14 @@ use sdk::{
 use crate::dtos::{TransactionDto, TransactionStatusDto};
 
 use super::{
+    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTIONS_ROUTE,
+    TRANSACTIONS_STATUS_ROUTE, TRANSACTION_ROUTE, TRANSACTION_STATUS_ROUTE,
+};
+use crate::{
     internally::{valid_hash, valid_vec_hash, valid_vec_len},
     request as __internal_request,
     sirius_client::ApiClient,
     Result,
-};
-use super::{
-    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTIONS_ROUTE,
-    TRANSACTIONS_STATUS_ROUTE, TRANSACTION_ROUTE, TRANSACTION_STATUS_ROUTE,
 };
 
 /// Transaction ApiClient routes.
