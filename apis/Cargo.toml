@@ -9,7 +9,7 @@ homepage = "https://www.proximax.io"
 repository = "https://github.com/proximax-storage/rust-xpx-chain-sdk/apis"
 documentation = "https://github.com/proximax-storage/rust-xpx-chain-sdk/wiki"
 keywords = ["blockchain", "sdk", "api"]
-categories = ["sdk"]
+categories = ["api"]
 exclude = [ ".gitignore" ]
 edition = "2018"
 
