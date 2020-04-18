@@ -18,3 +18,4 @@ xpx-chain-apis = { path = "../../apis", version = "0.1.0" }
 
 hyper = "0.13"
 tokio = { version = "0.2", features = ["macros"] }
+digest = "0.8.1"

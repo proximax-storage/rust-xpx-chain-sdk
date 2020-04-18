@@ -1,17 +1,17 @@
 use std::fmt::{Debug, Write};
 
-use hyper::body::Bytes;
+use bytes::Bytes;
 use serde_json::Value;
-use utils::is_hex;
 
 use sdk::{
     errors,
     mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     multisig::CosignatoryModification,
     network::NetworkType,
-    transaction::EntityTypeEnum as Entity,
-    Result, Uint64,
+    Result,
+    transaction::EntityTypeEnum as Entity, Uint64,
 };
+use utils::is_hex;
 
 use crate::dtos::{CosignatoryModificationDto, MosaicPropertyDto, TransactionDto};
 
@@ -76,8 +76,8 @@ pub(crate) fn valid_hash(hash: &str) -> Result<bool> {
 }
 
 pub(crate) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()>
-where
-    T: Debug,
+    where
+        T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())

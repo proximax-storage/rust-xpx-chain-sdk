@@ -1,10 +1,10 @@
 use sdk::{
     account::PublicAccount,
     errors,
+    Id,
     namespace::{NamespaceId, NamespaceInfo, NamespaceName, NamespaceType},
     network::NetworkType,
     transaction::{RegisterNamespaceTransaction, Transaction},
-    Id,
 };
 
 use super::{
@@ -230,7 +230,7 @@ impl TransactionDto for RegisterNamespaceTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-        .to_struct(info)?;
+            .to_struct(info)?;
 
         let namespace_type = NamespaceType::from(dto.namespace_type);
 

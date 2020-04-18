@@ -3,9 +3,9 @@ use sdk::{
     mosaic::{Mosaic, MosaicId},
     network::extract_network_type,
     transaction::{
+        AbstractTransaction,
         deadline::{BlockchainTimestamp, Deadline},
-        internal::extract_version,
-        AbstractTransaction, EntityTypeEnum, LockFundsTransaction, SignedTransaction, Transaction,
+        EntityTypeEnum, internal::extract_version, LockFundsTransaction, SignedTransaction, Transaction,
         TransactionInfo, TransactionStatus, TransferTransaction,
     },
 };
@@ -220,7 +220,7 @@ impl TransactionDto for TransferTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-        .to_struct(info)?;
+            .to_struct(info)?;
 
         let mut mosaics: Vec<Mosaic> = vec![];
 
@@ -300,7 +300,7 @@ impl TransactionDto for HashLockTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-        .to_struct(info)?;
+            .to_struct(info)?;
 
         let mosaic = Mosaic::new(
             MosaicId::from(dto.mosaic_id.to_struct()),

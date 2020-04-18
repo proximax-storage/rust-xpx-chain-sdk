@@ -1,7 +1,7 @@
 use std::thread::sleep;
 use std::time::Duration;
 
-use hyper::Client;
+
 
 use xpx_chain_sdk::account::{Account, PublicAccount};
 use xpx_chain_sdk::multisig::CosignatureTransaction;
@@ -14,7 +14,7 @@ const PRIVATE_KEY: &str = "28CF06338133DEE64FC49BCB19C8936916DBE8DC461CE489BF958
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL, Client::new()).await;
+    let sirius_client = SiriusClient::new(NODE_URL).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),

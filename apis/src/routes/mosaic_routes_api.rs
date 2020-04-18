@@ -1,6 +1,6 @@
 use ::std::sync::Arc;
 
-use hyper::{client::connect::Connect, Method};
+use reqwest::Method;
 
 use xpx_chain_sdk::{
     errors::ERR_EMPTY_MOSAIC_IDS,
@@ -11,28 +11,27 @@ use crate::{
     dtos::{MosaicInfoDto, MosaicNamesDto},
     internally::valid_vec_len,
     request as __internal_request,
-    sirius_client::ApiClient,
     Result,
+    sirius_client::ApiClient,
 };
 
-use super::{MOSAICS_ROUTE, MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE};
+use super::{MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE, MOSAICS_ROUTE};
 
 /// Mosaic ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct MosaicRoutes<C: Connect>(Arc<ApiClient<C>>);
+pub struct MosaicRoutes(Arc<ApiClient>);
 
 /// Mosaic related endpoints.
 ///
-impl<C: Connect> MosaicRoutes<C>
-where
-    C: Clone + Send + Sync + 'static,
+impl MosaicRoutes
+
 {
-    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
         MosaicRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient<C>> {
+    fn __client(self) -> Arc<ApiClient> {
         self.0
     }
 
@@ -47,7 +46,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///use xpx_chain_sdk::mosaic::MosaicId;
     ///
@@ -56,7 +55,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    /// let client = SiriusClient::new(NODE_URL, Client::new());
+    /// let client = SiriusClient::new(NODE_URL);
     ///
     ///    let mosaic_id = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
     ///
@@ -94,7 +93,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///use xpx_chain_sdk::mosaic::MosaicId;
     ///
@@ -103,7 +102,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    /// let client = SiriusClient::new(NODE_URL, Client::new());
+    /// let client = SiriusClient::new(NODE_URL);
     ///
     ///    let mosaic_id_a = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
     ///    let mosaic_id_b = MosaicId::from_hex("6208AE4D56451357").unwrap();
@@ -152,7 +151,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///use xpx_chain_sdk::mosaic::MosaicId;
     ///
@@ -161,7 +160,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    /// let client = SiriusClient::new(NODE_URL, Client::new());
+    /// let client = SiriusClient::new(NODE_URL);
     ///
     ///    let mosaic_id_a = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
     ///    let mosaic_id_b = MosaicId::from_hex("6208AE4D56451357").unwrap();

@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use hyper::Client;
+
 
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::PublicAccount;
@@ -12,7 +12,7 @@ const PUBLIC_KEY: &str = "0A233A17473F77A6DC0FA2B707D70B370B51E7E3C47A9C6D8F7434
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL, Client::new()).await;
+    let sirius_client = SiriusClient::new(NODE_URL).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),

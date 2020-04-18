@@ -52,7 +52,7 @@ impl TransactionDto for AggregateTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-        .to_struct(info)?;
+            .to_struct(info)?;
 
         let cosignatures = dto
             .cosignatures

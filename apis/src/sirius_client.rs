@@ -1,6 +1,6 @@
-use ::std::{fmt::Debug, future::Future, sync::Arc};
+use ::std::{future::Future, sync::Arc};
 
-use hyper::{client::connect::Connect, Client};
+use reqwest::Client as ReqwestClient;
 
 use sdk::{network::NetworkType, transaction::Hash};
 
@@ -11,58 +11,56 @@ use crate::routes::{
     node_routes_api::NodeRoutes, transaction_routes_api::TransactionRoutes,
 };
 
-pub struct SiriusClient<C: Connect> {
+pub struct SiriusClient {
     generation_hash: Hash,
-    account: Box<AccountRoutes<C>>,
-    block: Box<BlockRoutes<C>>,
-    chain: Box<ChainRoutes<C>>,
-    exchange: Box<ExchangeRoutes<C>>,
-    node: Box<NodeRoutes<C>>,
-    mosaic: Box<MosaicRoutes<C>>,
-    namespace: Box<NamespaceRoutes<C>>,
-    transaction: Box<TransactionRoutes<C>>,
+    account: Box<AccountRoutes>,
+    block: Box<BlockRoutes>,
+    chain: Box<ChainRoutes>,
+    exchange: Box<ExchangeRoutes>,
+    node: Box<NodeRoutes>,
+    mosaic: Box<MosaicRoutes>,
+    namespace: Box<NamespaceRoutes>,
+    transaction: Box<TransactionRoutes>,
 }
 
-impl<C: Connect + Clone> SiriusClient<C> {
-    pub fn account_api(&self) -> Box<AccountRoutes<C>> {
+impl SiriusClient {
+    pub fn account_api(&self) -> Box<AccountRoutes> {
         self.account.to_owned()
     }
 
-    pub fn block_api(&self) -> Box<BlockRoutes<C>> {
+    pub fn block_api(&self) -> Box<BlockRoutes> {
         self.block.to_owned()
     }
 
-    pub fn chain_api(&self) -> Box<ChainRoutes<C>> {
+    pub fn chain_api(&self) -> Box<ChainRoutes> {
         self.chain.to_owned()
     }
 
-    pub fn exchange_api(&self) -> Box<ExchangeRoutes<C>> {
+    pub fn exchange_api(&self) -> Box<ExchangeRoutes> {
         self.exchange.to_owned()
     }
 
-    pub fn node_api(&self) -> Box<NodeRoutes<C>> {
+    pub fn node_api(&self) -> Box<NodeRoutes> {
         self.node.to_owned()
     }
 
-    pub fn mosaic_api(&self) -> Box<MosaicRoutes<C>> {
+    pub fn mosaic_api(&self) -> Box<MosaicRoutes> {
         self.mosaic.to_owned()
     }
 
-    pub fn namespace_api(&self) -> Box<NamespaceRoutes<C>> {
+    pub fn namespace_api(&self) -> Box<NamespaceRoutes> {
         self.namespace.to_owned()
     }
 
-    pub fn transaction_api(&self) -> Box<TransactionRoutes<C>> {
+    pub fn transaction_api(&self) -> Box<TransactionRoutes> {
         self.transaction.to_owned()
     }
 }
 
-impl<C: Connect> SiriusClient<C>
-where
-    C: Clone + Send + Sync + Debug + 'static,
+impl SiriusClient
 {
-    fn __internal(url: &'static str, client: Client<C>) -> Box<Self> {
-        let api_client = ApiClient::from_url(url, client);
+    fn __internal(url: &'static str) -> Box<Self> {
+        let api_client = ApiClient::from_url(url);
 
         let rc = Arc::new(api_client);
 
@@ -79,7 +77,7 @@ where
         })
     }
 
-    fn __generation_hash(&self) -> impl Future<Output = super::Result<String>> + '_ {
+    fn __generation_hash(&self) -> impl Future<Output=super::Result<String>> + '_ {
         let client = self.block_api();
         async {
             let block_info = client.get_block_by_height(1).await;
@@ -90,8 +88,8 @@ where
         }
     }
 
-    pub async fn new(url: &'static str, client: Client<C>) -> super::Result<Box<Self>> {
-        let mut api = Self::__internal(url, client);
+    pub async fn new(url: &'static str) -> super::Result<Box<Self>> {
+        let mut api = Self::__internal(url);
 
         let generation_hash = api.__generation_hash().await?;
         if !generation_hash.is_empty() {
@@ -104,7 +102,7 @@ where
         self.generation_hash.to_string()
     }
 
-    pub fn network_type(&self) -> impl Future<Output = NetworkType> + '_ {
+    pub fn network_type(&self) -> impl Future<Output=NetworkType> + '_ {
         let client = self.node.clone();
         async {
             let block_info = client.get_node_info().await;
@@ -117,17 +115,16 @@ where
 }
 
 #[derive(Clone)]
-pub struct ApiClient<C: Connect> {
+pub struct ApiClient {
     pub base_path: &'static str,
-    pub client: Client<C>,
+    pub client: ReqwestClient,
     pub user_agent: Option<String>,
 }
 
-impl<C: Connect> ApiClient<C>
-where
-    C: Send + Sync,
+impl ApiClient
 {
-    pub fn from_url(url: &'static str, client: Client<C>) -> Self {
+    pub fn from_url(url: &'static str) -> Self {
+        let client = ReqwestClient::new();
         ApiClient {
             base_path: url,
             client,

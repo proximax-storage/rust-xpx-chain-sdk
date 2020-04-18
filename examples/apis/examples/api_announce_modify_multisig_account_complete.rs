@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use hyper::Client;
+
 
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::multisig::{CosignatoryModification, MultisigModificationType};
@@ -33,7 +33,7 @@ const MINIMAL_REMOVAL: i8 = 3;
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL, Client::new()).await;
+    let sirius_client = SiriusClient::new(NODE_URL).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),
