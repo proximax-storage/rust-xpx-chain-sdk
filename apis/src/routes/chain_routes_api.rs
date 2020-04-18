@@ -1,14 +1,14 @@
 use ::std::sync::Arc;
 
-use hyper::{client::connect::Connect, Method};
+use reqwest::Method;
 
 use sdk::blockchain::{BlockchainScore, HeightInfo, StorageInfo};
 
 use crate::{
     dtos::{BlockchainScoreDto, HeightInfoDto},
     request as __internal_request,
-    sirius_client::ApiClient,
     Result,
+    sirius_client::ApiClient,
 };
 
 use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
@@ -16,19 +16,17 @@ use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
 /// Chain ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct ChainRoutes<C: Connect>(Arc<ApiClient<C>>);
+pub struct ChainRoutes(Arc<ApiClient>);
 
 /// Chain related endpoints.
 ///
-impl<C: Connect> ChainRoutes<C>
-where
-    C: Clone + Send + Sync + 'static,
+impl ChainRoutes
 {
-    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
         ChainRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient<C>> {
+    fn __client(self) -> Arc<ApiClient> {
         self.0
     }
 
@@ -37,7 +35,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -45,7 +43,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let chain_height = client.chain.get_blockchain_height().await;
     ///
@@ -78,7 +76,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -86,7 +84,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let chain_score = client.chain.get_blockchain_score().await;
     ///
@@ -115,7 +113,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -123,7 +121,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let chain_score = client.chain.get_blockchain_storage().await;
     ///

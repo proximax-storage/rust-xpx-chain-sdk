@@ -4,13 +4,13 @@ use ::std::{
     sync::Arc,
 };
 
-use hyper::{client::connect::Connect, Method};
+use reqwest::Method;
 
 use sdk::{
     errors::{ERR_EMPTY_TRANSACTION_HASHES, ERR_EMPTY_TRANSACTION_IDS},
     transaction::{
         CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionHashes,
-        TransactionIds, TransactionStatus, Transactions, TransactionsStatus,
+        TransactionIds, Transactions, TransactionsStatus, TransactionStatus,
     },
 };
 
@@ -18,31 +18,30 @@ use crate::{
     dtos::{TransactionDto, TransactionStatusDto},
     internally::{valid_hash, valid_vec_hash, valid_vec_len},
     request as __internal_request,
-    sirius_client::ApiClient,
     Result,
+    sirius_client::ApiClient,
 };
 
 use super::{
-    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTIONS_ROUTE,
-    TRANSACTIONS_STATUS_ROUTE, TRANSACTION_ROUTE, TRANSACTION_STATUS_ROUTE,
+    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTION_ROUTE,
+    TRANSACTION_STATUS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_STATUS_ROUTE,
 };
 
 /// Transaction ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct TransactionRoutes<C: Connect>(Arc<ApiClient<C>>);
+pub struct TransactionRoutes(Arc<ApiClient>);
 
 /// Transaction related endpoints.
 ///
-impl<C: Connect> TransactionRoutes<C>
-where
-    C: Clone + Send + Sync + 'static,
+impl TransactionRoutes
+
 {
-    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
         TransactionRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient<C>> {
+    fn __client(self) -> Arc<ApiClient> {
         self.0.to_owned()
     }
 
@@ -55,7 +54,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -64,7 +63,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let transaction_status = client.transaction.get_transaction_status( HASH ).await;
     ///
@@ -101,7 +100,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -111,7 +110,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let transactions_status = client.transaction.get_transactions_statuses( vec![HASH_A,HASH_B] ).await;
     ///
@@ -139,7 +138,7 @@ where
         let transaction_hashes = TransactionHashes::from(hashes);
 
         let mut req = __internal_request::Request::new(
-            hyper::Method::POST,
+            reqwest::Method::POST,
             TRANSACTIONS_STATUS_ROUTE.to_string(),
         );
 
@@ -164,7 +163,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -173,7 +172,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let transaction = client.transaction.get_transaction( HASH ).await;
     ///
@@ -209,7 +208,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -219,7 +218,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let transactions_info = client.transaction.get_transactions( vec![HASH_A,HASH_B] ).await;
     ///
@@ -269,7 +268,7 @@ where
     /// # Example
     ///
     /// ```
-    /// use hyper::Client;
+    ///
     ///
     ///use xpx_chain_apis::SiriusClient;
     ///use xpx_chain_sdk::{
@@ -286,7 +285,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let generation_hash = client.generation_hash().await;
     ///
@@ -364,9 +363,9 @@ where
         self,
         tx: T,
         route: &str,
-    ) -> impl Future<Output = Result<AnnounceTransactionInfo>>
-    where
-        for<'de> T: serde::Serialize,
+    ) -> impl Future<Output=Result<AnnounceTransactionInfo>>
+        where
+                for<'de> T: serde::Serialize,
     {
         let mut req = __internal_request::Request::new(Method::PUT, route.to_string());
 

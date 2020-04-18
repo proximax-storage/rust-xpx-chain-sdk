@@ -2,8 +2,8 @@ use ::std::collections::HashMap;
 
 use sdk::{
     account::PublicAccount,
-    exchange::OfferType::{BuyOffer, SellOffer},
     exchange::{OfferIdInfo, OfferIdInfos, OfferInfo, OfferType, UserExchangeInfo},
+    exchange::OfferType::{BuyOffer, SellOffer},
     mosaic::{Mosaic, MosaicId},
     network::NetworkType,
 };
@@ -28,7 +28,7 @@ pub(crate) struct ExchangeInfoDto {
 
 impl ExchangeInfoDto {
     pub(crate) fn to_struct(&self, network_type: NetworkType) -> crate::Result<UserExchangeInfo> {
-        let mut dto = self.to_owned();
+        let dto = self.to_owned();
         let owner = PublicAccount::from_public_key(&dto.exchange.owner, network_type)?;
 
         let mut buy_offer: OfferIdInfos = vec![];

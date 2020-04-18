@@ -1,29 +1,28 @@
-use ::std::{fmt::Debug, sync::Arc};
+use ::std::sync::Arc;
 
-use hyper::{client::connect::Connect, Method};
+use reqwest::Method;
 
 use sdk::node::{NodeInfo, NodeTime};
 
-use crate::{dtos::NodeTimeDto, request as __internal_request, sirius_client::ApiClient, Result};
+use crate::{dtos::NodeTimeDto, request as __internal_request, Result, sirius_client::ApiClient};
 
 use super::{NODE_INFO, NODE_TIME};
 
 /// Node ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NodeRoutes<C: Connect>(Arc<ApiClient<C>>);
+pub struct NodeRoutes(Arc<ApiClient>);
 
 /// Node related endpoints.
 ///
-impl<C: Connect> NodeRoutes<C>
-where
-    C: Clone + Send + Sync + Debug + 'static,
+impl NodeRoutes
+
 {
-    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
         NodeRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient<C>> {
+    fn __client(self) -> Arc<ApiClient> {
         self.0.to_owned()
     }
 
@@ -33,7 +32,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -41,7 +40,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let node_info = client.node.get_node_info().await;
     ///
@@ -68,7 +67,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -76,7 +75,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let node_time = client.node.get_node_time().await;
     ///

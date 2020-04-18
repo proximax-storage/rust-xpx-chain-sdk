@@ -1,6 +1,6 @@
 use ::std::{collections::HashMap, future::Future, sync::Arc};
 
-use hyper::{client::connect::Connect, Method};
+use reqwest::Method;
 
 use sdk::{
     account::{AccountInfo, AccountName, AccountsId, PublicAccount},
@@ -14,15 +14,15 @@ use crate::{
         AccountInfoDto, AccountNamesDto, MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
         TransactionDto,
     },
-    internally::{valid_account_id, valid_vec_len, AccountTransactionsOption},
+    internally::{AccountTransactionsOption, valid_account_id, valid_vec_len},
     request as __internal_request,
-    sirius_client::ApiClient,
     Result,
+    sirius_client::ApiClient,
 };
 
 use super::{
-    ACCOUNTS_PROPERTIES_ROUTE, ACCOUNTS_ROUTE, ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE,
-    ACCOUNT_ROUTE, AGGREGATE_TRANSACTIONS_ROUTE, INCOMING_TRANSACTIONS_ROUTE,
+    ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE, ACCOUNT_ROUTE, ACCOUNTS_PROPERTIES_ROUTE,
+    ACCOUNTS_ROUTE, AGGREGATE_TRANSACTIONS_ROUTE, INCOMING_TRANSACTIONS_ROUTE,
     MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE, OUTGOING_TRANSACTIONS_ROUTE,
     TRANSACTIONS_BY_ACCOUNT_ROUTE, UNCONFIRMED_TRANSACTIONS_ROUTE,
 };
@@ -30,19 +30,17 @@ use super::{
 /// Account ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct AccountRoutes<C: Connect>(Arc<ApiClient<C>>);
+pub struct AccountRoutes(Arc<ApiClient>);
 
 /// Account related endpoints.
 ///
-impl<C: Connect> AccountRoutes<C>
-where
-    C: Clone + Send + Sync + 'static,
+impl AccountRoutes
 {
-    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
         AccountRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient<C>> {
+    fn __client(self) -> Arc<ApiClient> {
         self.0
     }
 
@@ -55,7 +53,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -64,7 +62,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    /// let client = SiriusClient::new(NODE_URL, Client::new());
+    /// let client = SiriusClient::new(NODE_URL);
     ///
     ///    let account_info = client.account.account_info( PUBLIC_KEY).await;
     ///
@@ -100,7 +98,7 @@ where
     /// # Example
     ///
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -110,7 +108,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let accounts_info = client.account.get_accounts_info( vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
     ///
@@ -119,7 +117,7 @@ where
     ///            for info in tx {
     ///                println!("{}", info)
     ///            }
-    ///        },
+    ///        }
     ///        Err(err) => eprintln!("{:?}", err)
     ///    }
     ///}
@@ -242,7 +240,7 @@ where
             TRANSACTIONS_BY_ACCOUNT_ROUTE,
             transactions_options,
         )
-        .await
+            .await
     }
 
     pub async fn incoming_transactions(
@@ -259,7 +257,7 @@ where
             INCOMING_TRANSACTIONS_ROUTE,
             transactions_options,
         )
-        .await
+            .await
     }
 
     pub async fn outgoing_transactions(
@@ -276,7 +274,7 @@ where
             OUTGOING_TRANSACTIONS_ROUTE,
             transactions_options,
         )
-        .await
+            .await
     }
 
     pub async fn unconfirmed_transactions(
@@ -293,7 +291,7 @@ where
             UNCONFIRMED_TRANSACTIONS_ROUTE,
             transactions_options,
         )
-        .await
+            .await
     }
 
     pub async fn partial_transactions(
@@ -310,7 +308,7 @@ where
             AGGREGATE_TRANSACTIONS_ROUTE,
             transactions_options,
         )
-        .await
+            .await
     }
 
     fn __internal_transactions(
@@ -318,7 +316,7 @@ where
         public_account: &PublicAccount,
         route: &str,
         options: AccountTransactionsOption,
-    ) -> impl Future<Output = Result<Transactions>> {
+    ) -> impl Future<Output=Result<Transactions>> {
         let mut req = __internal_request::Request::new(Method::GET, route.to_string());
 
         if let Some(s) = options.page_size {

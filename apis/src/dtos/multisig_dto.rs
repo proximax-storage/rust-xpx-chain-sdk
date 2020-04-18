@@ -117,7 +117,7 @@ impl TransactionDto for ModifyMultisigAccountTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-        .to_struct(info)?;
+            .to_struct(info)?;
 
         let modifications = cosignatory_dto_vec_to_struct(dto.modifications, abs.network_type);
 

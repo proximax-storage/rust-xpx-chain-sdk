@@ -1,11 +1,11 @@
-use ::std::{fmt::Debug, sync::Arc};
+use ::std::sync::Arc;
 
-use hyper::{client::connect::Connect, Method};
+use reqwest::Method;
 
 use sdk::{account::PublicAccount, exchange::UserExchangeInfo};
 
 use crate::{
-    dtos::ExchangeInfoDto, request as __internal_request, sirius_client::ApiClient, Result,
+    dtos::ExchangeInfoDto, request as __internal_request, Result, sirius_client::ApiClient,
 };
 
 use super::{EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE};
@@ -13,19 +13,17 @@ use super::{EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE};
 /// Node ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct ExchangeRoutes<C: Connect>(Arc<ApiClient<C>>);
+pub struct ExchangeRoutes(Arc<ApiClient>);
 
 /// Exchange related endpoints.
 ///
-impl<C: Connect> ExchangeRoutes<C>
-where
-    C: Clone + Send + Sync + Debug + 'static,
+impl ExchangeRoutes
 {
-    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
         ExchangeRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient<C>> {
+    fn __client(self) -> Arc<ApiClient> {
         self.0.to_owned()
     }
 

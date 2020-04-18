@@ -1,46 +1,45 @@
 use ::std::{future::Future, pin::Pin, sync::Arc};
 
-use hyper::{client::connect::Connect, Method};
+use reqwest::Method;
 
 use sdk::{
     account::{AccountsId, Address},
     errors::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
-    namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
     Id,
-};
-
-use super::{
-    NAMESPACES_FROM_ACCOUNTS_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES, NAMESPACE_NAMES_ROUTE,
-    NAMESPACE_ROUTE,
+    namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
 };
 
 use crate::{
     dtos::{NamespaceInfoDto, NamespaceNameDto},
     internally::valid_vec_len,
     request as __internal_request,
-    sirius_client::ApiClient,
     Result,
+    sirius_client::ApiClient,
+};
+
+use super::{
+    NAMESPACE_NAMES_ROUTE, NAMESPACE_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES,
+    NAMESPACES_FROM_ACCOUNTS_ROUTE,
 };
 
 /// Namespace ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NamespaceRoutes<C: Connect>(Arc<ApiClient<C>>);
+pub struct NamespaceRoutes(Arc<ApiClient>);
 
 /// Namespace related endpoints.
 ///
-impl<C: Connect> NamespaceRoutes<C>
-where
-    C: Clone + Send + Sync + 'static,
+impl NamespaceRoutes
+
 {
-    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
         NamespaceRoutes(client)
     }
 
     fn __build_namespace_hierarchy<'b>(
         self,
         ns_info: &'b mut NamespaceInfo,
-    ) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
+    ) -> Pin<Box<dyn Future<Output=()> + 'b>> {
         Box::pin(async move {
             let info_parent = match &ns_info.parent {
                 Some(info) => info,
@@ -73,7 +72,7 @@ where
     fn __build_namespaces_hierarchy<'b>(
         self,
         ns_infos: &'b mut Vec<NamespaceInfo>,
-    ) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
+    ) -> Pin<Box<dyn Future<Output=()> + 'b>> {
         Box::pin(async move {
             for ns_info in ns_infos.iter_mut() {
                 self.clone().__build_namespace_hierarchy(ns_info).await

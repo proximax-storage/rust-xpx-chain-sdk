@@ -90,7 +90,7 @@ impl TransactionDto for AddressAliasTransactionInfoDto {
             dto.max_fee.to_owned(),
             dto.deadline.to_owned(),
         )
-        .to_struct(info)?;
+            .to_struct(info)?;
 
         Ok(Box::new(AddressAliasTransaction {
             alias_transaction: AliasTransaction {
@@ -147,7 +147,7 @@ impl TransactionDto for MosaicAliasTransactionInfoDto {
             dto.max_fee.to_owned(),
             dto.deadline.to_owned(),
         )
-        .to_struct(info)?;
+            .to_struct(info)?;
 
         Ok(Box::new(MosaicAliasTransaction {
             alias_transaction: AliasTransaction {

@@ -8,7 +8,7 @@ use std::fmt::Debug;
 use std::thread::sleep;
 use std::time::Duration;
 
-use hyper::{client::connect::Connect, Client};
+use hyper::{Client};
 
 use xpx_chain_sdk::account::{Account, PublicAccount};
 use xpx_chain_sdk::message::PlainMessage;
@@ -27,7 +27,7 @@ const PUBLIC_KEY: &str = "6152520970CF9E1278BB2CEFAC47D50E4204B91695E187449BF12A
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL, Client::new()).await;
+    let sirius_client = SiriusClient::new(NODE_URL).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),
@@ -105,14 +105,13 @@ async fn main() {
     }
 }
 
-async fn lock_fund<C: Connect>(
-    client: &Box<SiriusClient<C>>,
+async fn lock_fund(
+    client: &Box<SiriusClient>,
     account: &Account,
     signed_hash: Hash,
     generation_hash: String,
 ) -> Result<()>
-where
-    C: Clone + Send + Sync + Debug + 'static,
+
 {
     //  let network_type = client.network_type().await;
     let network_type = PUBLIC_TEST;

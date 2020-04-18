@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use hyper::Client;
+
 
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::mosaic::{MosaicNonce, MosaicProperties, MosaicSupplyType};
@@ -18,7 +18,7 @@ const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL, Client::new()).await;
+    let sirius_client = SiriusClient::new(NODE_URL).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),

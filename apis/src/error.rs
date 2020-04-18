@@ -1,7 +1,5 @@
 use ::std::fmt::{Display, Formatter, Result};
 
-use hyper::http::uri::InvalidUri;
-
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SiriusError {
@@ -12,8 +10,7 @@ pub struct SiriusError {
 #[derive(Debug)]
 pub enum Error {
     SiriusError(SiriusError),
-    UriError(InvalidUri),
-    Hyper(hyper::Error),
+    Reqwest(reqwest::Error),
     Serde(serde_json::Error),
     Failure(failure::Error),
 }
@@ -22,13 +19,13 @@ impl ::failure::Fail for Error {}
 
 #[derive(Debug)]
 pub struct ApiError {
-    pub code: hyper::StatusCode,
+    pub code: reqwest::StatusCode,
     pub content: Option<String>,
 }
 
-impl From<hyper::Error> for Error {
-    fn from(e: hyper::Error) -> Self {
-        return Error::Hyper(e);
+impl From<reqwest::Error> for Error {
+    fn from(e: reqwest::Error) -> Self {
+        return Error::Reqwest(e);
     }
 }
 
@@ -50,20 +47,13 @@ impl From<SiriusError> for Error {
     }
 }
 
-impl From<InvalidUri> for Error {
-    fn from(e: InvalidUri) -> Self {
-        return Error::UriError(e);
-    }
-}
-
 impl Display for Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match self.to_owned() {
             Error::SiriusError(e) => {
                 write!(f, "{{ code: \"{}\", message: \"{}\" }}", e.code, e.message)
             }
-            Error::UriError(e) => write!(f, "{}", e),
-            Error::Hyper(e) => write!(f, "{}", e),
+            Error::Reqwest(e) => write!(f, "{}", e),
             Error::Serde(e) => write!(f, "{}", e),
             Error::Failure(e) => write!(f, "{}", e),
         }

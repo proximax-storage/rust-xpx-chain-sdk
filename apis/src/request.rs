@@ -1,9 +1,6 @@
 use ::std::{collections::HashMap, sync::Arc};
 
-use hyper::{
-    header::{HeaderMap, CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT},
-    Body, StatusCode, Uri,
-};
+use reqwest::{header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT}, Method, StatusCode, Url};
 use serde_json;
 
 use super::{
@@ -14,7 +11,7 @@ use super::{
 
 #[derive(Clone)]
 pub(crate) struct Request {
-    method: hyper::Method,
+    method: Method,
     path: String,
     query_params: HashMap<String, String>,
     path_params: HashMap<String, String>,
@@ -26,7 +23,7 @@ pub(crate) struct Request {
 }
 
 impl Request {
-    pub fn new(method: hyper::Method, path: String) -> Self {
+    pub fn new(method: reqwest::Method, path: String) -> Self {
         Request {
             method,
             path,
@@ -64,10 +61,9 @@ impl Request {
         self
     }
 
-    pub async fn execute<'a, C, U>(self, api: Arc<ApiClient<C>>) -> super::Result<U>
-    where
-        C: hyper::client::connect::Connect + Send + Clone + Sync + 'static,
-        for<'de> U: serde::Deserialize<'de>,
+    pub async fn execute<U>(self, api: Arc<ApiClient>) -> super::Result<U>
+        where
+                for<'de> U: serde::Deserialize<'de>,
     {
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.
@@ -85,38 +81,54 @@ impl Request {
             raw_headers.insert(key, val);
         });
 
-        let mut query_string = url::form_urlencoded::Serializer::new("".to_owned());
+        let uri_str = format!("{}{}", api.base_path, path);
 
-        self.query_params.iter().for_each(|(key, val)| {
-            query_string.append_pair(key, val);
-        });
+        let mut url = Url::parse(&uri_str)
+            .map_err(|e| format!("could not parse url: {:?}", e))
+            .unwrap();
 
-        let mut uri_str = format!("{}{}", api.base_path, path);
+        if !self.query_params.is_empty() {
+            let existing: Vec<(String, String)> = url
+                .query_pairs()
+                .map(|(a, b)| (a.to_string(), b.to_string()))
+                .collect();
 
-        let query_string_str = query_string.finish();
-        if query_string_str != "" {
-            uri_str += "?";
-            uri_str += &query_string_str;
-        }
+            // final pairs
+            let mut pairs: Vec<(&str, &str)> = Vec::new();
 
-        let uri: Uri = match uri_str.parse() {
-            Ok(u) => u,
-            Err(e) => {
-                return Err(Error::from(e));
+            // add first existing
+            for pair in &existing {
+                pairs.push((&pair.0, &pair.1));
             }
+
+            // add given query to the pairs
+            for (key, val) in self.query_params.iter() {
+                pairs.push((key, val));
+            }
+
+            // set new pairs
+            url.query_pairs_mut()
+                .clear()
+                .extend_pairs(pairs.iter().map(|&(k, v)| (&k[..], &v[..])));
         };
 
-        let mut req_body = Body::empty();
+        // create request
+        let builder = api.client
+            .request(self.method, url.as_str())
+            .body(self.serialized_body.clone().unwrap_or_else(|| "".to_owned()));
 
-        if let Some(body) = self.serialized_body.clone() {
-            req_body = Body::from(body);
+        let mut req = builder.build()?;
+
+        if let Some(body) = self.serialized_body {
+            req.headers_mut().insert(
+                CONTENT_TYPE,
+                "application/json"
+                    .parse()
+                    .map_err(|err| Error::from(format_err!("{}", err)))?,
+            );
+
+            req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
         }
-
-        let mut req = hyper::Request::builder()
-            .method(self.method)
-            .uri(uri)
-            .body(req_body)
-            .expect("request builder");
 
         {
             let req_headers = req.headers_mut();
@@ -124,7 +136,6 @@ impl Request {
                 req_headers.insert(
                     USER_AGENT,
                     user_agent
-                        .clone()
                         .parse()
                         .map_err(|err| Error::from(format_err!("{}", err)))?,
                 );
@@ -132,25 +143,14 @@ impl Request {
 
             req_headers.extend(headers);
 
-            if let Some(body) = self.serialized_body {
-                req.headers_mut().insert(
-                    CONTENT_TYPE,
-                    "application/json"
-                        .parse()
-                        .map_err(|err| Error::from(format_err!("{}", err)))?,
-                );
+            let resp = api.client.execute(req).await?;
 
-                req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
-            }
+            let status = resp.status();
 
-            let mut resp = api.client.request(req).await?;
+            let body = resp.bytes().await?;
 
-            let status = resp.status_mut();
-
-            match *status {
+            match status {
                 StatusCode::OK | StatusCode::ACCEPTED => {
-                    let body = hyper::body::to_bytes(resp).await?;
-
                     if self.is_transaction {
                         let map_dto = map_transaction_dto(body)?;
                         let res: U = serde_json::from_str(&map_dto)?;
@@ -164,12 +164,8 @@ impl Request {
                         Ok(res)
                     }
                 }
-
                 _ => {
-                    let body = hyper::body::to_bytes(resp).await?;
-
                     let err: SiriusError = serde_json::from_slice(&body)?;
-
                     Err(Error::from(err))
                 }
             }

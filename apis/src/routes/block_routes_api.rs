@@ -1,14 +1,14 @@
 use ::std::sync::Arc;
 
-use hyper::{client::connect::Connect, Method};
+use reqwest::Method;
 
 use sdk::{blockchain::BlockInfo, transaction::Transactions};
 
 use crate::{
     dtos::{BlockInfoDto, TransactionDto},
     request as __internal_request,
-    sirius_client::ApiClient,
     Result,
+    sirius_client::ApiClient,
 };
 
 use super::{BLOCK_BY_HEIGHT_ROUTE, BLOCK_GET_TRANSACTION_ROUTE, BLOCK_INFO_ROUTE};
@@ -16,19 +16,17 @@ use super::{BLOCK_BY_HEIGHT_ROUTE, BLOCK_GET_TRANSACTION_ROUTE, BLOCK_INFO_ROUTE
 /// Block ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct BlockRoutes<C: Connect>(Arc<ApiClient<C>>);
+pub struct BlockRoutes(Arc<ApiClient>);
 
 ///  Block related endpoints.
 ///
-impl<C: Connect> BlockRoutes<C>
-where
-    C: Clone + Send + Sync + 'static,
+impl BlockRoutes
 {
-    pub(crate) fn new(client: Arc<ApiClient<C>>) -> Self {
+    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
         BlockRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient<C>> {
+    fn __client(self) -> Arc<ApiClient> {
         self.0
     }
 
@@ -42,7 +40,7 @@ where
     ///
     /// # Example
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -50,7 +48,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let block_by_height = client.block.get_block_by_height(1).await;
     ///
@@ -95,7 +93,7 @@ where
     ///
     /// # Example
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -103,7 +101,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let blocks_by_height_with_limit = client.block.get_blocks_by_height_with_limit(1, 25).await;
     ///
@@ -168,7 +166,7 @@ where
     ///
     /// # Example
     /// ```
-    ///use hyper::Client;
+    ///
     ///use xpx_chain_apis::SiriusClient;
     ///
     ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -176,7 +174,7 @@ where
     ///#[tokio::main]
     ///async fn main() {
     ///
-    ///    let client = SiriusClient::new(NODE_URL, Client::new());
+    ///    let client = SiriusClient::new(NODE_URL);
     ///
     ///    let block_transactions = client.block.get_block_transactions(1, None, None).await;
     ///

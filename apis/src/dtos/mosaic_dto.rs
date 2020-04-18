@@ -1,8 +1,8 @@
 use sdk::{
     errors,
     mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicNonce, MosaicSupplyType},
-    transaction::{MosaicDefinitionTransaction, MosaicSupplyChangeTransaction, Transaction},
     Result,
+    transaction::{MosaicDefinitionTransaction, MosaicSupplyChangeTransaction, Transaction},
 };
 
 use crate::internally::mosaic_properties;
@@ -128,7 +128,7 @@ impl TransactionDto for MosaicDefinitionTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-        .to_struct(info)?;
+            .to_struct(info)?;
 
         let properties = mosaic_properties(&dto.properties)?;
 
@@ -213,7 +213,7 @@ impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-        .to_struct(info)?;
+            .to_struct(info)?;
 
         Ok(Box::new(MosaicSupplyChangeTransaction {
             abs_transaction: abs,
