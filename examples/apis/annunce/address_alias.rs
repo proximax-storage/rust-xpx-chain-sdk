@@ -21,8 +21,8 @@ async fn main() {
 
     let generation_hash = client.generation_hash();
 
-    // let network_type = client.network_type().await;
-    let network_type = PUBLIC_TEST;
+    // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
+    let network_type = client.network_type();
 
     // Deadline default 1 hour
     // let deadline = Deadline::new(1, 0, 0);

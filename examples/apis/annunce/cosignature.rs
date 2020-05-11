@@ -4,7 +4,6 @@ use std::time::Duration;
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::{Account, PublicAccount};
 use xpx_chain_sdk::multisig::CosignatureTransaction;
-use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::transaction::AggregateTransaction;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -18,7 +17,10 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    let account = Account::from_private_key(PRIVATE_KEY, PUBLIC_TEST).unwrap();
+    // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
+    let network_type = client.network_type();
+
+    let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
     let partial = client
         .account_api()

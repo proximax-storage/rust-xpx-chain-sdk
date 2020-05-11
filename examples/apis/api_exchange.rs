@@ -3,7 +3,6 @@
 
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::PublicAccount;
-use xpx_chain_sdk::network::PUBLIC_TEST;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
@@ -17,7 +16,9 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    let public_account = PublicAccount::from_public_key(PUBLIC_KEY, PUBLIC_TEST).unwrap();
+    let network_type = client.network_type();
+
+    let public_account = PublicAccount::from_public_key(PUBLIC_KEY, network_type).unwrap();
 
     let node_info = client
         .exchange_api()

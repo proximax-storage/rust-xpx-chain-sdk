@@ -4,7 +4,6 @@
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::Address;
 use xpx_chain_sdk::namespace::NamespaceId;
-use xpx_chain_sdk::network::PUBLIC_TEST;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
@@ -16,9 +15,11 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
+    let network_type = client.network_type();
+
     let address_one = Address::from_public_key(
         "C952A761C0D51940AE77EC44DE93662133B5A2E93F5DCADAB7F972FA91F5DFCD",
-        PUBLIC_TEST,
+        network_type,
     )
         .unwrap();
 
