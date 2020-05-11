@@ -11,7 +11,7 @@ pub(crate) struct SecretLockTransactionDto {
     pub signer: String,
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
     #[serde(rename = "version")]
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: u16,
     #[serde(rename = "max_fee")]

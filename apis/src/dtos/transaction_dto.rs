@@ -36,7 +36,7 @@ pub(crate) struct AbstractTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
     pub signer: String,
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -49,7 +49,7 @@ impl AbstractTransactionDto {
     pub(crate) fn new(
         signature: Option<String>,
         signer: String,
-        version: u32,
+        version: i32,
         _type: u16,
         max_fee: Option<Uint64Dto>,
         deadline: Option<Uint64Dto>,
@@ -67,9 +67,9 @@ impl AbstractTransactionDto {
     pub(crate) fn to_struct(&self, info: TransactionInfo) -> crate::Result<AbstractTransaction> {
         let dto = self;
 
-        let network_type = extract_network_type(self.version);
+        let network_type = extract_network_type(self.version as u32);
 
-        let version = extract_version(self.version);
+        let version = extract_version(self.version as u32);
 
         let signer = PublicAccount::from_public_key(&dto.signer, network_type)?;
 
@@ -246,7 +246,7 @@ pub(crate) struct TransferTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
     pub signer: String,
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -266,7 +266,7 @@ pub(crate) struct HashLockTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
     pub signer: String,
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]

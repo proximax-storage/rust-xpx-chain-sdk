@@ -54,7 +54,7 @@ pub(crate) struct AddressAliasTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     signature: Option<String>,
     signer: String,
-    version: u32,
+    version: i32,
     #[serde(rename = "type")]
     _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -111,7 +111,7 @@ pub(crate) struct MosaicAliasTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     signature: Option<String>,
     signer: String,
-    version: u32,
+    version: i32,
     #[serde(rename = "type")]
     _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]

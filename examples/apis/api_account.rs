@@ -1,11 +1,11 @@
-
-
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::PublicAccount;
 use xpx_chain_sdk::network::PUBLIC_TEST;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-const PUBLIC_KEY_A: &str = "7152520970CF9E1278BB2CEFAC47D50E4204B91695E187449BF12AE9D217F2DA";
+
+const PUBLIC_KEY_A: &str = "ECAA55A83E4EC110279A7C82010A52A3252B42905B0FDAA509F74A01FBBD38F2";
+
 const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
 
 #[tokio::main]

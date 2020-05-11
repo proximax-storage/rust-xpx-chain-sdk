@@ -156,7 +156,7 @@ pub mod catapult {
             pub size_: u32,
             pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
-            pub version: u32,
+            pub version: i32,
             pub type_: u16,
             pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
@@ -212,7 +212,7 @@ pub mod catapult {
                 self.fbb_.push_slot_always::<fb::WIPOffset<_>>(PrepareDriveTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
-            pub fn add_version(&mut self, version: u32) {
+            pub fn add_version(&mut self, version: i32) {
                 self.fbb_.push_slot::<u32>(PrepareDriveTransactionBuffer::VT_VERSION, version, 0);
             }
             #[inline]
@@ -361,7 +361,7 @@ pub mod catapult {
             pub size_: u32,
             pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
-            pub version: u32,
+            pub version: i32,
             pub type_: u16,
             pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
@@ -403,7 +403,7 @@ pub mod catapult {
                 self.fbb_.push_slot_always::<fb::WIPOffset<_>>(JoinToDriveTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
-            pub fn add_version(&mut self, version: u32) {
+            pub fn add_version(&mut self, version: i32) {
                 self.fbb_.push_slot::<u32>(JoinToDriveTransactionBuffer::VT_VERSION, version, 0);
             }
             #[inline]
@@ -912,7 +912,7 @@ pub mod catapult {
             pub size_: u32,
             pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
-            pub version: u32,
+            pub version: i32,
             pub type_: u16,
             pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
@@ -966,7 +966,7 @@ pub mod catapult {
                 self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFileSystemTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
-            pub fn add_version(&mut self, version: u32) {
+            pub fn add_version(&mut self, version: i32) {
                 self.fbb_.push_slot::<u32>(DriveFileSystemTransactionBuffer::VT_VERSION, version, 0);
             }
             #[inline]
@@ -1123,7 +1123,7 @@ pub mod catapult {
             pub size_: u32,
             pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
-            pub version: u32,
+            pub version: i32,
             pub type_: u16,
             pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
@@ -1169,7 +1169,7 @@ pub mod catapult {
                 self.fbb_.push_slot_always::<fb::WIPOffset<_>>(FilesDepositTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
-            pub fn add_version(&mut self, version: u32) {
+            pub fn add_version(&mut self, version: i32) {
                 self.fbb_.push_slot::<u32>(FilesDepositTransactionBuffer::VT_VERSION, version, 0);
             }
             #[inline]
@@ -1298,7 +1298,7 @@ pub mod catapult {
             pub size_: u32,
             pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
-            pub version: u32,
+            pub version: i32,
             pub type_: u16,
             pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
@@ -1340,7 +1340,7 @@ pub mod catapult {
                 self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
-            pub fn add_version(&mut self, version: u32) {
+            pub fn add_version(&mut self, version: i32) {
                 self.fbb_.push_slot::<u32>(EndDriveTransactionBuffer::VT_VERSION, version, 0);
             }
             #[inline]
@@ -1467,7 +1467,7 @@ pub mod catapult {
             pub size_: u32,
             pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
-            pub version: u32,
+            pub version: i32,
             pub type_: u16,
             pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
@@ -1511,7 +1511,7 @@ pub mod catapult {
                 self.fbb_.push_slot_always::<fb::WIPOffset<_>>(DriveFilesRewardTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
-            pub fn add_version(&mut self, version: u32) {
+            pub fn add_version(&mut self, version: i32) {
                 self.fbb_.push_slot::<u32>(DriveFilesRewardTransactionBuffer::VT_VERSION, version, 0);
             }
             #[inline]
@@ -1636,7 +1636,7 @@ pub mod catapult {
             pub size_: u32,
             pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
-            pub version: u32,
+            pub version: i32,
             pub type_: u16,
             pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
@@ -1678,7 +1678,7 @@ pub mod catapult {
                 self.fbb_.push_slot_always::<fb::WIPOffset<_>>(StartDriveVerificationTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
-            pub fn add_version(&mut self, version: u32) {
+            pub fn add_version(&mut self, version: i32) {
                 self.fbb_.push_slot::<u32>(StartDriveVerificationTransactionBuffer::VT_VERSION, version, 0);
             }
             #[inline]
@@ -1981,7 +1981,7 @@ pub mod catapult {
             pub size_: u32,
             pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
-            pub version: u32,
+            pub version: i32,
             pub type_: u16,
             pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
@@ -2023,7 +2023,7 @@ pub mod catapult {
                 self.fbb_.push_slot_always::<fb::WIPOffset<_>>(EndDriveVerificationTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
-            pub fn add_version(&mut self, version: u32) {
+            pub fn add_version(&mut self, version: i32) {
                 self.fbb_.push_slot::<u32>(EndDriveVerificationTransactionBuffer::VT_VERSION, version, 0);
             }
             #[inline]

@@ -1,0 +1,125 @@
+[package]
+name = "xpx-chain-examples"
+version = "0.1.0"
+authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
+
+homepage = "https://www.proximax.io"
+repository = "https://github.com/proximax-storage/rust-xpx-chain-sdk/examples"
+documentation = "https://github.com/proximax-storage/rust-xpx-chain-sdk/wiki"
+keywords = ["blockchain", "sirius", "sdk", "crypto", "api", "example"]
+categories = ["examples"]
+exclude = [ ".gitignore" ]
+edition = "2018"
+publish = false
+
+[dependencies]
+xpx-chain-apis = { path = "../apis", version = "0.1.0" }
+xpx-chain-crypto = { path = "../crypto", version = "0.1.3" }
+xpx-chain-sdk = { path = "../sdk", version = "0.1.0" }
+
+tokio = { version = "0.2", features = ["macros"] }
+failure = "0.1"
+
+[[example]]
+name = "crypto"
+path = "crypto/main.rs"
+
+[[example]]
+name = "accounts"
+path = "sdk/accounts.rs"
+
+[[example]]
+name = "messages"
+path = "sdk/messages.rs"
+
+[[example]]
+name = "mosaics"
+path = "sdk/mosaics.rs"
+
+[[example]]
+name = "api_account"
+path = "apis/api_account.rs"
+
+[[example]]
+name = "api_block"
+path = "apis/api_block.rs"
+
+[[example]]
+name = "api_chain"
+path = "apis/api_chain.rs"
+
+[[example]]
+name = "api_exchange"
+path = "apis/api_exchange.rs"
+
+[[example]]
+name = "api_mosaic"
+path = "apis/api_mosaic.rs"
+
+[[example]]
+name = "api_namespace"
+path = "apis/api_namespace.rs"
+
+[[example]]
+name = "api_node"
+path = "apis/api_node.rs"
+
+[[example]]
+name = "api_transactions"
+path = "apis/api_transactions.rs"
+
+[[example]]
+name = "annunce_add_exchange_offer"
+path = "apis/annunce/add_exchange_offer.rs"
+
+[[example]]
+name = "annunce_address_alias"
+path = "apis/annunce/address_alias.rs"
+
+[[example]]
+name = "annunce_aggregate_bonded"
+path = "apis/annunce/aggregate_bonded.rs"
+
+[[example]]
+name = "annunce_aggregate_complete"
+path = "apis/annunce/aggregate_complete.rs"
+
+[[example]]
+name = "annunce_cosignature"
+path = "apis/annunce/cosignature.rs"
+
+[[example]]
+name = "annunce_create_mosaic_aggregate_complete"
+path = "apis/annunce/create_mosaic_aggregate_complete.rs"
+
+[[example]]
+name = "annunce_lock_funds"
+path = "apis/annunce/lock_funds.rs"
+
+[[example]]
+name = "annunce_modify_multisig_account_bonded"
+path = "apis/annunce/modify_multisig_account_bonded.rs"
+
+[[example]]
+name = "annunce_modify_multisig_account_complete"
+path = "apis/annunce/modify_multisig_account_complete.rs"
+
+[[example]]
+name = "annunce_mosaic_alias"
+path = "apis/annunce/mosaic_alias.rs"
+
+[[example]]
+name = "annunce_mosaic_definition"
+path = "apis/annunce/mosaic_definition.rs"
+
+[[example]]
+name = "annunce_mosaic_supply_change"
+path = "apis/annunce/mosaic_supply_change.rs"
+
+[[example]]
+name = "annunce_register_namespace"
+path = "apis/annunce/register_namespace.rs"
+
+[[example]]
+name = "annunce_transfer"
+path = "apis/annunce/transfer.rs"

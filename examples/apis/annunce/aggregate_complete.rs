@@ -1,13 +1,11 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-
-
+use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::{Account, Address};
 use xpx_chain_sdk::message::PlainMessage;
 use xpx_chain_sdk::mosaic::Mosaic;
 use xpx_chain_sdk::network::PUBLIC_TEST;
-use xpx_chain_sdk::sirius_client::SiriusClient;
 use xpx_chain_sdk::transaction::{
     AggregateTransaction, Deadline, Transaction, TransferTransaction,
 };

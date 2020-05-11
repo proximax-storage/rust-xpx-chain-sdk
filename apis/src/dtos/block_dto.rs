@@ -54,11 +54,11 @@ impl BlockInfoDto {
     pub(crate) fn to_struct(self) -> Result<BlockInfo> {
         let dto = self.block;
 
-        let network_type = extract_network_type(dto.version);
+        let network_type = extract_network_type(dto.version as u32);
 
         let signer_public_account = PublicAccount::from_public_key(&dto.signer, network_type)?;
 
-        let version = extract_version(dto.version);
+        let version = extract_version(dto.version as u32);
 
         let mut beneficiary_public_account = Option::default();
         if dto.beneficiary != EMPTY_PUBLIC_KEY {

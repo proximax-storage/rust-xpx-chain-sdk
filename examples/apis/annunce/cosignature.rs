@@ -1,12 +1,10 @@
 use std::thread::sleep;
 use std::time::Duration;
 
-
-
+use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::{Account, PublicAccount};
 use xpx_chain_sdk::multisig::CosignatureTransaction;
 use xpx_chain_sdk::network::PUBLIC_TEST;
-use xpx_chain_sdk::sirius_client::SiriusClient;
 use xpx_chain_sdk::transaction::AggregateTransaction;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";

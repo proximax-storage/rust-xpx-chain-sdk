@@ -5,7 +5,7 @@ use super::{ReceiptTypeEnum, Uint64Dto};
 pub(crate) struct BalanceChangeReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: ReceiptTypeEnum,
     /// The target account public key.
@@ -30,7 +30,7 @@ pub(crate) struct BalanceChangeReceiptDtoAllOf {
 pub(crate) struct BalanceTransferReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: ReceiptTypeEnum,
     /// The public key of the sender.

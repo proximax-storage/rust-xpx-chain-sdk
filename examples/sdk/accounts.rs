@@ -9,7 +9,7 @@ fn main() {
 
     let private_key = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
 
-    let account_one = Account::new(network_type);
+    let account_one = Address::from_raw("XBSDJJ5Y5NY7CFN6KCUFW7572K4R57JPV7DEOXI7").unwrap();
     println!("New Account From PrivateKey: {}\n", account_one);
 
     let account_two = Account::from_private_key(private_key, network_type).unwrap();

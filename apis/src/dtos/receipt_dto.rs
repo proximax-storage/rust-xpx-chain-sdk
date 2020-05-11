@@ -36,7 +36,7 @@ pub enum ReceiptTypeEnum {
 pub struct ReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: ReceiptTypeEnum,
 }
@@ -45,7 +45,7 @@ pub struct ReceiptDto {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct InflationReceiptDto {
     /// The version of the receipt.
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: ReceiptTypeEnum,
     pub mosaic_id: Vec<i32>,

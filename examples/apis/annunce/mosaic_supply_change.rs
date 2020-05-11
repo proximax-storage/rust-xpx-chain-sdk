@@ -1,13 +1,11 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-
-
+use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::Account;
-use xpx_chain_sdk::mosaic::{MosaicNonce, MosaicProperties};
+use xpx_chain_sdk::mosaic::{MosaicId, MosaicSupplyType};
 use xpx_chain_sdk::network::PUBLIC_TEST;
-use xpx_chain_sdk::sirius_client::SiriusClient;
-use xpx_chain_sdk::transaction::{Deadline, MosaicDefinitionTransaction};
+use xpx_chain_sdk::transaction::{Deadline, MosaicSupplyChangeTransaction};
 use xpx_chain_sdk::Uint64;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -33,30 +31,30 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
-    let mosaic_definition = MosaicDefinitionTransaction::new(
+    let mosaic_supply = MosaicSupplyChangeTransaction::new(
         deadline,
-        MosaicNonce::random(),
-        account.public_account_to_owned(),
-        MosaicProperties::new(true, true, 6, Uint64::new(0)).unwrap(),
+        MosaicSupplyType::Increase,
+        MosaicId::from_hex("389B57CFE6FB5394").unwrap(),
+        Uint64::new(100000),
         network_type,
     );
 
-    if let Err(err) = &mosaic_definition {
+    if let Err(err) = &mosaic_supply {
         panic!("{}", err)
     }
 
-    let sig_mosaic_definition = account.sign(mosaic_definition.unwrap(), &generation_hash);
+    let sig_mosaic_supply = account.sign(mosaic_supply.unwrap(), &generation_hash);
 
-    if let Err(err) = &sig_mosaic_definition {
+    if let Err(err) = &sig_mosaic_supply {
         panic!("{}", err)
     }
 
-    let sig_transaction = &sig_mosaic_definition.unwrap();
+    let sig_transaction = &sig_mosaic_supply.unwrap();
 
     println!("Singer: \t{}", account.public_key_string());
     println!("Hash: \t\t{}", sig_transaction.get_hash());
 
-    let response = client.transaction_api().announce(sig_transaction).await;
+    let response = client.transaction_api().announce(&sig_transaction).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

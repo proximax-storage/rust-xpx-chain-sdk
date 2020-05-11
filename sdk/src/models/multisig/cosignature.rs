@@ -19,9 +19,9 @@ impl CosignatureTransaction {
     pub fn new(tx: Box<dyn Transaction>) -> crate::Result<Self> {
         let aggregate = tx
             .downcast::<AggregateTransaction>()
-            .map_err(|_| failure::err_msg("the transaction is not an AggregateTransaction."))?;
+            .map_err(|_| failure::err_msg(errors::ERR_INVALID_AGGREGATE_TRANSACTION))?;
 
-        Ok(CosignatureTransaction(*aggregate))
+        Ok(Self(*aggregate))
     }
 
     pub(crate) fn sign_cosignature_transaction(

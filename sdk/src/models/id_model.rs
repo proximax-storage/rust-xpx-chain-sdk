@@ -5,7 +5,7 @@ use crate::models::namespace::NamespaceId;
 use crate::models::Uint64;
 
 /// An `trait` identifier used to define mosaic_id and namespace_id.
-pub trait Id: Sync + erased_serde::Serialize
+pub trait Id: Send + Sync + erased_serde::Serialize
 where
     Self: fmt::Debug,
 {
