@@ -1,9 +1,7 @@
 #[allow(unused_imports, dead_code)]
 pub mod mosaic_supply_change {
-
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct MosaicSupplyChangeTransactionBuffer<'a> {
             pub _tab: fb::Table<'a>,

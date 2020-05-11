@@ -1,17 +1,17 @@
-//#![deny(warnings)]
-//#![warn(rust_2018_idioms)]
+#![deny(warnings)]
+#![warn(rust_2018_idioms)]
 
-
-
-use xpx_chain_sdk::account::{Account, Address};
-use xpx_chain_sdk::message::PlainMessage;
-use xpx_chain_sdk::mosaic::Mosaic;
+use xpx_chain_apis::SiriusClient;
+use xpx_chain_sdk::account::Account;
+use xpx_chain_sdk::alias::AliasActionType;
+use xpx_chain_sdk::mosaic::MosaicId;
+use xpx_chain_sdk::namespace::NamespaceId;
 use xpx_chain_sdk::network::PUBLIC_TEST;
-use xpx_chain_sdk::sirius_client::SiriusClient;
-use xpx_chain_sdk::transaction::{Deadline, TransferTransaction};
+use xpx_chain_sdk::transaction::{Deadline, MosaicAliasTransaction};
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-const PRIVATE_KEY: &str = "6D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
+
+const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
 async fn main() {
@@ -32,23 +32,23 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
-    let recipient = Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap();
+    let mosaic_id = MosaicId::from_hex("7622B206326972CF").unwrap();
 
-    let message = PlainMessage::new("Transfer From ProximaX Rust SDK");
+    let namespace_id = NamespaceId::from_name("rust").unwrap();
 
-    let transfer_transaction = TransferTransaction::new(
+    let alias_transaction = MosaicAliasTransaction::new(
         deadline,
-        recipient,
-        vec![Mosaic::xpx_relative(2)],
-        message,
+        mosaic_id,
+        namespace_id,
+        AliasActionType::AliasLink,
         network_type,
     );
 
-    if let Err(err) = &transfer_transaction {
+    if let Err(err) = &alias_transaction {
         panic!("{}", err)
     }
 
-    let sig_transaction = account.sign(transfer_transaction.unwrap(), &generation_hash);
+    let sig_transaction = account.sign(alias_transaction.unwrap(), &generation_hash);
 
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,

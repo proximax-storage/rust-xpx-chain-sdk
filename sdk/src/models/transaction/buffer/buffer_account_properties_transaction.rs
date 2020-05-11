@@ -1,6 +1,5 @@
 #[allow(unused_imports, dead_code)]
 pub mod catapult {
-
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
         pub enum PropertyModificationBufferOffset {}
@@ -195,7 +194,7 @@ pub mod catapult {
             pub size_: u32,
             pub signature: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
             pub signer: Option<fb::WIPOffset<fb::Vector<'a, u8>>>,
-            pub version: u32,
+            pub version: i32,
             pub type_: u16,
             pub maxFee: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
             pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
@@ -241,7 +240,7 @@ pub mod catapult {
                 self.fbb_.push_slot_always::<fb::WIPOffset<_>>(AccountPropertiesTransactionBuffer::VT_SIGNER, signer);
             }
             #[inline]
-            pub fn add_version(&mut self, version: u32) {
+            pub fn add_version(&mut self, version: i32) {
                 self.fbb_.push_slot::<u32>(AccountPropertiesTransactionBuffer::VT_VERSION, version, 0);
             }
             #[inline]

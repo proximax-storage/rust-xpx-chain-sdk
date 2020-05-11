@@ -20,11 +20,11 @@ async fn main() {
         "C952A761C0D51940AE77EC44DE93662133B5A2E93F5DCADAB7F972FA91F5DFCD",
         PUBLIC_TEST,
     )
-    .unwrap();
+        .unwrap();
 
     let address_two = Address::from_raw("VCVF646H3M3C5CNIVWFZ734NC2WQXWYUKBGIZAB5").unwrap();
 
-    let namespace_one = NamespaceId::from_name("rust.latam.colombia").unwrap();
+    let namespace_one = NamespaceId::from_name("rustnamespace").unwrap();
 
     let namespace_two = NamespaceId::from("BFFB42A19116BDF6");
 

@@ -14,7 +14,7 @@ use crate::{
         AccountInfoDto, AccountNamesDto, MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
         TransactionDto,
     },
-    internally::{AccountTransactionsOption, valid_account_id, valid_vec_len},
+    internally::{AccountTransactionsOption, str_to_account_id, valid_vec_len},
     request as __internal_request,
     Result,
     sirius_client::ApiClient,
@@ -78,11 +78,11 @@ impl AccountRoutes
     /// Returns a Future `Result` whose okay value is an [AccountInfo] the account information or
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn account_info(self, account_id: &str) -> Result<AccountInfo> {
-        valid_account_id(account_id)?;
+        let id = str_to_account_id(account_id)?;
 
         let mut req = __internal_request::Request::new(Method::GET, ACCOUNT_ROUTE.to_string());
 
-        req = req.with_path_param("accountId".to_string(), account_id.to_string());
+        req = req.with_path_param("accountId".to_string(), id);
 
         let dto: Result<AccountInfoDto> = req.execute(self.__client()).await;
 
@@ -167,12 +167,12 @@ impl AccountRoutes
     }
 
     pub async fn account_multisig(self, account_id: &str) -> Result<MultisigAccountInfo> {
-        valid_account_id(account_id)?;
+        let id = str_to_account_id(account_id)?;
 
         let mut req =
             __internal_request::Request::new(Method::GET, MULTISIG_ACCOUNT_ROUTE.to_string());
 
-        req = req.with_path_param("accountId".to_string(), account_id.to_string());
+        req = req.with_path_param("accountId".to_string(), id);
 
         let dto: Result<MultisigAccountInfoDto> = req.execute(self.__client()).await;
 
@@ -183,14 +183,14 @@ impl AccountRoutes
         self,
         account_id: &str,
     ) -> Result<MultisigAccountGraphInfo> {
-        valid_account_id(account_id)?;
+        let id = str_to_account_id(account_id)?;
 
         let mut req = __internal_request::Request::new(
             Method::GET,
             MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE.to_string(),
         );
 
-        req = req.with_path_param("accountId".to_string(), account_id.to_string());
+        req = req.with_path_param("accountId".to_string(), id);
 
         let dto: Result<Vec<MultisigAccountGraphInfoDto>> = req.execute(self.__client()).await;
 
@@ -204,12 +204,12 @@ impl AccountRoutes
     }
 
     pub async fn account_properties(self, account_id: &str) -> Result<()> {
-        valid_account_id(account_id)?;
+        let id = str_to_account_id(account_id)?;
 
         let mut req =
             __internal_request::Request::new(Method::GET, ACCOUNT_PROPERTIES_ROUTE.to_string());
 
-        req.with_path_param("accountId".to_string(), account_id.to_string());
+        req.with_path_param("accountId".to_string(), id);
         unimplemented!()
     }
 

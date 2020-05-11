@@ -1,18 +1,15 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-
-
+use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::Account;
-use xpx_chain_sdk::mosaic::{MosaicId, MosaicSupplyType};
+use xpx_chain_sdk::alias::AliasActionType;
+use xpx_chain_sdk::namespace::NamespaceId;
 use xpx_chain_sdk::network::PUBLIC_TEST;
-use xpx_chain_sdk::sirius_client::SiriusClient;
-use xpx_chain_sdk::transaction::{Deadline, MosaicSupplyChangeTransaction};
-use xpx_chain_sdk::Uint64;
+use xpx_chain_sdk::transaction::{AddressAliasTransaction, Deadline};
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-
-const PRIVATE_KEY: &str = "6D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
+const PRIVATE_KEY: &str = "7D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
 async fn main() {
@@ -33,30 +30,32 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
-    let mosaic_supply = MosaicSupplyChangeTransaction::new(
+    let namespace_id = NamespaceId::from_name("rust").unwrap();
+
+    let alias_transaction = AddressAliasTransaction::new(
         deadline,
-        MosaicSupplyType::Increase,
-        MosaicId::from_hex("389B57CFE6FB5394").unwrap(),
-        Uint64::new(100000),
+        account.address(),
+        namespace_id,
+        AliasActionType::AliasLink,
         network_type,
     );
 
-    if let Err(err) = &mosaic_supply {
+    if let Err(err) = &alias_transaction {
         panic!("{}", err)
     }
 
-    let sig_mosaic_supply = account.sign(mosaic_supply.unwrap(), &generation_hash);
+    let sig_transaction = account.sign(
+        alias_transaction.unwrap(), &generation_hash);
 
-    if let Err(err) = &sig_mosaic_supply {
-        panic!("{}", err)
-    }
-
-    let sig_transaction = &sig_mosaic_supply.unwrap();
+    let sig_tx = match &sig_transaction {
+        Ok(sig) => sig,
+        Err(err) => panic!("{}", err),
+    };
 
     println!("Singer: \t{}", account.public_key_string());
-    println!("Hash: \t\t{}", sig_transaction.get_hash());
+    println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction_api().announce(&sig_transaction).await;
+    let response = client.transaction_api().announce(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

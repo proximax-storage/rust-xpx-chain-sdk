@@ -1,6 +1,6 @@
 use crate::models::{account::PublicAccount, network::NetworkType, uint_64::Uint64};
 
-use super::{deadline::Deadline, AbsVector, EntityTypeEnum, EntityVersion, Hash, Height};
+use super::{AbsVector, deadline::Deadline, EntityTypeEnum, EntityVersion, Hash, Height};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

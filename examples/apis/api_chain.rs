@@ -15,7 +15,7 @@ async fn main() {
 
     let blockchain_height = client.chain_api().get_blockchain_height().await;
     match blockchain_height {
-        Ok(resp) => println!("{}", resp),
+        Ok(_res) => println!("{}", _res),
         Err(err) => eprintln!("{}", err),
     }
 

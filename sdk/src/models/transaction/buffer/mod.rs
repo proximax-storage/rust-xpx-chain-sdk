@@ -1,11 +1,11 @@
 pub use self::buffer_aggregate_transaction::*;
+pub use self::buffer_alias_transaction::*;
 pub use self::buffer_lock_funds_transaction::*;
 pub use self::buffer_modify_multisig_account_transaction::*;
 pub use self::buffer_mosaic_definition_transaction::*;
 pub use self::buffer_mosaic_supply_change_transaction::*;
 pub use self::buffer_register_namespace_transaction::*;
 pub use self::buffer_transfer_transaction::*;
-pub use self::buffer_alias_transaction::*;
 
 mod buffer_aggregate_transaction;
 mod buffer_lock_funds_transaction;

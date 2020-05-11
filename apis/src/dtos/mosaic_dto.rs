@@ -100,7 +100,7 @@ pub(crate) struct MosaicDefinitionTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     signature: Option<String>,
     signer: String,
-    version: u32,
+    version: i32,
     #[serde(rename = "type")]
     _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -158,7 +158,7 @@ pub(crate) struct MosaicDefinitionDto {
 pub(crate) struct MosaicMetadataTransactionDto {
     signature: String,
     signer: String,
-    version: u32,
+    version: i32,
     #[serde(rename = "type")]
     _type: u16,
     max_fee: Uint64Dto,
@@ -230,7 +230,7 @@ impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
 pub(crate) struct MosaicSupplyChangeTransactionDto {
     signature: Option<String>,
     signer: String,
-    version: u32,
+    version: i32,
     #[serde(rename = "type")]
     _type: u16,
     max_fee: Option<Uint64Dto>,
@@ -246,7 +246,7 @@ pub(crate) struct EmbeddedMosaicMetadataTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     signer: String,
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: u32,
+    version: i32,
     #[serde(rename = "type")]
     _type: u16,
     max_fee: Uint64Dto,

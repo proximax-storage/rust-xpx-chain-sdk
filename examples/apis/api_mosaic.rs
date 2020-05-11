@@ -1,9 +1,8 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-
-
 use xpx_chain_apis::SiriusClient;
+use xpx_chain_sdk::Id;
 use xpx_chain_sdk::mosaic::MosaicId;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
@@ -28,6 +27,7 @@ async fn main() {
     let mosaic_two = MosaicId::from_hex("13bfc518e40549d7").unwrap();
     let mosaic_three = MosaicId::from_hex("6208AE4D56451357").unwrap();
 
+    println!("{:?}", mosaic_three.to_u32_array());
     let mosaics_info = client
         .mosaic_api()
         .get_mosaics_info(vec![mosaic_two.clone(), mosaic_three.clone()])

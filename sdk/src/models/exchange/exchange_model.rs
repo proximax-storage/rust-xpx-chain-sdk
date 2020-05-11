@@ -1,9 +1,11 @@
+use std::collections::HashMap;
+
+use num_enum::IntoPrimitive;
+
 use crate::models::account::PublicAccount;
 use crate::models::mosaic::{Mosaic, MosaicId};
 use crate::models::transaction::Height;
 use crate::models::uint_64::Uint64;
-use num_enum::IntoPrimitive;
-use std::collections::HashMap;
 
 type OfferInfoDTOs = Vec<OfferInfo>;
 

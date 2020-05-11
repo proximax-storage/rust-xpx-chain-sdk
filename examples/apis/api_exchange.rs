@@ -1,13 +1,12 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-
-
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::PublicAccount;
 use xpx_chain_sdk::network::PUBLIC_TEST;
 
-const NODE_URL: &str = "http://bcstage1.xpxsirius.io:3000";
+const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
+
 const PUBLIC_KEY: &str = "0A233A17473F77A6DC0FA2B707D70B370B51E7E3C47A9C6D8F74341453121726";
 
 #[tokio::main]

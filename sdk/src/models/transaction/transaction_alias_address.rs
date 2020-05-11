@@ -10,19 +10,19 @@ use crate::models::{
     errors,
     id_model::Id,
     namespace::NamespaceId,
-    network::NetworkType
+    network::NetworkType,
 };
 use crate::Result;
 
 use super::{AbstractTransaction, AbsTransaction, ADDRESS_ALIAS_VERSION, AliasTransaction,
-            Deadline, EntityTypeEnum, sign_transaction, SignedTransaction, Transaction
+            Deadline, EntityTypeEnum, sign_transaction, SignedTransaction, Transaction,
 };
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AddressAliasTransaction {
     pub alias_transaction: AliasTransaction,
-    pub address: Address
+    pub address: Address,
 }
 
 impl AddressAliasTransaction {
@@ -43,16 +43,16 @@ impl AddressAliasTransaction {
             deadline,
             ADDRESS_ALIAS_VERSION,
             EntityTypeEnum::AddressAlias,
-            network_type
+            network_type,
         );
 
         Ok(Self {
             alias_transaction: AliasTransaction {
                 abs_transaction: abs_tx,
                 action_type,
-                namespace_id
+                namespace_id,
             },
-            address
+            address,
         })
     }
 }

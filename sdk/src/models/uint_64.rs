@@ -2,6 +2,7 @@ use ::core::fmt;
 
 use byteorder::{BigEndian, WriteBytesExt};
 use failure::_core::ops::BitAnd;
+
 use utils::SIZE_U64;
 
 /// Represents a 64-bit unsigned integer.

@@ -4,6 +4,7 @@ use bytes::Bytes;
 use serde_json::Value;
 
 use sdk::{
+    account::AccountId,
     errors,
     mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     multisig::CosignatoryModification,
@@ -54,12 +55,6 @@ impl AccountTransactionsOption {
     }
 }
 
-pub(crate) fn valid_account_id(id: &str) -> Result<bool> {
-    ensure!(!id.is_empty(), errors::ERR_EMPTY_ADDRESSES_ID);
-
-    Ok(true)
-}
-
 pub(crate) fn valid_hash(hash: &str) -> Result<bool> {
     ensure!(!hash.is_empty(), errors::ERR_INVALID_HASH_HEX);
 
@@ -81,6 +76,23 @@ pub(crate) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()>
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())
+}
+
+pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
+    let mut id_format = String::new();
+
+    match id.len() {
+        64 => {
+            if !is_hex(id) {
+                bail!(errors::ERR_INVALID_ACCOUNT_ID)
+            }
+            Ok(id.to_uppercase())
+        }
+        40 | 46 => {
+            Ok(id.replace("-", "").to_uppercase())
+        }
+        _ => bail!(errors::ERR_INVALID_ACCOUNT_ID)
+    }
 }
 
 pub(crate) fn valid_vec_hash(vector: &Vec<&str>) -> Result<()> {

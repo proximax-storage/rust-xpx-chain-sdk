@@ -1,12 +1,10 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-
-
+use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::namespace::NamespaceId;
 use xpx_chain_sdk::network::PUBLIC_TEST;
-use xpx_chain_sdk::sirius_client::SiriusClient;
 use xpx_chain_sdk::transaction::{Deadline, RegisterNamespaceTransaction};
 use xpx_chain_sdk::Uint64;
 

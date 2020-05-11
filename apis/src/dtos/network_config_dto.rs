@@ -18,7 +18,7 @@ pub(crate) struct NetworkConfigBodyDto {
 pub(crate) struct NetworkConfigTransactionDto {
     pub signature: String,
     pub signer: String,
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: u16,
     pub max_fee: Uint64Dto,
@@ -31,7 +31,7 @@ pub(crate) struct NetworkConfigTransactionDto {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct EmbeddedNetworkConfigTransactionDto {
     pub signer: String,
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: u16,
     pub max_fee: Uint64Dto,

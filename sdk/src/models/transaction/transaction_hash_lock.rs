@@ -8,14 +8,14 @@ use crate::models::{
     consts::LOCK_SIZE,
     mosaic::Mosaic,
     network::NetworkType,
-    uint_64::Uint64
+    uint_64::Uint64,
 };
 use crate::Result;
 
 use super::{
     AbstractTransaction, AbsTransaction, buffer::lock_funds::buffers, Deadline, EntityTypeEnum,
     LOCK_VERSION, schema::lock_funds_transaction_schema, sign_transaction,
-    SignedTransaction, Transaction
+    SignedTransaction, Transaction,
 };
 
 #[derive(Debug, Serialize)]
@@ -44,7 +44,7 @@ impl LockFundsTransaction {
             deadline,
             LOCK_VERSION,
             EntityTypeEnum::Lock,
-            network_type
+            network_type,
         );
 
         Ok(Self { abs_transaction: abs_tx, mosaic, duration, signed_transaction: signed_tx })

@@ -91,7 +91,7 @@ pub(crate) struct ModifyMultisigAccountTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
     pub signer: String,
-    pub version: u32,
+    pub version: i32,
     #[serde(rename = "type")]
     pub _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]

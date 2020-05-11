@@ -11,6 +11,7 @@ use crate::routes::{
     node_routes_api::NodeRoutes, transaction_routes_api::TransactionRoutes,
 };
 
+#[derive(Clone)]
 pub struct SiriusClient {
     generation_hash: Hash,
     account: Box<AccountRoutes>,

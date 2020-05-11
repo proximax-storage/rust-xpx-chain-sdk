@@ -1,9 +1,7 @@
 #[allow(unused_imports, dead_code)]
 pub mod modify_multisig_account {
-
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct CosignatoryModificationBuffer<'a> {
             pub _tab: fb::Table<'a>,

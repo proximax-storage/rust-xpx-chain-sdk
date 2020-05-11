@@ -2,12 +2,12 @@ use ::core::fmt;
 
 use num_enum::IntoPrimitive;
 
-use super::MosaicId;
 use crate::models::{id_model::Id, Uint64};
-
-use super::internally::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE};
 use crate::models::errors::ERR_INVALID_MOSAIC_PROPERTY_ID;
 use crate::models::mosaic::internally::PRX_XPX_U64;
+
+use super::internally::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE};
+use super::MosaicId;
 
 pub const SUPPLY_MUTABLE: u8 = 0x01;
 pub const TRANSFERABLE: u8 = 0x02;

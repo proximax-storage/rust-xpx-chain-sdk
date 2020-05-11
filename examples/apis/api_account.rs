@@ -1,11 +1,10 @@
-
-
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::PublicAccount;
 use xpx_chain_sdk::network::PUBLIC_TEST;
 
 const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-const PUBLIC_KEY_A: &str = "7152520970CF9E1278BB2CEFAC47D50E4204B91695E187449BF12AE9D217F2DA";
+
+const PUBLIC_KEY_A: &str = "E1F5DD4850ED5C58CF552F5215B7434775F25823BDDC7AE55CB4D44CF50638A5";
 const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
 
 #[tokio::main]
@@ -20,7 +19,7 @@ async fn main() {
 
     let account_info = client.account_api().account_info(PUBLIC_KEY_A).await;
     match account_info {
-        Ok(resp) => println!("{}", resp),
+        Ok(resp) => println!("{}", resp.address.prettify()),
         Err(err) => eprintln!("{}", err),
     }
 
@@ -37,7 +36,7 @@ async fn main() {
 
     let multisig = client
         .account_api()
-        .account_multisig("VDPZJMY6D4LDBAHTAFDPZPLH5WQD4XTYHXQVFJLB")
+        .account_multisig("VDPZJM-Y6D4LD-BAHTAF-DPZPLH-5WQD4X-TYHXQV-FJLB")
         .await;
     match multisig {
         Ok(account_info) => println!("{}", account_info),

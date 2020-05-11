@@ -2,7 +2,7 @@ use crate::models::{
     account::PublicAccount,
     network::NetworkType,
     transaction::{EntityVersion, Hash, Height, Timestamp},
-    Uint64
+    Uint64,
 };
 
 #[derive(Debug, Serialize, Deserialize)]

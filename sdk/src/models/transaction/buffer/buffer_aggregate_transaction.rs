@@ -1,9 +1,7 @@
 #[allow(unused_imports, dead_code)]
 pub mod aggregate {
-
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct AggregateTransactionBuffer<'a> {
             pub _tab: fb::Table<'a>,

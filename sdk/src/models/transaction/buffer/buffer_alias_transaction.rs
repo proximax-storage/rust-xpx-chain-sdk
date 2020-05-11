@@ -1,9 +1,7 @@
 #[allow(unused_imports, dead_code)]
 pub mod alias {
-
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct AliasTransactionBuffer<'a> {
             pub _tab: fb::Table<'a>,

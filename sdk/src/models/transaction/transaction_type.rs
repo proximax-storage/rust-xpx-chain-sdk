@@ -122,7 +122,7 @@ impl From<u16> for EntityTypeEnum {
 impl core::fmt::Display for EntityTypeEnum {
     fn fmt(&self, e: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
     {
-        write!( e, "{}", self.value() )
+        write!(e, "{}", self.value())
     }
 }
 

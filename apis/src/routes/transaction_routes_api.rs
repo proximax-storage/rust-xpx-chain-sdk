@@ -81,10 +81,12 @@ impl TransactionRoutes
     pub async fn get_transaction_status(self, hash: &str) -> Result<TransactionStatus> {
         valid_hash(hash)?;
 
+        let _hash = hash.to_uppercase();
+
         let mut req =
             __internal_request::Request::new(Method::GET, TRANSACTION_STATUS_ROUTE.to_string());
 
-        req = req.with_path_param("hash".to_string(), hash.to_string());
+        req = req.with_path_param("hash".to_string(), _hash);
 
         let dto: Result<TransactionStatusDto> = req.execute(self.__client()).await;
 
@@ -188,10 +190,14 @@ impl TransactionRoutes
     /// Returns a Future `Result` whose okay value is an [Box<dyn Transaction>] for given a
     /// transactionId or hash or whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_transaction(self, transaction_id: &str) -> Result<Box<dyn Transaction>> {
+        valid_hash(&transaction_id)?;
+
+        let _id = transaction_id.to_uppercase();
+
         let mut req = __internal_request::Request::new(Method::GET, TRANSACTION_ROUTE.to_string());
 
         req = req
-            .with_path_param("transactionId".to_string(), transaction_id.to_string())
+            .with_path_param("transactionId".to_string(), _id)
             .is_transaction();
 
         let version: Box<dyn TransactionDto> = req.execute(self.__client()).await?;

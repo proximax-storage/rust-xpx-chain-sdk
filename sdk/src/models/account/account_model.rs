@@ -1,6 +1,6 @@
-use crypto::{Keypair, SecretKey};
 use rand::rngs::OsRng;
 
+use crypto::{Keypair, SecretKey};
 use utils::{is_hex, vec_u8_to_hex};
 
 use crate::{
@@ -16,6 +16,8 @@ use crate::{
 };
 
 use super::{Address, PublicAccount};
+
+pub type AccountId = String;
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
 #[derive(Debug, Clone)]
@@ -111,7 +113,6 @@ impl Account {
     }
 
     /// Signs raw data.
-
     #[inline]
     pub fn sign_data(&self, data: &[u8]) -> String {
         let sig = &self.key_pair.sign(data).to_bytes()[..];
@@ -201,9 +202,9 @@ impl From<Vec<&str>> for AccountsId {
 
         for (i, id) in ids.iter().enumerate() {
             if is_hex(id) && id.len() == 64 {
-                public_keys.push(id.to_string());
+                public_keys.push(id.to_uppercase());
             } else {
-                addresses.push(id.to_string());
+                addresses.push(id.replace("-", "").to_uppercase());
             }
 
             if i == ids.len() - 1 {
