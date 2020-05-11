@@ -1,10 +1,10 @@
+use std::collections::HashMap;
 use std::fmt;
 
 use num_enum::IntoPrimitive;
 
 use crate::models::account::PublicAccount;
 use crate::models::errors::ERR_UNKNOWN_TYPE;
-use std::collections::HashMap;
 
 /// MultisigModificationTypeEnum :
 /// The type of the modification:
@@ -14,7 +14,7 @@ use std::collections::HashMap;
 #[repr(u8)]
 pub enum MultisigModificationType {
     Add,
-    Remove
+    Remove,
 }
 
 impl MultisigModificationType {
@@ -45,7 +45,7 @@ pub struct CosignatoryModification {
 impl CosignatoryModification {
     pub fn new(
         modification_type: MultisigModificationType,
-        public_account: PublicAccount
+        public_account: PublicAccount,
     ) -> Self {
         CosignatoryModification { modification_type, public_account }
     }

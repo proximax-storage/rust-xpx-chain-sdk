@@ -6,7 +6,7 @@ use serde_json::Value;
 use crate::models::{
     account::{Account, PublicAccount},
     consts::{SIGNATURE_SIZE, SIGNER_SIZE},
-    uint_64::Uint64
+    uint_64::Uint64,
 };
 
 use super::{
@@ -34,7 +34,7 @@ pub(crate) struct AbsVector<'b> {
     pub version_vec: fb::UOffsetT,
     pub type_vec: u16,
     pub max_fee_vec: fb::WIPOffset<fb::Vector<'b, u32>>,
-    pub deadline_vec: fb::WIPOffset<fb::Vector<'b, u32>>
+    pub deadline_vec: fb::WIPOffset<fb::Vector<'b, u32>>,
 }
 
 impl<'b> AbsVector<'b> {
@@ -65,7 +65,7 @@ impl<'b> AbsVector<'b> {
             version_vec,
             type_vec: abs.transaction_type.value(),
             max_fee_vec,
-            deadline_vec
+            deadline_vec,
         }
     }
 }

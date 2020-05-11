@@ -69,7 +69,7 @@ pub(crate) fn public_key_to_address(
         &version_prefixed_ripemd160hash[..],
         &step_three_checksum[..],
     ]
-    .concat();
+        .concat();
 
     let res = base32::encode(
         RFC4648 { padding: true },

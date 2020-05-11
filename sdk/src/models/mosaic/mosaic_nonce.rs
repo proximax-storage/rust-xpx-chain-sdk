@@ -1,8 +1,8 @@
 use std::fmt;
 
 use ::hex::FromHex;
-use ::rand::rngs::OsRng;
 use ::rand::RngCore;
+use ::rand::rngs::OsRng;
 use serde::{Serialize, Serializer};
 
 use utils::{array_u8_to_u32, is_hex, u32_to_array_u8, vec_u8_to_hex};
@@ -74,8 +74,8 @@ impl fmt::Display for MosaicNonce {
 
 impl Serialize for MosaicNonce {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_u32(self.to_u32())
     }

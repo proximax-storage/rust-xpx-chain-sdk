@@ -8,8 +8,8 @@ use crate::models::{
 };
 
 use super::{
-    buffer::alias::buffers, schema::alias_transaction_schema, AbstractTransaction, Deadline,
-    EntityTypeEnum, ADDRESS_ALIAS_VERSION,
+    AbstractTransaction, ADDRESS_ALIAS_VERSION, buffer::alias::buffers, Deadline,
+    EntityTypeEnum, schema::alias_transaction_schema,
 };
 
 #[derive(Debug, Serialize)]

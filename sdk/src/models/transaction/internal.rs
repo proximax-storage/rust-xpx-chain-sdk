@@ -16,8 +16,8 @@ use crate::models::{
 };
 
 use super::{
-    buffer::{modify_multisig_account as bm, mosaic_definition},
-    AbsTransaction, AggregateTransaction, EntityVersion, SignedTransaction, Transaction,
+    AbsTransaction,
+    AggregateTransaction, buffer::{modify_multisig_account as bm, mosaic_definition}, EntityVersion, SignedTransaction, Transaction,
 };
 
 pub fn extract_version(version: u32) -> EntityVersion {

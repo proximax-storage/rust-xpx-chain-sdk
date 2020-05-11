@@ -53,8 +53,8 @@ impl fmt::Display for MosaicId {
 
 impl Serialize for MosaicId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_str(&self.to_hex())
     }

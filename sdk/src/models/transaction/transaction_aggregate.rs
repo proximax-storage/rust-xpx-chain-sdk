@@ -10,7 +10,7 @@ use crate::models::{
 };
 use crate::models::{
     account::{Account, PublicAccount},
-    consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE}
+    consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE},
 };
 use crate::Result;
 
@@ -18,7 +18,7 @@ use super::{
     AbstractTransaction, AbsTransaction, AGGREGATE_BONDED_VERSION, AGGREGATE_COMPLETED_VERSION,
     buffer::aggregate::buffers, Deadline, EntityTypeEnum,
     schema::aggregate_transaction_schema, sign_transaction, sign_transaction_with_cosignatures,
-    SignedTransaction, to_aggregate_transaction_bytes, Transaction, Transactions
+    SignedTransaction, to_aggregate_transaction_bytes, Transaction, Transactions,
 };
 
 /// AggregateTransaction:
@@ -45,7 +45,7 @@ impl AggregateTransaction {
             deadline,
             AGGREGATE_COMPLETED_VERSION,
             EntityTypeEnum::AggregateComplete,
-            network_type
+            network_type,
         );
 
         Ok(Self { abs_transaction: abs_tx, cosignatures: vec![], inner_transactions: inner_txs })
@@ -63,7 +63,7 @@ impl AggregateTransaction {
             deadline,
             AGGREGATE_BONDED_VERSION,
             EntityTypeEnum::AggregateBonded,
-            network_type
+            network_type,
         );
 
         Ok(Self { abs_transaction: abs_tx, cosignatures: vec![], inner_transactions: inner_txs })

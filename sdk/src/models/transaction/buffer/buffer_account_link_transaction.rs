@@ -2,8 +2,6 @@
 pub mod catapult {
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-
-
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct AccountLinkTransactionBuffer<'a> {
             pub _tab: fb::Table<'a>,

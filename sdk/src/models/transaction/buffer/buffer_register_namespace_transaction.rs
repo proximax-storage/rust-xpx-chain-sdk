@@ -1,9 +1,7 @@
 #[allow(unused_imports, dead_code)]
 pub mod register_namespace {
-
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct RegisterNamespaceTransactionBuffer<'a> {
             pub _tab: fb::Table<'a>,

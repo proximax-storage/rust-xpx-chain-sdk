@@ -22,7 +22,7 @@ use super::{
     MOSAIC_DEFINITION_VERSION,
     schema::mosaic_definition_transaction_schema,
     SignedTransaction,
-    Transaction
+    Transaction,
 };
 
 #[derive(Debug, Serialize)]
@@ -31,7 +31,7 @@ pub struct MosaicDefinitionTransaction {
     pub abs_transaction: AbstractTransaction,
     pub properties: MosaicProperties,
     pub mosaic_nonce: MosaicNonce,
-    pub mosaic_id: MosaicId
+    pub mosaic_id: MosaicId,
 }
 
 impl MosaicDefinitionTransaction {
@@ -46,12 +46,12 @@ impl MosaicDefinitionTransaction {
             deadline,
             MOSAIC_DEFINITION_VERSION,
             EntityTypeEnum::MosaicDefinition,
-            network_type
+            network_type,
         );
 
         let mosaic_id = MosaicId::from_nonce_and_owner(
             nonce.clone(),
-            owner_public_account
+            owner_public_account,
         );
 
         Ok(Self { abs_transaction: abs_tx, properties, mosaic_nonce: nonce, mosaic_id })
@@ -95,7 +95,7 @@ impl Transaction for MosaicDefinitionTransaction {
 
         let mosaic_vec = builder.create_vector(&self.mosaic_id.to_u32_array());
         let property_vec = mosaic_property_array_to_buffer(
-            &mut builder, self.properties.clone().optional_properties
+            &mut builder, self.properties.clone().optional_properties,
         );
 
         let abs_vector = self.abs_transaction.build_vector(&mut builder);

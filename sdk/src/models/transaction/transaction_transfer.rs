@@ -14,8 +14,8 @@ use crate::models::{
 use crate::Result;
 
 use super::{
-    buffer::transfer::buffers, deadline::Deadline, internal::sign_transaction,
-    schema::transfer_transaction_schema, AbsTransaction, AbstractTransaction, EntityTypeEnum,
+    AbstractTransaction, AbsTransaction, buffer::transfer::buffers,
+    deadline::Deadline, EntityTypeEnum, internal::sign_transaction, schema::transfer_transaction_schema,
     SignedTransaction, Transaction, TRANSFER_VERSION,
 };
 

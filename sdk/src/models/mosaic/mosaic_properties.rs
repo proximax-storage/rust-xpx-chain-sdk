@@ -1,5 +1,5 @@
-use crate::models::Uint64;
 use crate::models::mosaic::MosaicPropertyId;
+use crate::models::Uint64;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicProperty {
@@ -28,7 +28,7 @@ pub struct MosaicProperties {
 
     pub duration: Uint64,
 
-    pub optional_properties: Vec<MosaicProperty>
+    pub optional_properties: Vec<MosaicProperty>,
 }
 
 impl MosaicProperties {
@@ -49,7 +49,7 @@ impl MosaicProperties {
             transferable,
             divisibility,
             duration,
-            optional_properties: properties
+            optional_properties: properties,
         })
     }
 }
@@ -62,7 +62,7 @@ impl Default for MosaicProperties {
             transferable: true,
             divisibility: 0,
             duration: Uint64::default(),
-            optional_properties: vec![]
+            optional_properties: vec![],
         }
     }
 }

@@ -1,6 +1,7 @@
 // Accounts errors
 pub static ERR_EMPTY_ADDRESSES_IDS: &str = "list of addresses should not be empty";
 pub static ERR_EMPTY_ADDRESSES_ID: &str = "account_id is empty";
+pub static ERR_INVALID_ACCOUNT_ID: &str = "Invalid account_id";
 pub static ERR_EMPTY_ADDRESSES: &str = "address string must not be empty.";
 pub static ERR_INVALID_ADDRESSES_LEN: &str = "Invalid len address.";
 pub static ERR_INVALID_ADDRESSES_HEX: &str = "Invalid Address it's not hex.";

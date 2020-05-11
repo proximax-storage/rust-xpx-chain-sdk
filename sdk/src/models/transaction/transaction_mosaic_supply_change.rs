@@ -9,7 +9,7 @@ use crate::models::{
     id_model::Id,
     mosaic::MosaicSupplyType,
     network::NetworkType,
-    uint_64::Uint64
+    uint_64::Uint64,
 };
 use crate::Result;
 
@@ -23,7 +23,7 @@ use super::{
     MOSAIC_SUPPLY_CHANGE_VERSION,
     schema::mosaic_supply_change_transaction_schema,
     SignedTransaction,
-    Transaction
+    Transaction,
 };
 
 #[derive(Debug, Serialize)]
@@ -32,7 +32,7 @@ pub struct MosaicSupplyChangeTransaction {
     pub abs_transaction: AbstractTransaction,
     pub supply_type: MosaicSupplyType,
     pub asset_id: Box<dyn Id>,
-    pub delta: Uint64
+    pub delta: Uint64,
 }
 
 impl MosaicSupplyChangeTransaction {
@@ -47,7 +47,7 @@ impl MosaicSupplyChangeTransaction {
             deadline,
             MOSAIC_SUPPLY_CHANGE_VERSION,
             EntityTypeEnum::MosaicSupplyChange,
-            network_type
+            network_type,
         );
 
         let id = Box::new(asset_id);

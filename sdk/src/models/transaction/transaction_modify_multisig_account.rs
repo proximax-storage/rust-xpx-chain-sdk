@@ -7,7 +7,7 @@ use crate::models::{
     consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE},
     errors::ERR_EMPTY_MODIFICATIONS,
     multisig::CosignatoryModification,
-    network::NetworkType
+    network::NetworkType,
 };
 use crate::Result;
 
@@ -15,7 +15,7 @@ use super::{
     AbstractTransaction, AbsTransaction, buffer::modify_multisig_account::buffers,
     cosignatory_modification_array_to_buffer, Deadline, EntityTypeEnum, MODIFY_MULTISIG_VERSION,
     schema::modify_multisig_account_transaction_schema, sign_transaction, SignedTransaction,
-    Transaction
+    Transaction,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -24,7 +24,7 @@ pub struct ModifyMultisigAccountTransaction {
     pub abs_transaction: AbstractTransaction,
     pub min_removal_delta: i8,
     pub min_approval_delta: i8,
-    pub modifications: Vec<CosignatoryModification>
+    pub modifications: Vec<CosignatoryModification>,
 }
 
 impl ModifyMultisigAccountTransaction {
@@ -32,7 +32,7 @@ impl ModifyMultisigAccountTransaction {
                min_approval_delta: i8,
                min_removal_delta: i8,
                modifications: Vec<CosignatoryModification>,
-               network_type: NetworkType
+               network_type: NetworkType,
     ) -> Result<Self> {
         ensure!(
         modifications.len() != 0 &&

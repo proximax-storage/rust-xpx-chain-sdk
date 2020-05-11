@@ -11,21 +11,21 @@ use crate::models::{
     id_model::Id,
     mosaic::MosaicId,
     namespace::NamespaceId,
-    network::NetworkType
+    network::NetworkType,
 };
 use crate::Result;
 
 use super::{
     AbstractTransaction, AbsTransaction, AliasTransaction,
     Deadline, EntityTypeEnum, MOSAIC_ALIAS_VERSION, sign_transaction,
-    SignedTransaction, Transaction
+    SignedTransaction, Transaction,
 };
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicAliasTransaction {
     pub alias_transaction: AliasTransaction,
-    pub mosaic_id: MosaicId
+    pub mosaic_id: MosaicId,
 }
 
 impl MosaicAliasTransaction {
@@ -46,16 +46,16 @@ impl MosaicAliasTransaction {
             deadline,
             MOSAIC_ALIAS_VERSION,
             EntityTypeEnum::MosaicAlias,
-            network_type
+            network_type,
         );
 
         Ok(Self {
             alias_transaction: AliasTransaction {
                 abs_transaction: abs_tx,
                 action_type,
-                namespace_id
+                namespace_id,
             },
-            mosaic_id
+            mosaic_id,
         })
     }
 }

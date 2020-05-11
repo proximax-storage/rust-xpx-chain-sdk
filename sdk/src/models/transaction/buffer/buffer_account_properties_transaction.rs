@@ -1,6 +1,5 @@
 #[allow(unused_imports, dead_code)]
 pub mod catapult {
-
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
         pub enum PropertyModificationBufferOffset {}

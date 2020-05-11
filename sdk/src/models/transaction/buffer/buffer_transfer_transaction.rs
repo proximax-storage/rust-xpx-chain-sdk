@@ -1,9 +1,7 @@
 #[allow(unused_imports, dead_code)]
 pub mod transfer {
-
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct MessageBuffer<'a> {
             pub _tab: fb::Table<'a>,

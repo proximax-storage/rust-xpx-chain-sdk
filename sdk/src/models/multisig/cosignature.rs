@@ -1,5 +1,6 @@
-use crypto::Keypair;
 use failure;
+
+use crypto::Keypair;
 
 use crate::models::{
     account::Account,

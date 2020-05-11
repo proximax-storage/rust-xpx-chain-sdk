@@ -3,8 +3,8 @@ use ::base32::Alphabet::RFC4648;
 use crate::models::consts::{ADDRESS_DECODE_SIZE, ADDRESS_ENCODE_SIZE};
 use crate::models::errors;
 use crate::models::network::*;
-use crate::utils::is_hex;
 use crate::Result;
+use crate::utils::is_hex;
 
 const PREFIX_MIJIN: char = 'M';
 const PREFIX_MIJIN_TEST: char = 'S';

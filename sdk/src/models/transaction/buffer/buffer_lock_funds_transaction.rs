@@ -1,9 +1,7 @@
 #[allow(unused_imports, dead_code)]
 pub mod lock_funds {
-
     #[allow(unused_imports, dead_code)]
     pub mod buffers {
-
         #[derive(Copy, Clone, Debug, PartialEq)]
         pub struct LockFundsTransactionBuffer<'a> {
             pub _tab: fb::Table<'a>,

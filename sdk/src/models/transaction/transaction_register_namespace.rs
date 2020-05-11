@@ -10,7 +10,7 @@ use crate::models::{
     id_model::Id,
     namespace::{generate_namespace_id, NamespaceId, NamespaceType},
     network::NetworkType,
-    uint_64::Uint64
+    uint_64::Uint64,
 };
 use crate::Result;
 
@@ -24,7 +24,7 @@ use super::{
     REGISTER_NAMESPACE_VERSION,
     schema::register_namespace_transaction_schema,
     SignedTransaction,
-    Transaction
+    Transaction,
 };
 
 #[derive(Debug, Serialize)]
@@ -37,7 +37,7 @@ pub struct RegisterNamespaceTransaction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<Uint64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub parent_id: Option<NamespaceId>
+    pub parent_id: Option<NamespaceId>,
 }
 
 impl RegisterNamespaceTransaction {
@@ -66,7 +66,7 @@ impl RegisterNamespaceTransaction {
             namespace_id,
             name: namespace_name.parse().unwrap(),
             duration: Some(duration),
-            parent_id: None
+            parent_id: None,
         })
     }
 
@@ -100,7 +100,7 @@ impl RegisterNamespaceTransaction {
             namespace_id,
             name: namespace_name.parse().unwrap(),
             duration: None,
-            parent_id: Some(parent_id)
+            parent_id: Some(parent_id),
         })
     }
 }
