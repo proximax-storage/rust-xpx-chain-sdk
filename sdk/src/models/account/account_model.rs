@@ -201,10 +201,12 @@ impl From<Vec<&str>> for AccountsId {
         let mut accounts = AccountsId::default();
 
         for (i, id) in ids.iter().enumerate() {
-            if is_hex(id) && id.len() == 64 {
-                public_keys.push(id.to_uppercase());
+            let _id = id.trim();
+
+            if is_hex(_id) && _id.len() == 64 {
+                public_keys.push(_id.to_uppercase());
             } else {
-                addresses.push(id.replace("-", "").to_uppercase());
+                addresses.push(_id.replace("-", "").to_uppercase());
             }
 
             if i == ids.len() - 1 {

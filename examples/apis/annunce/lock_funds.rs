@@ -4,7 +4,6 @@
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::mosaic::Mosaic;
-use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::transaction::{
     Deadline, Duration, EntityTypeEnum, LockFundsTransaction, SignedTransaction,
 };
@@ -22,8 +21,8 @@ async fn main() {
 
     let generation_hash = client.generation_hash();
 
-    // let network_type = client.network_type().await;
-    let network_type = PUBLIC_TEST;
+    // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
+    let network_type = client.network_type();
 
     // Deadline default 1 hour
     // let deadline = Deadline::new(1, 0, 0);
@@ -57,7 +56,10 @@ async fn main() {
     println!("Singer: \t{}", account.public_key_string());
     println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction_api().announce(&sig_tx).await;
+    let response = client
+        .transaction_api()
+        .announce(&sig_tx)
+        .await;
 
     match response {
         Ok(resp) => println!("{}", resp),

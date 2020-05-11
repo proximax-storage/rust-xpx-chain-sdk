@@ -32,8 +32,8 @@ async fn main() {
 
     let generation_hash = client.generation_hash();
 
-    // let network_type = client.network_type().await;
-    let network_type = PUBLIC_TEST;
+    // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
+    let network_type = client.network_type();
 
     // Deadline default 1 hour
     let deadline = Deadline::default();
@@ -129,7 +129,11 @@ async fn lock_fund(
     println!("Singer Lock: \t{}", account.public_key_string());
     println!("Hash Lock: \t\t{}", &sig_tx.get_hash());
 
-    let response = client.transaction_api().announce(&sig_tx).await;
+    let response = client
+        .transaction_api()
+        .announce(&sig_tx)
+        .await;
+
     match response {
         Ok(resp) => println!("{}\n", resp),
         Err(err) => panic!("{}\n", err),
@@ -141,6 +145,7 @@ async fn lock_fund(
             .transaction_api()
             .get_transaction_status(&sig_tx.get_hash())
             .await;
+
         if let Ok(status) = response {
             if !status.is_success() {
                 bail!("{}", status.status)

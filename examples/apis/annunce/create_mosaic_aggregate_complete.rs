@@ -4,7 +4,6 @@
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::mosaic::{MosaicNonce, MosaicProperties, MosaicSupplyType};
-use xpx_chain_sdk::network::PUBLIC_TEST;
 use xpx_chain_sdk::transaction::{
     AggregateTransaction, Deadline, MosaicDefinitionTransaction, MosaicSupplyChangeTransaction,
     Transaction,
@@ -24,8 +23,8 @@ async fn main() {
 
     let generation_hash = client.generation_hash();
 
-    // let network_type = client.network_type().await;
-    let network_type = PUBLIC_TEST;
+    // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
+    let network_type = client.network_type();
 
     // Deadline default 1 hour
     let deadline = Deadline::default();
@@ -37,7 +36,12 @@ async fn main() {
         deadline,
         MosaicNonce::random(),
         account.public_account_to_owned(),
-        MosaicProperties::new(true, true, 6, Uint64::new(0)).unwrap(),
+        MosaicProperties::new(
+            true,
+            true,
+            6,
+            Uint64::new(0),
+        ).unwrap(),
         network_type,
     );
 
@@ -80,7 +84,10 @@ async fn main() {
     );
     println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction_api().announce(&sig_tx).await;
+    let response = client
+        .transaction_api()
+        .announce(&sig_tx)
+        .await;
 
     match response {
         Ok(resp) => println!("{}", resp),

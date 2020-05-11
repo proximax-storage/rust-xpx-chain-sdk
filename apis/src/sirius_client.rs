@@ -11,16 +11,25 @@ use crate::routes::{
     node_routes_api::NodeRoutes, transaction_routes_api::TransactionRoutes,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub struct SiriusClient {
     generation_hash: Hash,
+    network_type: NetworkType,
+    #[serde(skip_serializing)]
     account: Box<AccountRoutes>,
+    #[serde(skip_serializing)]
     block: Box<BlockRoutes>,
+    #[serde(skip_serializing)]
     chain: Box<ChainRoutes>,
+    #[serde(skip_serializing)]
     exchange: Box<ExchangeRoutes>,
+    #[serde(skip_serializing)]
     node: Box<NodeRoutes>,
+    #[serde(skip_serializing)]
     mosaic: Box<MosaicRoutes>,
+    #[serde(skip_serializing)]
     namespace: Box<NamespaceRoutes>,
+    #[serde(skip_serializing)]
     transaction: Box<TransactionRoutes>,
 }
 
@@ -67,6 +76,7 @@ impl SiriusClient
 
         Box::new(SiriusClient {
             generation_hash: "".to_string(),
+            network_type: Default::default(),
             account: Box::new(AccountRoutes::new(rc.to_owned())),
             block: Box::new(BlockRoutes::new(rc.to_owned())),
             chain: Box::new(ChainRoutes::new(rc.to_owned())),
@@ -78,24 +88,22 @@ impl SiriusClient
         })
     }
 
-    fn __generation_hash(&self) -> impl Future<Output=super::Result<String>> + '_ {
-        let client = self.block_api();
-        async {
-            let block_info = client.get_block_by_height(1).await;
-            match block_info {
-                Ok(hash) => Ok(hash.generation_hash),
-                Err(err) => Err(err),
+    async fn __generation_info(&mut self) -> super::Result<()> {
+        let block_info = self.block_api().get_block_by_height(1).await;
+        match block_info {
+            Ok(info) => {
+                self.generation_hash = info.generation_hash;
+                self.network_type = info.network_type;
+                Ok(())
             }
+            Err(err) => Err(err),
         }
     }
 
     pub async fn new(url: &'static str) -> super::Result<Box<Self>> {
         let mut api = Self::__internal(url);
+        api.__generation_info().await?;
 
-        let generation_hash = api.__generation_hash().await?;
-        if !generation_hash.is_empty() {
-            api.generation_hash = generation_hash
-        };
         Ok(api)
     }
 
@@ -103,15 +111,16 @@ impl SiriusClient
         self.generation_hash.to_string()
     }
 
-    pub fn network_type(&self) -> impl Future<Output=NetworkType> + '_ {
-        let client = self.node.clone();
-        async {
-            let block_info = client.get_node_info().await;
-            match block_info {
-                Ok(node) => NetworkType::from(node.network_identifier),
-                Err(err) => panic!("{:?}", err),
-            }
-        }
+    pub fn network_type(&self) -> NetworkType {
+        self.network_type
+    }
+}
+
+impl core::fmt::Display for SiriusClient {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f, "{}", serde_json::to_string_pretty(self).unwrap_or_default()
+        )
     }
 }
 
@@ -133,3 +142,4 @@ impl ApiClient
         }
     }
 }
+

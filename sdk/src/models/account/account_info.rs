@@ -44,7 +44,7 @@ impl AccountInfo {
     }
 }
 
-impl<'a> core::fmt::Display for AccountInfo {
+impl core::fmt::Display for AccountInfo {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f, "{}",
