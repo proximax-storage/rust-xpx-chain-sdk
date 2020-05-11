@@ -10,7 +10,7 @@ use sdk::{
     multisig::CosignatoryModification,
     network::NetworkType,
     Result,
-    transaction::EntityTypeEnum as Entity, Uint64,
+    transaction::{Hash, EntityTypeEnum as Entity}, Uint64,
 };
 use utils::is_hex;
 
@@ -55,19 +55,21 @@ impl AccountTransactionsOption {
     }
 }
 
-pub(crate) fn valid_hash(hash: &str) -> Result<bool> {
-    ensure!(!hash.is_empty(), errors::ERR_INVALID_HASH_HEX);
+pub(crate) fn str_to_hash(hash: &str) -> Result<Hash> {
+    let raw_hash = hash.trim().to_uppercase();
 
-    ensure!(is_hex(hash), "{} {}.", errors::ERR_INVALID_HASH_HEX, hash);
+    ensure!(!raw_hash.is_empty(), errors::ERR_INVALID_HASH_HEX);
+
+    ensure!(is_hex(&raw_hash), "{} {}.", errors::ERR_INVALID_HASH_HEX, raw_hash);
 
     ensure!(
-        hash.len() == 64,
+        raw_hash.len() == 64,
         "{} {}.",
         errors::ERR_INVALID_HASH_LENGTH,
-        hash
+        raw_hash
     );
 
-    Ok(true)
+    Ok(raw_hash)
 }
 
 pub(crate) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()>
@@ -81,7 +83,7 @@ pub(crate) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()>
 pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
     let mut id_format = String::new();
 
-    match id.len() {
+    match id.trim().len() {
         64 => {
             if !is_hex(id) {
                 bail!(errors::ERR_INVALID_ACCOUNT_ID)
@@ -89,7 +91,7 @@ pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
             Ok(id.to_uppercase())
         }
         40 | 46 => {
-            Ok(id.replace("-", "").to_uppercase())
+            Ok(id.to_uppercase().replace("-", ""))
         }
         _ => bail!(errors::ERR_INVALID_ACCOUNT_ID)
     }
@@ -97,7 +99,7 @@ pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
 
 pub(crate) fn valid_vec_hash(vector: &Vec<&str>) -> Result<()> {
     for hash in vector {
-        valid_hash(hash)?;
+        str_to_hash(hash)?;
     }
     Ok(())
 }

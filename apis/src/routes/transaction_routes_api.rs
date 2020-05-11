@@ -16,7 +16,7 @@ use sdk::{
 
 use crate::{
     dtos::{TransactionDto, TransactionStatusDto},
-    internally::{valid_hash, valid_vec_hash, valid_vec_len},
+    internally::{str_to_hash, valid_vec_hash, valid_vec_len},
     request as __internal_request,
     Result,
     sirius_client::ApiClient,
@@ -79,14 +79,11 @@ impl TransactionRoutes
     /// Returns a Future `Result` whose okay value is an [TransactionStatus] for a given hash or
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_transaction_status(self, hash: &str) -> Result<TransactionStatus> {
-        valid_hash(hash)?;
-
-        let _hash = hash.to_uppercase();
 
         let mut req =
             __internal_request::Request::new(Method::GET, TRANSACTION_STATUS_ROUTE.to_string());
 
-        req = req.with_path_param("hash".to_string(), _hash);
+        req = req.with_path_param("hash".to_string(), str_to_hash(hash)?);
 
         let dto: Result<TransactionStatusDto> = req.execute(self.__client()).await;
 
@@ -190,14 +187,11 @@ impl TransactionRoutes
     /// Returns a Future `Result` whose okay value is an [Box<dyn Transaction>] for given a
     /// transactionId or hash or whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_transaction(self, transaction_id: &str) -> Result<Box<dyn Transaction>> {
-        valid_hash(&transaction_id)?;
-
-        let _id = transaction_id.to_uppercase();
 
         let mut req = __internal_request::Request::new(Method::GET, TRANSACTION_ROUTE.to_string());
 
         req = req
-            .with_path_param("transactionId".to_string(), _id)
+            .with_path_param("transactionId".to_string(),  str_to_hash(&transaction_id)?)
             .is_transaction();
 
         let version: Box<dyn TransactionDto> = req.execute(self.__client()).await?;

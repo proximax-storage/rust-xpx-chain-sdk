@@ -9,7 +9,7 @@ impl From<Vec<&str>> for TransactionHashes {
     fn from(e: Vec<&str>) -> Self {
         let mut ids = TransactionHashes::default();
         for id in e {
-            ids.hashes.push(id.to_uppercase())
+            ids.hashes.push(id.trim().to_uppercase())
         }
         return ids;
     }
