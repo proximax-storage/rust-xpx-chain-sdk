@@ -26,6 +26,7 @@ async fn main() {
         .account_api()
         .partial_transactions(&account.public_account, None, None, None)
         .await;
+
     match partial {
         Ok(tx) => {
             for tx_partial in tx.into_iter() {
@@ -36,7 +37,9 @@ async fn main() {
                     panic!(err)
                 }
 
-                let signed = account.sign_cosignature_transaction(cosigner_tx.unwrap());
+                let signed = account
+                    .sign_cosignature_transaction(cosigner_tx.unwrap());
+
                 let signed_transaction = match signed {
                     Ok(resp) => resp,
                     Err(err) => panic!("{}", err),
@@ -46,6 +49,7 @@ async fn main() {
                     .transaction_api()
                     .announce_aggregate_bonded_cosignature(&signed_transaction)
                     .await;
+
                 match announce {
                     Ok(resp) => println!("{} \n", resp),
                     Err(err) => panic!("{}", err),

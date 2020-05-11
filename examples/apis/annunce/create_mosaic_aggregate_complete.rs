@@ -36,7 +36,12 @@ async fn main() {
         deadline,
         MosaicNonce::random(),
         account.public_account_to_owned(),
-        MosaicProperties::new(true, true, 6, Uint64::new(0)).unwrap(),
+        MosaicProperties::new(
+            true,
+            true,
+            6,
+            Uint64::new(0),
+        ).unwrap(),
         network_type,
     );
 
@@ -79,7 +84,10 @@ async fn main() {
     );
     println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction_api().announce(&sig_tx).await;
+    let response = client
+        .transaction_api()
+        .announce(&sig_tx)
+        .await;
 
     match response {
         Ok(resp) => println!("{}", resp),

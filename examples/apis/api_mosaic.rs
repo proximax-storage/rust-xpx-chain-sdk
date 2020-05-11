@@ -17,7 +17,10 @@ async fn main() {
 
     let mosaic_one = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
 
-    let mosaic_info = client.mosaic_api().get_mosaic_info(mosaic_one).await;
+    let mosaic_info = client
+        .mosaic_api()
+        .get_mosaic_info(mosaic_one)
+        .await;
 
     match mosaic_info {
         Ok(resp) => println!("{}", resp),

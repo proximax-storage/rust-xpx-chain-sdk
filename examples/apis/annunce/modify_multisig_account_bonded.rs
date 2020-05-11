@@ -162,6 +162,7 @@ async fn lock_fund(
             .transaction_api()
             .get_transaction_status(&sig_tx.get_hash())
             .await;
+
         if let Ok(status) = response {
             if !status.is_success() {
                 bail!("{}", status.status)

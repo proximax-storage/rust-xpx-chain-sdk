@@ -20,10 +20,11 @@ async fn main() {
     let address_one = Address::from_public_key(
         "C952A761C0D51940AE77EC44DE93662133B5A2E93F5DCADAB7F972FA91F5DFCD",
         network_type,
-    )
-        .unwrap();
+    ).unwrap();
 
-    let address_two = Address::from_raw("VCVF646H3M3C5CNIVWFZ734NC2WQXWYUKBGIZAB5").unwrap();
+    let address_two = Address::from_raw(
+        "VCVF646H3M3C5CNIVWFZ734NC2WQXWYUKBGIZAB5"
+    ).unwrap();
 
     let namespace_one = NamespaceId::from_name("rustnamespace").unwrap();
 
@@ -33,6 +34,7 @@ async fn main() {
         .namespace_api()
         .get_namespace_info(namespace_one)
         .await;
+
     match namespace_info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
@@ -42,6 +44,7 @@ async fn main() {
         .namespace_api()
         .get_namespaces_from_account(address_one.clone(), None, None)
         .await;
+
     match from_account {
         Ok(namespaces) => namespaces
             .iter()
@@ -53,6 +56,7 @@ async fn main() {
         .namespace_api()
         .get_namespaces_names(vec![namespace_one, namespace_two])
         .await;
+
     match namespaces_names {
         Ok(namespaces) => namespaces
             .iter()
@@ -64,6 +68,7 @@ async fn main() {
         .namespace_api()
         .get_namespaces_from_accounts(vec![&address_one.address, &address_two.address], None, None)
         .await;
+
     match namespaces_accounts {
         Ok(namespaces) => namespaces
             .iter()

@@ -18,12 +18,16 @@ async fn main() {
 
     let network_type = client.network_type();
 
-    let public_account = PublicAccount::from_public_key(PUBLIC_KEY, network_type).unwrap();
+    let public_account = PublicAccount::from_public_key(
+        PUBLIC_KEY,
+        network_type,
+    ).unwrap();
 
     let node_info = client
         .exchange_api()
         .get_account_exchange_info(public_account)
         .await;
+
     match node_info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),

@@ -16,9 +16,15 @@ async fn main() {
 
     let network_type = client.network_type();
 
-    let public_account = PublicAccount::from_public_key(PUBLIC_KEY_A, network_type).unwrap();
+    let public_account = PublicAccount::from_public_key(
+        PUBLIC_KEY_A,
+        network_type,
+    ).unwrap();
 
-    let account_info = client.account_api().account_info(PUBLIC_KEY_A).await;
+    let account_info = client
+        .account_api()
+        .account_info(PUBLIC_KEY_A)
+        .await;
     match account_info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
@@ -28,6 +34,7 @@ async fn main() {
         .account_api()
         .accounts_info(vec![PUBLIC_KEY_A, PUBLIC_KEY_B])
         .await;
+
     match accounts_info {
         Ok(accounts) => accounts
             .iter()
@@ -39,6 +46,7 @@ async fn main() {
         .account_api()
         .account_multisig("VDPZJM-Y6D4LD-BAHTAF-DPZPLH-5WQD4X-TYHXQV-FJLB")
         .await;
+
     match multisig {
         Ok(account_info) => println!("{}", account_info),
         Err(err) => eprintln!("{}", err),
@@ -48,6 +56,7 @@ async fn main() {
         .account_api()
         .account_multisig_graph("VDPZJMY6D4LDBAHTAFDPZPLH5WQD4XTYHXQVFJLB")
         .await;
+
     match multisig {
         Ok(account_info) => println!("{}", account_info),
         Err(err) => eprintln!("{}", err),
@@ -57,6 +66,7 @@ async fn main() {
         .account_api()
         .transactions(&public_account, None, None, Some("id"))
         .await;
+
     match accounts_transactions {
         Ok(accounts) => accounts
             .iter()
@@ -68,6 +78,7 @@ async fn main() {
         .account_api()
         .accounts_names(vec![PUBLIC_KEY_A, PUBLIC_KEY_B])
         .await;
+
     match accounts_names {
         Ok(account_names) => account_names
             .into_iter()

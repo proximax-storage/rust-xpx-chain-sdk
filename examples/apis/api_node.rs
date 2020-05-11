@@ -13,13 +13,21 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    let node_info = client.node_api().get_node_info().await;
+    let node_info = client
+        .node_api()
+        .get_node_info()
+        .await;
+
     match node_info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
     }
 
-    let node_time = client.node_api().get_node_time().await;
+    let node_time = client
+        .node_api()
+        .get_node_time()
+        .await;
+
     match node_time {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),

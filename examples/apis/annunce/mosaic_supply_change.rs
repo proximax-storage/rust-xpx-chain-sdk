@@ -53,7 +53,10 @@ async fn main() {
     println!("Singer: \t{}", account.public_key_string());
     println!("Hash: \t\t{}", sig_transaction.get_hash());
 
-    let response = client.transaction_api().announce(&sig_transaction).await;
+    let response = client
+        .transaction_api()
+        .announce(&sig_transaction)
+        .await;
 
     match response {
         Ok(resp) => println!("{}", resp),

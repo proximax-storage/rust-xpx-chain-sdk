@@ -13,7 +13,11 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    let block_by_height = client.block_api().get_block_by_height(1).await;
+    let block_by_height = client
+        .block_api()
+        .get_block_by_height(1)
+        .await;
+
     match block_by_height {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
@@ -23,6 +27,7 @@ async fn main() {
         .block_api()
         .get_blocks_by_height_with_limit(1, 25)
         .await;
+
     match blocks_by_height_with_limit {
         Ok(blocks) => blocks
             .iter()
@@ -34,6 +39,7 @@ async fn main() {
         .block_api()
         .get_block_transactions(929413, None, None)
         .await;
+
     match block_transactions {
         Ok(transactions) => transactions
             .iter()
