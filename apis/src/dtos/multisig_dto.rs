@@ -15,13 +15,13 @@ use super::{
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MultisigDto {
-    pub account: String,
+    account: String,
     #[serde(rename = "accountAddress", skip_serializing_if = "Option::is_none")]
-    pub account_address: Option<String>,
-    pub min_approval: i32,
-    pub min_removal: i32,
-    pub cosignatories: Vec<String>,
-    pub multisig_accounts: Vec<String>,
+    account_address: Option<String>,
+    min_approval: i32,
+    min_removal: i32,
+    cosignatories: Vec<String>,
+    multisig_accounts: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -29,7 +29,7 @@ pub(crate) struct MultisigAccountGraphInfoDto {
     #[serde(rename = "level")]
     pub level: i16,
     #[serde(rename = "multisigEntries")]
-    pub multisig_entries: Vec<MultisigAccountInfoDto>,
+    multisig_entries: Vec<MultisigAccountInfoDto>,
 }
 
 impl MultisigAccountGraphInfoDto {
@@ -45,7 +45,7 @@ impl MultisigAccountGraphInfoDto {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct MultisigAccountInfoDto {
     #[serde(rename = "multisig")]
-    pub multisig: MultisigDto,
+    multisig: MultisigDto,
 }
 
 impl MultisigAccountInfoDto {
@@ -80,8 +80,8 @@ impl MultisigAccountInfoDto {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ModifyMultisigAccountTransactionInfoDto {
-    pub meta: TransactionMetaDto,
-    pub transaction: ModifyMultisigAccountTransactionDto,
+    meta: TransactionMetaDto,
+    transaction: ModifyMultisigAccountTransactionDto,
 }
 
 /// ModifyMultisigAccountTransactionDto : Transaction that creates or modifies a multisig account.
@@ -89,18 +89,18 @@ pub(crate) struct ModifyMultisigAccountTransactionInfoDto {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ModifyMultisigAccountTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub signature: Option<String>,
-    pub signer: String,
-    pub version: i32,
+    signature: Option<String>,
+    signer: String,
+    version: u32,
     #[serde(rename = "type")]
-    pub _type: u16,
+    _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_fee: Option<Uint64Dto>,
+    max_fee: Option<Uint64Dto>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub deadline: Option<Uint64Dto>,
-    pub min_removal_delta: i8,
-    pub min_approval_delta: i8,
-    pub modifications: Vec<CosignatoryModificationDto>,
+    deadline: Option<Uint64Dto>,
+    min_removal_delta: i8,
+    min_approval_delta: i8,
+    modifications: Vec<CosignatoryModificationDto>,
 }
 
 #[typetag::serde]

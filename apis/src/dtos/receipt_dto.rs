@@ -36,7 +36,7 @@ pub enum ReceiptTypeEnum {
 pub struct ReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
-    pub version: i32,
+    pub version: u32,
     #[serde(rename = "type")]
     pub _type: ReceiptTypeEnum,
 }
@@ -45,17 +45,17 @@ pub struct ReceiptDto {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct InflationReceiptDto {
     /// The version of the receipt.
-    pub version: i32,
+    version: u32,
     #[serde(rename = "type")]
-    pub _type: ReceiptTypeEnum,
-    pub mosaic_id: Vec<i32>,
-    pub amount: Vec<i32>,
+    _type: ReceiptTypeEnum,
+    mosaic_id: Vec<i32>,
+    amount: Vec<i32>,
 }
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct InflationReceiptDtoAllOf {
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Vec<i32>,
+    mosaic_id: Vec<i32>,
     #[serde(rename = "amount")]
-    pub amount: Vec<i32>,
+    amount: Vec<i32>,
 }

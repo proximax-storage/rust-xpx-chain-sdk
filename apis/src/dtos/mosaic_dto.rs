@@ -67,9 +67,9 @@ struct MosaicMetaDto {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicMetadataDto {
-    pub metadata_type: i32,
-    pub fields: Vec<FieldDto>,
-    pub metadata_id: Uint64Dto,
+    metadata_type: i32,
+    fields: Vec<FieldDto>,
+    metadata_id: Uint64Dto,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -89,8 +89,8 @@ pub(crate) struct MosaicMetadataInfoDto {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicDefinitionTransactionInfoDto {
-    pub meta: TransactionMetaDto,
-    pub transaction: MosaicDefinitionTransactionDto,
+    meta: TransactionMetaDto,
+    transaction: MosaicDefinitionTransactionDto,
 }
 
 /// MosaicDefinitionTransactionDto : Transaction that creates a new mosaic.
@@ -100,7 +100,7 @@ pub(crate) struct MosaicDefinitionTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     signature: Option<String>,
     signer: String,
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -158,7 +158,7 @@ pub(crate) struct MosaicDefinitionDto {
 pub(crate) struct MosaicMetadataTransactionDto {
     signature: String,
     signer: String,
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u16,
     max_fee: Uint64Dto,
@@ -194,8 +194,8 @@ pub(crate) struct MosaicPropertyDto {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicSupplyChangeTransactionInfoDto {
-    pub meta: TransactionMetaDto,
-    pub transaction: MosaicSupplyChangeTransactionDto,
+    meta: TransactionMetaDto,
+    transaction: MosaicSupplyChangeTransactionDto,
 }
 
 #[typetag::serde]
@@ -230,7 +230,7 @@ impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
 pub(crate) struct MosaicSupplyChangeTransactionDto {
     signature: Option<String>,
     signer: String,
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u16,
     max_fee: Option<Uint64Dto>,
@@ -246,7 +246,7 @@ pub(crate) struct EmbeddedMosaicMetadataTransactionDto {
     /// The public key of the entity signer formatted as hexadecimal.
     signer: String,
     /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u16,
     max_fee: Uint64Dto,

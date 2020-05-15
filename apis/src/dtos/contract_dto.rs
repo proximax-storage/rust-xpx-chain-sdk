@@ -1,17 +1,17 @@
 #[derive(Serialize, Deserialize)]
 pub struct ContractDto {
-    pub multisig: String,
-    pub multisig_address: String,
-    pub start: Vec<i32>,
-    pub duration: Vec<i32>,
-    pub hash: String,
-    pub customers: Vec<String>,
-    pub executors: Vec<String>,
-    pub verifiers: Vec<String>,
+    multisig: String,
+    multisig_address: String,
+    start: Vec<i32>,
+    duration: Vec<i32>,
+    hash: String,
+    customers: Vec<String>,
+    executors: Vec<String>,
+    verifiers: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct ContractInfoDto {
     #[serde(rename = "contract")]
-    pub contract: ContractDto,
+    contract: ContractDto,
 }
