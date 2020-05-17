@@ -1,14 +1,14 @@
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::PublicAccount;
 
-const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-
 const PUBLIC_KEY_A: &str = "E1F5DD4850ED5C58CF552F5215B7434775F25823BDDC7AE55CB4D44CF50638A5";
 const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL).await;
+    let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
+
+    let sirius_client = SiriusClient::new(node_url).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),

@@ -10,12 +10,13 @@ use xpx_chain_sdk::transaction::{
 };
 use xpx_chain_sdk::Uint64;
 
-const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL).await;
+    let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
+
+    let sirius_client = SiriusClient::new(node_url).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),
@@ -39,7 +40,7 @@ async fn main() {
         MosaicProperties::new(
             true,
             true,
-            6,
+            0,
             Uint64::new(0),
         ).unwrap(),
         network_type,
@@ -51,13 +52,16 @@ async fn main() {
     };
     transaction_a.to_aggregate(account.public_account_to_owned());
 
+    println!("{}", transaction_a.mosaic_id);
+
     let mosaic_supply = MosaicSupplyChangeTransaction::new(
         deadline,
         MosaicSupplyType::Increase,
         transaction_a.mosaic_id.to_owned(),
-        Uint64::new(100000),
+        Uint64::new(999999999000000),
         network_type,
     );
+
 
     let mut transaction_b = match mosaic_supply {
         Ok(t) => t,

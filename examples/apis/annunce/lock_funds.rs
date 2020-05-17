@@ -8,12 +8,13 @@ use xpx_chain_sdk::transaction::{
     Deadline, Duration, EntityTypeEnum, LockFundsTransaction, SignedTransaction,
 };
 
-const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 const PRIVATE_KEY: &str = "6D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL).await;
+    let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
+
+    let sirius_client = SiriusClient::new(node_url).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),

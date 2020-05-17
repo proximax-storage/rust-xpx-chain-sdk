@@ -1,8 +1,8 @@
 use crate::models::{
     account::{Address, PublicAccount},
     alias::AliasActionType,
-    consts::ALIAS_TRANSACTION_HEADER,
     asset_id_model::AssetId,
+    consts::ALIAS_TRANSACTION_HEADER,
     namespace::NamespaceId,
     network::NetworkType,
 };

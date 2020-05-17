@@ -74,11 +74,6 @@ impl Signature {
     }
 
     /// Construct a `Signature` from a slice of bytes.
-    pub fn plomo(&self){
-        println!("HOLA BB")
-    }
-
-    /// Construct a `Signature` from a slice of bytes.
     #[inline]
     pub fn from_bytes(bytes: &[u8]) -> Result<Signature, SignatureError> {
         if bytes.len() != SIGNATURE_LENGTH {

@@ -2,14 +2,14 @@
 #![warn(rust_2018_idioms)]
 
 use xpx_chain_apis::SiriusClient;
-use xpx_chain_sdk::Id;
+use xpx_chain_sdk::AssetId;
 use xpx_chain_sdk::mosaic::MosaicId;
-
-const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL).await;
+    let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
+
+    let sirius_client = SiriusClient::new(node_url).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),

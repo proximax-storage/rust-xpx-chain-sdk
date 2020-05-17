@@ -53,13 +53,13 @@ pub use crate::signature::*;
 /// # Examples
 ///
 /// ```
-/// extern crate xpx_crypto;
+/// extern crate xpx_chain_crypto;
 /// extern crate rand;
 ///
-/// use xpx_crypto::verify_batch;
-/// use xpx_crypto::Keypair;
-/// use xpx_crypto::PublicKey;
-/// use xpx_crypto::Signature;
+/// use xpx_chain_crypto::verify_batch;
+/// use xpx_chain_crypto::Keypair;
+/// use xpx_chain_crypto::PublicKey;
+/// use xpx_chain_crypto::Signature;
 /// use rand::thread_rng;
 /// use rand::rngs::ThreadRng;
 ///
@@ -188,7 +188,7 @@ impl Keypair {
     ///
     /// A `Result` whose okay value is an EdDSA `Keypair` or whose error value
     /// is an `SignatureError` describing the error that occurred.
-    pub fn from_bytes<'a>(bytes: &'a [u8]) -> Result<Keypair, SignatureError> {
+    pub fn from_bytes(bytes: &[u8]) -> Result<Keypair, SignatureError> {
         if bytes.len() != KEYPAIR_LENGTH {
             return Err(SignatureError(InternalError::BytesLengthError {
                 name: "Keypair",
@@ -233,15 +233,15 @@ impl Keypair {
     ///
     /// ```
     /// extern crate rand;
-    /// extern crate xpx_crypto;
+    /// extern crate xpx_chain_crypto;
     ///
     /// # #[cfg(feature = "std")]
     /// # fn main() {
     ///
     /// use rand::Rng;
     /// use rand::rngs::OsRng;
-    /// use xpx_crypto::Keypair;
-    /// use xpx_crypto::Signature;
+    /// use xpx_chain_crypto::Keypair;
+    /// use xpx_chain_crypto::Signature;
     ///
     /// let mut csprng: OsRng = OsRng::new().unwrap();
     /// let keypair: Keypair = Keypair::generate(&mut csprng);
@@ -297,13 +297,13 @@ impl Keypair {
     /// # Examples
     ///
     /// ```
-    /// extern crate xpx_crypto;
+    /// extern crate xpx_chain_crypto;
     /// extern crate rand;
     ///
-    /// use xpx_crypto::Digest;
-    /// use xpx_crypto::Keypair;
-    /// use xpx_crypto::Sha3_512;
-    /// use xpx_crypto::Signature;
+    /// use xpx_chain_crypto::Digest;
+    /// use xpx_chain_crypto::Keypair;
+    /// use xpx_chain_crypto::Sha3_512;
+    /// use xpx_chain_crypto::Signature;
     /// use rand::thread_rng;
     ///
     /// # #[cfg(feature = "std")]
@@ -344,13 +344,13 @@ impl Keypair {
     /// your own!):
     ///
     /// ```
-    /// # extern crate xpx_crypto;
+    /// # extern crate xpx_chain_crypto;
     /// # extern crate rand;
     /// #
-    /// # use xpx_crypto::Digest;
-    /// # use xpx_crypto::Keypair;
-    /// # use xpx_crypto::Signature;
-    /// # use xpx_crypto::Sha3_512;
+    /// # use xpx_chain_crypto::Digest;
+    /// # use xpx_chain_crypto::Keypair;
+    /// # use xpx_chain_crypto::Signature;
+    /// # use xpx_chain_crypto::Sha3_512;
     /// # use rand::thread_rng;
     /// #
     /// # #[cfg(feature = "std")]
@@ -415,13 +415,13 @@ impl Keypair {
     /// # Examples
     ///
     /// ```
-    /// extern crate xpx_crypto;
+    /// extern crate xpx_chain_crypto;
     /// extern crate rand;
     ///
-    /// use xpx_crypto::Digest;
-    /// use xpx_crypto::Keypair;
-    /// use xpx_crypto::Signature;
-    /// use xpx_crypto::Sha3_512;
+    /// use xpx_chain_crypto::Digest;
+    /// use xpx_chain_crypto::Keypair;
+    /// use xpx_chain_crypto::Signature;
+    /// use xpx_chain_crypto::Sha3_512;
     /// use rand::thread_rng;
     ///
     /// # #[cfg(feature = "std")]

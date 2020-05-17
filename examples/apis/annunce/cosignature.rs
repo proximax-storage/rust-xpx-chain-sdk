@@ -6,12 +6,13 @@ use xpx_chain_sdk::account::{Account, PublicAccount};
 use xpx_chain_sdk::multisig::CosignatureTransaction;
 use xpx_chain_sdk::transaction::AggregateTransaction;
 
-const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
 const PRIVATE_KEY: &str = "28CF06338133DEE64FC49BCB19C8936916DBE8DC461CE489BF9588BE3B9670B5";
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL).await;
+    let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
+
+    let sirius_client = SiriusClient::new(node_url).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),
