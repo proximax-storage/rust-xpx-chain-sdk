@@ -5,7 +5,7 @@ use serde::{Serialize, Serializer};
 use utils::has_bits;
 
 use crate::models::{errors, Uint64};
-use crate::models::id_model::Id;
+use crate::models::asset_id_model::AssetId;
 
 use super::{generate_namespace_path, NAMESPACE_BIT};
 
@@ -41,9 +41,13 @@ impl NamespaceId {
     }
 }
 
-impl Id for NamespaceId {
+impl AssetId for NamespaceId {
     fn to_uint64(&self) -> Uint64 {
         self.0
+    }
+
+    fn box_clone(&self) -> Box<dyn AssetId + 'static> {
+        Box::new((*self).clone())
     }
 }
 

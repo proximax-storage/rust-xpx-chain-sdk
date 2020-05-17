@@ -18,7 +18,7 @@ use super::{
     SignedTransaction, Transaction,
 };
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LockFundsTransaction {
     pub abs_transaction: AbstractTransaction,
@@ -101,7 +101,7 @@ impl Transaction for LockFundsTransaction {
 
         let buf = _builder.finished_data();
 
-        Ok(lock_funds_transaction_schema().serialize(&mut Vec::from(buf)))
+        Ok(lock_funds_transaction_schema().serialize(&mut buf.to_vec()))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -110,6 +110,10 @@ impl Transaction for LockFundsTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn box_clone(&self) -> Box<dyn Transaction + 'static> {
+        Box::new((*self).clone())
     }
 }
 

@@ -2,7 +2,7 @@ use crate::models::{
     account::{Address, PublicAccount},
     alias::AliasActionType,
     consts::ALIAS_TRANSACTION_HEADER,
-    id_model::Id,
+    asset_id_model::AssetId,
     namespace::NamespaceId,
     network::NetworkType,
 };
@@ -12,7 +12,7 @@ use super::{
     EntityTypeEnum, schema::alias_transaction_schema,
 };
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AliasTransaction {
     pub abs_transaction: AbstractTransaction,
@@ -83,6 +83,6 @@ impl AliasTransaction {
 
         let buf = builder.finished_data();
 
-        Ok(alias_transaction_schema().serialize(&mut Vec::from(buf)))
+        Ok(alias_transaction_schema().serialize(&mut buf.to_vec()))
     }
 }

@@ -5,7 +5,7 @@ use crate::models::namespace::NamespaceId;
 use crate::models::Uint64;
 
 /// An `trait` identifier used to define mosaic_id and namespace_id.
-pub trait Id: Send + Sync + erased_serde::Serialize
+pub trait AssetId: Send + Sync + erased_serde::Serialize
     where
         Self: fmt::Debug,
 {
@@ -38,17 +38,26 @@ pub trait Id: Send + Sync + erased_serde::Serialize
     fn is_empty(&self) -> bool {
         self.to_uint64().to_bytes().len() == 0
     }
+
+    fn box_clone(&self) -> Box<dyn AssetId>;
 }
 
-serialize_trait_object!(Id);
+// implement Clone manually by forwarding to clone_box.
+impl Clone for Box<dyn AssetId + 'static> {
+    fn clone(&self) -> Box<dyn AssetId + 'static> {
+        self.box_clone()
+    }
+}
 
-impl<'a> PartialEq for &'a dyn Id {
+serialize_trait_object!(AssetId);
+
+impl<'a> PartialEq for &'a dyn AssetId {
     fn eq(&self, other: &Self) -> bool {
         &self.to_bytes() == &other.to_bytes()
     }
 }
 
-impl fmt::Display for dyn Id {
+impl fmt::Display for dyn AssetId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.to_hex())
     }

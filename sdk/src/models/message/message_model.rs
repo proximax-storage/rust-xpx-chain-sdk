@@ -9,6 +9,15 @@ pub trait Message: Sync + Send + erased_serde::Serialize
     fn message_type(&self) -> &MessageType;
 
     fn payload_to_bytes(&self) -> &[u8];
+
+    fn box_clone(&self) -> Box<dyn Message>;
+}
+
+// implement Clone manually by forwarding to clone_box.
+impl Clone for Box<dyn Message + 'static> {
+    fn clone(&self) -> Box<dyn Message + 'static> {
+        self.box_clone()
+    }
 }
 
 serialize_trait_object!(Message);

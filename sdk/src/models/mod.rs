@@ -12,10 +12,10 @@ pub mod namespace;
 pub mod network;
 pub mod node;
 pub mod transaction;
+pub mod asset_id_model;
 
 mod consts;
 mod contract;
-pub(crate) mod id_model;
 mod merkle_model;
 
 mod roles_type_enum;

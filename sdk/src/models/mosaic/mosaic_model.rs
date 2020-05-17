@@ -2,7 +2,7 @@ use ::core::fmt;
 
 use num_enum::IntoPrimitive;
 
-use crate::models::{id_model::Id, Uint64};
+use crate::models::{asset_id_model::AssetId, Uint64};
 use crate::models::errors::ERR_INVALID_MOSAIC_PROPERTY_ID;
 use crate::models::mosaic::internally::PRX_XPX_U64;
 
@@ -70,11 +70,11 @@ impl From<u8> for MosaicSupplyType {
 
 /// A `Mosaic` describes an instance of a `Mosaic` definition.
 /// Mosaics can be transferred by means of a transfer transaction.
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Mosaic {
     /// The mosaic id. This can either be of type `MosaicId` or `NamespaceId`.
-    pub asset_id: Box<dyn Id + 'static>,
+    pub asset_id: Box<dyn AssetId + 'static>,
     /// The mosaic amount.
     pub amount: Uint64,
 }
@@ -84,7 +84,7 @@ impl Mosaic {
     ///
     /// The quantity is always given in smallest units for the mosaic. For example, if it has a
     /// divisibility of 3 the quantity is given in millis.
-    pub fn new(asset_id: impl Id + 'static, amount: Uint64) -> Self {
+    pub fn new(asset_id: impl AssetId + 'static, amount: Uint64) -> Self {
         Self {
             asset_id: Box::new(asset_id),
             amount,
@@ -116,7 +116,7 @@ impl Mosaic {
         Mosaic::xpx(amount * XPX_DIVISIBILITY)
     }
 
-    fn get_id<'a>(&'a self) -> &'a dyn Id {
+    fn get_id<'a>(&'a self) -> &'a dyn AssetId {
         &*self.asset_id
     }
 }
@@ -148,7 +148,7 @@ impl From<Vec<MosaicId>> for MosaicIds {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicNames {
     pub mosaic_id: MosaicId,

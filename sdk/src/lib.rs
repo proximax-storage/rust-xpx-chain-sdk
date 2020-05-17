@@ -15,7 +15,7 @@ pub use self::models::alias;
 pub use self::models::blockchain;
 pub use self::models::errors;
 pub use self::models::exchange;
-pub use self::models::id_model::Id;
+pub use self::models::asset_id_model::AssetId;
 pub use self::models::message;
 pub use self::models::mosaic;
 pub use self::models::multisig;

@@ -108,7 +108,7 @@ impl Transaction for ModifyMultisigAccountTransaction {
 
         let buf = _builder.finished_data();
 
-        Ok(modify_multisig_account_transaction_schema().serialize(&mut Vec::from(&buf[..])))
+        Ok(modify_multisig_account_transaction_schema().serialize(&mut buf.to_vec()))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -117,6 +117,10 @@ impl Transaction for ModifyMultisigAccountTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn box_clone(&self) -> Box<dyn Transaction + 'static> {
+        Box::new((*self).clone())
     }
 }
 

@@ -19,7 +19,7 @@ use super::{
     SignedTransaction, Transaction, TRANSFER_VERSION,
 };
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransferTransaction {
     pub abs_transaction: AbstractTransaction,
@@ -147,7 +147,7 @@ impl Transaction for TransferTransaction {
 
         let buf = _builder.finished_data();
 
-        Ok(transfer_transaction_schema().serialize(&mut Vec::from(buf.to_vec())))
+        Ok(transfer_transaction_schema().serialize(&mut buf.to_vec()))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -156,6 +156,10 @@ impl Transaction for TransferTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn box_clone(&self) -> Box<dyn Transaction + 'static> {
+        Box::new((*self).clone())
     }
 }
 

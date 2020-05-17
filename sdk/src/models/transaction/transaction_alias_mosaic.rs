@@ -8,7 +8,7 @@ use crate::models::{
     alias::AliasActionType,
     consts::MOSAIC_ID_SIZE,
     errors,
-    id_model::Id,
+    asset_id_model::AssetId,
     mosaic::MosaicId,
     namespace::NamespaceId,
     network::NetworkType,
@@ -21,7 +21,7 @@ use super::{
     SignedTransaction, Transaction,
 };
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicAliasTransaction {
     pub alias_transaction: AliasTransaction,
@@ -98,6 +98,10 @@ impl Transaction for MosaicAliasTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn box_clone(&self) -> Box<dyn Transaction + 'static> {
+        Box::new((*self).clone())
     }
 }
 

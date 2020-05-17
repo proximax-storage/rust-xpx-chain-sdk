@@ -1,3 +1,4 @@
+use std::borrow::Borrow;
 use std::collections::HashMap;
 
 use num_enum::IntoPrimitive;
@@ -7,7 +8,7 @@ use crate::models::mosaic::{Mosaic, MosaicId};
 use crate::models::transaction::Height;
 use crate::models::uint_64::Uint64;
 
-type OfferInfoDTOs = Vec<OfferInfo>;
+pub type OfferInfos = Vec<OfferInfo>;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Copy, IntoPrimitive, Eq, Hash)]
 #[repr(u8)]
@@ -22,8 +23,12 @@ impl OfferType {
         self.into()
     }
 
-    pub fn to_string(&self) -> String {
-        format!("{:?}", self)
+    pub fn counter_offer(self) -> Self {
+        match self {
+            OfferType::SellOffer => OfferType::BuyOffer,
+            OfferType::BuyOffer => OfferType::SellOffer,
+            _ => OfferType::UnknownType,
+        }
     }
 }
 
@@ -37,13 +42,23 @@ impl From<u8> for OfferType {
     }
 }
 
+impl core::fmt::Display for OfferType {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
+    }
+}
+
 #[derive(Debug, Serialize)]
 pub struct ExchangeInfo {
     pub exchange: Exchange,
 }
 
 impl core::fmt::Display for ExchangeInfo {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f,
             "{}",
@@ -56,21 +71,22 @@ impl core::fmt::Display for ExchangeInfo {
 #[serde(rename_all = "camelCase")]
 pub struct Exchange {
     pub owner: String,
-    pub buy_offers: OfferInfoDTOs,
-    pub sell_offers: OfferInfoDTOs,
+    pub buy_offers: OfferInfos,
+    pub sell_offers: OfferInfos,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OfferInfo {
+    pub owner: PublicAccount,
     pub mosaic: Mosaic,
-    pub initial_amount: Uint64,
-    pub initial_cost: Uint64,
+    pub price_denominator: Uint64,
+    pub price_numerator: Uint64,
     pub deadline: Height,
 }
 
 impl core::fmt::Display for OfferInfo {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f,
             "{}",
@@ -94,7 +110,7 @@ pub struct OfferTypeInfo {
 
 pub type OfferIdInfos = Vec<OfferIdInfo>;
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OfferIdInfo {
     pub mosaic_id: MosaicId,
@@ -102,7 +118,7 @@ pub struct OfferIdInfo {
 }
 
 impl core::fmt::Display for OfferIdInfo {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f,
             "{}",
@@ -112,17 +128,23 @@ impl core::fmt::Display for OfferIdInfo {
 }
 
 impl UserExchangeInfo {
-    pub fn get_sell_offer(&self) -> Option<&OfferIdInfos> {
-        self.offers.get(&OfferType::SellOffer)
+    pub fn get_sell_offer(&self) -> OfferIdInfos {
+        if let Some(o) = self.offers.get(&OfferType::SellOffer) {
+            return o.iter().cloned().collect();
+        };
+        vec![]
     }
 
-    pub fn get_buy_offer(&self) -> Option<&OfferIdInfos> {
-        self.offers.get(&OfferType::BuyOffer)
+    pub fn get_buy_offer(&self) -> OfferIdInfos {
+        if let Some(o) = self.offers.get(&OfferType::BuyOffer) {
+            return o.iter().cloned().collect();
+        };
+        vec![]
     }
 }
 
 impl core::fmt::Display for UserExchangeInfo {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f,
             "{}",

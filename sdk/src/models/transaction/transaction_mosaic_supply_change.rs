@@ -6,7 +6,7 @@ use serde_json::Value;
 use crate::models::{
     account::{Account, PublicAccount},
     consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
-    id_model::Id,
+    asset_id_model::AssetId,
     mosaic::MosaicSupplyType,
     network::NetworkType,
     uint_64::Uint64,
@@ -26,12 +26,12 @@ use super::{
     Transaction,
 };
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicSupplyChangeTransaction {
     pub abs_transaction: AbstractTransaction,
     pub supply_type: MosaicSupplyType,
-    pub asset_id: Box<dyn Id>,
+    pub asset_id: Box<dyn AssetId>,
     pub delta: Uint64,
 }
 
@@ -39,7 +39,7 @@ impl MosaicSupplyChangeTransaction {
     pub fn new(
         deadline: Deadline,
         supply_type: MosaicSupplyType,
-        asset_id: impl Id + 'static,
+        asset_id: impl AssetId + 'static,
         delta: Uint64,
         network_type: NetworkType,
     ) -> Result<Self> {
@@ -102,7 +102,7 @@ impl Transaction for MosaicSupplyChangeTransaction {
         builder.finish(t, None);
 
         let buf = builder.finished_data();
-        Ok(mosaic_supply_change_transaction_schema().serialize(&mut Vec::from(buf)))
+        Ok(mosaic_supply_change_transaction_schema().serialize(&mut buf.to_vec()))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -111,6 +111,10 @@ impl Transaction for MosaicSupplyChangeTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn box_clone(&self) -> Box<dyn Transaction + 'static> {
+        Box::new((*self).clone())
     }
 }
 

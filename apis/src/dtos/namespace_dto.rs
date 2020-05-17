@@ -1,7 +1,7 @@
 use sdk::{
     account::PublicAccount,
     errors,
-    Id,
+    AssetId,
     namespace::{NamespaceId, NamespaceInfo, NamespaceName, NamespaceType},
     network::NetworkType,
     transaction::{RegisterNamespaceTransaction, Transaction},

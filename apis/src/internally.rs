@@ -81,8 +81,6 @@ pub(crate) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()>
 }
 
 pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
-    let mut id_format = String::new();
-
     match id.trim().len() {
         64 => {
             if !is_hex(id) {
