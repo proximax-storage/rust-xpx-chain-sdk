@@ -21,6 +21,10 @@ tokio = { version = "0.2", features = ["macros"] }
 failure = "0.1"
 
 [[example]]
+name = "varios"
+path = "sdk/varios.rs"
+
+[[example]]
 name = "crypto"
 path = "crypto/main.rs"
 

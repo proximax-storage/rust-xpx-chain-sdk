@@ -7,7 +7,7 @@ use xpx_chain_sdk::mosaic::{MosaicId, MosaicSupplyType};
 use xpx_chain_sdk::transaction::{Deadline, MosaicSupplyChangeTransaction};
 use xpx_chain_sdk::Uint64;
 
-const PRIVATE_KEY: &str = "6D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
+const PRIVATE_KEY: &str = "7D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
 async fn main() {

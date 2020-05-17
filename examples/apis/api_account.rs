@@ -14,6 +14,7 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
+    // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
     let network_type = client.network_type();
 
     let public_account = PublicAccount::from_public_key(
