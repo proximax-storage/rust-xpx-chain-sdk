@@ -25,22 +25,22 @@ pub enum MetadataTypeEnum {
 #[derive(Serialize, Deserialize)]
 pub struct MetadataDto {
     #[serde(rename = "metadataType")]
-    pub metadata_type: i32,
+    metadata_type: i32,
     #[serde(rename = "fields")]
-    pub fields: Vec<FieldDto>,
+    fields: Vec<FieldDto>,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct MetadataIds {
     #[serde(rename = "metadataIds", skip_serializing_if = "Option::is_none")]
-    pub metadata_ids: Option<Vec<String>>,
+    metadata_ids: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct MetadataModificationDto {
-    pub modification_type: MetadataModificationTypeEnum,
+    modification_type: MetadataModificationTypeEnum,
     /// The key of metadata modification.
-    pub key: String,
+    key: String,
     /// The value of metadata modification.
-    pub value: String,
+    value: String,
 }

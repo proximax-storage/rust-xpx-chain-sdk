@@ -5,15 +5,15 @@ use super::{ReceiptTypeEnum, Uint64Dto};
 pub(crate) struct ArtifactExpiryReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
-    pub version: i32,
+    version: i32,
     #[serde(rename = "type")]
-    pub _type: ReceiptTypeEnum,
+    _type: ReceiptTypeEnum,
     #[serde(rename = "artifactId")]
-    pub artifact_id: Uint64Dto,
+    artifact_id: Uint64Dto,
 }
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct ArtifactExpiryReceiptDtoAllOf {
     #[serde(rename = "artifactId")]
-    pub artifact_id: Uint64Dto,
+    artifact_id: Uint64Dto,
 }

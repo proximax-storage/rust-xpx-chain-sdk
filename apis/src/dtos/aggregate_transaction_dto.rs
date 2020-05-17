@@ -13,19 +13,19 @@ use super::{
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AggregateTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub signature: Option<String>,
-    pub signer: String,
-    pub version: i32,
+    signature: Option<String>,
+    signer: String,
+    version: u32,
     #[serde(rename = "type")]
-    pub _type: u16,
+    _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_fee: Option<Uint64Dto>,
+    max_fee: Option<Uint64Dto>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub deadline: Option<Uint64Dto>,
+    deadline: Option<Uint64Dto>,
     /// An array of transaction cosignatures.
-    pub cosignatures: Vec<CosignatureDto>,
+    cosignatures: Vec<CosignatureDto>,
     /// The array of transactions initiated by different accounts.
-    pub transactions: Vec<Value>,
+    transactions: Vec<Value>,
 }
 
 #[derive(Serialize, Deserialize)]

@@ -10,12 +10,13 @@ use sdk::{
 
 use super::Uint64Dto;
 
-type OfferInfoDTOs = Vec<OfferInfoDto>;
+pub(crate) type OfferInfoDTOs = Vec<OfferInfoDto>;
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ExchangeDto {
     owner: String,
+    owner_address: String,
     buy_offers: OfferInfoDTOs,
     sell_offers: OfferInfoDTOs,
 }
@@ -34,7 +35,7 @@ impl ExchangeInfoDto {
         let mut buy_offer: OfferIdInfos = vec![];
         let mut buy_offer_offers: Vec<OfferInfo> = vec![];
         for item in dto.exchange.buy_offers.into_iter() {
-            buy_offer_offers.push(item.to_struct()?)
+            buy_offer_offers.push(item.to_struct(owner.to_owned())?)
         }
 
         for offer_info in buy_offer_offers.into_iter() {
@@ -48,7 +49,7 @@ impl ExchangeInfoDto {
         let mut sell_offer: OfferIdInfos = vec![];
         let mut sell_offer_offers: Vec<OfferInfo> = vec![];
         for item in dto.exchange.sell_offers.into_iter() {
-            sell_offer_offers.push(item.to_struct()?)
+            sell_offer_offers.push(item.to_struct(owner.to_owned())?)
         }
 
         for offer_info in sell_offer_offers.into_iter() {
@@ -77,12 +78,14 @@ pub(crate) struct OfferInfoDto {
     amount: Uint64Dto,
     initial_amount: Uint64Dto,
     initial_cost: Uint64Dto,
-    deadline: Uint64Dto,
     price: u64,
+    residual_cost: Option<Uint64Dto>,
+    deadline: Uint64Dto,
+    owner: Option<String>
 }
 
 impl OfferInfoDto {
-    fn to_struct(&self) -> crate::Result<OfferInfo> {
+    pub(crate) fn to_struct(&self, owner: PublicAccount) -> crate::Result<OfferInfo> {
         let dto = self.to_owned();
         let mosaic = Mosaic::new(
             MosaicId::from(dto.mosaic_id.to_struct()),
@@ -90,9 +93,10 @@ impl OfferInfoDto {
         );
 
         Ok(OfferInfo {
+            owner,
             mosaic,
-            initial_amount: dto.initial_amount.to_struct(),
-            initial_cost: dto.initial_cost.to_struct(),
+            price_denominator: dto.initial_amount.to_struct(),
+            price_numerator: dto.initial_cost.to_struct(),
             deadline: dto.deadline.to_struct(),
         })
     }

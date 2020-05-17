@@ -8,7 +8,7 @@ use crate::models::{
     alias::AliasActionType,
     consts::ADDRESS_SIZE,
     errors,
-    id_model::Id,
+    asset_id_model::AssetId,
     namespace::NamespaceId,
     network::NetworkType,
 };
@@ -18,7 +18,7 @@ use super::{AbstractTransaction, AbsTransaction, ADDRESS_ALIAS_VERSION, AliasTra
             Deadline, EntityTypeEnum, sign_transaction, SignedTransaction, Transaction,
 };
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AddressAliasTransaction {
     pub alias_transaction: AliasTransaction,
@@ -95,6 +95,10 @@ impl Transaction for AddressAliasTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn box_clone(&self) -> Box<dyn Transaction + 'static> {
+        Box::new((*self).clone())
     }
 }
 

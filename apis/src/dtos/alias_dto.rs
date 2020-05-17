@@ -12,12 +12,12 @@ use super::{AbstractTransactionDto, TransactionDto, TransactionMetaDto, Uint64Dt
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AliasDto {
     #[serde(rename = "type")]
-    pub _type: u16,
+    _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mosaic_id: Option<Uint64Dto>,
+    mosaic_id: Option<Uint64Dto>,
     /// The aliased address in hexadecimal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<String>,
+    address: Option<String>,
 }
 
 impl AliasDto {
@@ -42,8 +42,8 @@ impl AliasDto {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AliasTransactionDto {
-    pub action_type: u8,
-    pub namespace_id: Uint64Dto,
+    action_type: u8,
+    namespace_id: Uint64Dto,
 }
 
 /// AddressAliasTransactionDto :
@@ -54,7 +54,7 @@ pub(crate) struct AddressAliasTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     signature: Option<String>,
     signer: String,
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -69,8 +69,8 @@ pub(crate) struct AddressAliasTransactionDto {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddressAliasTransactionInfoDto {
-    pub meta: TransactionMetaDto,
-    pub transaction: AddressAliasTransactionDto,
+    meta: TransactionMetaDto,
+    transaction: AddressAliasTransactionDto,
 }
 
 #[typetag::serde]
@@ -111,7 +111,7 @@ pub(crate) struct MosaicAliasTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     signature: Option<String>,
     signer: String,
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -126,8 +126,8 @@ pub(crate) struct MosaicAliasTransactionDto {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicAliasTransactionInfoDto {
-    pub meta: TransactionMetaDto,
-    pub transaction: MosaicAliasTransactionDto,
+    meta: TransactionMetaDto,
+    transaction: MosaicAliasTransactionDto,
 }
 
 #[typetag::serde]

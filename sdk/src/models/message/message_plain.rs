@@ -33,6 +33,10 @@ impl Message for PlainMessage {
     fn payload_to_bytes(&self) -> &[u8] {
         self.payload.as_bytes()
     }
+
+    fn box_clone(&self) -> Box<dyn Message + 'static> {
+        Box::new((*self).clone())
+    }
 }
 
 impl core::fmt::Display for PlainMessage {

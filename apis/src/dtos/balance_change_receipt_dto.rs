@@ -5,24 +5,24 @@ use super::{ReceiptTypeEnum, Uint64Dto};
 pub(crate) struct BalanceChangeReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
-    pub version: i32,
+    version: i32,
     #[serde(rename = "type")]
-    pub _type: ReceiptTypeEnum,
+    _type: ReceiptTypeEnum,
     /// The target account public key.
     #[serde(rename = "account")]
-    pub account: String,
+    account: String,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Uint64Dto,
+    mosaic_id: Uint64Dto,
     #[serde(rename = "amount")]
-    pub amount: Uint64Dto,
+    amount: Uint64Dto,
 }
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct BalanceChangeReceiptDtoAllOf {
     /// The target account public key.
-    pub account: String,
-    pub mosaic_id: Uint64Dto,
-    pub amount: Uint64Dto,
+    account: String,
+    mosaic_id: Uint64Dto,
+    amount: Uint64Dto,
 }
 
 /// BalanceTransferReceiptDto : The invisible state change triggered a mosaic transfer.
@@ -30,31 +30,31 @@ pub(crate) struct BalanceChangeReceiptDtoAllOf {
 pub(crate) struct BalanceTransferReceiptDto {
     /// The version of the receipt.
     #[serde(rename = "version")]
-    pub version: i32,
+    version: i32,
     #[serde(rename = "type")]
-    pub _type: ReceiptTypeEnum,
+    _type: ReceiptTypeEnum,
     /// The public key of the sender.
     #[serde(rename = "sender")]
-    pub sender: String,
+    sender: String,
     /// The public key of the recipient.
     #[serde(rename = "recipient")]
-    pub recipient: String,
+    recipient: String,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Uint64Dto,
+    mosaic_id: Uint64Dto,
     #[serde(rename = "amount")]
-    pub amount: Uint64Dto,
+    amount: Uint64Dto,
 }
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct BalanceTransferReceiptDtoAllOf {
     /// The public key of the sender.
     #[serde(rename = "sender")]
-    pub sender: String,
+    sender: String,
     /// The public key of the recipient.
     #[serde(rename = "recipient")]
-    pub recipient: String,
+    recipient: String,
     #[serde(rename = "mosaic_id")]
-    pub mosaic_id: Uint64Dto,
+    mosaic_id: Uint64Dto,
     #[serde(rename = "amount")]
-    pub amount: Uint64Dto,
+    amount: Uint64Dto,
 }

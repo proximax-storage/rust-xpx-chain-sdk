@@ -1,7 +1,7 @@
 use sdk::{
     account::PublicAccount,
     errors,
-    Id,
+    AssetId,
     namespace::{NamespaceId, NamespaceInfo, NamespaceName, NamespaceType},
     network::NetworkType,
     transaction::{RegisterNamespaceTransaction, Transaction},
@@ -18,23 +18,23 @@ type NamespaceIdDto = Option<Uint64Dto>;
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceDto {
     /// The public key of the owner of the namespace.
-    pub owner: String,
+    owner: String,
     /// The address of the owner of the namespace in hexadecimal.
-    pub owner_address: String,
-    pub start_height: Uint64Dto,
-    pub end_height: Uint64Dto,
+    owner_address: String,
+    start_height: Uint64Dto,
+    end_height: Uint64Dto,
     #[serde(rename = "depth")]
-    pub depth: u8,
+    depth: u8,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub level0: NamespaceIdDto,
+    level0: NamespaceIdDto,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub level1: NamespaceIdDto,
+    level1: NamespaceIdDto,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub level2: NamespaceIdDto,
+    level2: NamespaceIdDto,
     #[serde(rename = "type")]
-    pub _type: u8,
-    pub alias: AliasDto,
-    pub parent_id: Uint64Dto,
+    _type: u8,
+    alias: AliasDto,
+    parent_id: Uint64Dto,
 }
 
 impl NamespaceDto {
@@ -61,9 +61,9 @@ impl NamespaceDto {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceInfoDto {
     #[serde(rename = "meta")]
-    pub meta: NamespaceMetaDto,
+    meta: NamespaceMetaDto,
     #[serde(rename = "namespace")]
-    pub namespace: NamespaceDto,
+    namespace: NamespaceDto,
 }
 
 impl NamespaceInfoDto {
@@ -115,35 +115,35 @@ impl NamespaceInfoDto {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceMetaDto {
     #[serde(rename = "id")]
-    pub id: String,
+    id: String,
     #[serde(rename = "active")]
-    pub active: bool,
+    active: bool,
     #[serde(rename = "index")]
-    pub index: i32,
+    index: i32,
 }
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceMetadataDto {
     #[serde(rename = "metadataType")]
-    pub metadata_type: i32,
+    metadata_type: i32,
     #[serde(rename = "fields")]
-    pub fields: Vec<FieldDto>,
+    fields: Vec<FieldDto>,
     #[serde(rename = "metadataId")]
-    pub metadata_id: Uint64Dto,
+    metadata_id: Uint64Dto,
 }
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceMetadataDtoAllOf {
     #[serde(rename = "metadataType", skip_serializing_if = "Option::is_none")]
-    pub metadata_type: Option<i32>,
+    metadata_type: Option<i32>,
     #[serde(rename = "metadataId")]
-    pub metadata_id: Uint64Dto,
+    metadata_id: Uint64Dto,
 }
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceMetadataInfoDto {
     #[serde(rename = "metadata")]
-    pub metadata: NamespaceMetadataDto,
+    metadata: NamespaceMetadataDto,
 }
 
 /// NamespaceMetadataTransactionDto : Transaction that addes metadata to namespace.
@@ -151,27 +151,27 @@ pub(crate) struct NamespaceMetadataInfoDto {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceMetadataTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub signature: Option<String>,
-    pub signer: String,
-    pub version: i32,
+    signature: Option<String>,
+    signer: String,
+    version: i32,
     #[serde(rename = "type")]
-    pub _type: u16,
+    _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_fee: Option<Uint64Dto>,
+    max_fee: Option<Uint64Dto>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub deadline: Option<Uint64Dto>,
-    pub metadata_id: Uint64Dto,
-    pub metadata_type: MetadataTypeEnum,
-    pub modifications: Vec<MetadataModificationDto>,
+    deadline: Option<Uint64Dto>,
+    metadata_id: Uint64Dto,
+    metadata_type: MetadataTypeEnum,
+    modifications: Vec<MetadataModificationDto>,
 }
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NamespaceNameDto {
     #[serde(rename = "namespaceId")]
-    pub namespace_id: Uint64Dto,
+    namespace_id: Uint64Dto,
     /// The full name of the namespace.
     #[serde(rename = "name")]
-    pub name: String,
+    name: String,
 }
 
 impl NamespaceNameDto {
@@ -186,8 +186,8 @@ impl NamespaceNameDto {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RegisterNamespaceTransactionInfoDto {
-    pub meta: TransactionMetaDto,
-    pub transaction: RegisterNamespaceTransactionDto,
+    meta: TransactionMetaDto,
+    transaction: RegisterNamespaceTransactionDto,
 }
 
 /// RegisterNamespaceTransactionDto : Transaction that creates or renew a namespace.
@@ -195,24 +195,24 @@ pub(crate) struct RegisterNamespaceTransactionInfoDto {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RegisterNamespaceTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub signature: Option<String>,
-    pub signer: String,
-    pub version: i32,
+    signature: Option<String>,
+    signer: String,
+    version: u32,
     #[serde(rename = "type")]
-    pub _type: u16,
+    _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_fee: Option<Uint64Dto>,
+    max_fee: Option<Uint64Dto>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub deadline: Option<Uint64Dto>,
+    deadline: Option<Uint64Dto>,
     #[serde(rename = "namespaceType")]
-    pub namespace_type: u8,
+    namespace_type: u8,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub duration: Option<Uint64Dto>,
-    pub namespace_id: Uint64Dto,
+    duration: Option<Uint64Dto>,
+    namespace_id: Uint64Dto,
     #[serde(rename = "name")]
-    pub namespace_name: String,
+    namespace_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub parent_id: Option<Uint64Dto>,
+    parent_id: Option<Uint64Dto>,
 }
 
 #[typetag::serde]

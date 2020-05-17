@@ -1,4 +1,4 @@
-use ::std::{future::Future, sync::Arc};
+use ::std::sync::Arc;
 
 use reqwest::Client as ReqwestClient;
 
@@ -94,6 +94,7 @@ impl SiriusClient
             Ok(info) => {
                 self.generation_hash = info.generation_hash;
                 self.network_type = info.network_type;
+
                 Ok(())
             }
             Err(err) => Err(err),
@@ -129,6 +130,7 @@ pub struct ApiClient {
     pub base_path: &'static str,
     pub client: ReqwestClient,
     pub user_agent: Option<String>,
+    pub network_type_id: u8,
 }
 
 impl ApiClient
@@ -139,6 +141,7 @@ impl ApiClient
             base_path: url,
             client,
             user_agent: Some("Sirius/0.0.1/rust".to_owned()),
+            network_type_id: 0
         }
     }
 }

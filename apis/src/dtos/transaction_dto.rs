@@ -36,7 +36,7 @@ pub(crate) struct AbstractTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
     pub signer: String,
-    pub version: i32,
+    pub version: u32,
     #[serde(rename = "type")]
     pub _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -49,7 +49,7 @@ impl AbstractTransactionDto {
     pub(crate) fn new(
         signature: Option<String>,
         signer: String,
-        version: i32,
+        version: u32,
         _type: u16,
         max_fee: Option<Uint64Dto>,
         deadline: Option<Uint64Dto>,
@@ -246,7 +246,7 @@ pub(crate) struct TransferTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
     pub signer: String,
-    pub version: i32,
+    pub version: u32,
     #[serde(rename = "type")]
     pub _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -264,26 +264,26 @@ pub(crate) struct TransferTransactionDto {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct HashLockTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub signature: Option<String>,
-    pub signer: String,
-    pub version: i32,
+    signature: Option<String>,
+    signer: String,
+    version: u32,
     #[serde(rename = "type")]
-    pub _type: u16,
+    _type: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_fee: Option<Uint64Dto>,
+    max_fee: Option<Uint64Dto>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub deadline: Option<Uint64Dto>,
-    pub mosaic_id: Uint64Dto,
-    pub amount: Uint64Dto,
-    pub duration: Uint64Dto,
-    pub hash: String,
+    deadline: Option<Uint64Dto>,
+    mosaic_id: Uint64Dto,
+    amount: Uint64Dto,
+    duration: Uint64Dto,
+    hash: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct HashLockTransactionInfoDto {
-    pub meta: TransactionMetaDto,
-    pub transaction: HashLockTransactionDto,
+    meta: TransactionMetaDto,
+    transaction: HashLockTransactionDto,
 }
 
 #[typetag::serde]

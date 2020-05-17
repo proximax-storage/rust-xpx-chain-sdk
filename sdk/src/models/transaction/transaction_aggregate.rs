@@ -23,7 +23,7 @@ use super::{
 
 /// AggregateTransaction:
 /// Transaction that combines multiple transactions together.
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct AggregateTransaction {
     pub abs_transaction: AbstractTransaction,
     /// An array of transaction cosignatures.
@@ -140,7 +140,7 @@ impl Transaction for AggregateTransaction {
 
         let buf = _builder.finished_data();
 
-        Ok(aggregate_transaction_schema().serialize(&mut Vec::from(buf)))
+        Ok(aggregate_transaction_schema().serialize(&mut buf.to_vec()))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -149,5 +149,9 @@ impl Transaction for AggregateTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn box_clone(&self) -> Box<dyn Transaction + 'static> {
+        Box::new((*self).clone())
     }
 }

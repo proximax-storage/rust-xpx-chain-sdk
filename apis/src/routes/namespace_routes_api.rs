@@ -5,7 +5,7 @@ use reqwest::Method;
 use sdk::{
     account::{AccountsId, Address},
     errors::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
-    Id,
+    AssetId,
     namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
 };
 

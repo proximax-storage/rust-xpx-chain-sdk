@@ -147,6 +147,15 @@ pub trait Transaction
     fn to_aggregate(&mut self, signer: PublicAccount);
 
     fn as_any(&self) -> &dyn Any;
+
+    fn box_clone(&self) -> Box<dyn Transaction>;
+}
+
+// implement Clone manually by forwarding to clone_box.
+impl Clone for Box<dyn Transaction + 'static> {
+    fn clone(&self) -> Box<dyn Transaction + 'static> {
+        self.box_clone()
+    }
 }
 
 impl<'a> PartialEq for &'a dyn Transaction {

@@ -6,7 +6,7 @@ use serde_json::Value;
 use crate::models::{
     account::{Account, PublicAccount},
     consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE},
-    id_model::Id,
+    asset_id_model::AssetId,
     mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     network::NetworkType,
 };
@@ -25,7 +25,7 @@ use super::{
     Transaction,
 };
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicDefinitionTransaction {
     pub abs_transaction: AbstractTransaction,
@@ -121,7 +121,7 @@ impl Transaction for MosaicDefinitionTransaction {
         builder.finish(t, None);
 
         let buf = builder.finished_data();
-        Ok(mosaic_definition_transaction_schema().serialize(&mut Vec::from(buf)))
+        Ok(mosaic_definition_transaction_schema().serialize(&mut buf.to_vec()))
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -130,6 +130,10 @@ impl Transaction for MosaicDefinitionTransaction {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn box_clone(&self) -> Box<dyn Transaction + 'static> {
+        Box::new((*self).clone())
     }
 }
 

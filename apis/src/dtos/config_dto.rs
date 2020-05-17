@@ -1,8 +1,8 @@
 #[derive(Serialize, Deserialize)]
 pub struct ConfigDto {
-    pub height: Vec<i32>,
-    pub network_config: String,
-    pub supported_entity_versions: String,
+    height: Vec<i32>,
+    network_config: String,
+    supported_entity_versions: String,
 }
 
 

@@ -4,7 +4,7 @@ use serde::{Serialize, Serializer};
 
 use utils::is_hex;
 
-use crate::models::{account::PublicAccount, id_model::Id, Uint64};
+use crate::models::{account::PublicAccount, asset_id_model::AssetId, Uint64};
 
 use super::{generate_mosaic_id, MosaicNonce};
 
@@ -39,9 +39,13 @@ impl MosaicId {
     }
 }
 
-impl Id for MosaicId {
+impl AssetId for MosaicId {
     fn to_uint64(&self) -> Uint64 {
         self.0
+    }
+
+    fn box_clone(&self) -> Box<dyn AssetId + 'static> {
+        Box::new((*self).clone())
     }
 }
 

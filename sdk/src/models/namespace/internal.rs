@@ -4,7 +4,7 @@ use sha3::{Digest, Sha3_256};
 use utils::array_u8_to_u64;
 
 use crate::models::errors;
-use crate::models::id_model::Id;
+use crate::models::asset_id_model::AssetId;
 
 use super::NamespaceId;
 

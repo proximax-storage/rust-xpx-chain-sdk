@@ -72,7 +72,7 @@ struct AccountLinkTransactionDto {
     /// * 0x98 (TEST_NET) - PUBLIC test network.
     /// * 0x60 (MIJIN) - PRIVATE network.
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u16,
     max_fee: Uint64Dto,
@@ -149,7 +149,7 @@ struct AccountPropertiesTransactionDto {
     /// * 0x98 (TEST_NET) - PUBLIC test network.
     /// * 0x60 (MIJIN) - PRIVATE network.
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u16,
     max_fee: Uint64Dto,
@@ -177,7 +177,7 @@ struct EmbeddedAccountLinkTransactionDto {
     /// * 0x98 (TEST_NET) - PUBLIC test network.
     /// * 0x60 (MIJIN) - PRIVATE network.
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u16,
     max_fee: Uint64Dto,
@@ -197,7 +197,7 @@ struct EmbeddedAccountPropertiesTransactionDto {
     /// * 0x98 (TEST_NET) - PUBLIC test network.
     /// * 0x60 (MIJIN) - PRIVATE network.
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: i32,
+    version: u32,
     #[serde(rename = "type")]
     _type: u16,
     max_fee: Uint64Dto,
