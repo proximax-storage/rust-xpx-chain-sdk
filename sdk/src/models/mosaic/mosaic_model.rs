@@ -115,10 +115,6 @@ impl Mosaic {
 
         Mosaic::xpx(amount * XPX_DIVISIBILITY)
     }
-
-    fn get_id<'a>(&'a self) -> &'a dyn AssetId {
-        &*self.asset_id
-    }
 }
 
 impl fmt::Display for Mosaic {

@@ -11,14 +11,14 @@
 //!
 //! ```
 //! extern crate rand;
-//! extern crate xpx_crypto;
+//! extern crate xpx_chain_crypto;
 //!
 //! # #[cfg(feature = "std")]
 //! # fn main() {
 //! use rand::Rng;
 //! use rand::rngs::OsRng;
-//! use xpx_crypto::Keypair;
-//! use xpx_crypto::Signature;
+//! use xpx_chain_crypto::Keypair;
+//! use xpx_chain_crypto::Signature;
 //!
 //! let mut csprng: OsRng = OsRng::new().unwrap();
 //! let keypair: Keypair = Keypair::generate(&mut csprng);
@@ -32,12 +32,12 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate xpx_crypto;
+//! # extern crate xpx_chain_crypto;
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use xpx_crypto::Keypair;
-//! # use xpx_crypto::Signature;
+//! # use xpx_chain_crypto::Keypair;
+//! # use xpx_chain_crypto::Signature;
 //! # let mut csprng = thread_rng();
 //! # let keypair: Keypair = Keypair::generate(&mut csprng);
 //! let message: &[u8] = b"ProximaX Limited.";
@@ -50,12 +50,12 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate xpx_crypto;
+//! # extern crate xpx_chain_crypto;
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use xpx_crypto::Keypair;
-//! # use xpx_crypto::Signature;
+//! # use xpx_chain_crypto::Keypair;
+//! # use xpx_chain_crypto::Signature;
 //! # let mut csprng = thread_rng();
 //! # let keypair: Keypair = Keypair::generate(&mut csprng);
 //! # let message: &[u8] = b"ProximaX Limited.";
@@ -69,13 +69,13 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate xpx_crypto;
+//! # extern crate xpx_chain_crypto;
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use xpx_crypto::Keypair;
-//! # use xpx_crypto::Signature;
-//! use xpx_crypto::PublicKey;
+//! # use xpx_chain_crypto::Keypair;
+//! # use xpx_chain_crypto::Signature;
+//! use xpx_chain_crypto::PublicKey;
 //! # let mut csprng = thread_rng();
 //! # let keypair: Keypair = Keypair::generate(&mut csprng);
 //! # let message: &[u8] = b"ProximaX Limited.";
@@ -96,12 +96,12 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate xpx_crypto;
+//! # extern crate xpx_chain_crypto;
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use xpx_crypto::{Keypair, Signature, PublicKey};
-//! use xpx_crypto::{PUBLIC_KEY_LENGTH, SECRET_KEY_LENGTH, KEYPAIR_LENGTH, SIGNATURE_LENGTH};
+//! # use xpx_chain_crypto::{Keypair, Signature, PublicKey};
+//! use xpx_chain_crypto::{PUBLIC_KEY_LENGTH, SECRET_KEY_LENGTH, KEYPAIR_LENGTH, SIGNATURE_LENGTH};
 //! # let mut csprng = thread_rng();
 //! # let keypair: Keypair = Keypair::generate(&mut csprng);
 //! # let message: &[u8] = b"This is a test of the tsunami alert system.";
@@ -119,11 +119,11 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate xpx_crypto;
+//! # extern crate xpx_chain_crypto;
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use xpx_crypto::{Keypair, Signature, PublicKey, SecretKey, SignatureError};
-//! # use xpx_crypto::{PUBLIC_KEY_LENGTH, SECRET_KEY_LENGTH, KEYPAIR_LENGTH, SIGNATURE_LENGTH};
+//! # use xpx_chain_crypto::{Keypair, Signature, PublicKey, SecretKey, SignatureError};
+//! # use xpx_chain_crypto::{PUBLIC_KEY_LENGTH, SECRET_KEY_LENGTH, KEYPAIR_LENGTH, SIGNATURE_LENGTH};
 //! # fn do_test() -> Result<(SecretKey, PublicKey, Keypair, Signature), SignatureError> {
 //! # let mut csprng = thread_rng();
 //! # let keypair_orig: Keypair = Keypair::generate(&mut csprng);
@@ -161,7 +161,7 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate xpx_crypto;
+//! # extern crate xpx_chain_crypto;
 //! # #[cfg(feature = "serde")]
 //! extern crate serde;
 //! # #[cfg(feature = "serde")]
@@ -171,7 +171,7 @@
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use xpx_crypto::{Keypair, Signature, PublicKey};
+//! # use xpx_chain_crypto::{Keypair, Signature, PublicKey};
 //! use bincode::{serialize, Infinite};
 //! # let mut csprng = thread_rng();
 //! # let keypair: Keypair = Keypair::generate(&mut csprng);
@@ -192,7 +192,7 @@
 //!
 //! ```
 //! # extern crate rand;
-//! # extern crate xpx_crypto;
+//! # extern crate xpx_chain_crypto;
 //! # #[cfg(feature = "serde")]
 //! # extern crate serde;
 //! # #[cfg(feature = "serde")]
@@ -202,7 +202,7 @@
 //! # fn main() {
 //! # use rand::Rng;
 //! # use rand::thread_rng;
-//! # use xpx_crypto::{Keypair, Signature, PublicKey};
+//! # use xpx_chain_crypto::{Keypair, Signature, PublicKey};
 //! # use bincode::{serialize, Infinite};
 //! use bincode::{deserialize};
 //!

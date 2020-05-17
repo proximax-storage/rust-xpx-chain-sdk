@@ -71,11 +71,11 @@ impl SecretKey {
     /// # Example
     ///
     /// ```
-    /// # extern crate xpx_crypto;
+    /// # extern crate xpx_chain_crypto;
     /// #
-    /// use xpx_crypto::SecretKey;
-    /// use xpx_crypto::SECRET_KEY_LENGTH;
-    /// use xpx_crypto::SignatureError;
+    /// use xpx_chain_crypto::SecretKey;
+    /// use xpx_chain_crypto::SECRET_KEY_LENGTH;
+    /// use xpx_chain_crypto::SignatureError;
     ///
     /// # fn doctest() -> Result<SecretKey, SignatureError> {
     /// let secret_key_bytes: [u8; SECRET_KEY_LENGTH] = [
@@ -120,7 +120,7 @@ impl SecretKey {
     /// ```
     /// extern crate rand;
     /// extern crate sha3;
-    /// extern crate xpx_crypto;
+    /// extern crate xpx_chain_crypto;
     ///
     /// # #[cfg(feature = "std")]
     /// # fn main() {
@@ -128,9 +128,9 @@ impl SecretKey {
     /// use rand::Rng;
     /// use rand::rngs::OsRng;
     /// use sha3::Sha3_512;
-    /// use xpx_crypto::PublicKey;
-    /// use xpx_crypto::SecretKey;
-    /// use xpx_crypto::Signature;
+    /// use xpx_chain_crypto::PublicKey;
+    /// use xpx_chain_crypto::SecretKey;
+    /// use xpx_chain_crypto::Signature;
     ///
     /// let mut csprng: OsRng = OsRng::new().unwrap();
     /// let secret_key: SecretKey = SecretKey::generate(&mut csprng);
@@ -144,15 +144,15 @@ impl SecretKey {
     ///
     /// ```
     /// # extern crate rand;
-    /// # extern crate xpx_crypto;
+    /// # extern crate xpx_chain_crypto;
     /// #
     /// # fn main() {
     /// #
     /// # use rand::Rng;
     /// # use rand::thread_rng;
-    /// # use xpx_crypto::PublicKey;
-    /// # use xpx_crypto::SecretKey;
-    /// # use xpx_crypto::Signature;
+    /// # use xpx_chain_crypto::PublicKey;
+    /// # use xpx_chain_crypto::SecretKey;
+    /// # use xpx_chain_crypto::Signature;
     /// #
     /// # let mut csprng = thread_rng();
     /// # let secret_key: SecretKey = SecretKey::generate(&mut csprng);
@@ -194,7 +194,7 @@ impl<'d> Deserialize<'d> for SecretKey {
     {
         struct SecretKeyVisitor;
 
-        impl<'d> Visitor<'d> for SecretKeyVisitor {
+        impl<'d> Visitor <'d> for SecretKeyVisitor {
             type Value = SecretKey;
 
             fn expecting(&self, formatter: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
@@ -269,14 +269,14 @@ impl<'a> From<&'a SecretKey> for ExpandedSecretKey {
     /// ```
     /// # extern crate rand;
     /// # extern crate sha3;
-    /// # extern crate xpx_crypto;
+    /// # extern crate xpx_chain_crypto;
     /// #
     /// # fn main() {
     /// #
     /// use rand::Rng;
     /// use rand::thread_rng;
     /// use sha3::Sha3_512;
-    /// use xpx_crypto::{SecretKey, ExpandedSecretKey};
+    /// use xpx_chain_crypto::{SecretKey, ExpandedSecretKey};
     ///
     /// let mut csprng = thread_rng();
     /// let secret_key: SecretKey = SecretKey::generate(&mut csprng);
@@ -318,7 +318,7 @@ impl ExpandedSecretKey {
     /// ```
     /// # extern crate rand;
     /// # extern crate sha3;
-    /// # extern crate xpx_crypto;
+    /// # extern crate xpx_chain_crypto;
     /// #
     /// # #[cfg(all(feature = "sha3", feature = "std"))]
     /// # fn main() {
@@ -326,7 +326,7 @@ impl ExpandedSecretKey {
     /// use rand::Rng;
     /// use rand::rngs::OsRng;
     /// use sha3::Sha3_512;
-    /// use xpx_crypto::{SecretKey, ExpandedSecretKey};
+    /// use xpx_chain_crypto::{SecretKey, ExpandedSecretKey};
     ///
     /// let mut csprng: OsRng = OsRng::new().unwrap();
     /// let secret_key: SecretKey = SecretKey::generate(&mut csprng);
@@ -360,17 +360,17 @@ impl ExpandedSecretKey {
     /// ```
     /// # extern crate rand;
     /// # extern crate sha3;
-    /// # extern crate xpx_crypto;
+    /// # extern crate xpx_chain_crypto;
     /// #
-    /// # use xpx_crypto::{ExpandedSecretKey, SignatureError};
+    /// # use xpx_chain_crypto::{ExpandedSecretKey, SignatureError};
     /// #
     /// # #[cfg(all(feature = "sha3", feature = "std"))]
     /// # fn do_test() -> Result<ExpandedSecretKey, SignatureError> {
     /// #
     /// use rand::Rng;
     /// use rand::rngs::OsRng;
-    /// use xpx_crypto::{SecretKey, ExpandedSecretKey};
-    /// use xpx_crypto::SignatureError;
+    /// use xpx_chain_crypto::{SecretKey, ExpandedSecretKey};
+    /// use xpx_chain_crypto::SignatureError;
     ///
     /// let mut csprng: OsRng = OsRng::new().unwrap();
     /// let secret_key: SecretKey = SecretKey::generate(&mut csprng);

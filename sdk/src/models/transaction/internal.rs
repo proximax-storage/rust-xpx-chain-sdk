@@ -31,7 +31,7 @@ pub(super) fn sign_transaction(
 ) -> crate::Result<SignedTransaction> {
     let key_pair: crypto::Keypair = crypto::Keypair::from_private_key(account.key_pair.secret);
 
-    let mut tx_bytes = tx.embedded_to_bytes()?;
+    let tx_bytes = tx.embedded_to_bytes()?;
 
     let generation_hash_bytes = hex::decode(&generation_hash)?;
 
@@ -43,10 +43,10 @@ pub(super) fn sign_transaction(
 
     let mut tx_vector: Vec<u8> = Vec::with_capacity(tx_bytes.len());
 
-    tx_vector.append(&mut tx_bytes[..4].to_vec());
-    tx_vector.append(&mut signature.to_bytes().to_vec());
-    tx_vector.append(&mut key_pair.public.to_bytes().to_vec());
-    tx_vector.append(&mut tx_bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..].to_vec());
+    tx_vector.extend_from_slice(&tx_bytes[..4]);
+    tx_vector.extend_from_slice(&signature.to_bytes());
+    tx_vector.extend_from_slice(&key_pair.public.to_bytes());
+    tx_vector.extend_from_slice(&tx_bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..]);
 
     let payload = vec_u8_to_hex(tx_vector);
 
@@ -93,21 +93,21 @@ pub(super) fn sign_transaction_with_cosignatures(
 }
 
 pub(super) fn create_transaction_hash(p: String, generation_hash: &str) -> String {
-    let mut p_bytes = hex::decode(p).unwrap();
+    let p_bytes = hex::decode(p).unwrap();
 
-    let mut sb = Vec::new();
+    let mut sb = vec![];
 
-    sb.append(&mut p_bytes[SIZE_SIZE..SIZE_SIZE + HALF_OF_SIGNATURE].to_vec());
+    sb.extend_from_slice(&p_bytes[SIZE_SIZE..SIZE_SIZE + HALF_OF_SIGNATURE]);
 
-    sb.append(
-        &mut p_bytes[SIGNATURE_SIZE + SIZE_SIZE..SIZE_SIZE + SIGNATURE_SIZE + SIGNER_SIZE].to_vec(),
+    sb.extend_from_slice(
+        &p_bytes[SIGNATURE_SIZE + SIZE_SIZE..SIZE_SIZE + SIGNATURE_SIZE + SIGNER_SIZE],
     );
 
     let generation_hash_bytes = hex::decode(generation_hash);
 
-    sb.append(&mut generation_hash_bytes.unwrap().to_vec());
+    sb.extend_from_slice(&generation_hash_bytes.unwrap());
 
-    sb.append(&mut p_bytes[100..].to_vec());
+    sb.extend_from_slice(&p_bytes[100..]);
 
     let sha3_public_key_hash = Sha3_256::digest(sb.as_slice());
 
@@ -139,20 +139,19 @@ pub(super) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate
         ERR_EMPTY_TRANSACTION_SIGNER
     );
 
-    let mut signer_bytes = tx.to_owned().abs_transaction().signer.to_bytes();
+    let signer_bytes = tx.to_owned().abs_transaction().signer.to_bytes();
 
-    let mut tx_bytes = tx.embedded_to_bytes()?;
+    let tx_bytes = tx.embedded_to_bytes()?;
 
     let mut r_b: Vec<u8> = Vec::with_capacity(tx_bytes.len());
-    r_b.append(&mut [0u8; 4].to_vec());
-    r_b.append(&mut signer_bytes[..].to_vec());
-    r_b.append(
-        &mut tx_bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE
+    r_b.extend_from_slice(&[0u8; 4]);
+    r_b.extend_from_slice(&signer_bytes[..]);
+    r_b.extend_from_slice(
+        &tx_bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE
             ..SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE + VERSION_SIZE + TYPE_SIZE]
-            .to_vec(),
     );
 
-    r_b.append(&mut tx_bytes[TRANSACTION_HEADER_SIZE..].to_vec());
+    r_b.extend_from_slice(&tx_bytes[TRANSACTION_HEADER_SIZE..]);
 
     let s = u32_to_array_u8(r_b.len() as u32);
 

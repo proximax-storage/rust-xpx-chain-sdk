@@ -5,8 +5,8 @@ use serde_json::Value;
 
 use crate::models::{
     account::{Account, PublicAccount},
-    consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE},
     asset_id_model::AssetId,
+    consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE},
     mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     network::NetworkType,
 };

@@ -5,9 +5,9 @@ use serde_json::Value;
 
 use crate::models::{
     account::{Account, PublicAccount},
+    asset_id_model::AssetId,
     consts::REGISTER_NAMESPACE_HEADER_SIZE,
     errors,
-    asset_id_model::AssetId,
     namespace::{generate_namespace_id, NamespaceId, NamespaceType},
     network::NetworkType,
     uint_64::Uint64,

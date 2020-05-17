@@ -6,7 +6,7 @@ use sdk::{
     account::PublicAccount,
     network::NetworkType,
 
-    exchange::{UserExchangeInfo, OfferType, OfferInfo, OfferInfos},
+    exchange::{UserExchangeInfo, OfferType, OfferInfos},
     AssetId
 };
 

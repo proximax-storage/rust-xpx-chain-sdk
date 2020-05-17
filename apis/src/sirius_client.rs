@@ -69,8 +69,8 @@ impl SiriusClient {
 
 impl SiriusClient
 {
-    fn __internal(url: &'static str) -> Box<Self> {
-        let api_client = ApiClient::from_url(url);
+    fn __internal(urls: Vec<&'static str>) -> Box<Self> {
+        let api_client = ApiClient::from_url(urls[0]);
 
         let rc = Arc::new(api_client);
 
@@ -101,8 +101,8 @@ impl SiriusClient
         }
     }
 
-    pub async fn new(url: &'static str) -> super::Result<Box<Self>> {
-        let mut api = Self::__internal(url);
+    pub async fn new(urls: Vec<&'static str>) -> super::Result<Box<Self>> {
+        let mut api = Self::__internal(urls);
         api.__generation_info().await?;
 
         Ok(api)

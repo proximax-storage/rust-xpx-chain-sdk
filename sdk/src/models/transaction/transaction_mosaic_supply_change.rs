@@ -5,8 +5,8 @@ use serde_json::Value;
 
 use crate::models::{
     account::{Account, PublicAccount},
-    consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
     asset_id_model::AssetId,
+    consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
     mosaic::MosaicSupplyType,
     network::NetworkType,
     uint_64::Uint64,

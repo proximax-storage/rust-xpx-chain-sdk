@@ -8,8 +8,6 @@ use xpx_chain_sdk::transaction::{
     AggregateTransaction, Deadline, ModifyMultisigAccountTransaction, Transaction,
 };
 
-const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
-
 /// Future multiSig private key
 const MULTI_SIG_PRIVATE_KEY: &str =
     "3B5550B5CB19C893694FC49B461CE489BF9588BE16DBE8DC29CF06338133DEE7";
@@ -30,7 +28,9 @@ const MINIMAL_REMOVAL: i8 = 3;
 
 #[tokio::main]
 async fn main() {
-    let sirius_client = SiriusClient::new(NODE_URL).await;
+    let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
+
+    let sirius_client = SiriusClient::new(node_url).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),

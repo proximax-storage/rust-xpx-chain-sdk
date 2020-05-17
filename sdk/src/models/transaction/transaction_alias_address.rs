@@ -6,9 +6,9 @@ use serde_json::Value;
 use crate::models::{
     account::{Account, Address, PublicAccount},
     alias::AliasActionType,
+    asset_id_model::AssetId,
     consts::ADDRESS_SIZE,
     errors,
-    asset_id_model::AssetId,
     namespace::NamespaceId,
     network::NetworkType,
 };
