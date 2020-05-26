@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 use super::{ArrayAttribute, ScalarAttribute, SchemaAttribute, SIZEOF_BYTE, SIZEOF_INT, SIZEOF_SHORT};
 
 pub fn schema_common_definition() -> Vec<Box<dyn SchemaAttribute>> {

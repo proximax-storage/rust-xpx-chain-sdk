@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 //! Errors which may occur when parsing keys and/or signatures to or from wire formats.
 
 // rustc seems to think the typenames in match statements (e.g. in

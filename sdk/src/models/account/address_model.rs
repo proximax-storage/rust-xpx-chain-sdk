@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 use ::base32::Alphabet::RFC4648;
 
 use crate::models::consts::{ADDRESS_DECODE_SIZE, ADDRESS_ENCODE_SIZE};

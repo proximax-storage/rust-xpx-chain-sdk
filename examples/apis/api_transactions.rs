@@ -1,7 +1,13 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
 use xpx_chain_apis::SiriusClient;
+
+const HASH_ONE: &str = "E55037A661EE69C5F45CD3F40744F0923DD5B827F50BAF9AAF61DF649DC7B1D9";
+const HASH_TWO: &str = "5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4";
 
 #[tokio::main]
 async fn main() {
@@ -13,9 +19,19 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
+    let transaction = client
+        .transaction_api()
+        .get_transaction(HASH_ONE)
+        .await;
+
+    match transaction {
+        Ok(tx) => println!("{}", tx),
+        Err(err) => eprintln!("{}", err),
+    }
+
     let transaction_status = client
         .transaction_api()
-        .get_transaction("E55037A661EE69C5F45CD3F40744F0923DD5B827F50BAF9AAF61DF649DC7B1D9")
+        .get_transaction_status(HASH_ONE)
         .await;
 
     match transaction_status {
@@ -23,14 +39,9 @@ async fn main() {
         Err(err) => eprintln!("{}", err),
     }
 
-    let transactions_ids = vec![
-        "E55037A661EE69C5F45CD3F40744F0923DD5B827F50BAF9AAF61DF649DC7B1D9",
-        "5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4",
-    ];
-
     let transactions_statuses = client
         .transaction_api()
-        .get_transactions_statuses(transactions_ids.clone())
+        .get_transactions_statuses(vec![HASH_ONE, HASH_TWO])
         .await;
 
     match transactions_statuses {
@@ -42,7 +53,7 @@ async fn main() {
 
     let transaction = client
         .transaction_api()
-        .get_transaction("D02D59450AE5A41F50B0930671FD2BC1233CBA44049DDB6F86DB7409B5551A73")
+        .get_transaction(HASH_ONE)
         .await;
 
     match transaction {
@@ -52,7 +63,7 @@ async fn main() {
 
     let transactions = client
         .transaction_api()
-        .get_transactions(transactions_ids)
+        .get_transactions(vec![HASH_ONE, HASH_TWO])
         .await;
 
     match transactions {
