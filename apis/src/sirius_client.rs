@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 use ::std::sync::Arc;
 
 use reqwest::Client as ReqwestClient;
@@ -102,6 +106,10 @@ impl SiriusClient
     }
 
     pub async fn new(urls: Vec<&'static str>) -> super::Result<Box<Self>> {
+        let split = urls[0].split(":");
+        for s in split {
+    println!("{}", s)
+};
         let mut api = Self::__internal(urls);
         api.__generation_info().await?;
 

@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 /// AccountLinkTypeEnum :
 /// The account link types:
 /// * 0 -  Unlinked. Account is not linked to another account.

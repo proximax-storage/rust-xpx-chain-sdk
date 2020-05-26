@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-apis"
-version = "0.1.0"
+version = "0.1.1"
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
@@ -14,7 +14,7 @@ exclude = [ ".gitignore" ]
 edition = "2018"
 
 [dependencies]
-xpx-chain-sdk = { path = "../sdk", version = "0.1.0" }
+xpx-chain-sdk = { path = "../sdk", version = "^0.1" }
 xpx-chain-utils = { path = "../utils" }
 
 serde = "^1.0"
@@ -23,7 +23,7 @@ serde_json = "^1.0"
 typetag = "0.1"
 
 hex = "^0.3"
-bytes = "0.5.4"
+bytes = "0.5"
 reqwest = "0.10"
 tokio = { version = "0.2", features = ["macros"] }
 

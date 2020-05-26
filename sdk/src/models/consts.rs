@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 //pub const ACCOUNT_LINK_TRANSACTION_SIZE: usize = TRANSACTION_HEADER_SIZE + KEY_SIZE + LINK_ACTION_SIZE;
 //pub const ACCOUNT_PROPERTIES_ADDRESS_MODIFICATION_SIZE: usize = PROPERTY_MODIFICATION_TYPE_SIZE + ADDRESS_DECODE_SIZE;
 //pub const ACCOUNT_PROPERTIES_ENTITY_MODIFICATION_SIZE: usize = PROPERTY_MODIFICATION_TYPE_SIZE + TYPE_SIZE;

@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 //! Common constants such as buffer sizes for keypairs and signatures.
 
 /// The length of a ed25519 `Signature`, in bytes.

@@ -2,40 +2,46 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::borrow::Borrow;
+use crypto::{Keypair, SecretKey, PublicKey};
 
 use super::{Message, MessageType};
+use std::borrow::Borrow;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PlainMessage {
+pub struct SecureMessage {
     #[serde(rename = "type")]
     _type: MessageType,
-    pub payload: String,
+    payload: Vec<u8>,
 }
 
-impl PlainMessage {
-    pub fn new(payload: &str) -> Self {
-        PlainMessage {
-            _type: MessageType::PlainMessageType,
-            payload: payload.to_owned(),
+impl SecureMessage {
+    fn new(payload: Vec<u8>) -> Self {
+        SecureMessage {
+            _type: MessageType::SecureMessageType,
+            payload,
         }
     }
 
-    pub fn empty() -> Self {
-        PlainMessage {
-            _type: MessageType::PlainMessageType,
-            payload: "".to_string(),
-        }
-    }
+    // pub fn from_plaint_text(payload: &str, sender: SecretKey, recipient: PublicKey) -> Self {
+    //
+    //     let skp = Keypair::from_private_key(sender);
+    //
+    //     let rkp = Keypair::from_private_key(sender);
+    //
+    //     SecureMessage {
+    //         _type: MessageType::SecureMessageType,
+    //         payload: ,
+    //     }
+    // }
 }
 
-impl Message for PlainMessage {
+impl Message for SecureMessage {
     fn message_type(&self) -> &MessageType {
         &self._type.borrow()
     }
 
     fn payload_to_bytes(&self) -> &[u8] {
-        self.payload.as_bytes()
+        &self.payload
     }
 
     fn box_clone(&self) -> Box<dyn Message + 'static> {
@@ -43,18 +49,11 @@ impl Message for PlainMessage {
     }
 }
 
-impl core::fmt::Display for PlainMessage {
+impl core::fmt::Display for SecureMessage {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f, "{}",
             serde_json::to_string_pretty(&self).unwrap_or_default()
         )
-    }
-}
-
-/// Creates `MosaicFlags` with the default parameters.
-impl Default for PlainMessage {
-    fn default() -> Self {
-        PlainMessage { _type: MessageType::PlainMessageType, payload: "".to_string() }
     }
 }

@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 use sha3::{Digest, Sha3_256};
 
 use utils::array_u8_to_u64;

@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
@@ -13,7 +17,7 @@ fn main() {
     println!("New Account From PrivateKey: {}\n", account_one);
 
     let account_two = Account::from_private_key(private_key, network_type).unwrap();
-    println!("Account From PrivateKey: {}\n", account_two);
+    println!("Account From PrivateKey: {}\n", account_two.key_pair.);
 
     let public_key = "c6075f6bf21434010aec83d033cf51cd4ce58ed3bb89fea3e91af7004e2bdb61";
 

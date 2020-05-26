@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 use ::std::{collections::HashMap, sync::Arc};
 
 use reqwest::{header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT}, Method, StatusCode, Url};

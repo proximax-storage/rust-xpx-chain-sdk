@@ -1,3 +1,6 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
 use xpx_chain_apis::SiriusClient;
 use xpx_chain_sdk::account::PublicAccount;
 
@@ -14,6 +17,7 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
+    // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
     let network_type = client.network_type();
 
     let public_account = PublicAccount::from_public_key(

@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
@@ -8,7 +12,7 @@ use xpx_chain_sdk::transaction::{
     Deadline, Duration, EntityTypeEnum, LockFundsTransaction, SignedTransaction,
 };
 
-const PRIVATE_KEY: &str = "6D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
+const PRIVATE_KEY: &str = "7D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
 
 #[tokio::main]
 async fn main() {

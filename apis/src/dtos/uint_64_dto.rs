@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 use sdk::Uint64;
 
 #[derive(Clone, Deserialize, Serialize)] // we derive Default in order to use the clear() method in Drop

@@ -1,3 +1,7 @@
+// Copyright 2018 ProximaX Limited. All rights reserved.
+// Use of this source code is governed by the Apache 2.0
+// license that can be found in the LICENSE file.
+
 //! ed25519 secret key types.
 
 use core::fmt::Debug;
@@ -413,6 +417,7 @@ impl ExpandedSecretKey {
     /// Sign a message with this `ExpandedSecretKey`.
     #[allow(non_snake_case)]
     pub fn sign(&self, message: &[u8], public_key: &PublicKey) -> Signature {
+        println!("{:?}", public_key);
         let mut h: Sha3_512 = Sha3_512::new();
         let R: CompressedEdwardsY;
         let r: Scalar;
