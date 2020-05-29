@@ -16,8 +16,10 @@ publish = false
 xpx-chain-apis = { path = "../apis", version = "0.1" }
 xpx-chain-crypto = { path = "../crypto", version = "0.1" }
 xpx-chain-sdk = { path = "../sdk", version = "0.1" }
+xpx-chain-websocket = { path = "../websocket", version = "0.1" }
 
-tokio = { version = "0.2", features = ["macros"] }
+tokio = { version = "0.2", default-features = false, features = ["io-util"] }
+
 failure = "0.1"
 
 [[example]]
@@ -127,3 +129,7 @@ path = "apis/annunce/register_namespace.rs"
 [[example]]
 name = "annunce_transfer"
 path = "apis/annunce/transfer.rs"
+
+[[example]]
+name = "websocket"
+path = "websocket/main.rs"

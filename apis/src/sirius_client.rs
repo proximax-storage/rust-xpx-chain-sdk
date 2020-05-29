@@ -20,54 +20,40 @@ pub struct SiriusClient {
     generation_hash: Hash,
     network_type: NetworkType,
     #[serde(skip_serializing)]
-    account: Box<AccountRoutes>,
-    #[serde(skip_serializing)]
-    block: Box<BlockRoutes>,
-    #[serde(skip_serializing)]
-    chain: Box<ChainRoutes>,
-    #[serde(skip_serializing)]
-    exchange: Box<ExchangeRoutes>,
-    #[serde(skip_serializing)]
-    node: Box<NodeRoutes>,
-    #[serde(skip_serializing)]
-    mosaic: Box<MosaicRoutes>,
-    #[serde(skip_serializing)]
-    namespace: Box<NamespaceRoutes>,
-    #[serde(skip_serializing)]
-    transaction: Box<TransactionRoutes>,
+    client: Arc<ApiClient>,
 }
 
 impl SiriusClient {
     pub fn account_api(&self) -> Box<AccountRoutes> {
-        self.account.to_owned()
+        Box::new(AccountRoutes::new(self.client.to_owned()))
     }
 
     pub fn block_api(&self) -> Box<BlockRoutes> {
-        self.block.to_owned()
+        Box::new(BlockRoutes::new(self.client.to_owned()))
     }
 
     pub fn chain_api(&self) -> Box<ChainRoutes> {
-        self.chain.to_owned()
+        Box::new(ChainRoutes::new(self.client.to_owned()))
     }
 
     pub fn exchange_api(&self) -> Box<ExchangeRoutes> {
-        self.exchange.to_owned()
+        Box::new(ExchangeRoutes::new(self.client.to_owned()))
     }
 
     pub fn node_api(&self) -> Box<NodeRoutes> {
-        self.node.to_owned()
+        Box::new(NodeRoutes::new(self.client.to_owned()))
     }
 
     pub fn mosaic_api(&self) -> Box<MosaicRoutes> {
-        self.mosaic.to_owned()
+        Box::new(MosaicRoutes::new(self.client.to_owned()))
     }
 
     pub fn namespace_api(&self) -> Box<NamespaceRoutes> {
-        self.namespace.to_owned()
+        Box::new(NamespaceRoutes::new(self.client.to_owned()))
     }
 
     pub fn transaction_api(&self) -> Box<TransactionRoutes> {
-        self.transaction.to_owned()
+        Box::new(TransactionRoutes::new(self.client.to_owned()))
     }
 }
 
@@ -76,19 +62,12 @@ impl SiriusClient
     fn __internal(urls: Vec<&'static str>) -> Box<Self> {
         let api_client = ApiClient::from_url(urls[0]);
 
-        let rc = Arc::new(api_client);
+        let client = Arc::new(api_client);
 
         Box::new(SiriusClient {
             generation_hash: "".to_string(),
             network_type: Default::default(),
-            account: Box::new(AccountRoutes::new(rc.to_owned())),
-            block: Box::new(BlockRoutes::new(rc.to_owned())),
-            chain: Box::new(ChainRoutes::new(rc.to_owned())),
-            exchange: Box::new(ExchangeRoutes::new(rc.to_owned())),
-            node: Box::new(NodeRoutes::new(rc.to_owned())),
-            mosaic: Box::new(MosaicRoutes::new(rc.to_owned())),
-            namespace: Box::new(NamespaceRoutes::new(rc.to_owned())),
-            transaction: Box::new(TransactionRoutes::new(rc.to_owned())),
+            client,
         })
     }
 
@@ -106,10 +85,6 @@ impl SiriusClient
     }
 
     pub async fn new(urls: Vec<&'static str>) -> super::Result<Box<Self>> {
-        let split = urls[0].split(":");
-        for s in split {
-    println!("{}", s)
-};
         let mut api = Self::__internal(urls);
         api.__generation_info().await?;
 
@@ -149,7 +124,7 @@ impl ApiClient
             base_path: url,
             client,
             user_agent: Some("Sirius/0.0.1/rust".to_owned()),
-            network_type_id: 0
+            network_type_id: 0,
         }
     }
 }
