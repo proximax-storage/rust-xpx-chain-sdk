@@ -5,7 +5,7 @@
 use ::std::ops::Add;
 use ::std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use chrono::Local;
+use chrono::{Local, Timelike, NaiveTime, Date, TimeZone};
 use chrono::prelude::DateTime;
 use serde::{Serialize, Serializer};
 
@@ -37,6 +37,7 @@ impl BlockchainTimestamp {
 pub struct Timestamp(SystemTime);
 
 impl Timestamp {
+
     /// returns new timestamp from passed milliseconds value
     pub fn new(milliseconds: i64) -> Self {
         // Creates a new SystemTime from the specified number of whole seconds
@@ -48,13 +49,29 @@ impl Timestamp {
             UNIX_EPOCH).unwrap().as_nanos() / MILLISECONDS as u128) as i64
             - TIMESTAMP_NEMESIS_BLOCK_MILLISECONDS)
     }
+
+    pub fn to_date_time(&self) -> DateTime<Local> {
+         DateTime::<Local>::from(self.0)
+    }
+
+    pub fn to_hour(&self) -> u32 {
+        self.to_date_time().hour()
+    }
+
+    pub fn to_minute(&self) -> u32 {
+        self.to_date_time().minute()
+    }
+
+    pub fn to_time(&self) -> NaiveTime {
+        self.to_date_time().time()
+    }
 }
 
 impl core::fmt::Display for Timestamp {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         let datetime = DateTime::<Local>::from(self.0);
         write!(
-            f, "{}", datetime.format("%Y-%m-%d %H:%M:%S.%f").to_string()
+            f, "{}", datetime.format("%Y-%m-%d %H:%M:%S %Z").to_string()
         )
     }
 }
