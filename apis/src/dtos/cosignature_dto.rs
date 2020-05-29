@@ -17,7 +17,7 @@ pub struct CosignatoryModificationDto {
 }
 
 impl CosignatoryModificationDto {
-    pub fn to_struct(&self, network_type: NetworkType) -> CosignatoryModification {
+    pub fn compact(&self, network_type: NetworkType) -> CosignatoryModification {
         let public_account =
             PublicAccount::from_public_key(&self.cosignatory_public_key, network_type).unwrap();
 
@@ -40,7 +40,7 @@ pub struct CosignatureDto {
 }
 
 impl CosignatureDto {
-    pub fn to_struct(&self, network_type: NetworkType) -> Cosignature {
+    pub fn compact(&self, network_type: NetworkType) -> Cosignature {
         let signer = PublicAccount::from_public_key(&self.signer, network_type).unwrap();
 
         Cosignature {

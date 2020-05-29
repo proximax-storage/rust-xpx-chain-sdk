@@ -99,6 +99,6 @@ impl NodeRoutes
 
         let dto: Result<NodeTimeDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.to_struct())
+        Ok(dto?.compact())
     }
 }

@@ -77,7 +77,7 @@ impl BlockRoutes
 
         let dto: Result<BlockInfoDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.to_struct()?)
+        Ok(dto?.compact()?)
     }
 
     ///
@@ -147,7 +147,7 @@ impl BlockRoutes
 
         let mut blocks_info: Vec<BlockInfo> = vec![];
         for block_inf in dto.into_iter() {
-            blocks_info.push(block_inf.to_struct()?);
+            blocks_info.push(block_inf.compact()?);
         }
 
         Ok(blocks_info)
@@ -220,7 +220,7 @@ impl BlockRoutes
 
         let mut transactions_info: Transactions = vec![];
         for transaction_dto in dto.into_iter() {
-            transactions_info.push(transaction_dto.to_struct()?);
+            transactions_info.push(transaction_dto.compact()?);
         }
 
         Ok(transactions_info)

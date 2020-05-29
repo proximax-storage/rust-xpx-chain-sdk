@@ -13,9 +13,9 @@ pub(crate) struct HeightInfoDto {
 }
 
 impl HeightInfoDto {
-    pub fn to_struct(&self) -> HeightInfo {
+    pub fn compact(&self) -> HeightInfo {
         HeightInfo {
-            height: self.height.to_struct(),
+            height: self.height.compact(),
         }
     }
 }
@@ -29,10 +29,10 @@ pub(crate) struct BlockchainScoreDto {
 }
 
 impl BlockchainScoreDto {
-    pub fn to_struct(&self) -> BlockchainScore {
+    pub fn compact(&self) -> BlockchainScore {
         BlockchainScore {
-            score_high: self.score_high.to_struct(),
-            score_low: self.score_low.to_struct(),
+            score_high: self.score_high.compact(),
+            score_low: self.score_low.compact(),
         }
     }
 }

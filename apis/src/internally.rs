@@ -191,9 +191,9 @@ pub(crate) fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> Result<MosaicPr
 
     for property in dto.into_iter() {
         match property.id {
-            0 => flags = property.value.to_struct(),
-            1 => divisibility = property.value.to_struct().to_u64() as u8,
-            2 => duration = property.value.to_struct(),
+            0 => flags = property.value.compact(),
+            1 => divisibility = property.value.compact().to_u64() as u8,
+            2 => duration = property.value.compact(),
             _ => bail!("Unknown Property Id"),
         }
     }
@@ -212,7 +212,7 @@ pub fn cosignatory_dto_vec_to_struct(
 ) -> Vec<CosignatoryModification> {
     modifications
         .into_iter()
-        .map(|item| item.to_struct(network_type))
+        .map(|item| item.compact(network_type))
         .collect()
 }
 

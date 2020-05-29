@@ -66,7 +66,7 @@ impl ChainRoutes
         let req = __internal_request::Request::new(Method::GET, CHAIN_HEIGHT_ROUTE.to_string());
         let dto: Result<HeightInfoDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.to_struct())
+        Ok(dto?.compact())
     }
 
     /// Get the current score of the chain.
@@ -108,7 +108,7 @@ impl ChainRoutes
 
         let dto: Result<BlockchainScoreDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.to_struct())
+        Ok(dto?.compact())
     }
 
     /// Get the storage information of the node.

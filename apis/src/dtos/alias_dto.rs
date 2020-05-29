@@ -25,7 +25,7 @@ pub(crate) struct AliasDto {
 }
 
 impl AliasDto {
-    pub fn to_struct(&self) -> crate::Result<NamespaceAlias> {
+    pub fn compact(&self) -> crate::Result<NamespaceAlias> {
         let mut alias = NamespaceAlias::default();
         alias.type_ = self._type as u8;
 
@@ -35,7 +35,7 @@ impl AliasDto {
         };
 
         if let Some(m) = &self.mosaic_id {
-            let mosaic_id = MosaicId::from(m.to_struct());
+            let mosaic_id = MosaicId::from(m.compact());
             alias.mosaic_id = Some(mosaic_id)
         }
 
@@ -79,10 +79,10 @@ pub(crate) struct AddressAliasTransactionInfoDto {
 
 #[typetag::serde]
 impl TransactionDto for AddressAliasTransactionInfoDto {
-    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
+    fn compact(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.to_struct();
+        let info = self.meta.compact();
 
         let address = Address::from_encoded(&dto.address)?;
 
@@ -94,13 +94,13 @@ impl TransactionDto for AddressAliasTransactionInfoDto {
             dto.max_fee.to_owned(),
             dto.deadline.to_owned(),
         )
-            .to_struct(info)?;
+            .compact(info)?;
 
         Ok(Box::new(AddressAliasTransaction {
             alias_transaction: AliasTransaction {
                 abs_transaction: abs,
                 action_type: AliasActionType::from(dto.alias_action),
-                namespace_id: NamespaceId::from(dto.namespace_id.to_struct()),
+                namespace_id: NamespaceId::from(dto.namespace_id.compact()),
             },
             address,
         }))
@@ -136,12 +136,12 @@ pub(crate) struct MosaicAliasTransactionInfoDto {
 
 #[typetag::serde]
 impl TransactionDto for MosaicAliasTransactionInfoDto {
-    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
+    fn compact(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.to_struct();
+        let info = self.meta.compact();
 
-        let mosaic_id = MosaicId::from(dto.mosaic_id.to_struct());
+        let mosaic_id = MosaicId::from(dto.mosaic_id.compact());
 
         let abs = AbstractTransactionDto::new(
             dto.signature.to_owned(),
@@ -151,13 +151,13 @@ impl TransactionDto for MosaicAliasTransactionInfoDto {
             dto.max_fee.to_owned(),
             dto.deadline.to_owned(),
         )
-            .to_struct(info)?;
+            .compact(info)?;
 
         Ok(Box::new(MosaicAliasTransaction {
             alias_transaction: AliasTransaction {
                 abs_transaction: abs,
                 action_type: AliasActionType::from(dto.alias_action),
-                namespace_id: NamespaceId::from(dto.namespace_id.to_struct()),
+                namespace_id: NamespaceId::from(dto.namespace_id.compact()),
             },
             mosaic_id,
         }))

@@ -4,7 +4,7 @@
 
 pub(crate) use self::account_dto::*;
 pub(crate) use self::alias_dto::*;
-pub(crate) use self::block_dto::*;
+pub use self::block_dto::*;
 pub(crate) use self::blockchain_dto::*;
 pub(crate) use self::config_dto::*;
 pub(crate) use self::cosignature_dto::*;
@@ -20,7 +20,7 @@ pub(crate) use self::receipt_dto::*;
 pub(crate) use self::resolution_dto::*;
 pub(crate) use self::source_dto::*;
 pub(crate) use self::transaction_dto::*;
-pub(crate) use self::uint_64_dto::*;
+pub use self::uint_64_dto::*;
 pub(crate) use self::upgrade_dto::*;
 
 mod account_dto;

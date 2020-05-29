@@ -32,14 +32,14 @@ pub(crate) struct ExchangeInfoDto {
 }
 
 impl ExchangeInfoDto {
-    pub(crate) fn to_struct(&self, network_type: NetworkType) -> crate::Result<UserExchangeInfo> {
+    pub(crate) fn compact(&self, network_type: NetworkType) -> crate::Result<UserExchangeInfo> {
         let dto = self.to_owned();
         let owner = PublicAccount::from_public_key(&dto.exchange.owner, network_type)?;
 
         let mut buy_offer: OfferIdInfos = vec![];
         let mut buy_offer_offers: Vec<OfferInfo> = vec![];
         for item in dto.exchange.buy_offers.into_iter() {
-            buy_offer_offers.push(item.to_struct(owner.to_owned())?)
+            buy_offer_offers.push(item.compact(owner.to_owned())?)
         }
 
         for offer_info in buy_offer_offers.into_iter() {
@@ -53,7 +53,7 @@ impl ExchangeInfoDto {
         let mut sell_offer: OfferIdInfos = vec![];
         let mut sell_offer_offers: Vec<OfferInfo> = vec![];
         for item in dto.exchange.sell_offers.into_iter() {
-            sell_offer_offers.push(item.to_struct(owner.to_owned())?)
+            sell_offer_offers.push(item.compact(owner.to_owned())?)
         }
 
         for offer_info in sell_offer_offers.into_iter() {
@@ -89,19 +89,19 @@ pub(crate) struct OfferInfoDto {
 }
 
 impl OfferInfoDto {
-    pub(crate) fn to_struct(&self, owner: PublicAccount) -> crate::Result<OfferInfo> {
+    pub(crate) fn compact(&self, owner: PublicAccount) -> crate::Result<OfferInfo> {
         let dto = self.to_owned();
         let mosaic = Mosaic::new(
-            MosaicId::from(dto.mosaic_id.to_struct()),
-            dto.amount.to_struct(),
+            MosaicId::from(dto.mosaic_id.compact()),
+            dto.amount.compact(),
         );
 
         Ok(OfferInfo {
             owner,
             mosaic,
-            price_denominator: dto.initial_amount.to_struct(),
-            price_numerator: dto.initial_cost.to_struct(),
-            deadline: dto.deadline.to_struct(),
+            price_denominator: dto.initial_amount.compact(),
+            price_numerator: dto.initial_cost.compact(),
+            deadline: dto.deadline.compact(),
         })
     }
 }

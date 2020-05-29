@@ -37,11 +37,11 @@ pub(crate) struct MultisigAccountGraphInfoDto {
 }
 
 impl MultisigAccountGraphInfoDto {
-    pub fn to_struct(&self) -> crate::Result<Vec<MultisigAccountInfo>> {
+    pub fn compact(&self) -> crate::Result<Vec<MultisigAccountInfo>> {
         Ok(self
             .multisig_entries
             .iter()
-            .map(|item| item.to_struct().unwrap())
+            .map(|item| item.compact().unwrap())
             .collect())
     }
 }
@@ -53,7 +53,7 @@ pub(crate) struct MultisigAccountInfoDto {
 }
 
 impl MultisigAccountInfoDto {
-    pub fn to_struct(&self) -> crate::Result<MultisigAccountInfo> {
+    pub fn compact(&self) -> crate::Result<MultisigAccountInfo> {
         let dto = self.multisig.to_owned();
         let network_type: NetworkType =
             Address::from_encoded(&dto.account_address.unwrap())?.network_type;
@@ -109,9 +109,9 @@ pub(crate) struct ModifyMultisigAccountTransactionDto {
 
 #[typetag::serde]
 impl TransactionDto for ModifyMultisigAccountTransactionInfoDto {
-    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
+    fn compact(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
-        let info = self.meta.to_struct();
+        let info = self.meta.compact();
 
         let abs = AbstractTransactionDto::new(
             dto.signature,
@@ -121,7 +121,7 @@ impl TransactionDto for ModifyMultisigAccountTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-            .to_struct(info)?;
+            .compact(info)?;
 
         let modifications = cosignatory_dto_vec_to_struct(dto.modifications, abs.network_type);
 

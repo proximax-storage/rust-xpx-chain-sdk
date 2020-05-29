@@ -83,7 +83,7 @@ impl MosaicRoutes
 
         let dto: Result<MosaicInfoDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.to_struct()?)
+        Ok(dto?.compact()?)
     }
 
     /// Gets an vector of [MosaicInfo] definition.
@@ -140,7 +140,7 @@ impl MosaicRoutes
 
         let mut mosaics_info: Vec<MosaicInfo> = vec![];
         for mosaic_dto in dto.into_iter() {
-            mosaics_info.push(mosaic_dto.to_struct()?);
+            mosaics_info.push(mosaic_dto.compact()?);
         }
 
         Ok(mosaics_info)
@@ -200,7 +200,7 @@ impl MosaicRoutes
 
         let mosaics_names = dto
             .into_iter()
-            .map(move |name_dto| name_dto.to_struct())
+            .map(move |name_dto| name_dto.compact())
             .collect();
 
         Ok(mosaics_names)

@@ -30,7 +30,7 @@ pub(crate) struct AccountInfoDto {
 }
 
 impl AccountInfoDto {
-    pub(crate) fn to_struct(&self) -> crate::Result<AccountInfo> {
+    pub(crate) fn compact(&self) -> crate::Result<AccountInfo> {
         let dto = &self.account;
         let add = Address::from_encoded(&dto.clone().address)?;
         let acc_type = AccountLinkTypeEnum::new(dto.clone().account_type);
@@ -38,14 +38,14 @@ impl AccountInfoDto {
         let mosaics: Vec<Mosaic> = dto
             .mosaics
             .iter()
-            .map(move |mosaic_dto| mosaic_dto.to_struct())
+            .map(move |mosaic_dto| mosaic_dto.compact())
             .collect();
 
         Ok(AccountInfo::new(
             add,
-            dto.clone().address_height.to_struct(),
+            dto.clone().address_height.compact(),
             dto.clone().public_key,
-            dto.public_key_height.to_struct(),
+            dto.public_key_height.compact(),
             acc_type,
             mosaics,
         ))
@@ -97,7 +97,7 @@ pub(crate) struct AccountNamesDto {
 }
 
 impl AccountNamesDto {
-    pub fn to_struct(&self) -> crate::Result<AccountName> {
+    pub fn compact(&self) -> crate::Result<AccountName> {
         let address = Address::from_encoded(&self.address)?;
 
         Ok(AccountName {

@@ -13,7 +13,7 @@ pub(crate) struct MessageDto {
 }
 
 impl MessageDto {
-    pub fn to_struct(&self) -> Box<dyn Message> {
+    pub fn compact(&self) -> Box<dyn Message> {
         if self._type == 0 {
             let mut plain = PlainMessage::default();
             if self.payload.len() != 0 {

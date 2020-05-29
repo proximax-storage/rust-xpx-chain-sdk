@@ -11,7 +11,7 @@ use xpx_chain_sdk::message::PlainMessage;
 use xpx_chain_sdk::mosaic::Mosaic;
 use xpx_chain_sdk::transaction::{Deadline, TransferTransaction};
 
-const PRIVATE_KEY: &str = "7D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
+const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD1E";
 
 #[tokio::main]
 async fn main() {
@@ -33,6 +33,8 @@ async fn main() {
     let deadline = Deadline::default();
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
+
+    println!("{}", account.address_string());
 
     let recipient = Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap();
 
