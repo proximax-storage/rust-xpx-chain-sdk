@@ -41,10 +41,10 @@ pub(crate) struct AggregateTransactionInfoDto {
 
 #[typetag::serde]
 impl TransactionDto for AggregateTransactionInfoDto {
-    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
+    fn compact(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.to_struct();
+        let info = self.meta.compact();
 
         let txs_dto = map_aggregate_transactions_dto(dto.transactions)?;
 
@@ -56,17 +56,17 @@ impl TransactionDto for AggregateTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-            .to_struct(info)?;
+            .compact(info)?;
 
         let cosignatures = dto
             .cosignatures
             .into_iter()
-            .map(|item| item.to_struct(abs_transaction.network_type))
+            .map(|item| item.compact(abs_transaction.network_type))
             .collect();
 
         let mut inner_transactions: Vec<Box<dyn Transaction>> = Vec::with_capacity(txs_dto.len());
         for transaction_info_dto in txs_dto {
-            inner_transactions.push(transaction_info_dto.to_struct()?);
+            inner_transactions.push(transaction_info_dto.compact()?);
         }
 
         Ok(Box::new(AggregateTransaction {

@@ -90,7 +90,7 @@ impl AccountRoutes
 
         let dto: Result<AccountInfoDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.to_struct()?)
+        Ok(dto?.compact()?)
     }
 
     /// Get `Accounts` information
@@ -144,7 +144,7 @@ impl AccountRoutes
 
         let mut accounts_info: Vec<AccountInfo> = vec![];
         for account_dto in dto.into_iter() {
-            accounts_info.push(account_dto.to_struct()?);
+            accounts_info.push(account_dto.compact()?);
         }
 
         Ok(accounts_info)
@@ -164,7 +164,7 @@ impl AccountRoutes
 
         let mut accounts_names: Vec<AccountName> = vec![];
         for accounts_dto in dto.into_iter() {
-            accounts_names.push(accounts_dto.to_struct()?);
+            accounts_names.push(accounts_dto.compact()?);
         }
 
         Ok(accounts_names)
@@ -180,7 +180,7 @@ impl AccountRoutes
 
         let dto: Result<MultisigAccountInfoDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.to_struct()?)
+        Ok(dto?.compact()?)
     }
 
     pub async fn account_multisig_graph(
@@ -200,7 +200,7 @@ impl AccountRoutes
 
         let mut multisig_accounts: HashMap<i16, Vec<MultisigAccountInfo>> = HashMap::new();
         for graph_info_dto in dto?.into_iter() {
-            let info = graph_info_dto.to_struct()?;
+            let info = graph_info_dto.compact()?;
             multisig_accounts.insert(graph_info_dto.level, info);
         }
 
@@ -345,7 +345,7 @@ impl AccountRoutes
 
             let mut transactions_info: Transactions = vec![];
             for transaction_dto in dto.into_iter() {
-                transactions_info.push(transaction_dto.to_struct()?)
+                transactions_info.push(transaction_dto.compact()?)
             }
 
             Ok(transactions_info)

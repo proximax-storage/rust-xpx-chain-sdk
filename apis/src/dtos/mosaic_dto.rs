@@ -25,9 +25,9 @@ pub(crate) struct MosaicDto {
 }
 
 impl MosaicDto {
-    pub fn to_struct(&self) -> Mosaic {
-        let mosaic_id = MosaicId::from(self.id.to_struct());
-        let amount = self.amount.to_struct();
+    pub fn compact(&self) -> Mosaic {
+        let mosaic_id = MosaicId::from(self.id.compact());
+        let amount = self.amount.compact();
         Mosaic::new(mosaic_id, amount)
     }
 }
@@ -41,20 +41,20 @@ pub(crate) struct MosaicInfoDto {
 }
 
 impl MosaicInfoDto {
-    pub fn to_struct(&self) -> Result<MosaicInfo> {
+    pub fn compact(&self) -> Result<MosaicInfo> {
         ensure!(
             self.mosaic.properties.len() > 0,
             errors::ERR_INVALID_MOSAIC_PROPERTIES
         );
 
-        let mosaic_id = MosaicId::from(self.mosaic.mosaic_id.to_struct());
+        let mosaic_id = MosaicId::from(self.mosaic.mosaic_id.compact());
 
         let properties = mosaic_properties(&self.mosaic.properties)?;
 
         Ok(MosaicInfo::new(
             mosaic_id,
-            self.mosaic.supply.to_struct(),
-            self.mosaic.height.to_struct(),
+            self.mosaic.supply.compact(),
+            self.mosaic.height.compact(),
             (&self.mosaic.owner).parse()?,
             self.mosaic.revision,
             properties,
@@ -119,10 +119,10 @@ pub(crate) struct MosaicDefinitionTransactionDto {
 
 #[typetag::serde]
 impl TransactionDto for MosaicDefinitionTransactionInfoDto {
-    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
+    fn compact(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.to_struct();
+        let info = self.meta.compact();
 
         let abs = AbstractTransactionDto::new(
             dto.signature,
@@ -132,7 +132,7 @@ impl TransactionDto for MosaicDefinitionTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-            .to_struct(info)?;
+            .compact(info)?;
 
         let properties = mosaic_properties(&dto.properties)?;
 
@@ -140,7 +140,7 @@ impl TransactionDto for MosaicDefinitionTransactionInfoDto {
             abs_transaction: abs,
             properties,
             mosaic_nonce: MosaicNonce::from(dto.mosaic_nonce),
-            mosaic_id: MosaicId::from(dto.mosaic_id.to_struct()),
+            mosaic_id: MosaicId::from(dto.mosaic_id.compact()),
         }))
     }
 }
@@ -181,9 +181,9 @@ pub(crate) struct MosaicNamesDto {
 }
 
 impl MosaicNamesDto {
-    pub fn to_struct(&self) -> MosaicNames {
+    pub fn compact(&self) -> MosaicNames {
         MosaicNames::new(
-            MosaicId::from(self.mosaic_id.to_struct()),
+            MosaicId::from(self.mosaic_id.compact()),
             (self.names).to_owned(),
         )
     }
@@ -204,10 +204,10 @@ pub(crate) struct MosaicSupplyChangeTransactionInfoDto {
 
 #[typetag::serde]
 impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
-    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
+    fn compact(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.to_struct();
+        let info = self.meta.compact();
 
         let abs = AbstractTransactionDto::new(
             dto.signature,
@@ -217,13 +217,13 @@ impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-            .to_struct(info)?;
+            .compact(info)?;
 
         Ok(Box::new(MosaicSupplyChangeTransaction {
             abs_transaction: abs,
             supply_type: MosaicSupplyType::from(dto.direction),
-            asset_id: Box::new(MosaicId::from(dto.mosaic_id.to_struct())),
-            delta: dto.delta.to_struct(),
+            asset_id: Box::new(MosaicId::from(dto.mosaic_id.compact())),
+            delta: dto.delta.compact(),
         }))
     }
 }

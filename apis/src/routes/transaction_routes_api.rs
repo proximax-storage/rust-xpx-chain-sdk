@@ -91,7 +91,7 @@ impl TransactionRoutes
 
         let dto: Result<TransactionStatusDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.to_struct())
+        Ok(dto?.compact())
     }
 
     /// Get transactions status.
@@ -151,7 +151,7 @@ impl TransactionRoutes
 
         let statuses: TransactionsStatus = dto
             .into_iter()
-            .map(move |status_dto| status_dto.to_struct())
+            .map(move |status_dto| status_dto.compact())
             .collect();
 
         Ok(statuses)
@@ -200,7 +200,7 @@ impl TransactionRoutes
 
         let version: Box<dyn TransactionDto> = req.execute(self.__client()).await?;
 
-        Ok(version.to_struct()?)
+        Ok(version.compact()?)
     }
 
     /// Get [Transactions] information.
@@ -257,7 +257,7 @@ impl TransactionRoutes
 
         let mut transactions_info: Transactions = vec![];
         for transaction_dto in dto.into_iter() {
-            transactions_info.push(transaction_dto.to_struct()?);
+            transactions_info.push(transaction_dto.compact()?);
         }
 
         Ok(transactions_info)

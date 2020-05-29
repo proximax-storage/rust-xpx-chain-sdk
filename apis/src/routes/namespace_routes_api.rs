@@ -91,7 +91,7 @@ impl NamespaceRoutes
 
         let dto_raw: Result<NamespaceInfoDto> = req.clone().execute(self.0.to_owned()).await;
 
-        let mut dto_to_struct = dto_raw?.to_struct()?;
+        let mut dto_to_struct = dto_raw?.compact()?;
 
         self.__build_namespace_hierarchy(&mut dto_to_struct).await;
 
@@ -114,7 +114,7 @@ impl NamespaceRoutes
 
         let mut namespace_name: Vec<NamespaceName> = vec![];
         for namespace_name_dto in dto.into_iter() {
-            namespace_name.push(namespace_name_dto.to_struct()?);
+            namespace_name.push(namespace_name_dto.compact()?);
         }
 
         Ok(namespace_name)
@@ -144,7 +144,7 @@ impl NamespaceRoutes
 
         let mut namespace_info: Vec<NamespaceInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.to_struct()?);
+            namespace_info.push(namespace_dto.compact()?);
         }
 
         self.__build_namespaces_hierarchy(&mut namespace_info).await;
@@ -180,7 +180,7 @@ impl NamespaceRoutes
 
         let mut namespace_info: Vec<NamespaceInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.to_struct()?);
+            namespace_info.push(namespace_dto.compact()?);
         }
 
         self.__build_namespaces_hierarchy(&mut namespace_info).await;

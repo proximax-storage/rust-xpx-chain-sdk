@@ -47,7 +47,7 @@ impl NamespaceDto {
 
         let mut extract_level = |level: NamespaceIdDto| {
             if let Some(l) = level {
-                let nemsapce_id = NamespaceId::from(l.to_struct());
+                let nemsapce_id = NamespaceId::from(l.compact());
                 levels.push(nemsapce_id)
             }
         };
@@ -71,7 +71,7 @@ pub(crate) struct NamespaceInfoDto {
 }
 
 impl NamespaceInfoDto {
-    pub fn to_struct(&self) -> crate::Result<NamespaceInfo> {
+    pub fn compact(&self) -> crate::Result<NamespaceInfo> {
         let public_account = PublicAccount::from_public_key(
             &self.namespace.owner,
             NetworkType::from(NetworkType::from(self.namespace._type)),
@@ -79,9 +79,9 @@ impl NamespaceInfoDto {
 
         let levels = self.namespace.extract_levels()?;
 
-        let parent_id = NamespaceId::from(self.namespace.parent_id.to_struct());
+        let parent_id = NamespaceId::from(self.namespace.parent_id.compact());
 
-        let alias = self.namespace.alias.to_struct()?;
+        let alias = self.namespace.alias.compact()?;
 
         let mut namespace = NamespaceInfo {
             namespace_id: levels[levels.len() - 1],
@@ -92,8 +92,8 @@ impl NamespaceInfoDto {
             alias,
             parent: None,
             owner: public_account,
-            start_height: self.namespace.start_height.to_struct(),
-            end_height: self.namespace.end_height.to_struct(),
+            start_height: self.namespace.start_height.compact(),
+            end_height: self.namespace.end_height.compact(),
         };
 
         if parent_id.to_u64() != 0 {
@@ -179,9 +179,9 @@ pub(crate) struct NamespaceNameDto {
 }
 
 impl NamespaceNameDto {
-    pub fn to_struct(&self) -> crate::Result<NamespaceName> {
+    pub fn compact(&self) -> crate::Result<NamespaceName> {
         Ok(NamespaceName {
-            namespace_id: NamespaceId::from(self.namespace_id.to_struct()),
+            namespace_id: NamespaceId::from(self.namespace_id.compact()),
             name: self.name.to_owned(),
         })
     }
@@ -221,10 +221,10 @@ pub(crate) struct RegisterNamespaceTransactionDto {
 
 #[typetag::serde]
 impl TransactionDto for RegisterNamespaceTransactionInfoDto {
-    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
+    fn compact(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.to_struct();
+        let info = self.meta.compact();
 
         let abs_transaction = AbstractTransactionDto::new(
             dto.signature,
@@ -234,22 +234,22 @@ impl TransactionDto for RegisterNamespaceTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-            .to_struct(info)?;
+            .compact(info)?;
 
         let namespace_type = NamespaceType::from(dto.namespace_type);
 
-        let namespace_id = NamespaceId::from(dto.namespace_id.to_struct());
+        let namespace_id = NamespaceId::from(dto.namespace_id.compact());
 
         let mut parent_id = None;
 
         let mut duration = None;
         if namespace_type == NamespaceType::Root {
             if let Some(d) = dto.duration {
-                duration = Some(d.to_struct())
+                duration = Some(d.compact())
             };
         } else {
             if let Some(p) = dto.parent_id {
-                parent_id = Some(NamespaceId::from(p.to_struct()))
+                parent_id = Some(NamespaceId::from(p.compact()))
             };
         }
 

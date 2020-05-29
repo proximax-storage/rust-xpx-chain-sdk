@@ -11,6 +11,7 @@ extern crate xpx_chain_utils as utils;
 
 use self::error::Error;
 pub use self::sirius_client::*;
+pub use self::dtos::*;
 
 mod dtos;
 mod error;

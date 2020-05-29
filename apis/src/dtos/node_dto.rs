@@ -21,15 +21,15 @@ struct CommunicationTimestampsDto {
 }
 
 impl NodeTimeDto {
-    pub(crate) fn to_struct(&self) -> NodeTime {
+    pub(crate) fn compact(&self) -> NodeTime {
         let mut send = Uint64::default();
         if let Some(value) = &self.communication_timestamps.send_timestamp {
-            send = value.to_struct();
+            send = value.compact();
         };
 
         let mut receive = Uint64::default();
         if let Some(value) = &self.communication_timestamps.receive_timestamp {
-            receive = value.to_struct();
+            receive = value.compact();
         };
 
         NodeTime {

@@ -32,7 +32,7 @@ pub enum HashAlgorithmEnum {
 
 #[typetag::serde]
 pub trait TransactionDto {
-    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>>;
+    fn compact(&self) -> crate::Result<Box<dyn Transaction>>;
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -68,7 +68,7 @@ impl AbstractTransactionDto {
         }
     }
 
-    pub(crate) fn to_struct(&self, info: TransactionInfo) -> crate::Result<AbstractTransaction> {
+    pub(crate) fn compact(&self, info: TransactionInfo) -> crate::Result<AbstractTransaction> {
         let dto = self;
 
         let network_type = extract_network_type(self.version as u32);
@@ -79,13 +79,13 @@ impl AbstractTransactionDto {
 
         let mut deadline = None;
         if let Some(item) = &dto.deadline {
-            let timestamp = BlockchainTimestamp::new(item.to_struct().to_u64() as i64);
+            let timestamp = BlockchainTimestamp::new(item.compact().to_u64() as i64);
             deadline = Some(Deadline::from(timestamp))
         }
 
         let mut max_fee = None;
         if let Some(item) = &dto.max_fee {
-            max_fee = Some(item.to_struct());
+            max_fee = Some(item.compact());
         }
 
         let transaction_type = EntityTypeEnum::from(dto._type);
@@ -122,7 +122,7 @@ pub(crate) struct TransactionMetaDto {
 }
 
 impl TransactionMetaDto {
-    pub fn to_struct(&self) -> TransactionInfo {
+    pub fn compact(&self) -> TransactionInfo {
         let dto = self.clone();
 
         let mut agregate_hash = None;
@@ -151,7 +151,7 @@ impl TransactionMetaDto {
         }
 
         TransactionInfo {
-            height: dto.height.to_struct(),
+            height: dto.height.compact(),
             index: dto.index,
             id: dto.id.clone(),
             transaction_hash,
@@ -179,18 +179,18 @@ pub(crate) struct TransactionStatusDto {
 }
 
 impl TransactionStatusDto {
-    pub fn to_struct(&self) -> TransactionStatus {
+    pub fn compact(&self) -> TransactionStatus {
         let dto = &self.to_owned();
 
         let mut deadline = None;
         if let Some(value) = &dto.deadline {
-            let blockchain_timestamp = BlockchainTimestamp::new(value.to_struct().to_u64() as i64);
+            let blockchain_timestamp = BlockchainTimestamp::new(value.compact().to_u64() as i64);
             deadline = Some(Deadline::from(blockchain_timestamp));
         };
 
         let mut height = None;
         if let Some(value) = &dto.height {
-            height = Some(value.to_struct());
+            height = Some(value.compact());
         };
 
         TransactionStatus::new(
@@ -212,9 +212,9 @@ pub(crate) struct TransferTransactionInfoDto {
 
 #[typetag::serde]
 impl TransactionDto for TransferTransactionInfoDto {
-    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
+    fn compact(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
-        let info = self.meta.to_struct();
+        let info = self.meta.compact();
 
         let abs = AbstractTransactionDto::new(
             dto.signature,
@@ -224,12 +224,12 @@ impl TransactionDto for TransferTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-            .to_struct(info)?;
+            .compact(info)?;
 
         let mut mosaics: Vec<Mosaic> = vec![];
 
         for mosaic in dto.mosaics {
-            mosaics.push(mosaic.to_struct());
+            mosaics.push(mosaic.compact());
         }
 
         let recipient = Address::from_encoded(&dto.recipient)?;
@@ -238,7 +238,7 @@ impl TransactionDto for TransferTransactionInfoDto {
             abs_transaction: abs,
             recipient,
             mosaics,
-            message: dto.message.to_struct(),
+            message: dto.message.compact(),
         }))
     }
 }
@@ -292,9 +292,9 @@ pub(crate) struct HashLockTransactionInfoDto {
 
 #[typetag::serde]
 impl TransactionDto for HashLockTransactionInfoDto {
-    fn to_struct(&self) -> crate::Result<Box<dyn Transaction>> {
+    fn compact(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
-        let info = self.meta.to_struct();
+        let info = self.meta.compact();
 
         let abs = AbstractTransactionDto::new(
             dto.signature,
@@ -304,17 +304,17 @@ impl TransactionDto for HashLockTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-            .to_struct(info)?;
+            .compact(info)?;
 
         let mosaic = Mosaic::new(
-            MosaicId::from(dto.mosaic_id.to_struct()),
-            dto.amount.to_struct(),
+            MosaicId::from(dto.mosaic_id.compact()),
+            dto.amount.compact(),
         );
 
         Ok(Box::new(LockFundsTransaction {
             abs_transaction: abs,
             mosaic,
-            duration: dto.duration.to_struct(),
+            duration: dto.duration.compact(),
             signed_transaction: SignedTransaction::new(
                 EntityTypeEnum::AggregateBonded,
                 "".to_string(),

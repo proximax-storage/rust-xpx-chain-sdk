@@ -47,7 +47,7 @@ impl ExchangeRoutes
 
         let dto: Result<ExchangeInfoDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.to_struct(account.address.network_type)?)
+        Ok(dto?.compact(account.address.network_type)?)
     }
 
     pub async fn get_exchange_offer_by_asset_id(
