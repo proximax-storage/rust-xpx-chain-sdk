@@ -4,8 +4,7 @@ members = [
     "apis",
     "sdk",
     "utils",
-    "crypto",
-    "websocket"
+    "crypto"
 ]
 
 exclude = [
