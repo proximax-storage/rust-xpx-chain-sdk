@@ -5,14 +5,14 @@
 use crate::Handler;
 
 pub struct HandlerUnconfirmedAdd {
-    pub handler: fn(Box<dyn sdk::transaction::Transaction>)
+    pub handler: fn(Box<dyn sdk::transaction::Transaction>) -> bool
 }
 
 impl Handler for HandlerUnconfirmedAdd {}
 
 
 pub struct HandlerUnconfirmedRemoved {
-    pub handler: Box<dyn Fn(sdk::transaction::TransactionInfo) + Send>
+    pub handler: Box<dyn Fn(sdk::transaction::TransactionInfo) -> bool + Send>
 }
 
 impl Handler for HandlerUnconfirmedRemoved {}

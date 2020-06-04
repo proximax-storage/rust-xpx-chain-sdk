@@ -50,7 +50,7 @@ impl WsSubscribeDto for WsStatusInfoDto {
 }
 
 pub struct HandlerStatus {
-    pub handler: Box<dyn Fn(sdk::transaction::TransactionStatus) + Send>
+    pub handler: Box<dyn Fn(sdk::transaction::TransactionStatus) -> bool + Send>
 }
 
 impl Handler for HandlerStatus {}

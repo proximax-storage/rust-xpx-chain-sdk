@@ -77,6 +77,7 @@ fn confirmed_added(info: Box<dyn Transaction>) {
     println!("Confirmed: {}", info.transaction_hash());
 }
 
-fn unconfirmed_remove(info: TransactionInfo) {
+fn unconfirmed_remove(info: TransactionInfo) -> bool {
     println!("UnconfirmedRemove: {}", info.transaction_hash.unwrap());
+    true
 }

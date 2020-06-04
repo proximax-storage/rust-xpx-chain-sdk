@@ -35,7 +35,7 @@ impl WsSubscribeDto for WsBlockInfoDto {
 }
 
 pub struct HandlerBlock {
-    pub handler: Box<dyn Fn(sdk::blockchain::BlockInfo) + Send>
+    pub handler: Box<dyn Fn(sdk::blockchain::BlockInfo) -> bool + Send>
 }
 
 impl Handler for HandlerBlock {}

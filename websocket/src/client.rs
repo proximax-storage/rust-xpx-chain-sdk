@@ -46,7 +46,7 @@ impl Drop for SiriusWebsocketClient {
 impl SiriusWebsocketClient {
     pub async fn add_block_handlers<F>(&mut self, handler_fn: F) -> super::Result<()>
         where
-            F: Fn(sdk::blockchain::BlockInfo) + Send + 'static
+            F: Fn(sdk::blockchain::BlockInfo) -> bool + Send + 'static
     {
         let handler = HandlerBlock { handler: Box::new(handler_fn) };
 
@@ -57,7 +57,7 @@ impl SiriusWebsocketClient {
 
     pub async fn add_status_handlers<F>(&mut self, address: &sdk::account::Address, handler_fn: F) -> super::Result<()>
         where
-            F: Fn(sdk::transaction::TransactionStatus) + Send + 'static
+            F: Fn(sdk::transaction::TransactionStatus) -> bool + Send + 'static
     {
         let handler = HandlerStatus { handler: Box::new(handler_fn) };
 
@@ -66,7 +66,7 @@ impl SiriusWebsocketClient {
         Ok(())
     }
 
-    pub async fn add_confirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>)) -> super::Result<()> {
+    pub async fn add_confirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>) -> bool ) -> super::Result<()> {
         let handler = HandlerConfirmedAdd { handler: handler_fn };
 
         self.publish_subscribe_message(&path_parse_address(PATH_CONFIRMED_ADDED.to_string(), address)).await;
@@ -76,7 +76,7 @@ impl SiriusWebsocketClient {
 
     pub async fn add_unconfirmed_removed_handlers<F>(&mut self, address: &sdk::account::Address, handler_fn: F) -> super::Result<()>
         where
-            F: Fn(sdk::transaction::TransactionInfo) + Send + 'static
+            F: Fn(sdk::transaction::TransactionInfo) -> bool + Send + 'static
     {
         let handler = HandlerUnconfirmedRemoved { handler: Box::new(handler_fn) };
 
@@ -85,7 +85,7 @@ impl SiriusWebsocketClient {
         Ok(())
     }
 
-    pub async fn add_unconfirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>)) -> super::Result<()> {
+    pub async fn add_unconfirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>) -> bool ) -> super::Result<()> {
         let handler = HandlerUnconfirmedAdd { handler: handler_fn };
 
         self.publish_subscribe_message(&path_parse_address(PATH_UNCONFIRMED_ADDED.to_string(), address)).await;
@@ -151,28 +151,34 @@ impl SiriusWebsocketClient {
                 if let Some(base) = self.handlers.get(&channel_name) {
                     if let Some(handler_info) = base.downcast_ref::<HandlerBlock>() {
                         let channel = get_channel_data::<WsBlockInfoDto>(&msg_string, false);
-                        (handler_info.handler)(channel.compact());
-
+                        if (handler_info.handler)(channel.compact()) {
+                            break;
+                        };
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerStatus>() {
                         let channel = get_channel_data::<WsStatusInfoDto>(&msg_string, false);
-                        (handler_info.handler)(channel.compact());
-
+                        if (handler_info.handler)(channel.compact()) {
+                            break;
+                        };
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerConfirmedAdd>() {
                         let channel = get_channel_data::<Box<dyn api::TransactionDto>>(&msg_string, true);
-                        (handler_info.handler)(channel.compact().unwrap());
-
+                        if (handler_info.handler)(channel.compact().unwrap()) {
+                            break;
+                        };
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerUnconfirmedAdd>() {
                         let channel = get_channel_data::<Box<dyn api::TransactionDto>>(&msg_string, true);
-                        (handler_info.handler)(channel.compact().unwrap());
-
+                        if (handler_info.handler)(channel.compact().unwrap()) {
+                            break;
+                        };
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerUnconfirmedRemoved>() {
                         let channel = get_channel_data::<WsUnconfirmedRemovedDto>(&msg_string, false);
-                        (handler_info.handler)(channel.compact());
-
+                        if (handler_info.handler)(channel.compact()) {
+                            break;
+                        };
                     }
                 };
             }
         }
+        self.conn.close(None).await;
     }
 }
 

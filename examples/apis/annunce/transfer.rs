@@ -113,35 +113,40 @@ async fn main() {
     };
 }
 
-fn block_handler(info: BlockInfo) {
+fn block_handler(info: BlockInfo) -> bool {
     println!("Height: {}, Timestamp: {}", info.height, info.timestamp.to_time());
+    false
 }
 
-fn status_handler(hash: String) -> Box<dyn Fn(TransactionStatus) + Send + 'static>
+fn status_handler(hash: String) -> Box<dyn Fn(TransactionStatus) -> bool + Send + 'static>
 {
     Box::new(move |info: TransactionStatus| {
         println!("Content: {}", info.hash);
         if info.hash.eq(&hash) {
-            panic!("Status: {}", info.status);
-        }
+            false;
+        };
+        true
     })
 }
 
-fn unconfirmed_added(info: Box<dyn Transaction>) {
+fn unconfirmed_added(info: Box<dyn Transaction>) -> bool {
     println!("UnconfirmedAdd: {}", info.transaction_hash());
+    false
 }
 
-fn confirmed_added(info: Box<dyn Transaction>) {
+fn confirmed_added(info: Box<dyn Transaction>) -> bool {
     println!("ConfirmedAdd: {}", info.transaction_hash());
+    false
 }
 
-fn unconfirmed_remove(hash: String) -> Box<dyn Fn(TransactionInfo) + Send + 'static>
+fn unconfirmed_remove(hash: String) -> Box<dyn Fn(TransactionInfo) -> bool + Send + 'static>
 {
     Box::new(move |info: TransactionInfo| {
         let hash_info = info.transaction_hash.unwrap();
         println!("UnconfirmedRemove: {}", hash_info);
         if hash_info.eq(&hash) {
-            panic!("Wrong address");
-        }
+            false;
+        };
+        true
     })
 }
