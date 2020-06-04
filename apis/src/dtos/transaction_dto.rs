@@ -105,10 +105,12 @@ impl AbstractTransactionDto {
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub(crate) struct TransactionMetaDto {
+pub struct TransactionMetaDto {
     height: Uint64Dto,
-    index: u32,
-    id: String,
+    #[serde(rename = "index", skip_serializing_if = "Option::is_none")]
+    index: Option<u32>,
+    #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
+    id: Option<String>,
     #[serde(rename = "hash", skip_serializing_if = "Option::is_none")]
     transaction_hash: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -150,10 +152,20 @@ impl TransactionMetaDto {
             merkle_component_hash = Some(t)
         }
 
+        let mut index = 0;
+        if let Some(i) = dto.index {
+            index = i
+        }
+
+        let mut id = "".to_string();
+        if let Some(i) = dto.id {
+            id = i
+        }
+
         TransactionInfo {
             height: dto.height.compact(),
-            index: dto.index,
-            id: dto.id.clone(),
+            index,
+            id,
             transaction_hash,
             merkle_component_hash,
             agregate_hash,
@@ -165,7 +177,7 @@ impl TransactionMetaDto {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub(crate) struct TransactionStatusDto {
+pub struct TransactionStatusDto {
     #[serde(rename = "group", skip_serializing_if = "Option::is_none")]
     group: Option<String>,
     #[serde(rename = "status")]
@@ -227,10 +239,11 @@ impl TransactionDto for TransferTransactionInfoDto {
             .compact(info)?;
 
         let mut mosaics: Vec<Mosaic> = vec![];
-
-        for mosaic in dto.mosaics {
-            mosaics.push(mosaic.compact());
-        }
+        if let Some(value) = &dto.mosaics {
+            for mosaic in value {
+                mosaics.push(mosaic.compact());
+            }
+        };
 
         let recipient = Address::from_encoded(&dto.recipient)?;
 
@@ -258,7 +271,8 @@ pub(crate) struct TransferTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deadline: Option<Uint64Dto>,
     pub recipient: String,
-    pub mosaics: Vec<MosaicDto>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mosaics: Option<Vec<MosaicDto>>,
     pub message: MessageDto,
 }
 

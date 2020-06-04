@@ -30,7 +30,7 @@ pub struct BlockDto {
     version: u32,
     #[serde(rename = "type")]
     _type: u32,
-    height: Uint64Dto,
+    pub height: Uint64Dto,
     timestamp: Uint64Dto,
     difficulty: Uint64Dto,
     #[serde(skip_serializing_if = "Option::is_none")]

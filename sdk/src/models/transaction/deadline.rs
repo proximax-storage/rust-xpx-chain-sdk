@@ -5,7 +5,7 @@
 use ::std::ops::Add;
 use ::std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use chrono::{Local, Timelike, NaiveTime, Date, TimeZone};
+use chrono::{Local, Timelike, NaiveTime};
 use chrono::prelude::DateTime;
 use serde::{Serialize, Serializer};
 

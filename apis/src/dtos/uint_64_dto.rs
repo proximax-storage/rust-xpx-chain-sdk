@@ -11,4 +11,12 @@ impl Uint64Dto {
     pub fn compact(&self) -> Uint64 {
         Uint64::from_ints(self.0[0], self.0[1])
     }
+
+    pub fn as_bytes(&self) -> [u32; 2] {
+        self.0
+    }
+
+    pub fn as_vec(&self) -> Vec<u32> {
+        self.0.to_vec()
+    }
 }

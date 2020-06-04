@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-examples"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
 
 homepage = "https://www.proximax.io"
@@ -16,6 +16,9 @@ publish = false
 xpx-chain-apis = { path = "../apis", version = "0.1" }
 xpx-chain-crypto = { path = "../crypto", version = "0.1" }
 xpx-chain-sdk = { path = "../sdk", version = "0.1" }
+xpx-chain-websocket = { path = "../websocket", version = "0.1" }
+
+futures = "0.3"
 
 tokio = { version = "0.2", default-features = false, features = ["io-util"] }
 
@@ -128,3 +131,7 @@ path = "apis/annunce/register_namespace.rs"
 [[example]]
 name = "annunce_transfer"
 path = "apis/annunce/transfer.rs"
+
+[[example]]
+name = "websocket"
+path = "websocket/main.rs"

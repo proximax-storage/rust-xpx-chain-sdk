@@ -67,7 +67,7 @@ impl SiriusClient
         Box::new(SiriusClient {
             generation_hash: "".to_string(),
             network_type: Default::default(),
-            client,
+            client
         })
     }
 
@@ -97,6 +97,10 @@ impl SiriusClient
 
     pub fn network_type(&self) -> NetworkType {
         self.network_type
+    }
+
+    pub fn node(&self) -> &str {
+        self.client.base_path
     }
 }
 

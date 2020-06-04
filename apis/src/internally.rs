@@ -135,7 +135,7 @@ pub(crate) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
     Ok(value_dto_vec_str)
 }
 
-pub(crate) fn map_transaction_dto(body: Bytes) -> Result<String> {
+pub fn map_transaction_dto(body: Bytes) -> Result<String> {
     let value_dto: Value = serde_json::from_slice(&body)?;
 
     let entity_type = Entity::from(value_dto["transaction"]["type"].as_u64().unwrap() as u16);

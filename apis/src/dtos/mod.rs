@@ -19,7 +19,7 @@ pub(crate) use self::node_dto::*;
 pub(crate) use self::receipt_dto::*;
 pub(crate) use self::resolution_dto::*;
 pub(crate) use self::source_dto::*;
-pub(crate) use self::transaction_dto::*;
+pub use self::transaction_dto::*;
 pub use self::uint_64_dto::*;
 pub(crate) use self::upgrade_dto::*;
 

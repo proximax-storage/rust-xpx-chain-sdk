@@ -18,35 +18,38 @@ async fn main() {
 
     let block_by_height = client
         .block_api()
-        .get_block_by_height(1)
+        .get_block_by_height(1422223)
         .await;
+
+    //99123D57F0020054F6B8BB452ED3901B999C85BB21AF1404FEAB981A8CD89F9
+    //99123D57F0020054F6B8BB452ED3901B999C85BB21AF1404FEAB981A
 
     match block_by_height {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
     }
 
-    let blocks_by_height_with_limit = client
-        .block_api()
-        .get_blocks_by_height_with_limit(1, 25)
-        .await;
-
-    match blocks_by_height_with_limit {
-        Ok(blocks) => blocks
-            .iter()
-            .for_each(|block_info| println!("{}", block_info)),
-        Err(err) => eprintln!("{}", err),
-    }
-
-    let block_transactions = client
-        .block_api()
-        .get_block_transactions(929413, None, None)
-        .await;
-
-    match block_transactions {
-        Ok(transactions) => transactions
-            .iter()
-            .for_each(|tx_info| println!("{}", tx_info)),
-        Err(err) => eprintln!("{}", err),
-    }
+    // let blocks_by_height_with_limit = client
+    //     .block_api()
+    //     .get_blocks_by_height_with_limit(1, 25)
+    //     .await;
+    //
+    // match blocks_by_height_with_limit {
+    //     Ok(blocks) => blocks
+    //         .iter()
+    //         .for_each(|block_info| println!("{}", block_info)),
+    //     Err(err) => eprintln!("{}", err),
+    // }
+    //
+    // let block_transactions = client
+    //     .block_api()
+    //     .get_block_transactions(929413, None, None)
+    //     .await;
+    //
+    // match block_transactions {
+    //     Ok(transactions) => transactions
+    //         .iter()
+    //         .for_each(|tx_info| println!("{}", tx_info)),
+    //     Err(err) => eprintln!("{}", err),
+    // }
 }

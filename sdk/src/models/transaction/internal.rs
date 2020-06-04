@@ -33,6 +33,7 @@ pub(super) fn sign_transaction(
     account: Account,
     generation_hash: String,
 ) -> crate::Result<SignedTransaction> {
+
     let key_pair: crypto::Keypair = crypto::Keypair::from_private_key(account.key_pair.secret);
 
     let tx_bytes = tx.embedded_to_bytes()?;
