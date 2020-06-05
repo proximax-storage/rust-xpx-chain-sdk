@@ -8,7 +8,7 @@ use reqwest::Method;
 
 use sdk::{
     account::{AccountInfo, AccountName, AccountsId, PublicAccount},
-    errors::ERR_EMPTY_ADDRESSES_IDS,
+    errors_const::ERR_EMPTY_ADDRESSES_IDS,
     multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
     transaction::Transactions,
 };

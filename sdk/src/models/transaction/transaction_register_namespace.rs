@@ -11,7 +11,7 @@ use crate::models::{
     account::{Account, PublicAccount},
     asset_id_model::AssetId,
     consts::REGISTER_NAMESPACE_HEADER_SIZE,
-    errors,
+    errors_const,
     namespace::{generate_namespace_id, NamespaceId, NamespaceType},
     network::NetworkType,
     uint_64::Uint64,
@@ -53,7 +53,7 @@ impl RegisterNamespaceTransaction {
     ) -> Result<RegisterNamespaceTransaction> {
         ensure!(
             namespace_name.len() != 0 && namespace_name.len() <= 16 ,
-            errors::ERR_INVALID_NAMESPACE_NAME
+            errors_const::ERR_INVALID_NAMESPACE_NAME
         );
 
         let abs_tx = AbstractTransaction::new_from_type(
@@ -82,12 +82,12 @@ impl RegisterNamespaceTransaction {
     ) -> Result<Self> {
         ensure!(
             namespace_name.len() != 0 && namespace_name.len() <= 64 ,
-            errors::ERR_INVALID_NAMESPACE_NAME
+            errors_const::ERR_INVALID_NAMESPACE_NAME
         );
 
         ensure!(
             parent_id.to_u64() != 0,
-            errors::ERR_EMPTY_NAMESPACE_ID
+            errors_const::ERR_EMPTY_NAMESPACE_ID
         );
 
         let abs_tx = AbstractTransaction::new_from_type(

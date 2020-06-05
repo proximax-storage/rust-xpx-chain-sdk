@@ -2,7 +2,11 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::fmt::{Display, Formatter, Result};
+use ::std::fmt::{Display, Formatter};
+use ::std::result;
+
+/// Result type of all Api library calls.
+pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -52,7 +56,7 @@ impl From<SiriusError> for Error {
 }
 
 impl Display for Error {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self.to_owned() {
             Error::SiriusError(e) => {
                 write!(f, "{{ code: \"{}\", message: \"{}\" }}", e.code, e.message)

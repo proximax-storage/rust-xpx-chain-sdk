@@ -36,7 +36,7 @@ pub trait TransactionDto {
 }
 
 #[derive(Clone, Serialize, Deserialize)]
-pub(crate) struct AbstractTransactionDto {
+pub struct AbstractTransactionDto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
     pub signer: String,
@@ -50,7 +50,7 @@ pub(crate) struct AbstractTransactionDto {
 }
 
 impl AbstractTransactionDto {
-    pub(crate) fn new(
+    pub fn new(
         signature: Option<String>,
         signer: String,
         version: u32,
@@ -68,7 +68,7 @@ impl AbstractTransactionDto {
         }
     }
 
-    pub(crate) fn compact(&self, info: TransactionInfo) -> crate::Result<AbstractTransaction> {
+    pub fn compact(&self, info: TransactionInfo) -> crate::Result<AbstractTransaction> {
         let dto = self;
 
         let network_type = extract_network_type(self.version as u32);
@@ -106,7 +106,8 @@ impl AbstractTransactionDto {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionMetaDto {
-    height: Uint64Dto,
+    #[serde(rename = "height", skip_serializing_if = "Option::is_none")]
+    height: Option<Uint64Dto>,
     #[serde(rename = "index", skip_serializing_if = "Option::is_none")]
     index: Option<u32>,
     #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
@@ -162,8 +163,13 @@ impl TransactionMetaDto {
             id = i
         }
 
+        let mut height = sdk::Uint64::default();
+        if let Some(h) = dto.height {
+            height = h.compact()
+        }
+
         TransactionInfo {
-            height: dto.height.compact(),
+            height,
             index,
             id,
             transaction_hash,

@@ -4,7 +4,7 @@
 
 use sdk::Uint64;
 
-#[derive(Clone, Deserialize, Serialize)] // we derive Default in order to use the clear() method in Drop
+#[derive(Debug, Clone, Deserialize, Serialize)] // we derive Default in order to use the clear() method in Drop
 pub struct Uint64Dto(pub(crate) [u32; 2]);
 
 impl Uint64Dto {

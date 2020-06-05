@@ -5,7 +5,7 @@
 use utils::is_hex;
 
 use crate::{
-    models::{consts::PUBLIC_KEY_BYTES_SIZE, errors},
+    models::{consts::PUBLIC_KEY_BYTES_SIZE, errors_const},
     Result,
 };
 
@@ -29,12 +29,12 @@ impl PublicAccount {
     ) -> Result<PublicAccount> {
         ensure!(
             !public_key.is_empty(),
-            errors::ERR_INVALID_PUBLIC_KEY_LENGTH
+            errors_const::ERR_INVALID_PUBLIC_KEY_LENGTH
         );
 
-        ensure!(is_hex(public_key), errors::ERR_INVALID_KEY_HEX);
+        ensure!(is_hex(public_key), errors_const::ERR_INVALID_KEY_HEX);
 
-        ensure!(public_key.len() == 64, errors::ERR_INVALID_KEY_LENGTH);
+        ensure!(public_key.len() == 64, errors_const::ERR_INVALID_KEY_LENGTH);
 
         Ok(PublicAccount {
             address: Address::from_public_key(public_key, network_type)?,
@@ -50,10 +50,10 @@ impl PublicAccount {
     pub fn verify_sign(&self, data: &str, signature: &str) -> Result<()> {
         ensure!(
             super::HASH512_LENGTH == (signature.len() / 2),
-            errors::ERR_INVALID_SIGNATURE_LENGTH
+            errors_const::ERR_INVALID_SIGNATURE_LENGTH
         );
 
-        ensure!(is_hex(signature), errors::ERR_INVALID_SIGNATURE_HEX);
+        ensure!(is_hex(signature), errors_const::ERR_INVALID_SIGNATURE_HEX);
 
         let sig_byte: Vec<u8> = hex::decode(signature)?;
 

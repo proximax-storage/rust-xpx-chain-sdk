@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 use sdk::{
-    errors,
+    errors_const,
     mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicNonce, MosaicSupplyType},
     Result,
     transaction::{MosaicDefinitionTransaction, MosaicSupplyChangeTransaction, Transaction},
@@ -44,7 +44,7 @@ impl MosaicInfoDto {
     pub fn compact(&self) -> Result<MosaicInfo> {
         ensure!(
             self.mosaic.properties.len() > 0,
-            errors::ERR_INVALID_MOSAIC_PROPERTIES
+            errors_const::ERR_INVALID_MOSAIC_PROPERTIES
         );
 
         let mosaic_id = MosaicId::from(self.mosaic.mosaic_id.compact());

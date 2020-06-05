@@ -7,7 +7,7 @@ use ::core::fmt;
 use num_enum::IntoPrimitive;
 
 use crate::models::{asset_id_model::AssetId, Uint64};
-use crate::models::errors::ERR_INVALID_MOSAIC_PROPERTY_ID;
+use crate::models::errors_const::ERR_INVALID_MOSAIC_PROPERTY_ID;
 use crate::models::mosaic::internally::PRX_XPX_U64;
 
 use super::internally::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE};

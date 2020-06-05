@@ -10,7 +10,7 @@ use serde_json::Value;
 use crate::models::{
     account::{Account, Address, PublicAccount},
     consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
-    errors,
+    errors_const,
     message::Message,
     mosaic::Mosaic,
     network::NetworkType,
@@ -45,7 +45,7 @@ impl TransferTransaction {
         message: impl Message + 'static,
         network_type: NetworkType,
     ) -> Result<Self> {
-        ensure!(!recipient.address.is_empty(), errors::ERR_EMPTY_ADDRESSES);
+        ensure!(!recipient.address.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,

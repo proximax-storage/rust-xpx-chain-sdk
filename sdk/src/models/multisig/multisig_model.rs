@@ -8,7 +8,7 @@ use std::fmt;
 use num_enum::IntoPrimitive;
 
 use crate::models::account::PublicAccount;
-use crate::models::errors::ERR_UNKNOWN_TYPE;
+use crate::models::errors_const::ERR_UNKNOWN_TYPE;
 
 /// MultisigModificationTypeEnum :
 /// The type of the modification:

@@ -11,7 +11,7 @@ use ::std::{
 use reqwest::Method;
 
 use sdk::{
-    errors::{ERR_EMPTY_TRANSACTION_HASHES, ERR_EMPTY_TRANSACTION_IDS},
+    errors_const::{ERR_EMPTY_TRANSACTION_HASHES, ERR_EMPTY_TRANSACTION_IDS},
     transaction::{
         CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionHashes,
         TransactionIds, Transactions, TransactionsStatus, TransactionStatus,

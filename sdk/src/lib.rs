@@ -17,7 +17,7 @@ extern crate xpx_chain_utils as utils;
 pub use self::models::account;
 pub use self::models::alias;
 pub use self::models::blockchain;
-pub use self::models::errors;
+pub use self::models::errors_const;
 pub use self::models::exchange;
 pub use self::models::asset_id_model::AssetId;
 pub use self::models::message;

@@ -9,7 +9,7 @@ use serde_json::Value;
 use crate::models::{
     account::{Account, PublicAccount},
     consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE},
-    errors::ERR_EMPTY_MODIFICATIONS,
+    errors_const::ERR_EMPTY_MODIFICATIONS,
     multisig::CosignatoryModification,
     network::NetworkType,
 };

@@ -5,7 +5,7 @@
 use ::base32::Alphabet::RFC4648;
 
 use crate::models::consts::{ADDRESS_DECODE_SIZE, ADDRESS_ENCODE_SIZE};
-use crate::models::errors;
+use crate::models::errors_const;
 use crate::models::network::*;
 use crate::Result;
 use crate::utils::is_hex;
@@ -34,12 +34,12 @@ impl Address {
     pub fn from_public_key(public_key: &str, network_type: NetworkType) -> Result<Self> {
         ensure!(
             !public_key.is_empty(),
-            errors::ERR_INVALID_PUBLIC_KEY_LENGTH
+            errors_const::ERR_INVALID_PUBLIC_KEY_LENGTH
         );
 
-        ensure!(is_hex(public_key), errors::ERR_INVALID_KEY_HEX);
+        ensure!(is_hex(public_key), errors_const::ERR_INVALID_KEY_HEX);
 
-        ensure!(public_key.len() == 64, errors::ERR_INVALID_KEY_LENGTH);
+        ensure!(public_key.len() == 64, errors_const::ERR_INVALID_KEY_LENGTH);
 
         let address = super::public_key_to_address(public_key, network_type)?;
 
@@ -54,7 +54,7 @@ impl Address {
     /// A raw address string looks like:
     /// VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU or VAWOEO-WTABXR-7O3ZAK-2XNA5G-IBNE6P-ZIXDAF-DWBU
     pub fn from_raw(raw_address: &str) -> Result<Self> {
-        ensure!(!raw_address.is_empty(), errors::ERR_EMPTY_ADDRESSES);
+        ensure!(!raw_address.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
 
         let address = raw_address
             .trim()
@@ -62,7 +62,7 @@ impl Address {
             .replace(REGEX_DASH, EMPTY_STRING);
         ensure!(
             address.len() == ADDRESS_DECODE_SIZE,
-            errors::ERR_INVALID_ADDRESSES_LEN
+            errors_const::ERR_INVALID_ADDRESSES_LEN
         );
 
         match address.chars().next().unwrap() {
@@ -96,14 +96,14 @@ impl Address {
 
     /// Create an `Address` from the given encoded address.
     pub fn from_encoded(encoded: &str) -> Result<Self> {
-        ensure!(!encoded.is_empty(), errors::ERR_EMPTY_ADDRESSES);
+        ensure!(!encoded.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
 
         ensure!(
             encoded.len() == ADDRESS_ENCODE_SIZE,
-            errors::ERR_INVALID_ADDRESSES_LEN
+            errors_const::ERR_INVALID_ADDRESSES_LEN
         );
 
-        ensure!(is_hex(encoded), errors::ERR_INVALID_ADDRESSES_HEX);
+        ensure!(is_hex(encoded), errors_const::ERR_INVALID_ADDRESSES_HEX);
 
         let encoded_to_bytes = hex::decode(encoded)?;
 

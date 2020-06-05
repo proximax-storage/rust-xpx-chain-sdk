@@ -4,7 +4,7 @@
 
 use sdk::{
     account::PublicAccount,
-    errors,
+    errors_const,
     AssetId,
     namespace::{NamespaceId, NamespaceInfo, NamespaceName, NamespaceType},
     network::NetworkType,
@@ -56,7 +56,7 @@ impl NamespaceDto {
         extract_level(self.level1.to_owned());
         extract_level(self.level2.to_owned());
 
-        ensure!(!levels.is_empty(), errors::ERR_EMPTY_NAMESPACE_ID);
+        ensure!(!levels.is_empty(), errors_const::ERR_EMPTY_NAMESPACE_ID);
 
         Ok(levels)
     }

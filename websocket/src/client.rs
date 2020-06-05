@@ -8,16 +8,13 @@ use std::collections::HashMap;
 use bytes::Bytes;
 use downcast_rs::Downcast;
 use futures_util::{SinkExt, StreamExt};
-use serde::export::Result::Err;
 use serde_json::Value;
 use tokio_tungstenite::{connect_async, tungstenite::Message, WebSocketStream};
-use tokio_tungstenite::tungstenite::Error;
 use url::Url;
 
-use crate::{
-    HandlerBlock, HandlerConfirmedAdd, HandlerStatus, HandlerUnconfirmedAdd, HandlerUnconfirmedRemoved,
-    WsBlockInfoDto, WsStatusInfoDto, WsUnconfirmedRemovedDto,
-};
+use crate::{HandlerBlock, HandlerConfirmedAdd, HandlerStatus, HandlerUnconfirmedAdd, HandlerUnconfirmedRemoved, WsBlockInfoDto, WsStatusInfoDto, WsUnconfirmedRemovedDto, HandlerPartialAdd, WsPartialInfoDto};
+
+use crate::error::Error;
 use crate::model::{
     PATH_BLOCK, PATH_CONFIRMED_ADDED, PATH_COSIGNATURE, PATH_PARTIAL_ADDED, PATH_PARTIAL_REMOVED,
     PATH_STATUS, PATH_UNCONFIRMED_ADDED, PATH_UNCONFIRMED_REMOVED, RouterPath, SubscribeDto,
@@ -61,15 +58,15 @@ impl SiriusWebsocketClient {
     {
         let handler = HandlerStatus { handler: Box::new(handler_fn) };
 
-        self.publish_subscribe_message(&path_parse_address(PATH_STATUS.to_string(), address)).await;
+        self.publish_subscribe_message(&path_parse_address(PATH_STATUS.to_string(), address)).await?;
         self.handlers.insert(PATH_STATUS.to_string(), Box::new(handler));
         Ok(())
     }
 
-    pub async fn add_confirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>) -> bool ) -> super::Result<()> {
+    pub async fn add_confirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>) -> bool) -> super::Result<()> {
         let handler = HandlerConfirmedAdd { handler: handler_fn };
 
-        self.publish_subscribe_message(&path_parse_address(PATH_CONFIRMED_ADDED.to_string(), address)).await;
+        self.publish_subscribe_message(&path_parse_address(PATH_CONFIRMED_ADDED.to_string(), address)).await?;
         self.handlers.insert(PATH_CONFIRMED_ADDED.to_string(), Box::new(handler));
         Ok(())
     }
@@ -80,29 +77,38 @@ impl SiriusWebsocketClient {
     {
         let handler = HandlerUnconfirmedRemoved { handler: Box::new(handler_fn) };
 
-        self.publish_subscribe_message(&path_parse_address(PATH_UNCONFIRMED_REMOVED.to_string(), address)).await;
+        self.publish_subscribe_message(&path_parse_address(PATH_UNCONFIRMED_REMOVED.to_string(), address)).await?;
         self.handlers.insert(PATH_UNCONFIRMED_REMOVED.to_string(), Box::new(handler));
         Ok(())
     }
 
-    pub async fn add_unconfirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>) -> bool ) -> super::Result<()> {
+    pub async fn add_unconfirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>) -> bool) -> super::Result<()> {
         let handler = HandlerUnconfirmedAdd { handler: handler_fn };
 
-        self.publish_subscribe_message(&path_parse_address(PATH_UNCONFIRMED_ADDED.to_string(), address)).await;
+        self.publish_subscribe_message(&path_parse_address(PATH_UNCONFIRMED_ADDED.to_string(), address)).await?;
         self.handlers.insert(PATH_UNCONFIRMED_ADDED.to_string(), Box::new(handler));
         Ok(())
     }
 
-    pub async fn add_partial_added_handlers(&mut self, address: &sdk::account::Address) -> super::Result<()> {
-        self.publish_subscribe_message(&path_parse_address(PATH_PARTIAL_ADDED.to_string(), address)).await
+    pub async fn add_partial_added_handlers<F>(&mut self, address: &sdk::account::Address, handler_fn: F ) -> super::Result<()>
+        where
+            F: Fn(sdk::transaction::AggregateTransaction) -> bool + Send + 'static
+    {
+        let handler = HandlerPartialAdd { handler: Box::new(handler_fn) };
+
+        self.publish_subscribe_message(&path_parse_address(PATH_PARTIAL_ADDED.to_string(), address)).await?;
+        self.handlers.insert(PATH_PARTIAL_ADDED.to_string(), Box::new(handler));
+        Ok(())
     }
 
     pub async fn add_partial_removed_handlers(&mut self, address: &sdk::account::Address) -> super::Result<()> {
-        self.publish_subscribe_message(&path_parse_address(PATH_PARTIAL_REMOVED.to_string(), address)).await
+        self.publish_subscribe_message(&path_parse_address(PATH_PARTIAL_REMOVED.to_string(), address)).await?;
+         Ok(())
     }
 
     pub async fn add_cosignature_handlers(&mut self, address: &sdk::account::Address) -> super::Result<()> {
-        self.publish_subscribe_message(&path_parse_address(PATH_COSIGNATURE.to_string(), address)).await
+        self.publish_subscribe_message(&path_parse_address(PATH_COSIGNATURE.to_string(), address)).await?;
+         Ok(())
     }
 }
 
@@ -111,13 +117,13 @@ impl SiriusWebsocketClient {
     {
         let scheme_str = convert_to_ws_url(url)?;
 
-        let (mut conn, _) = connect_async(scheme_str).await.expect("Failed to connect");
+        let (mut conn, _) = connect_async(scheme_str).await?;
 
         let msg = conn.next().await.expect("Can't fetch case count")?;
 
         let rwa_uid = msg.into_text()?;
 
-        let uid: WsConnectionResponse = serde_json::from_str(&rwa_uid).unwrap();
+        let uid: WsConnectionResponse = serde_json::from_str(&rwa_uid)?;
 
         Ok(SiriusWebsocketClient { uid, conn, handlers: HashMap::new() })
     }
@@ -126,8 +132,8 @@ impl SiriusWebsocketClient {
         self.uid.uid.to_string()
     }
 
-    pub async fn close(&mut self) {
-        self.conn.close(None).await;
+    pub async fn close(&mut self) -> super::Result<()> {
+        Ok(self.conn.close(None).await?)
     }
 
     async fn publish_subscribe_message(&mut self, path: &RouterPath) -> super::Result<()> {
@@ -136,49 +142,54 @@ impl SiriusWebsocketClient {
             subscribe: path.to_string(),
         };
 
-        let msg = serde_json::to_string(&dto).unwrap_or_default();
+        let msg = serde_json::to_string(&dto)?;
 
-        self.conn.send(Message::text(msg)).await
+        Ok(self.conn.send(Message::text(msg)).await?)
     }
 
-    pub async fn listen(&mut self) {
+    pub async fn listen(&mut self) -> super::Result<()> {
         while let Some(msg) = self.conn.next().await {
             let msg = msg.unwrap();
             if msg.is_text() {
                 let msg_string = msg.to_string();
-                let channel_name = get_channel_name(&msg_string);
+                let channel_name = get_channel_name(&msg_string)?;
 
                 if let Some(base) = self.handlers.get(&channel_name) {
                     if let Some(handler_info) = base.downcast_ref::<HandlerBlock>() {
-                        let channel = get_channel_data::<WsBlockInfoDto>(&msg_string, false);
+                        let channel = get_channel_data::<WsBlockInfoDto>(&msg_string, false)?;
                         if (handler_info.handler)(channel.compact()) {
                             break;
                         };
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerStatus>() {
-                        let channel = get_channel_data::<WsStatusInfoDto>(&msg_string, false);
+                        let channel = get_channel_data::<WsStatusInfoDto>(&msg_string, false)?;
                         if (handler_info.handler)(channel.compact()) {
                             break;
                         };
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerConfirmedAdd>() {
-                        let channel = get_channel_data::<Box<dyn api::TransactionDto>>(&msg_string, true);
-                        if (handler_info.handler)(channel.compact().unwrap()) {
+                        let channel = get_channel_data::<Box<dyn api::TransactionDto>>(&msg_string, true)?;
+                        if (handler_info.handler)(channel.compact()?) {
                             break;
                         };
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerUnconfirmedAdd>() {
-                        let channel = get_channel_data::<Box<dyn api::TransactionDto>>(&msg_string, true);
-                        if (handler_info.handler)(channel.compact().unwrap()) {
+                        let channel = get_channel_data::<Box<dyn api::TransactionDto>>(&msg_string, true)?;
+                        if (handler_info.handler)(channel.compact()?) {
                             break;
                         };
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerUnconfirmedRemoved>() {
-                        let channel = get_channel_data::<WsUnconfirmedRemovedDto>(&msg_string, false);
+                        let channel = get_channel_data::<WsUnconfirmedRemovedDto>(&msg_string, false)?;
                         if (handler_info.handler)(channel.compact()) {
+                            break;
+                        };
+                    } else if let Some(handler_info) = base.downcast_ref::<HandlerPartialAdd>() {
+                        let channel = get_channel_data::<WsPartialInfoDto>(&msg_string, false)?;
+                        if (handler_info.handler)(channel.compact()?) {
                             break;
                         };
                     }
                 };
             }
         }
-        self.conn.close(None).await;
+        self.close().await
     }
 }
 
@@ -205,20 +216,20 @@ fn path_parse_address(mut path: String, address: &sdk::account::Address) -> Stri
     path
 }
 
-fn get_channel_data<T>(msg: &str, is_tx: bool) -> T
+fn get_channel_data<U>(msg: &str, is_tx: bool) -> super::Result<U>
     where
-            for<'de> T: serde::Deserialize<'de>,
+            for<'de> U: serde::Deserialize<'de>,
 {
     if is_tx {
-        let map_dto = api::map_transaction_dto(Bytes::from(msg.to_string())).unwrap();
-        serde_json::from_str(&map_dto).unwrap()
+        let map_dto = api::map_transaction_dto(Bytes::from(msg.to_string()))?;
+        Ok(serde_json::from_str(&map_dto)?)
     } else {
-        serde_json::from_str(msg).unwrap()
+        Ok(serde_json::from_str(msg)?)
     }
 }
 
-fn get_channel_name(msg: &str) -> String {
-    let value_dto: Value = serde_json::from_str(msg).unwrap();
+fn get_channel_name(msg: &str) -> super::Result<String> {
+    let value_dto: Value = serde_json::from_str(msg)?;
     let res = value_dto["meta"]["channelName"].as_str().unwrap();
-    res.to_string()
+    Ok(res.to_string())
 }

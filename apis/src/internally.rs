@@ -9,12 +9,12 @@ use serde_json::Value;
 
 use sdk::{
     account::AccountId,
-    errors,
+    errors_const,
     mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     multisig::CosignatoryModification,
     network::NetworkType,
     Result,
-    transaction::{Hash, EntityTypeEnum as Entity}, Uint64,
+    transaction::{EntityTypeEnum as Entity, Hash}, Uint64,
 };
 use utils::is_hex;
 
@@ -62,14 +62,14 @@ impl AccountTransactionsOption {
 pub(crate) fn str_to_hash(hash: &str) -> Result<Hash> {
     let raw_hash = hash.trim().to_uppercase();
 
-    ensure!(!raw_hash.is_empty(), errors::ERR_INVALID_HASH_HEX);
+    ensure!(!raw_hash.is_empty(), errors_const::ERR_INVALID_HASH_HEX);
 
-    ensure!(is_hex(&raw_hash), "{} {}.", errors::ERR_INVALID_HASH_HEX, raw_hash);
+    ensure!(is_hex(&raw_hash), "{} {}.", errors_const::ERR_INVALID_HASH_HEX, raw_hash);
 
     ensure!(
         raw_hash.len() == 64,
         "{} {}.",
-        errors::ERR_INVALID_HASH_LENGTH,
+        errors_const::ERR_INVALID_HASH_LENGTH,
         raw_hash
     );
 
@@ -88,14 +88,14 @@ pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
     match id.trim().len() {
         64 => {
             if !is_hex(id) {
-                bail!(errors::ERR_INVALID_ACCOUNT_ID)
+                bail!(errors_const::ERR_INVALID_ACCOUNT_ID)
             }
             Ok(id.to_uppercase())
         }
         40 | 46 => {
             Ok(id.to_uppercase().replace("-", ""))
         }
-        _ => bail!(errors::ERR_INVALID_ACCOUNT_ID)
+        _ => bail!(errors_const::ERR_INVALID_ACCOUNT_ID)
     }
 }
 
@@ -106,7 +106,7 @@ pub(crate) fn valid_vec_hash(vector: &Vec<&str>) -> Result<()> {
     Ok(())
 }
 
-pub(crate) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
+pub fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
     let value_dto_vec: Value = serde_json::from_slice(&body)?;
 
     let mut value_dto_vec_str: String = "".to_string();
@@ -137,6 +137,7 @@ pub(crate) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
 
 pub fn map_transaction_dto(body: Bytes) -> Result<String> {
     let value_dto: Value = serde_json::from_slice(&body)?;
+    // println!("{}", value_dto);
 
     let entity_type = Entity::from(value_dto["transaction"]["type"].as_u64().unwrap() as u16);
 
@@ -161,10 +162,19 @@ pub fn map_transaction_dto(body: Bytes) -> Result<String> {
         Entity::SecretLock => "SecretLock",
         Entity::SecretProof => "SecretProof",
         Entity::Transfer => "Transfer",
-        _ => errors::ERR_UNKNOWN_BLOCKCHAIN_TYPE,
+        _ => errors_const::ERR_UNKNOWN_BLOCKCHAIN_TYPE,
     };
 
     let info_dto = format!("{{\"{}TransactionInfoDto\":{{\"meta\":", entity_dto);
+
+    if value_dto["meta"].is_null() {
+        let meta = r#"{"meta": {}, "transaction":"#;
+
+        let parse_meta = format!("{}", value_dto).replace(r#"{"transaction":"#, meta);
+        return Ok(format!("{}", parse_meta)
+            .replace(r#"{"meta":"#, &info_dto)
+            .replace("}}", r#"}}}"#));
+    }
 
     Ok(format!("{}", value_dto)
         .replace(r#"{"meta":"#, &info_dto)

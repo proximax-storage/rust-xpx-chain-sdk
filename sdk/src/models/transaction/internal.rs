@@ -14,7 +14,7 @@ use crate::models::{
         HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE, TRANSACTION_HEADER_SIZE,
         TYPE_SIZE, VERSION_SIZE,
     },
-    errors::ERR_EMPTY_TRANSACTION_SIGNER,
+    errors_const::ERR_EMPTY_TRANSACTION_SIGNER,
     mosaic::MosaicProperty,
     multisig::CosignatoryModification,
 };

@@ -8,7 +8,7 @@ use serde::{Serialize, Serializer};
 
 use utils::{hex_to_vec_u8, is_hex};
 
-use crate::models::{consts::SIGNATURE_SIZE, errors::ERR_INVALID_DATA_LENGTH, transaction::Hash};
+use crate::models::{consts::SIGNATURE_SIZE, errors_const::ERR_INVALID_DATA_LENGTH, transaction::Hash};
 
 pub struct Signature(pub(crate) [u8; SIGNATURE_SIZE]);
 

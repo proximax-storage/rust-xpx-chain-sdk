@@ -114,6 +114,14 @@ impl fmt::Display for TransactionStatus {
 }
 
 pub trait AbsTransaction {
+    fn height(&self) -> Height {
+        let mut  height: Height = Uint64::default();
+        if let Some(h) = self.abs_transaction().transaction_info {
+            height = h.height
+        };
+        height
+    }
+
     fn abs_transaction(&self) -> AbstractTransaction;
 
     fn entity_type(&self) -> EntityTypeEnum { self.abs_transaction().transaction_type }

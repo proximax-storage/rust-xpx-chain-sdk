@@ -8,7 +8,7 @@ use serde::{Serialize, Serializer};
 
 use utils::has_bits;
 
-use crate::models::{errors, Uint64};
+use crate::models::{errors_const, Uint64};
 use crate::models::asset_id_model::AssetId;
 
 use super::{generate_namespace_path, NAMESPACE_BIT};
@@ -22,7 +22,7 @@ impl NamespaceId {
     pub fn new(id: u64) -> NamespaceId {
         assert!(
             id != 0 && has_bits(id, NAMESPACE_BIT),
-            errors::ERR_WRONG_BIT_NAMESPACE_ID
+            errors_const::ERR_WRONG_BIT_NAMESPACE_ID
         );
 
         NamespaceId(Uint64::new(id))
@@ -30,11 +30,11 @@ impl NamespaceId {
 
     /// Creates a new `NamespaceId` from a hex string.
     pub fn from_name(string_name: &str) -> crate::Result<NamespaceId> {
-        ensure!(!string_name.is_empty(), errors::ERR_EMPTY_NAMESPACE_NAME);
+        ensure!(!string_name.is_empty(), errors_const::ERR_EMPTY_NAMESPACE_NAME);
 
         let list = generate_namespace_path(string_name)?;
 
-        ensure!(!list.is_empty(), errors::ERR_INVALID_NAMESPACE_NAME);
+        ensure!(!list.is_empty(), errors_const::ERR_INVALID_NAMESPACE_NAME);
 
         Ok(list[list.len() - 1])
     }

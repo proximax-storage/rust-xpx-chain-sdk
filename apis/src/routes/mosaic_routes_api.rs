@@ -7,7 +7,7 @@ use ::std::sync::Arc;
 use reqwest::Method;
 
 use xpx_chain_sdk::{
-    errors::ERR_EMPTY_MOSAIC_IDS,
+    errors_const::ERR_EMPTY_MOSAIC_IDS,
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},
 };
 

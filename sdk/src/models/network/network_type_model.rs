@@ -5,7 +5,7 @@
 use ::core::fmt;
 use ::core::fmt::{Debug, Display};
 
-use crate::models::errors;
+use crate::models::errors_const;
 
 /// MIJIN private network identifier. Decimal value = 96.
 pub const MIJIN: NetworkType = NetworkType(0x60);
@@ -76,7 +76,7 @@ impl From<&str> for NetworkType {
     fn from(s: &str) -> Self {
         assert!(
             !s.is_empty(),
-            errors::ERR_EMPTY_NETWORK_TYPE
+            errors_const::ERR_EMPTY_NETWORK_TYPE
         );
 
         match s {

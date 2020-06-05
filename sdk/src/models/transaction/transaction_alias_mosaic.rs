@@ -12,7 +12,7 @@ use crate::models::{
     alias::AliasActionType,
     asset_id_model::AssetId,
     consts::MOSAIC_ID_SIZE,
-    errors,
+    errors_const,
     mosaic::MosaicId,
     namespace::NamespaceId,
     network::NetworkType,
@@ -38,12 +38,12 @@ impl MosaicAliasTransaction {
     {
         ensure!(
             !mosaic_id.is_empty(),
-            errors::ERR_EMPTY_MOSAIC_ID
+            errors_const::ERR_EMPTY_MOSAIC_ID
          );
 
         ensure!(
             !namespace_id.is_empty(),
-            errors::ERR_EMPTY_NAMESPACE_ID
+            errors_const::ERR_EMPTY_NAMESPACE_ID
          );
 
         let abs_tx = AbstractTransaction::new_from_type(

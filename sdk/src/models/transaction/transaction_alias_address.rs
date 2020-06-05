@@ -12,7 +12,7 @@ use crate::models::{
     alias::AliasActionType,
     asset_id_model::AssetId,
     consts::ADDRESS_SIZE,
-    errors,
+    errors_const,
     namespace::NamespaceId,
     network::NetworkType,
 };
@@ -35,12 +35,12 @@ impl AddressAliasTransaction {
     {
         ensure!(
             !address.address.is_empty(),
-            errors::ERR_EMPTY_ADDRESSES
+            errors_const::ERR_EMPTY_ADDRESSES
          );
 
         ensure!(
             !namespace_id.is_empty(),
-            errors::ERR_EMPTY_NAMESPACE_ID
+            errors_const::ERR_EMPTY_NAMESPACE_ID
          );
 
         let abs_tx = AbstractTransaction::new_from_type(

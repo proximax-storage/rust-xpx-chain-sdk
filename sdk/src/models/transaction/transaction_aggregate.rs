@@ -8,7 +8,7 @@ use failure::_core::any::Any;
 use serde_json::Value;
 
 use crate::models::{
-    errors::ERR_EMPTY_INNER_TRANSACTION,
+    errors_const::ERR_EMPTY_INNER_TRANSACTION,
     multisig::Cosignature,
     network::NetworkType,
 };
