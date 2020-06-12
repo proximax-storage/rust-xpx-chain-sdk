@@ -127,17 +127,17 @@ pub fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
 
     value_dto_vec_str.write_char(']')?;
 
-    let value_dto_vec_str = value_dto_vec_str.replace(&['\\'][..], "");
-    let value_dto_vec_str = value_dto_vec_str.replace(r#"["{"#, r#"[{"#);
-    let value_dto_vec_str = value_dto_vec_str.replace(r#"}","{"#, r#"},{"#);
-    let value_dto_vec_str = value_dto_vec_str.replace(r#"}}}"]"#, r#"}}}]"#);
+    let value_dto_vec_str = value_dto_vec_str
+        .replace(&['\\'][..], "")
+        .replace(r#"["{"#, r#"[{"#)
+        .replace(r#"}","{"#, r#"},{"#)
+        .replace(r#"}}}"]"#, r#"}}}]"#);
 
     Ok(value_dto_vec_str)
 }
 
 pub fn map_transaction_dto(body: Bytes) -> Result<String> {
-    let value_dto: Value = serde_json::from_slice(&body)?;
-    // println!("{}", value_dto);
+    let mut value_dto: Value = serde_json::from_slice(&body)?;
 
     let entity_type = Entity::from(value_dto["transaction"]["type"].as_u64().unwrap() as u16);
 
@@ -165,20 +165,50 @@ pub fn map_transaction_dto(body: Bytes) -> Result<String> {
         _ => errors_const::ERR_UNKNOWN_BLOCKCHAIN_TYPE,
     };
 
-    let info_dto = format!("{{\"{}TransactionInfoDto\":{{\"meta\":", entity_dto);
-
-    if value_dto["meta"].is_null() {
-        let meta = r#"{"meta": {}, "transaction":"#;
-
-        let parse_meta = format!("{}", value_dto).replace(r#"{"transaction":"#, meta);
-        return Ok(format!("{}", parse_meta)
-            .replace(r#"{"meta":"#, &info_dto)
-            .replace("}}", r#"}}}"#));
+    if entity_type  == Entity::AggregateBonded || entity_type == Entity::AggregateComplete {
+        valid_ws(&mut value_dto)?
     }
 
-    Ok(format!("{}", value_dto)
+    if value_dto["meta"].is_null() {
+        Ok(parse_meta(value_dto, entity_dto))
+    } else {
+        Ok(parse_entity_type_dto(value_dto, entity_dto))
+    }
+}
+
+fn valid_ws(value_dto: &mut Value) -> Result<()> {
+    if let Some(v)  = value_dto["transaction"]["transactions"].as_array_mut() {
+        let mut meta_value: Vec<Value> = vec![];
+
+        for item in v.into_iter() {
+            if item["meta"].is_null() {
+                let meta = r#""meta": {}, "transaction":"#;
+                let parse_meta_srt = format!("{}", item).replace(r#""transaction":"#, meta);
+
+                let parse_meta: Value = serde_json::from_str(&parse_meta_srt)?;
+                meta_value.push(parse_meta)
+            }
+        }
+        v.clear();
+        v.append(&mut meta_value)
+    };
+    Ok(())
+}
+
+fn parse_meta(value_dto: Value, entity_dto: &str) -> String {
+    let meta = r#"{"meta": {}, "transaction":"#;
+
+    let parse_meta = format!("{}", value_dto).replace(r#"{"transaction":"#, meta);
+
+    parse_entity_type_dto(parse_meta.parse().unwrap(), entity_dto)
+}
+
+fn parse_entity_type_dto(value_dto: Value, entity_dto: &str) -> String {
+    let info_dto = format!("{{\"{}TransactionInfoDto\":{{\"meta\":", entity_dto);
+
+    format!("{}", value_dto)
         .replace(r#"{"meta":"#, &info_dto)
-        .replace("}}", r#"}}}"#))
+        .replace("}}", r#"}}}"#)
 }
 
 pub fn map_aggregate_transactions_dto(

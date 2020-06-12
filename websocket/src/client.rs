@@ -2,23 +2,27 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::borrow::Cow;
-use std::collections::HashMap;
+use {
+    bytes::Bytes,
+    downcast_rs::Downcast,
+    futures_util::{SinkExt, StreamExt},
+    serde_json::Value,
+    std::borrow::Cow,
+    std::collections::HashMap,
+    tokio_tungstenite::{connect_async, tungstenite::Message, WebSocketStream},
+    url::Url,
+};
 
-use bytes::Bytes;
-use downcast_rs::Downcast;
-use futures_util::{SinkExt, StreamExt};
-use serde_json::Value;
-use tokio_tungstenite::{connect_async, tungstenite::Message, WebSocketStream};
-use url::Url;
-
-use crate::{HandlerBlock, HandlerConfirmedAdd, HandlerStatus, HandlerUnconfirmedAdd, HandlerUnconfirmedRemoved, WsBlockInfoDto, WsStatusInfoDto, WsUnconfirmedRemovedDto, HandlerPartialAdd, WsPartialInfoDto};
-
-use crate::error::Error;
-use crate::model::{
-    PATH_BLOCK, PATH_CONFIRMED_ADDED, PATH_COSIGNATURE, PATH_PARTIAL_ADDED, PATH_PARTIAL_REMOVED,
-    PATH_STATUS, PATH_UNCONFIRMED_ADDED, PATH_UNCONFIRMED_REMOVED, RouterPath, SubscribeDto,
-    WsConnectionResponse, WsSubscribeDto,
+use crate::{
+    error::Error,
+    HandlerBlock,
+    HandlerConfirmedAdd, HandlerPartialAdd, HandlerStatus, HandlerUnconfirmedAdd,
+    HandlerUnconfirmedRemoved, model::{
+        PATH_BLOCK, PATH_CONFIRMED_ADDED, PATH_COSIGNATURE, PATH_PARTIAL_ADDED, PATH_PARTIAL_REMOVED,
+        PATH_STATUS, PATH_UNCONFIRMED_ADDED, PATH_UNCONFIRMED_REMOVED, RouterPath, SubscribeDto,
+        WsConnectionResponse, WsSubscribeDto,
+    }, WsBlockInfoDto,
+    WsStatusInfoDto, WsUnconfirmedRemovedDto,
 };
 
 pub type AutoStream<S> = S;
@@ -31,13 +35,6 @@ pub struct SiriusWebsocketClient {
     uid: WsConnectionResponse,
     conn: WebSocketStream<AutoStream<tokio::net::TcpStream>>,
     pub handlers: HashMap<String, Box<dyn Handler>>,
-}
-
-/// Overwrite secret key material with null bytes when it goes out of scope.
-impl Drop for SiriusWebsocketClient {
-    fn drop(&mut self) {
-        self.close();
-    }
 }
 
 impl SiriusWebsocketClient {
@@ -63,7 +60,8 @@ impl SiriusWebsocketClient {
         Ok(())
     }
 
-    pub async fn add_confirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>) -> bool) -> super::Result<()> {
+    pub async fn add_confirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>) -> bool) -> super::Result<()>
+    {
         let handler = HandlerConfirmedAdd { handler: handler_fn };
 
         self.publish_subscribe_message(&path_parse_address(PATH_CONFIRMED_ADDED.to_string(), address)).await?;
@@ -90,7 +88,7 @@ impl SiriusWebsocketClient {
         Ok(())
     }
 
-    pub async fn add_partial_added_handlers<F>(&mut self, address: &sdk::account::Address, handler_fn: F ) -> super::Result<()>
+    pub async fn add_partial_added_handlers<F>(&mut self, address: &sdk::account::Address, handler_fn: F) -> super::Result<()>
         where
             F: Fn(sdk::transaction::AggregateTransaction) -> bool + Send + 'static
     {
@@ -101,14 +99,19 @@ impl SiriusWebsocketClient {
         Ok(())
     }
 
-    pub async fn add_partial_removed_handlers(&mut self, address: &sdk::account::Address) -> super::Result<()> {
+    pub async fn add_partial_removed_handlers<F>(&mut self, address: &sdk::account::Address, handler_fn: F) -> super::Result<()>
+        where
+            F: Fn(sdk::transaction::TransactionInfo) -> bool + Send + 'static
+    {
+        let _handler = HandlerUnconfirmedRemoved { handler: Box::new(handler_fn) };
+
         self.publish_subscribe_message(&path_parse_address(PATH_PARTIAL_REMOVED.to_string(), address)).await?;
-         Ok(())
+        Ok(())
     }
 
     pub async fn add_cosignature_handlers(&mut self, address: &sdk::account::Address) -> super::Result<()> {
         self.publish_subscribe_message(&path_parse_address(PATH_COSIGNATURE.to_string(), address)).await?;
-         Ok(())
+        Ok(())
     }
 }
 
@@ -149,7 +152,17 @@ impl SiriusWebsocketClient {
 
     pub async fn listen(&mut self) -> super::Result<()> {
         while let Some(msg) = self.conn.next().await {
-            let msg = msg.unwrap();
+            // let msg = msg.unwrap();
+            let msg = match msg
+            {
+                Err(e) =>
+                    {
+                        eprintln!("Error on server stream: {:?}", e);
+                        continue;
+                    }
+                Ok(m) => m,
+            };
+
             if msg.is_text() {
                 let msg_string = msg.to_string();
                 let channel_name = get_channel_name(&msg_string)?;
@@ -159,32 +172,39 @@ impl SiriusWebsocketClient {
                         let channel = get_channel_data::<WsBlockInfoDto>(&msg_string, false)?;
                         if (handler_info.handler)(channel.compact()) {
                             break;
-                        };
+                        }
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerStatus>() {
                         let channel = get_channel_data::<WsStatusInfoDto>(&msg_string, false)?;
                         if (handler_info.handler)(channel.compact()) {
                             break;
-                        };
+                        }
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerConfirmedAdd>() {
                         let channel = get_channel_data::<Box<dyn api::TransactionDto>>(&msg_string, true)?;
                         if (handler_info.handler)(channel.compact()?) {
                             break;
-                        };
+                        }
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerUnconfirmedAdd>() {
                         let channel = get_channel_data::<Box<dyn api::TransactionDto>>(&msg_string, true)?;
                         if (handler_info.handler)(channel.compact()?) {
                             break;
-                        };
+                        }
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerUnconfirmedRemoved>() {
                         let channel = get_channel_data::<WsUnconfirmedRemovedDto>(&msg_string, false)?;
                         if (handler_info.handler)(channel.compact()) {
                             break;
-                        };
+                        }
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerPartialAdd>() {
-                        let channel = get_channel_data::<WsPartialInfoDto>(&msg_string, false)?;
-                        if (handler_info.handler)(channel.compact()?) {
+                        let channel = get_channel_data::<Box<dyn api::TransactionDto>>(&msg_string, true)?;
+                        let tx = channel.compact()?;
+                        let aggregate = tx
+                            .downcast::<sdk::transaction::AggregateTransaction>()
+                            .map_err(|_| failure::err_msg(sdk::errors_const::ERR_INVALID_AGGREGATE_TRANSACTION))?;
+
+                        if (handler_info.handler)(*aggregate) {
                             break;
-                        };
+                        }
+                    } else {
+                        println!("DATA: {}", msg_string);
                     }
                 };
             }

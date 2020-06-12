@@ -2,11 +2,15 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use api::Uint64Dto;
-use sdk::transaction::{BlockchainTimestamp, Deadline};
+use {
+    api::Uint64Dto,
+    sdk::transaction::{BlockchainTimestamp, Deadline},
+};
 
-use crate::Handler;
-use crate::model::WsSubscribeDto;
+use crate::{
+    Handler,
+    model::WsSubscribeDto,
+};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

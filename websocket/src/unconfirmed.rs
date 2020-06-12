@@ -10,13 +10,11 @@ pub struct HandlerUnconfirmedAdd {
 
 impl Handler for HandlerUnconfirmedAdd {}
 
-
 pub struct HandlerUnconfirmedRemoved {
     pub handler: Box<dyn Fn(sdk::transaction::TransactionInfo) -> bool + Send>
 }
 
 impl Handler for HandlerUnconfirmedRemoved {}
-
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -44,7 +42,7 @@ impl WsUnconfirmedMetaDto {
             height: sdk::Uint64::default(),
             index: 0,
             id: String::new(),
-            transaction_hash: Some(self.hash.to_owned()),
+            hash: Some(self.hash.to_owned()),
             merkle_component_hash: None,
             agregate_hash: None,
             aggregate_id: None,

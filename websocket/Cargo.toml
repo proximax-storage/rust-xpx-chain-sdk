@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-websocket"
-version = "0.1.1"
+version = "0.1.2"
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
@@ -31,7 +31,7 @@ version = "0.2"
 features = ["full"]
 
 [dependencies.tokio-tungstenite]
-version = "*"
+version = "^0.10"
 
 [dependencies.serde]
 version = "1.0"

@@ -172,7 +172,7 @@ impl TransactionMetaDto {
             height,
             index,
             id,
-            transaction_hash,
+            hash: transaction_hash,
             merkle_component_hash,
             agregate_hash,
             aggregate_id,
