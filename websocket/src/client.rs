@@ -54,9 +54,11 @@ impl SiriusWebsocketClient {
         Ok(())
     }
 
-    pub async fn add_confirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>) -> bool) -> super::Result<()>
+    pub async fn add_confirmed_added_handlers<F>(&mut self, address: &sdk::account::Address, handler_fn: F ) -> super::Result<()>
+        where
+            F: Fn(Box<dyn sdk::transaction::Transaction>) -> bool + Send + 'static
     {
-        let handler = HandlerConfirmedAdd { handler: handler_fn };
+        let handler = HandlerConfirmedAdd { handler: Box::new(handler_fn) };
 
         self.publish_subscribe_message(&path_parse_address(PATH_CONFIRMED_ADDED.to_string(), address)).await?;
         self.handlers.insert(PATH_CONFIRMED_ADDED.to_string(), Box::new(handler));
@@ -74,8 +76,11 @@ impl SiriusWebsocketClient {
         Ok(())
     }
 
-    pub async fn add_unconfirmed_added_handlers(&mut self, address: &sdk::account::Address, handler_fn: fn(Box<dyn sdk::transaction::Transaction>) -> bool) -> super::Result<()> {
-        let handler = HandlerUnconfirmedAdd { handler: handler_fn };
+    pub async fn add_unconfirmed_added_handlers<F>(&mut self, address: &sdk::account::Address, handler_fn: F ) -> super::Result<()>
+        where
+            F: Fn(Box<dyn sdk::transaction::Transaction>) -> bool + Send + 'static
+    {
+        let handler = HandlerUnconfirmedAdd { handler: Box::new(handler_fn) };
 
         self.publish_subscribe_message(&path_parse_address(PATH_UNCONFIRMED_ADDED.to_string(), address)).await?;
         self.handlers.insert(PATH_UNCONFIRMED_ADDED.to_string(), Box::new(handler));
@@ -147,7 +152,6 @@ impl SiriusWebsocketClient {
             subscribe: path.to_string(),
         };
 
-        println!("{:?}", dto);
         let msg = serde_json::to_string(&dto)?;
 
         Ok(self.conn.send(Message::text(msg)).await?)
@@ -155,16 +159,7 @@ impl SiriusWebsocketClient {
 
     pub async fn listen(&mut self) -> super::Result<()> {
         while let Some(msg) = self.conn.next().await {
-            // let msg = msg.unwrap();
-            let msg = match msg
-            {
-                Err(e) =>
-                    {
-                        eprintln!("Error on server stream: {:?}", e);
-                        continue;
-                    }
-                Ok(m) => m,
-            };
+            let msg = msg.map_err(|e| failure::err_msg(format!("Error on server stream: {:?}", e)))?;
 
             if msg.is_text() {
                 let msg_string = msg.to_string();

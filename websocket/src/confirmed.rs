@@ -19,7 +19,7 @@ pub struct WsTransactionInfoDto {
 }
 
 pub struct HandlerConfirmedAdd {
-    pub handler: fn(Box<dyn sdk::transaction::Transaction>) -> bool
+    pub handler: Box<dyn Fn(Box<dyn sdk::transaction::Transaction>) -> bool + Send>
 }
 
 impl Handler for HandlerConfirmedAdd {}
