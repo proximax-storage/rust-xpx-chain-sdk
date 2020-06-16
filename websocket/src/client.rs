@@ -13,17 +13,11 @@ use {
     url::Url,
 };
 
-use crate::{
-    error::Error,
-    HandlerBlock,
-    HandlerConfirmedAdd, HandlerPartialAdd, HandlerStatus, HandlerUnconfirmedAdd,
-    HandlerUnconfirmedRemoved, model::{
-        PATH_BLOCK, PATH_CONFIRMED_ADDED, PATH_COSIGNATURE, PATH_PARTIAL_ADDED, PATH_PARTIAL_REMOVED,
-        PATH_STATUS, PATH_UNCONFIRMED_ADDED, PATH_UNCONFIRMED_REMOVED, RouterPath, SubscribeDto,
-        WsConnectionResponse, WsSubscribeDto,
-    }, WsBlockInfoDto,
-    WsStatusInfoDto, WsUnconfirmedRemovedDto,
-};
+use crate::{error::Error, HandlerBlock, HandlerConfirmedAdd, HandlerPartialAdd, HandlerPartialRemove, HandlerStatus, HandlerUnconfirmedAdd, HandlerUnconfirmedRemoved, model::{
+    PATH_BLOCK, PATH_CONFIRMED_ADDED, PATH_COSIGNATURE, PATH_PARTIAL_ADDED, PATH_PARTIAL_REMOVED,
+    PATH_STATUS, PATH_UNCONFIRMED_ADDED, PATH_UNCONFIRMED_REMOVED, RouterPath, SubscribeDto,
+    WsConnectionResponse, WsSubscribeDto,
+}, WsBlockInfoDto, WsPartialRemoveDto, WsStatusInfoDto, WsUnconfirmedRemovedDto, HandlerCosignature};
 
 pub type AutoStream<S> = S;
 
@@ -103,14 +97,22 @@ impl SiriusWebsocketClient {
         where
             F: Fn(sdk::transaction::TransactionInfo) -> bool + Send + 'static
     {
-        let _handler = HandlerUnconfirmedRemoved { handler: Box::new(handler_fn) };
+        let handler = HandlerUnconfirmedRemoved { handler: Box::new(handler_fn) };
 
         self.publish_subscribe_message(&path_parse_address(PATH_PARTIAL_REMOVED.to_string(), address)).await?;
+        self.handlers.insert(PATH_PARTIAL_REMOVED.to_string(), Box::new(handler));
         Ok(())
     }
 
-    pub async fn add_cosignature_handlers(&mut self, address: &sdk::account::Address) -> super::Result<()> {
+    pub async fn add_cosignature_handlers<F>(&mut self, address: &sdk::account::Address, handler_fn: F ) -> super::Result<()>
+        where
+            F: Fn(sdk::multisig::CosignatureInfo) -> bool + Send + 'static
+    {
+
+        let handler = HandlerCosignature { handler: Box::new(handler_fn) };
+
         self.publish_subscribe_message(&path_parse_address(PATH_COSIGNATURE.to_string(), address)).await?;
+        self.handlers.insert(PATH_COSIGNATURE.to_string(), Box::new(handler));
         Ok(())
     }
 }
@@ -145,6 +147,7 @@ impl SiriusWebsocketClient {
             subscribe: path.to_string(),
         };
 
+        println!("{:?}", dto);
         let msg = serde_json::to_string(&dto)?;
 
         Ok(self.conn.send(Message::text(msg)).await?)
@@ -199,12 +202,19 @@ impl SiriusWebsocketClient {
                         let aggregate = tx
                             .downcast::<sdk::transaction::AggregateTransaction>()
                             .map_err(|_| failure::err_msg(sdk::errors_const::ERR_INVALID_AGGREGATE_TRANSACTION))?;
-
                         if (handler_info.handler)(*aggregate) {
                             break;
                         }
-                    } else {
-                        println!("DATA: {}", msg_string);
+                    } else if let Some(handler_info) = base.downcast_ref::<HandlerPartialRemove>() {
+                        let channel = get_channel_data::<WsPartialRemoveDto>(&msg_string, false)?;
+                        if (handler_info.handler)(channel.compact()) {
+                            break;
+                        }
+                    } else if let Some(handler_info) = base.downcast_ref::<HandlerCosignature>() {
+                        let channel = get_channel_data::<sdk::multisig::CosignatureInfo>(&msg_string, false)?;
+                        if (handler_info.handler)(channel) {
+                            break;
+                        }
                     }
                 };
             }

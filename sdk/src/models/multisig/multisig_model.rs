@@ -9,6 +9,7 @@ use num_enum::IntoPrimitive;
 
 use crate::models::account::PublicAccount;
 use crate::models::errors_const::ERR_UNKNOWN_TYPE;
+use crate::models::transaction::Hash;
 
 /// MultisigModificationTypeEnum :
 /// The type of the modification:
@@ -64,6 +65,21 @@ pub struct Cosignature {
     pub signature: String,
     /// The public account of the cosignatory.
     pub signer: PublicAccount,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CosignatureInfo {
+    pub signature: String,
+    /// The public account of the cosignatory.
+    pub signer: String,
+    pub parent_hash: Hash,
+}
+
+impl CosignatureInfo {
+    pub fn transaction_hash(&self) -> Hash {
+        self.parent_hash.to_owned()
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]

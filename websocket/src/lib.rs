@@ -18,6 +18,7 @@ pub use self::error::Result;
 pub use self::partial::*;
 pub use self::status::*;
 pub use self::unconfirmed::*;
+pub use self::cosignature::*;
 
 mod client;
 mod block;
@@ -27,3 +28,5 @@ mod error;
 mod partial;
 mod confirmed;
 mod unconfirmed;
+mod cosignature;
+
