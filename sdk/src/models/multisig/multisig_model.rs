@@ -76,6 +76,15 @@ pub struct CosignatureInfo {
     pub parent_hash: Hash,
 }
 
+impl fmt::Display for CosignatureInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f, "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
+    }
+}
+
 impl CosignatureInfo {
     pub fn transaction_hash(&self) -> Hash {
         self.parent_hash.to_owned()
@@ -118,7 +127,7 @@ pub struct MultisigAccountGraphInfo {
 }
 
 impl fmt::Display for MultisigAccountGraphInfo {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f, "{}",
             serde_json::to_string_pretty(self).unwrap_or_default()
