@@ -8,7 +8,7 @@ extern crate downcast_rs;
 extern crate failure;
 #[macro_use]
 extern crate serde;
-extern crate xpx_chain_apis as api;
+extern crate xpx_chain_api as api;
 extern crate xpx_chain_sdk as sdk;
 
 pub use self::block::*;
@@ -20,13 +20,12 @@ pub use self::partial::*;
 pub use self::status::*;
 pub use self::unconfirmed::*;
 
-mod client;
 mod block;
-mod status;
-mod model;
-mod error;
-mod partial;
+mod client;
 mod confirmed;
-mod unconfirmed;
 mod cosignature;
-
+mod error;
+mod model;
+mod partial;
+mod status;
+mod unconfirmed;
