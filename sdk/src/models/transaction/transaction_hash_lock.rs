@@ -2,24 +2,23 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::fmt;
+use {failure::_core::any::Any, serde_json::Value, std::fmt};
 
-use failure::_core::any::Any;
-use serde_json::Value;
-
-use crate::models::{
-    account::{Account, PublicAccount},
-    consts::LOCK_SIZE,
-    mosaic::Mosaic,
-    network::NetworkType,
-    uint_64::Uint64,
+use crate::{
+    models::{
+        account::{Account, PublicAccount},
+        consts::LOCK_SIZE,
+        mosaic::Mosaic,
+        network::NetworkType,
+        uint_64::Uint64,
+    },
+    Result,
 };
-use crate::Result;
 
 use super::{
-    AbstractTransaction, AbsTransaction, buffer::lock_funds::buffers, Deadline, EntityTypeEnum,
-    LOCK_VERSION, schema::lock_funds_transaction_schema, sign_transaction,
-    SignedTransaction, Transaction,
+    buffer::lock_funds::buffers, schema::lock_funds_transaction_schema, sign_transaction,
+    AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum, SignedTransaction, Transaction,
+    LOCK_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -42,7 +41,7 @@ impl LockFundsTransaction {
         ensure!(
             signed_tx.get_type() == EntityTypeEnum::AggregateBonded,
             "signed_tx must be of type AggregateBonded."
-         );
+        );
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
@@ -51,7 +50,12 @@ impl LockFundsTransaction {
             network_type,
         );
 
-        Ok(Self { abs_transaction: abs_tx, mosaic, duration, signed_transaction: signed_tx })
+        Ok(Self {
+            abs_transaction: abs_tx,
+            mosaic,
+            duration,
+            signed_transaction: signed_tx,
+        })
     }
 }
 
@@ -62,14 +66,19 @@ impl AbsTransaction for LockFundsTransaction {
 }
 
 impl Transaction for LockFundsTransaction {
-    fn size(&self) -> usize { LOCK_SIZE }
+    fn size(&self) -> usize {
+        LOCK_SIZE
+    }
 
     fn to_json(&self) -> Value {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> Result<SignedTransaction> {
+    fn sign_transaction_with(
+        self,
+        account: Account,
+        generation_hash: String,
+    ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
@@ -85,8 +94,7 @@ impl Transaction for LockFundsTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
-        let mut txn_builder =
-            buffers::LockFundsTransactionBufferBuilder::new(&mut _builder);
+        let mut txn_builder = buffers::LockFundsTransactionBufferBuilder::new(&mut _builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
@@ -123,8 +131,10 @@ impl Transaction for LockFundsTransaction {
 
 impl fmt::Display for LockFundsTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }

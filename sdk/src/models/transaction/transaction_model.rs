@@ -2,10 +2,11 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::{any::Any, fmt};
-
-use downcast_rs::Downcast;
-use serde_json::Value;
+use {
+    ::std::{any::Any, fmt},
+    downcast_rs::Downcast,
+    serde_json::Value,
+};
 
 use crate::models::{
     account::{Account, PublicAccount},
@@ -13,12 +14,7 @@ use crate::models::{
     uint_64::Uint64,
 };
 
-use super::{
-    AbstractTransaction,
-    deadline::Deadline,
-    EntityTypeEnum,
-    SignedTransaction,
-};
+use super::{deadline::Deadline, AbstractTransaction, EntityTypeEnum, SignedTransaction};
 
 pub type Amount = Uint64;
 
@@ -42,15 +38,18 @@ pub(crate) struct AbsVector<'b> {
 }
 
 impl<'b> AbsVector<'b> {
-    pub fn build_vector(abs: &AbstractTransaction, builder: &mut fb::FlatBufferBuilder<'b>) -> Self {
+    pub fn build_vector(
+        abs: &AbstractTransaction,
+        builder: &mut fb::FlatBufferBuilder<'b>,
+    ) -> Self {
         let max_fee = match abs.max_fee {
             Some(item) => item,
-            _ => Uint64::default()
+            _ => Uint64::default(),
         };
 
         let deadline = match abs.deadline {
             Some(item) => item,
-            _ => Deadline::default()
+            _ => Deadline::default(),
         };
 
         let network_type: fb::UOffsetT = abs.network_type.value() as u32;
@@ -59,7 +58,11 @@ impl<'b> AbsVector<'b> {
         let signature_vec = builder.create_vector_direct(&[0u8; SIGNATURE_SIZE]);
         let signer_vec = builder.create_vector_direct(&[0u8; SIGNER_SIZE]);
         let deadline_vec = builder.create_vector_direct(
-            &deadline.to_blockchain_timestamp().to_uint64().to_int_array());
+            &deadline
+                .to_blockchain_timestamp()
+                .to_uint64()
+                .to_int_array(),
+        );
 
         let max_fee_vec = builder.create_vector_direct(&max_fee.to_int_array());
 
@@ -74,7 +77,6 @@ impl<'b> AbsVector<'b> {
     }
 }
 
-
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionStatus {
@@ -88,7 +90,13 @@ pub struct TransactionStatus {
 }
 
 impl TransactionStatus {
-    pub fn new(group: String, status: String, hash: String, deadline: Option<Deadline>, height: Option<Height>) -> Self {
+    pub fn new(
+        group: String,
+        status: String,
+        hash: String,
+        deadline: Option<Deadline>,
+        height: Option<Height>,
+    ) -> Self {
         TransactionStatus {
             group,
             status,
@@ -98,24 +106,32 @@ impl TransactionStatus {
         }
     }
 
-    pub fn is_success(&self) -> bool { self.status == "Success" }
+    pub fn is_success(&self) -> bool {
+        self.status == "Success"
+    }
 
-    pub fn is_confirmed(&self) -> bool { self.is_success() && self.group == "confirmed" }
+    pub fn is_confirmed(&self) -> bool {
+        self.is_success() && self.group == "confirmed"
+    }
 
-    pub fn is_partial(&self) -> bool { self.is_success() && self.group == "partial" }
+    pub fn is_partial(&self) -> bool {
+        self.is_success() && self.group == "partial"
+    }
 }
 
 impl fmt::Display for TransactionStatus {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }
 
 pub trait AbsTransaction {
     fn height(&self) -> Height {
-        let mut  height: Height = Uint64::default();
+        let mut height: Height = Uint64::default();
         if let Some(h) = self.abs_transaction().transaction_info {
             height = h.height
         };
@@ -124,16 +140,22 @@ pub trait AbsTransaction {
 
     fn abs_transaction(&self) -> AbstractTransaction;
 
-    fn entity_type(&self) -> EntityTypeEnum { self.abs_transaction().transaction_type }
+    fn entity_type(&self) -> EntityTypeEnum {
+        self.abs_transaction().transaction_type
+    }
 
-    fn transaction_hash(&self) -> Hash { self.abs_transaction().get_hash() }
+    fn transaction_hash(&self) -> Hash {
+        self.abs_transaction().get_hash()
+    }
 
     /// Returns `true` if this transaction has missing signatures.
     fn has_missing_signatures(&self) -> bool {
         self.abs_transaction().has_missing_signatures()
     }
 
-    fn is_unconfirmed(&self) -> bool { self.abs_transaction().is_unconfirmed() }
+    fn is_unconfirmed(&self) -> bool {
+        self.abs_transaction().is_unconfirmed()
+    }
 
     fn is_confirmed(&self) -> bool {
         self.abs_transaction().is_confirmed()
@@ -141,8 +163,8 @@ pub trait AbsTransaction {
 }
 
 pub trait Transaction
-    where
-        Self: fmt::Debug + AbsTransaction + Downcast + Sync + erased_serde::Serialize
+where
+    Self: fmt::Debug + AbsTransaction + Downcast + Sync + erased_serde::Serialize,
 {
     fn size(&self) -> usize;
 
@@ -151,7 +173,11 @@ pub trait Transaction
 
     /// Serialize and sign [Transaction] with the given [Account] and network generationHash and
     /// create a new signed_transaction.
-    fn sign_transaction_with(self, account: Account, generation_hash: String) -> crate::Result<SignedTransaction>;
+    fn sign_transaction_with(
+        self,
+        account: Account,
+        generation_hash: String,
+    ) -> crate::Result<SignedTransaction>;
 
     /// An abstract method to generate the embedded transaction bytes.
     fn embedded_to_bytes(&self) -> crate::Result<Vec<u8>>;
@@ -178,8 +204,10 @@ impl<'a> PartialEq for &'a dyn Transaction {
 
 impl fmt::Display for dyn Transaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }

@@ -2,8 +2,7 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use num_enum::IntoPrimitive;
-use serde::Serialize;
+use {num_enum::IntoPrimitive, serde::Serialize};
 
 pub(crate) type EntityVersion = u32;
 
@@ -118,14 +117,13 @@ impl From<u16> for EntityTypeEnum {
             0x8043 => EntityTypeEnum::NemesisBlock,
             0x8143 => EntityTypeEnum::Block,
 
-            _ => EntityTypeEnum::EntityTypeUnknown
+            _ => EntityTypeEnum::EntityTypeUnknown,
         }
     }
 }
 
 impl core::fmt::Display for EntityTypeEnum {
-    fn fmt(&self, e: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-    {
+    fn fmt(&self, e: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(e, "{}", self.value())
     }
 }
@@ -163,4 +161,3 @@ pub(crate) const REGISTER_NAMESPACE_VERSION: EntityVersion = 2;
 //pub(crate) const SECRET_PROOF_VERSION: EntityVersion = 1;
 //pub(crate) const START_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
 pub(crate) const TRANSFER_VERSION: EntityVersion = 3;
-

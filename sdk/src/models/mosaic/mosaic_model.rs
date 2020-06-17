@@ -2,16 +2,17 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::core::fmt;
+use {::std::fmt, num_enum::IntoPrimitive};
 
-use num_enum::IntoPrimitive;
+use crate::models::{
+    asset_id_model::AssetId, errors_const::ERR_INVALID_MOSAIC_PROPERTY_ID,
+    mosaic::internally::PRX_XPX_U64, Uint64,
+};
 
-use crate::models::{asset_id_model::AssetId, Uint64};
-use crate::models::errors_const::ERR_INVALID_MOSAIC_PROPERTY_ID;
-use crate::models::mosaic::internally::PRX_XPX_U64;
-
-use super::internally::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE};
-use super::MosaicId;
+use super::{
+    internally::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE},
+    MosaicId,
+};
 
 pub const SUPPLY_MUTABLE: u8 = 0x01;
 pub const TRANSFERABLE: u8 = 0x02;

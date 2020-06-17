@@ -2,24 +2,27 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::any::Any;
-use std::fmt;
-
-use serde_json::Value;
-
-use crate::models::{
-    account::{Account, Address, PublicAccount},
-    alias::AliasActionType,
-    asset_id_model::AssetId,
-    consts::ADDRESS_SIZE,
-    errors_const,
-    namespace::NamespaceId,
-    network::NetworkType,
+use {
+    serde_json::Value,
+    std::{any::Any, fmt},
 };
-use crate::Result;
 
-use super::{AbstractTransaction, AbsTransaction, ADDRESS_ALIAS_VERSION, AliasTransaction,
-            Deadline, EntityTypeEnum, sign_transaction, SignedTransaction, Transaction,
+use crate::{
+    models::{
+        account::{Account, Address, PublicAccount},
+        alias::AliasActionType,
+        asset_id_model::AssetId,
+        consts::ADDRESS_SIZE,
+        errors_const,
+        namespace::NamespaceId,
+        network::NetworkType,
+    },
+    Result,
+};
+
+use super::{
+    sign_transaction, AbsTransaction, AbstractTransaction, AliasTransaction, Deadline,
+    EntityTypeEnum, SignedTransaction, Transaction, ADDRESS_ALIAS_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -30,18 +33,22 @@ pub struct AddressAliasTransaction {
 }
 
 impl AddressAliasTransaction {
-    pub fn new(deadline: Deadline, address: Address, namespace_id: NamespaceId,
-               action_type: AliasActionType, network_type: NetworkType) -> Result<Self>
-    {
+    pub fn new(
+        deadline: Deadline,
+        address: Address,
+        namespace_id: NamespaceId,
+        action_type: AliasActionType,
+        network_type: NetworkType,
+    ) -> Result<Self> {
         ensure!(
             !address.address.is_empty(),
             errors_const::ERR_EMPTY_ADDRESSES
-         );
+        );
 
         ensure!(
             !namespace_id.is_empty(),
             errors_const::ERR_EMPTY_NAMESPACE_ID
-         );
+        );
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
@@ -76,8 +83,11 @@ impl Transaction for AddressAliasTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> Result<SignedTransaction> {
+    fn sign_transaction_with(
+        self,
+        account: Account,
+        generation_hash: String,
+    ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
@@ -90,7 +100,8 @@ impl Transaction for AddressAliasTransaction {
 
         let address_vector = builder.create_vector_direct(&address_bytes);
 
-        self.alias_transaction.embedded_to_bytes(&mut builder, address_vector, ADDRESS_SIZE)
+        self.alias_transaction
+            .embedded_to_bytes(&mut builder, address_vector, ADDRESS_SIZE)
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -108,8 +119,10 @@ impl Transaction for AddressAliasTransaction {
 
 impl fmt::Display for AddressAliasTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }

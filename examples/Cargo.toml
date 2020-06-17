@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-examples"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
 
 homepage = "https://www.proximax.io"
@@ -13,7 +13,7 @@ edition = "2018"
 publish = false
 
 [dependencies]
-xpx-chain-apis = { path = "../apis", version = "0.1" }
+xpx-chain-api = { path = "../api", version = "0.1" }
 xpx-chain-crypto = { path = "../crypto", version = "0.1" }
 xpx-chain-sdk = { path = "../sdk", version = "0.1" }
 xpx-chain-websocket = { path = "../websocket", version = "0.1" }
@@ -46,91 +46,91 @@ path = "sdk/mosaics.rs"
 
 [[example]]
 name = "api_account"
-path = "apis/api_account.rs"
+path = "api/api_account.rs"
 
 [[example]]
 name = "api_block"
-path = "apis/api_block.rs"
+path = "api/api_block.rs"
 
 [[example]]
 name = "api_chain"
-path = "apis/api_chain.rs"
+path = "api/api_chain.rs"
 
 [[example]]
 name = "api_exchange"
-path = "apis/api_exchange.rs"
+path = "api/api_exchange.rs"
 
 [[example]]
 name = "api_mosaic"
-path = "apis/api_mosaic.rs"
+path = "api/api_mosaic.rs"
 
 [[example]]
 name = "api_namespace"
-path = "apis/api_namespace.rs"
+path = "api/api_namespace.rs"
 
 [[example]]
 name = "api_node"
-path = "apis/api_node.rs"
+path = "api/api_node.rs"
 
 [[example]]
 name = "api_transactions"
-path = "apis/api_transactions.rs"
+path = "api/api_transactions.rs"
 
 [[example]]
 name = "annunce_add_exchange_offer"
-path = "apis/annunce/add_exchange_offer.rs"
+path = "api/annunce/add_exchange_offer.rs"
 
 [[example]]
 name = "annunce_address_alias"
-path = "apis/annunce/address_alias.rs"
+path = "api/annunce/address_alias.rs"
 
 [[example]]
 name = "annunce_aggregate_bonded"
-path = "apis/annunce/aggregate_bonded.rs"
+path = "api/annunce/aggregate_bonded.rs"
 
 [[example]]
 name = "annunce_aggregate_complete"
-path = "apis/annunce/aggregate_complete.rs"
+path = "api/annunce/aggregate_complete.rs"
 
 [[example]]
 name = "annunce_cosignature"
-path = "apis/annunce/cosignature.rs"
+path = "api/annunce/cosignature.rs"
 
 [[example]]
 name = "annunce_create_mosaic_aggregate_complete"
-path = "apis/annunce/create_mosaic_aggregate_complete.rs"
+path = "api/annunce/create_mosaic_aggregate_complete.rs"
 
 [[example]]
 name = "annunce_lock_funds"
-path = "apis/annunce/lock_funds.rs"
+path = "api/annunce/lock_funds.rs"
 
 [[example]]
 name = "annunce_modify_multisig_account_bonded"
-path = "apis/annunce/modify_multisig_account_bonded.rs"
+path = "api/annunce/modify_multisig_account_bonded.rs"
 
 [[example]]
 name = "annunce_modify_multisig_account_complete"
-path = "apis/annunce/modify_multisig_account_complete.rs"
+path = "api/annunce/modify_multisig_account_complete.rs"
 
 [[example]]
 name = "annunce_mosaic_alias"
-path = "apis/annunce/mosaic_alias.rs"
+path = "api/annunce/mosaic_alias.rs"
 
 [[example]]
 name = "annunce_mosaic_definition"
-path = "apis/annunce/mosaic_definition.rs"
+path = "api/annunce/mosaic_definition.rs"
 
 [[example]]
 name = "annunce_mosaic_supply_change"
-path = "apis/annunce/mosaic_supply_change.rs"
+path = "api/annunce/mosaic_supply_change.rs"
 
 [[example]]
 name = "annunce_register_namespace"
-path = "apis/annunce/register_namespace.rs"
+path = "api/annunce/register_namespace.rs"
 
 [[example]]
 name = "annunce_transfer"
-path = "apis/annunce/transfer.rs"
+path = "api/annunce/transfer.rs"
 
 [[example]]
 name = "websocket"

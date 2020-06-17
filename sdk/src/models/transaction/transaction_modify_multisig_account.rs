@@ -2,24 +2,24 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::any::Any;
+use {::std::any::Any, serde_json::Value};
 
-use serde_json::Value;
-
-use crate::models::{
-    account::{Account, PublicAccount},
-    consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE},
-    errors_const::ERR_EMPTY_MODIFICATIONS,
-    multisig::CosignatoryModification,
-    network::NetworkType,
+use crate::{
+    models::{
+        account::{Account, PublicAccount},
+        consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE},
+        errors_const::ERR_EMPTY_MODIFICATIONS,
+        multisig::CosignatoryModification,
+        network::NetworkType,
+    },
+    Result,
 };
-use crate::Result;
 
 use super::{
-    AbstractTransaction, AbsTransaction, buffer::modify_multisig_account::buffers,
-    cosignatory_modification_array_to_buffer, Deadline, EntityTypeEnum, MODIFY_MULTISIG_VERSION,
-    schema::modify_multisig_account_transaction_schema, sign_transaction, SignedTransaction,
-    Transaction,
+    buffer::modify_multisig_account::buffers, cosignatory_modification_array_to_buffer,
+    schema::modify_multisig_account_transaction_schema, sign_transaction, AbsTransaction,
+    AbstractTransaction, Deadline, EntityTypeEnum, SignedTransaction, Transaction,
+    MODIFY_MULTISIG_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -32,17 +32,16 @@ pub struct ModifyMultisigAccountTransaction {
 }
 
 impl ModifyMultisigAccountTransaction {
-    pub fn new(deadline: Deadline,
-               min_approval_delta: i8,
-               min_removal_delta: i8,
-               modifications: Vec<CosignatoryModification>,
-               network_type: NetworkType,
+    pub fn new(
+        deadline: Deadline,
+        min_approval_delta: i8,
+        min_removal_delta: i8,
+        modifications: Vec<CosignatoryModification>,
+        network_type: NetworkType,
     ) -> Result<Self> {
         ensure!(
-        modifications.len() != 0 &&
-        min_approval_delta != 0 &&
-        min_removal_delta != 0,
-        ERR_EMPTY_MODIFICATIONS
+            modifications.len() != 0 && min_approval_delta != 0 && min_removal_delta != 0,
+            ERR_EMPTY_MODIFICATIONS
         );
 
         let abs_tx = AbstractTransaction {
@@ -56,7 +55,12 @@ impl ModifyMultisigAccountTransaction {
             deadline: Some(deadline),
         };
 
-        Ok(Self { abs_transaction: abs_tx, min_removal_delta, min_approval_delta, modifications })
+        Ok(Self {
+            abs_transaction: abs_tx,
+            min_removal_delta,
+            min_approval_delta,
+            modifications,
+        })
     }
 }
 
@@ -75,8 +79,11 @@ impl Transaction for ModifyMultisigAccountTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> Result<SignedTransaction> {
+    fn sign_transaction_with(
+        self,
+        account: Account,
+        generation_hash: String,
+    ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
@@ -87,8 +94,8 @@ impl Transaction for ModifyMultisigAccountTransaction {
 
         let modifications = self.clone().modifications;
 
-        let modification_vector = cosignatory_modification_array_to_buffer(
-            &mut _builder, modifications);
+        let modification_vector =
+            cosignatory_modification_array_to_buffer(&mut _builder, modifications);
 
         let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
@@ -131,7 +138,8 @@ impl Transaction for ModifyMultisigAccountTransaction {
 impl core::fmt::Display for ModifyMultisigAccountTransaction {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
-            f, "{}",
+            f,
+            "{}",
             serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }

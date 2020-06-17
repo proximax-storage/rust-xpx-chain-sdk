@@ -4,14 +4,12 @@
 
 use ::core::fmt;
 
-use crate::models::mosaic::MosaicId;
-use crate::models::namespace::NamespaceId;
-use crate::models::Uint64;
+use crate::models::{mosaic::MosaicId, namespace::NamespaceId, Uint64};
 
 /// An `trait` identifier used to define mosaic_id and namespace_id.
 pub trait AssetId: Send + Sync + erased_serde::Serialize
-    where
-        Self: fmt::Debug,
+where
+    Self: fmt::Debug,
 {
     fn to_uint64(&self) -> Uint64;
 

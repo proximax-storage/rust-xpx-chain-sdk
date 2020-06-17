@@ -67,11 +67,10 @@ impl AbstractTransaction {
     pub(crate) fn get_hash(&self) -> Hash {
         match self.transaction_info.to_owned() {
             Some(h) => {
-                let hash = match h.hash {
+                match h.hash {
                     Some(hs) => hs,
                     _ => "".to_string(),
-                };
-                hash
+                }
             }
             _ => "".to_string(),
         }
@@ -95,37 +94,37 @@ impl AbstractTransaction {
         }
     }
 
-    pub(crate) fn is_unconfirmed(&self) -> bool {
-        return if let Some(tx_info) = &self.transaction_info {
-            tx_info.height.0.to_owned() == 0
+    pub fn is_unconfirmed(&self) -> bool {
+        if let Some(tx_info) = &self.transaction_info {
+            tx_info.height.0 == 0
                 && tx_info.hash.eq(&tx_info.merkle_component_hash)
         } else {
             false
-        };
+        }
     }
 
-    pub(crate) fn is_confirmed(&self) -> bool {
-        return if let Some(tx_info) = &self.transaction_info {
+    pub fn is_confirmed(&self) -> bool {
+        if let Some(tx_info) = &self.transaction_info {
             tx_info.height.0 > 0
         } else {
             false
-        };
+        }
     }
 
-    pub(crate) fn has_missing_signatures(&self) -> bool {
-        return if let Some(tx_info) = &self.transaction_info {
+    pub fn has_missing_signatures(&self) -> bool {
+        if let Some(tx_info) = &self.transaction_info {
             tx_info.height.0 == 0 && tx_info.hash.eq(&tx_info.merkle_component_hash)
         } else {
             false
-        };
+        }
     }
 
-    pub(crate) fn is_unannounced(&self) -> bool {
-        return if let Some(tx_info) = &self.transaction_info {
+    pub fn is_unannounced(&self) -> bool {
+        if let Some(tx_info) = &self.transaction_info {
             tx_info.hash.is_some() || tx_info.agregate_hash.is_some()
         } else {
             false
-        };
+        }
     }
 
     pub(crate) fn to_aggregate(&mut self, signer: PublicAccount) {

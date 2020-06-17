@@ -22,29 +22,29 @@ pub trait WsSubscribeDto {
     fn name(&self) -> &str;
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub(crate) struct SubscribeDto {
     pub uid: String,
     pub subscribe: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub(crate) struct UnsubscribeDto {
     pub uid: String,
     pub unsubscribe: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct WsConnectionResponse {
-    pub uid: String
+    pub uid: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct WsMessageInfoDTO {
-    meta: WsMessageInfoMetaDto
+    meta: WsMessageInfoMetaDto,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WsMessageInfoMetaDto {
     channel_name: String,

@@ -2,27 +2,28 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::any::Any;
-use std::fmt;
-
-use serde_json::Value;
-
-use crate::models::{
-    account::{Account, PublicAccount},
-    alias::AliasActionType,
-    asset_id_model::AssetId,
-    consts::MOSAIC_ID_SIZE,
-    errors_const,
-    mosaic::MosaicId,
-    namespace::NamespaceId,
-    network::NetworkType,
+use {
+    serde_json::Value,
+    std::{any::Any, fmt},
 };
-use crate::Result;
+
+use crate::{
+    models::{
+        account::{Account, PublicAccount},
+        alias::AliasActionType,
+        asset_id_model::AssetId,
+        consts::MOSAIC_ID_SIZE,
+        errors_const,
+        mosaic::MosaicId,
+        namespace::NamespaceId,
+        network::NetworkType,
+    },
+    Result,
+};
 
 use super::{
-    AbstractTransaction, AbsTransaction, AliasTransaction,
-    Deadline, EntityTypeEnum, MOSAIC_ALIAS_VERSION, sign_transaction,
-    SignedTransaction, Transaction,
+    sign_transaction, AbsTransaction, AbstractTransaction, AliasTransaction, Deadline,
+    EntityTypeEnum, SignedTransaction, Transaction, MOSAIC_ALIAS_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -33,18 +34,19 @@ pub struct MosaicAliasTransaction {
 }
 
 impl MosaicAliasTransaction {
-    pub fn new(deadline: Deadline, mosaic_id: MosaicId, namespace_id: NamespaceId,
-               action_type: AliasActionType, network_type: NetworkType) -> Result<Self>
-    {
-        ensure!(
-            !mosaic_id.is_empty(),
-            errors_const::ERR_EMPTY_MOSAIC_ID
-         );
+    pub fn new(
+        deadline: Deadline,
+        mosaic_id: MosaicId,
+        namespace_id: NamespaceId,
+        action_type: AliasActionType,
+        network_type: NetworkType,
+    ) -> Result<Self> {
+        ensure!(!mosaic_id.is_empty(), errors_const::ERR_EMPTY_MOSAIC_ID);
 
         ensure!(
             !namespace_id.is_empty(),
             errors_const::ERR_EMPTY_NAMESPACE_ID
-         );
+        );
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
@@ -79,8 +81,11 @@ impl Transaction for MosaicAliasTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> Result<SignedTransaction> {
+    fn sign_transaction_with(
+        self,
+        account: Account,
+        generation_hash: String,
+    ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
@@ -93,7 +98,8 @@ impl Transaction for MosaicAliasTransaction {
 
         let mosaic_vector = builder.create_vector_direct(&mosaic_bytes);
 
-        self.alias_transaction.embedded_to_bytes(&mut builder, mosaic_vector, MOSAIC_ID_SIZE)
+        self.alias_transaction
+            .embedded_to_bytes(&mut builder, mosaic_vector, MOSAIC_ID_SIZE)
     }
 
     fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -111,8 +117,10 @@ impl Transaction for MosaicAliasTransaction {
 
 impl fmt::Display for MosaicAliasTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }

@@ -2,33 +2,25 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::fmt;
+use {::std::fmt, failure::_core::any::Any, serde_json::Value};
 
-use failure::_core::any::Any;
-use serde_json::Value;
-
-use crate::models::{
-    account::{Account, PublicAccount},
-    asset_id_model::AssetId,
-    consts::REGISTER_NAMESPACE_HEADER_SIZE,
-    errors_const,
-    namespace::{generate_namespace_id, NamespaceId, NamespaceType},
-    network::NetworkType,
-    uint_64::Uint64,
+use crate::{
+    models::{
+        account::{Account, PublicAccount},
+        asset_id_model::AssetId,
+        consts::REGISTER_NAMESPACE_HEADER_SIZE,
+        errors_const,
+        namespace::{generate_namespace_id, NamespaceId, NamespaceType},
+        network::NetworkType,
+        uint_64::Uint64,
+    },
+    Result,
 };
-use crate::Result;
 
 use super::{
-    AbstractTransaction,
-    AbsTransaction,
-    buffer::register_namespace::buffers,
-    Deadline,
-    EntityTypeEnum,
-    internal::sign_transaction,
-    REGISTER_NAMESPACE_VERSION,
-    schema::register_namespace_transaction_schema,
-    SignedTransaction,
-    Transaction,
+    buffer::register_namespace::buffers, internal::sign_transaction,
+    schema::register_namespace_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
+    EntityTypeEnum, SignedTransaction, Transaction, REGISTER_NAMESPACE_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -52,7 +44,7 @@ impl RegisterNamespaceTransaction {
         network_type: NetworkType,
     ) -> Result<RegisterNamespaceTransaction> {
         ensure!(
-            namespace_name.len() != 0 && namespace_name.len() <= 16 ,
+            namespace_name.len() != 0 && namespace_name.len() <= 16,
             errors_const::ERR_INVALID_NAMESPACE_NAME
         );
 
@@ -60,7 +52,8 @@ impl RegisterNamespaceTransaction {
             deadline,
             REGISTER_NAMESPACE_VERSION,
             EntityTypeEnum::NamespaceRegistration,
-            network_type);
+            network_type,
+        );
 
         let namespace_id = NamespaceId::from_name(namespace_name)?;
 
@@ -81,7 +74,7 @@ impl RegisterNamespaceTransaction {
         network_type: NetworkType,
     ) -> Result<Self> {
         ensure!(
-            namespace_name.len() != 0 && namespace_name.len() <= 64 ,
+            namespace_name.len() != 0 && namespace_name.len() <= 64,
             errors_const::ERR_INVALID_NAMESPACE_NAME
         );
 
@@ -94,7 +87,8 @@ impl RegisterNamespaceTransaction {
             deadline,
             REGISTER_NAMESPACE_VERSION,
             EntityTypeEnum::NamespaceRegistration,
-            network_type);
+            network_type,
+        );
 
         let namespace_id = generate_namespace_id(namespace_name, parent_id)?;
 
@@ -124,8 +118,11 @@ impl Transaction for RegisterNamespaceTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> Result<SignedTransaction> {
+    fn sign_transaction_with(
+        self,
+        account: Account,
+        generation_hash: String,
+    ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
@@ -147,8 +144,7 @@ impl Transaction for RegisterNamespaceTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut builder);
 
-        let mut txn_builder =
-            buffers::RegisterNamespaceTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder = buffers::RegisterNamespaceTransactionBufferBuilder::new(&mut builder);
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
@@ -186,8 +182,10 @@ impl Transaction for RegisterNamespaceTransaction {
 
 impl fmt::Display for RegisterNamespaceTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }

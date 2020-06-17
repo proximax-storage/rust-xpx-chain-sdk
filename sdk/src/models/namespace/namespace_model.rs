@@ -4,10 +4,12 @@
 
 use std::fmt;
 
-use crate::models::account::{Address, PublicAccount};
-use crate::models::mosaic::MosaicId;
-use crate::models::namespace::NamespaceId;
-use crate::models::transaction::Height;
+use crate::models::{
+    account::{Address, PublicAccount},
+    mosaic::MosaicId,
+    namespace::NamespaceId,
+    transaction::Height,
+};
 
 /// NamespaceTypeEnum :
 /// The namespace type:

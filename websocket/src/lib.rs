@@ -14,11 +14,11 @@ extern crate xpx_chain_sdk as sdk;
 pub use self::block::*;
 pub use self::client::*;
 pub use self::confirmed::*;
+pub use self::cosignature::*;
 pub use self::error::Result;
 pub use self::partial::*;
 pub use self::status::*;
 pub use self::unconfirmed::*;
-pub use self::cosignature::*;
 
 mod client;
 mod block;

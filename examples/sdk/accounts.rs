@@ -2,36 +2,19 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-#![deny(warnings)]
-#![warn(rust_2018_idioms)]
+
 
 use xpx_chain_sdk::account::{Account, Address, PublicAccount};
 use xpx_chain_sdk::network::PUBLIC_TEST;
 
 fn main() {
     let network_type = PUBLIC_TEST;
-
-    let private_key = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
-
-    let account_one = Address::from_raw("XBSDJJ5Y5NY7CFN6KCUFW7572K4R57JPV7DEOXI7").unwrap();
-    println!("New Account From PrivateKey: {}\n", account_one);
-
+    
+    let private_key = "461CE489BF9588BE3B9670B5CB19C8936946DBE8DC29CF06338133DEE64FC49B";
+    
+    // let account_one = Address::from_raw("XBSDJJ5Y5NY7CFN6KCUFW7572K4R57JPV7DEOXI7").unwrap();
+    // println!("New Address From PrivateKey: {}\n", account_one);
+    
     let account_two = Account::from_private_key(private_key, network_type).unwrap();
-    println!("Account From PrivateKey: {}\n", account_two.key_pair.);
-
-    let public_key = "c6075f6bf21434010aec83d033cf51cd4ce58ed3bb89fea3e91af7004e2bdb61";
-
-    let public_account = PublicAccount::from_public_key(public_key, network_type).unwrap();
-    println!("PublicAccount From Public: {}\n", public_account);
-
-    let address = Address::from_public_key(public_key, network_type).unwrap();
-    println!("Address From PublicKey: {}\n", address);
-
-    let message = "ProximaX Limited";
-
-    let sig = account_two.sign_data(message.as_ref());
-    println!("Sig From PrivateKey: {}\n", sig);
-
-    let verify_sign = public_account.verify_sign(message, &sig);
-    println!("Verify_sign From PublicKey: {:?}\n", verify_sign);
+    println!("Account From PrivateKey: {}\n", account_two);
 }

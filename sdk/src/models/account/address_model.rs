@@ -4,11 +4,15 @@
 
 use ::base32::Alphabet::RFC4648;
 
-use crate::models::consts::{ADDRESS_DECODE_SIZE, ADDRESS_ENCODE_SIZE};
-use crate::models::errors_const;
-use crate::models::network::*;
-use crate::Result;
-use crate::utils::is_hex;
+use crate::{
+    models::{
+        consts::{ADDRESS_DECODE_SIZE, ADDRESS_ENCODE_SIZE},
+        errors_const,
+        network::*,
+    },
+    utils::is_hex,
+    Result,
+};
 
 const PREFIX_MIJIN: char = 'M';
 const PREFIX_MIJIN_TEST: char = 'S';
@@ -125,7 +129,7 @@ impl Address {
         }
 
         res += &self.address[&self.address.len() - 4..];
-        return res;
+        res
     }
 
     pub fn is_empty(&self) -> bool {
@@ -137,7 +141,7 @@ impl Address {
         base32::decode(RFC4648 { padding: true }, &self.address).unwrap()
     }
 
-    pub fn to_string(&self) -> String {
+    pub fn address_string(&self) -> String {
         self.address.to_uppercase()
     }
 }

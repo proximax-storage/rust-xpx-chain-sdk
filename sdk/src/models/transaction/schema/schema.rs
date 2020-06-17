@@ -2,12 +2,12 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::rc::Rc;
+use ::std::rc::Rc;
 
 use super::SchemaAttribute;
 
 pub struct Schema {
-    pub definition: Vec<Box<dyn SchemaAttribute>>
+    pub definition: Vec<Box<dyn SchemaAttribute>>,
 }
 
 impl Schema {
@@ -19,9 +19,8 @@ impl Schema {
         let mut result_bytes: Vec<u8> = Vec::new();
 
         for i in 0..self.definition.len() {
-            let temp: &Vec<u8> = &self.definition[i].serialize(
-                buffer, 4 + (i * 2), buffer[0] as usize,
-            );
+            let temp: &Vec<u8> =
+                &self.definition[i].serialize(buffer, 4 + (i * 2), buffer[0] as usize);
 
             let temp = Rc::new(temp);
             result_bytes.append(&mut temp.to_vec());

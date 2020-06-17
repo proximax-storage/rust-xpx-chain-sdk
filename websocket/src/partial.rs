@@ -2,7 +2,7 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use crate::Handler;
+use crate::{Handler, WsUnconfirmedMetaDto};
 
 pub struct HandlerPartialAdd {
     pub handler: Box<dyn Fn(sdk::transaction::AggregateTransaction) -> bool + Send>
@@ -13,35 +13,12 @@ impl Handler for HandlerPartialAdd {}
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WsPartialRemoveDto {
-    meta: WsPartialRemoveMetaDto
+    meta: WsUnconfirmedMetaDto
 }
 
 impl WsPartialRemoveDto {
     pub fn compact(&self) -> sdk::transaction::TransactionInfo {
         self.meta.compact()
-    }
-}
-
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct WsPartialRemoveMetaDto {
-    hash: String,
-    pub channel_name: String,
-    address: String,
-}
-
-impl WsPartialRemoveMetaDto {
-    pub fn compact(&self) -> sdk::transaction::TransactionInfo {
-        sdk::transaction::TransactionInfo {
-            height: sdk::Uint64::default(),
-            index: 0,
-            id: String::new(),
-            hash: Some(self.hash.to_owned()),
-            merkle_component_hash: None,
-            agregate_hash: None,
-            aggregate_id: None,
-            unique_aggregate_hash: None,
-        }
     }
 }
 

@@ -2,9 +2,10 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use sha3::{Digest, Sha3_256};
-
-use utils::array_u8_to_u64;
+use {
+    sha3::{Digest, Sha3_256},
+    utils::array_u8_to_u64,
+};
 
 use crate::models::{account::PublicAccount, namespace::NAMESPACE_BIT, Uint64};
 

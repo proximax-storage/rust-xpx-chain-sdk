@@ -2,31 +2,26 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::fmt;
+use {::std::fmt, failure::_core::any::Any, serde_json::Value};
 
-use failure::_core::any::Any;
-use serde_json::Value;
-
-use crate::models::{
-    account::{Account, PublicAccount},
-    asset_id_model::AssetId,
-    consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE},
-    mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
-    network::NetworkType,
+use crate::{
+    models::{
+        account::{Account, PublicAccount},
+        asset_id_model::AssetId,
+        consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE},
+        mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
+        network::NetworkType,
+    },
+    Result,
 };
-use crate::Result;
 
 use super::{
-    AbstractTransaction,
-    AbsTransaction,
     buffer::mosaic_definition::buffers,
     deadline::Deadline,
-    EntityTypeEnum,
     internal::{mosaic_property_array_to_buffer, sign_transaction},
-    MOSAIC_DEFINITION_VERSION,
     schema::mosaic_definition_transaction_schema,
-    SignedTransaction,
-    Transaction,
+    AbsTransaction, AbstractTransaction, EntityTypeEnum, SignedTransaction, Transaction,
+    MOSAIC_DEFINITION_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -53,12 +48,14 @@ impl MosaicDefinitionTransaction {
             network_type,
         );
 
-        let mosaic_id = MosaicId::from_nonce_and_owner(
-            nonce.clone(),
-            owner_public_account,
-        );
+        let mosaic_id = MosaicId::from_nonce_and_owner(nonce.clone(), owner_public_account);
 
-        Ok(Self { abs_transaction: abs_tx, properties, mosaic_nonce: nonce, mosaic_id })
+        Ok(Self {
+            abs_transaction: abs_tx,
+            properties,
+            mosaic_nonce: nonce,
+            mosaic_id,
+        })
     }
 }
 
@@ -78,8 +75,11 @@ impl Transaction for MosaicDefinitionTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> Result<SignedTransaction> {
+    fn sign_transaction_with(
+        self,
+        account: Account,
+        generation_hash: String,
+    ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
@@ -99,13 +99,13 @@ impl Transaction for MosaicDefinitionTransaction {
 
         let mosaic_vec = builder.create_vector(&self.mosaic_id.to_u32_array());
         let property_vec = mosaic_property_array_to_buffer(
-            &mut builder, self.properties.clone().optional_properties,
+            &mut builder,
+            self.properties.clone().optional_properties,
         );
 
         let abs_vector = self.abs_transaction.build_vector(&mut builder);
 
-        let mut txn_builder =
-            buffers::MosaicDefinitionTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder = buffers::MosaicDefinitionTransactionBufferBuilder::new(&mut builder);
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
@@ -143,8 +143,10 @@ impl Transaction for MosaicDefinitionTransaction {
 
 impl fmt::Display for MosaicDefinitionTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }

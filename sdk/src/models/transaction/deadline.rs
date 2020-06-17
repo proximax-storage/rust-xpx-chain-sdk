@@ -2,12 +2,15 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::ops::Add;
-use ::std::time::{Duration, SystemTime, UNIX_EPOCH};
-
-use chrono::{Local, Timelike, NaiveTime};
-use chrono::prelude::DateTime;
-use serde::{Serialize, Serializer};
+use {
+    ::std::{
+        ops::Add,
+        time::{Duration, SystemTime, UNIX_EPOCH},
+    },
+    chrono::prelude::DateTime,
+    chrono::{Local, NaiveTime, Timelike},
+    serde::{Serialize, Serializer},
+};
 
 use crate::models::Uint64;
 
@@ -37,7 +40,6 @@ impl BlockchainTimestamp {
 pub struct Timestamp(SystemTime);
 
 impl Timestamp {
-
     /// returns new timestamp from passed milliseconds value
     pub fn new(milliseconds: i64) -> Self {
         // Creates a new SystemTime from the specified number of whole seconds
@@ -45,13 +47,14 @@ impl Timestamp {
     }
 
     pub fn to_blockchain_timestamp(&self) -> BlockchainTimestamp {
-        BlockchainTimestamp((self.0.duration_since(
-            UNIX_EPOCH).unwrap().as_nanos() / MILLISECONDS as u128) as i64
-            - TIMESTAMP_NEMESIS_BLOCK_MILLISECONDS)
+        BlockchainTimestamp(
+            (self.0.duration_since(UNIX_EPOCH).unwrap().as_nanos() / MILLISECONDS as u128) as i64
+                - TIMESTAMP_NEMESIS_BLOCK_MILLISECONDS,
+        )
     }
 
     pub fn to_date_time(&self) -> DateTime<Local> {
-         DateTime::<Local>::from(self.0)
+        DateTime::<Local>::from(self.0)
     }
 
     pub fn to_hour(&self) -> u32 {
@@ -70,13 +73,11 @@ impl Timestamp {
 impl core::fmt::Display for Timestamp {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         let datetime = DateTime::<Local>::from(self.0);
-        write!(
-            f, "{}", datetime.format("%Y-%m-%d %H:%M:%S %Z").to_string()
-        )
+        write!(f, "{}", datetime.format("%Y-%m-%d %H:%M:%S %Z").to_string())
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]// we derive Default in order to use the clear() method in Drop
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)] // we derive Default in order to use the clear() method in Drop
 pub struct Deadline(Timestamp);
 
 impl Deadline {
@@ -85,7 +86,9 @@ impl Deadline {
         let _hour: u64 = hour as u64 * 3600;
         let _minute: u64 = minute as u64 * 60;
 
-        Deadline(Timestamp(time_now.add(Duration::from_secs(_hour + _minute + second))))
+        Deadline(Timestamp(
+            time_now.add(Duration::from_secs(_hour + _minute + second)),
+        ))
     }
 
     pub fn to_blockchain_timestamp(&self) -> BlockchainTimestamp {
@@ -95,9 +98,7 @@ impl Deadline {
 
 impl core::fmt::Display for Deadline {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f, "{}", self.0
-        )
+        write!(f, "{}", self.0)
     }
 }
 
@@ -109,8 +110,8 @@ impl From<BlockchainTimestamp> for Deadline {
 
 impl Serialize for Timestamp {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         serializer.serialize_str(&format!("{}", self))
     }

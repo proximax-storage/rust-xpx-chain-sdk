@@ -3,14 +3,9 @@
 // license that can be found in the LICENSE file.
 
 use super::{
-    ArrayAttribute,
-    ScalarAttribute,
-    Schema,
-    SchemaAttribute,
-    SIZEOF_BYTE,
-    SIZEOF_INT,
+    schema_common_definition::schema_common_definition, ArrayAttribute, ScalarAttribute, Schema,
+    SchemaAttribute, SIZEOF_BYTE, SIZEOF_INT,
 };
-use super::schema_common_definition::schema_common_definition;
 
 pub fn register_namespace_transaction_schema() -> Schema {
     let mut schema_definition = schema_common_definition();

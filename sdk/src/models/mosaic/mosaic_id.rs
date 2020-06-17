@@ -2,11 +2,11 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::core::fmt;
-
-use serde::{Serialize, Serializer};
-
-use utils::is_hex;
+use {
+    ::std::fmt,
+    serde::{Serialize, Serializer},
+    utils::is_hex,
+};
 
 use crate::models::{account::PublicAccount, asset_id_model::AssetId, Uint64};
 
@@ -61,8 +61,8 @@ impl fmt::Display for MosaicId {
 
 impl Serialize for MosaicId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         serializer.serialize_str(&self.to_hex())
     }
