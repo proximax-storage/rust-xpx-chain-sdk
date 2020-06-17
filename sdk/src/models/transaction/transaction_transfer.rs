@@ -2,24 +2,23 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::fmt;
+use {::std::fmt, failure::_core::any::Any, serde_json::Value};
 
-use failure::_core::any::Any;
-use serde_json::Value;
-
-use crate::models::{
-    account::{Account, Address, PublicAccount},
-    consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
-    errors,
-    message::Message,
-    mosaic::Mosaic,
-    network::NetworkType,
+use crate::{
+    models::{
+        account::{Account, Address, PublicAccount},
+        consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
+        errors_const,
+        message::Message,
+        mosaic::Mosaic,
+        network::NetworkType,
+    },
+    Result,
 };
-use crate::Result;
 
 use super::{
-    AbstractTransaction, AbsTransaction, buffer::transfer::buffers,
-    deadline::Deadline, EntityTypeEnum, internal::sign_transaction, schema::transfer_transaction_schema,
+    buffer::transfer::buffers, deadline::Deadline, internal::sign_transaction,
+    schema::transfer_transaction_schema, AbsTransaction, AbstractTransaction, EntityTypeEnum,
     SignedTransaction, Transaction, TRANSFER_VERSION,
 };
 
@@ -45,7 +44,10 @@ impl TransferTransaction {
         message: impl Message + 'static,
         network_type: NetworkType,
     ) -> Result<Self> {
-        ensure!(!recipient.address.is_empty(), errors::ERR_EMPTY_ADDRESSES);
+        ensure!(
+            !recipient.address.is_empty(),
+            errors_const::ERR_EMPTY_ADDRESSES
+        );
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,

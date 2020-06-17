@@ -2,8 +2,7 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use crate::models::mosaic::MosaicPropertyId;
-use crate::models::Uint64;
+use crate::models::{mosaic::MosaicPropertyId, Uint64};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MosaicProperty {
@@ -36,16 +35,20 @@ pub struct MosaicProperties {
 }
 
 impl MosaicProperties {
-    pub fn new(supply_mutable: bool, transferable: bool, divisibility: u8, duration: Uint64)
-               -> crate::Result<Self> {
-        ensure!(
-            !0 > divisibility,
-            "Divisibility must not be negative."
-         );
+    pub fn new(
+        supply_mutable: bool,
+        transferable: bool,
+        divisibility: u8,
+        duration: Uint64,
+    ) -> crate::Result<Self> {
+        ensure!(!0 > divisibility, "Divisibility must not be negative.");
 
         let mut properties = vec![];
         if duration.0 != 0 {
-            properties.push(MosaicProperty { id: MosaicPropertyId::Duration, value: duration });
+            properties.push(MosaicProperty {
+                id: MosaicPropertyId::Duration,
+                value: duration,
+            });
         }
 
         Ok(MosaicProperties {

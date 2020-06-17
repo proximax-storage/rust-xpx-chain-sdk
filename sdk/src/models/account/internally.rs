@@ -80,15 +80,15 @@ pub(crate) fn public_key_to_address(
         concat_step_three_and_step_six.as_slice(),
     );
 
-    Ok(String::from(res))
+    Ok(res)
 }
 
-fn generate_checksum(vec: &Vec<u8>) -> Box<[u8]> {
+fn generate_checksum(input: &[u8]) -> Box<[u8]> {
     // step 1: sha3 hash of (input
-    let sha3step_three_hash = Sha3_256::digest(vec.as_slice());
+    let sha3_hash = Sha3_256::digest(input);
 
     // step 2: get the first NUM_CHECKSUM_BYTES bytes of (1)
-    let p = &sha3step_three_hash[0..4];
+    let p = &sha3_hash[0..4];
 
-    return Box::from(p.to_vec());
+    Box::from(p)
 }

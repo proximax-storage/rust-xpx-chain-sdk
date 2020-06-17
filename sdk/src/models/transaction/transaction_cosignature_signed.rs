@@ -2,13 +2,15 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::fmt;
+use {
+    serde::{Serialize, Serializer},
+    std::fmt,
+    utils::{hex_to_vec_u8, is_hex},
+};
 
-use serde::{Serialize, Serializer};
-
-use utils::{hex_to_vec_u8, is_hex};
-
-use crate::models::{consts::SIGNATURE_SIZE, errors::ERR_INVALID_DATA_LENGTH, transaction::Hash};
+use crate::models::{
+    consts::SIGNATURE_SIZE, errors_const::ERR_INVALID_DATA_LENGTH, transaction::Hash,
+};
 
 pub struct Signature(pub(crate) [u8; SIGNATURE_SIZE]);
 
@@ -63,8 +65,8 @@ impl fmt::Debug for Signature {
 
 impl Serialize for Signature {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         serializer.serialize_str(&format!("{}", self))
     }

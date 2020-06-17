@@ -3,17 +3,10 @@
 // license that can be found in the LICENSE file.
 
 use super::{
-    ArrayAttribute,
-    ScalarAttribute,
-    Schema,
-    SchemaAttribute,
-    SIZEOF_BYTE,
-    SIZEOF_INT,
-    SIZEOF_SHORT,
-    table_attribute::TableAttribute,
-    TableArrayAttribute,
+    schema_common_definition::schema_common_definition, table_attribute::TableAttribute,
+    ArrayAttribute, ScalarAttribute, Schema, SchemaAttribute, TableArrayAttribute, SIZEOF_BYTE,
+    SIZEOF_INT, SIZEOF_SHORT,
 };
-use super::schema_common_definition::schema_common_definition;
 
 pub fn transfer_transaction_schema() -> Schema {
     let mut schema_definition = schema_common_definition();
@@ -28,16 +21,14 @@ pub fn transfer_transaction_schema() -> Schema {
                 Box::new(ScalarAttribute::new("type", SIZEOF_BYTE)),
                 Box::new(ArrayAttribute::new("payload", SIZEOF_BYTE)),
             ],
-        )
-        ),
+        )),
         Box::new(TableArrayAttribute::new(
             "mosaics",
             vec![
                 Box::new(ArrayAttribute::new("id", SIZEOF_INT)),
                 Box::new(ArrayAttribute::new("amount", SIZEOF_INT)),
             ],
-        )
-        )
+        )),
     ];
 
     schema_definition.append(&mut transfer_schema_definition);

@@ -2,14 +2,14 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::collections::HashMap;
+use {num_enum::IntoPrimitive, std::collections::HashMap};
 
-use num_enum::IntoPrimitive;
-
-use crate::models::account::PublicAccount;
-use crate::models::mosaic::{Mosaic, MosaicId};
-use crate::models::transaction::Height;
-use crate::models::uint_64::Uint64;
+use crate::models::{
+    account::PublicAccount,
+    mosaic::{Mosaic, MosaicId},
+    transaction::Height,
+    uint_64::Uint64,
+};
 
 pub type OfferInfos = Vec<OfferInfo>;
 

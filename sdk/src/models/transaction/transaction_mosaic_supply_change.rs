@@ -2,32 +2,24 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::fmt;
+use {::std::fmt, failure::_core::any::Any, serde_json::Value};
 
-use failure::_core::any::Any;
-use serde_json::Value;
-
-use crate::models::{
-    account::{Account, PublicAccount},
-    asset_id_model::AssetId,
-    consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
-    mosaic::MosaicSupplyType,
-    network::NetworkType,
-    uint_64::Uint64,
+use crate::{
+    models::{
+        account::{Account, PublicAccount},
+        asset_id_model::AssetId,
+        consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
+        mosaic::MosaicSupplyType,
+        network::NetworkType,
+        uint_64::Uint64,
+    },
+    Result,
 };
-use crate::Result;
 
 use super::{
-    AbstractTransaction,
-    AbsTransaction,
-    buffer::mosaic_supply_change::buffers,
-    deadline::Deadline,
-    EntityTypeEnum,
-    internal::sign_transaction,
-    MOSAIC_SUPPLY_CHANGE_VERSION,
-    schema::mosaic_supply_change_transaction_schema,
-    SignedTransaction,
-    Transaction,
+    buffer::mosaic_supply_change::buffers, deadline::Deadline, internal::sign_transaction,
+    schema::mosaic_supply_change_transaction_schema, AbsTransaction, AbstractTransaction,
+    EntityTypeEnum, SignedTransaction, Transaction, MOSAIC_SUPPLY_CHANGE_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -56,7 +48,12 @@ impl MosaicSupplyChangeTransaction {
 
         let id = Box::new(asset_id);
 
-        Ok(Self { abs_transaction: abs_tx, supply_type, asset_id: id, delta })
+        Ok(Self {
+            abs_transaction: abs_tx,
+            supply_type,
+            asset_id: id,
+            delta,
+        })
     }
 }
 
@@ -75,8 +72,11 @@ impl Transaction for MosaicSupplyChangeTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> Result<SignedTransaction> {
+    fn sign_transaction_with(
+        self,
+        account: Account,
+        generation_hash: String,
+    ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
@@ -124,8 +124,10 @@ impl Transaction for MosaicSupplyChangeTransaction {
 
 impl fmt::Display for MosaicSupplyChangeTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }

@@ -2,14 +2,15 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use rand::rngs::OsRng;
-
-use crypto::{Keypair, SecretKey};
-use utils::{is_hex, vec_u8_to_hex};
+use {
+    crypto::{Keypair, SecretKey},
+    rand::rngs::OsRng,
+    utils::{is_hex, vec_u8_to_hex},
+};
 
 use crate::{
     models::{
-        errors,
+        errors_const,
         multisig::CosignatureTransaction,
         network::NetworkType,
         transaction::{
@@ -66,19 +67,22 @@ impl Account {
     }
 
     pub fn address_string(&self) -> String {
-        self.address().to_string()
+        self.address().address_string()
     }
 
     /// Create a `Account` from a private key for the given `NetworkType`.
     pub fn from_private_key(private_key: &str, network_type: NetworkType) -> Result<Self> {
         ensure!(
             !private_key.is_empty(),
-            errors::ERR_INVALID_PRIVATE_KEY_LENGTH
+            errors_const::ERR_INVALID_PRIVATE_KEY_LENGTH
         );
 
-        ensure!(private_key.len() == 64, errors::ERR_INVALID_KEY_LENGTH);
+        ensure!(
+            private_key.len() == 64,
+            errors_const::ERR_INVALID_KEY_LENGTH
+        );
 
-        ensure!(is_hex(private_key), errors::ERR_INVALID_KEY_HEX);
+        ensure!(is_hex(private_key), errors_const::ERR_INVALID_KEY_HEX);
 
         let sk_hex = hex::decode(private_key)?;
 
@@ -99,7 +103,7 @@ impl Account {
     }
 
     pub fn to_private_key(&self) -> String {
-        return vec_u8_to_hex(self.key_pair.secret.to_bytes().to_vec());
+        vec_u8_to_hex(self.key_pair.secret.to_bytes().to_vec())
     }
 
     /// Signs 'Transaction'.
@@ -110,7 +114,7 @@ impl Account {
     ) -> crate::Result<SignedTransaction> {
         ensure!(
             !generation_hash.is_empty(),
-            errors::ERR_EMPTY_GENERATION_HASH
+            errors_const::ERR_EMPTY_GENERATION_HASH
         );
 
         tx.sign_transaction_with(self.to_owned(), generation_hash.parse()?)
@@ -121,7 +125,7 @@ impl Account {
     pub fn sign_data(&self, data: &[u8]) -> String {
         let sig = &self.key_pair.sign(data).to_bytes()[..];
 
-        return vec_u8_to_hex(sig.to_vec());
+        vec_u8_to_hex(sig.to_vec())
     }
 
     /// Creates a new encrypted message with this account as a sender.
@@ -143,7 +147,7 @@ impl Account {
     ) -> crate::Result<SignedTransaction> {
         ensure!(
             !generation_hash.is_empty(),
-            errors::ERR_EMPTY_GENERATION_HASH
+            errors_const::ERR_EMPTY_GENERATION_HASH
         );
 
         tx.sign_with_cosignatories(self.to_owned(), cosignatories, generation_hash.parse()?)

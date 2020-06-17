@@ -2,11 +2,9 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use crate::models::mosaic::Mosaic;
-use crate::models::Uint64;
+use crate::models::{mosaic::Mosaic, Uint64};
 
-use super::account_type::AccountLinkTypeEnum;
-use super::address_model::Address;
+use super::{account_type::AccountLinkTypeEnum, address_model::Address};
 
 /// The 'AccountInfo' structure describes basic information for an account.
 #[derive(Debug, Serialize)]
@@ -33,9 +31,13 @@ pub struct AccountInfo {
 }
 
 impl AccountInfo {
-    pub fn new(address: Address, address_height: Uint64,
-               public_key: String, public_key_height: Uint64,
-               account_type: AccountLinkTypeEnum, mosaics: Vec<Mosaic>,
+    pub fn new(
+        address: Address,
+        address_height: Uint64,
+        public_key: String,
+        public_key_height: Uint64,
+        account_type: AccountLinkTypeEnum,
+        mosaics: Vec<Mosaic>,
     ) -> Self {
         AccountInfo {
             address,
@@ -51,7 +53,8 @@ impl AccountInfo {
 impl core::fmt::Display for AccountInfo {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
-            f, "{}",
+            f,
+            "{}",
             serde_json::to_string_pretty(self).unwrap_or_default()
         )
     }

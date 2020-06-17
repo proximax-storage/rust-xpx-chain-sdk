@@ -3,15 +3,9 @@
 // license that can be found in the LICENSE file.
 
 use super::{
-    ArrayAttribute,
-    ScalarAttribute,
-    Schema,
-    SchemaAttribute,
-    SIZEOF_BYTE,
-    SIZEOF_INT,
-    TableArrayAttribute,
+    schema_common_definition::schema_common_definition, ArrayAttribute, ScalarAttribute, Schema,
+    SchemaAttribute, TableArrayAttribute, SIZEOF_BYTE, SIZEOF_INT,
 };
-use super::schema_common_definition::schema_common_definition;
 
 pub fn mosaic_definition_transaction_schema() -> Schema {
     let mut schema_definition = schema_common_definition();
@@ -28,8 +22,7 @@ pub fn mosaic_definition_transaction_schema() -> Schema {
                 Box::new(ScalarAttribute::new("mosaic_property_id", SIZEOF_BYTE)),
                 Box::new(ArrayAttribute::new("value", SIZEOF_INT)),
             ],
-        )
-        )
+        )),
     ];
 
     schema_definition.append(&mut transfer_schema_definition);

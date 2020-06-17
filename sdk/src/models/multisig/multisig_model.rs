@@ -2,13 +2,12 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::collections::HashMap;
-use std::fmt;
+use {
+    num_enum::IntoPrimitive,
+    std::{collections::HashMap, fmt},
+};
 
-use num_enum::IntoPrimitive;
-
-use crate::models::account::PublicAccount;
-use crate::models::errors::ERR_UNKNOWN_TYPE;
+use crate::models::{account::PublicAccount, errors_const::ERR_UNKNOWN_TYPE, transaction::Hash};
 
 /// MultisigModificationTypeEnum :
 /// The type of the modification:
@@ -32,7 +31,7 @@ impl From<u8> for MultisigModificationType {
         assert!(t <= 1, ERR_UNKNOWN_TYPE);
         match t {
             0 => MultisigModificationType::Add,
-            _ => MultisigModificationType::Remove
+            _ => MultisigModificationType::Remove,
         }
     }
 }
@@ -47,11 +46,11 @@ pub struct CosignatoryModification {
 }
 
 impl CosignatoryModification {
-    pub fn new(
-        modification_type: MultisigModificationType,
-        public_account: PublicAccount,
-    ) -> Self {
-        CosignatoryModification { modification_type, public_account }
+    pub fn new(modification_type: MultisigModificationType, public_account: PublicAccount) -> Self {
+        CosignatoryModification {
+            modification_type,
+            public_account,
+        }
     }
 }
 
@@ -64,6 +63,31 @@ pub struct Cosignature {
     pub signature: String,
     /// The public account of the cosignatory.
     pub signer: PublicAccount,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CosignatureInfo {
+    pub signature: String,
+    /// The public account of the cosignatory.
+    pub signer: String,
+    pub parent_hash: Hash,
+}
+
+impl fmt::Display for CosignatureInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
+    }
+}
+
+impl CosignatureInfo {
+    pub fn transaction_hash(&self) -> Hash {
+        self.parent_hash.to_owned()
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -89,7 +113,8 @@ pub struct MultisigAccountInfo {
 impl fmt::Display for MultisigAccountInfo {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
-            f, "{}",
+            f,
+            "{}",
             serde_json::to_string_pretty(self).unwrap_or_default()
         )
     }
@@ -102,9 +127,10 @@ pub struct MultisigAccountGraphInfo {
 }
 
 impl fmt::Display for MultisigAccountGraphInfo {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
-            f, "{}",
+            f,
+            "{}",
             serde_json::to_string_pretty(self).unwrap_or_default()
         )
     }

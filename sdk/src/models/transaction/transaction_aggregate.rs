@@ -2,27 +2,24 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::fmt;
+use {::std::fmt, failure::_core::any::Any, serde_json::Value};
 
-use failure::_core::any::Any;
-use serde_json::Value;
-
-use crate::models::{
-    errors::ERR_EMPTY_INNER_TRANSACTION,
-    multisig::Cosignature,
-    network::NetworkType,
+use crate::{
+    models::{
+        account::{Account, PublicAccount},
+        consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE},
+        errors_const::ERR_EMPTY_INNER_TRANSACTION,
+        multisig::Cosignature,
+        network::NetworkType,
+    },
+    Result,
 };
-use crate::models::{
-    account::{Account, PublicAccount},
-    consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE},
-};
-use crate::Result;
 
 use super::{
-    AbstractTransaction, AbsTransaction, AGGREGATE_BONDED_VERSION, AGGREGATE_COMPLETED_VERSION,
-    buffer::aggregate::buffers, Deadline, EntityTypeEnum,
-    schema::aggregate_transaction_schema, sign_transaction, sign_transaction_with_cosignatures,
-    SignedTransaction, to_aggregate_transaction_bytes, Transaction, Transactions,
+    buffer::aggregate::buffers, schema::aggregate_transaction_schema, sign_transaction,
+    sign_transaction_with_cosignatures, to_aggregate_transaction_bytes, AbsTransaction,
+    AbstractTransaction, Deadline, EntityTypeEnum, SignedTransaction, Transaction, Transactions,
+    AGGREGATE_BONDED_VERSION, AGGREGATE_COMPLETED_VERSION,
 };
 
 /// AggregateTransaction:
@@ -37,13 +34,12 @@ pub struct AggregateTransaction {
 }
 
 impl AggregateTransaction {
-    pub fn new_complete(deadline: Deadline, inner_txs: Vec<Box<dyn Transaction>>,
-                        network_type: NetworkType) -> Result<AggregateTransaction>
-    {
-        ensure!(
-            inner_txs.len() > 0,
-            ERR_EMPTY_INNER_TRANSACTION
-         );
+    pub fn new_complete(
+        deadline: Deadline,
+        inner_txs: Vec<Box<dyn Transaction>>,
+        network_type: NetworkType,
+    ) -> Result<AggregateTransaction> {
+        ensure!(!inner_txs.is_empty(), ERR_EMPTY_INNER_TRANSACTION);
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
@@ -52,16 +48,19 @@ impl AggregateTransaction {
             network_type,
         );
 
-        Ok(Self { abs_transaction: abs_tx, cosignatures: vec![], inner_transactions: inner_txs })
+        Ok(Self {
+            abs_transaction: abs_tx,
+            cosignatures: vec![],
+            inner_transactions: inner_txs,
+        })
     }
 
-    pub fn new_bonded(deadline: Deadline, inner_txs: Vec<Box<dyn Transaction>>,
-                      network_type: NetworkType) -> Result<Self>
-    {
-        ensure!(
-            inner_txs.len() > 0,
-            ERR_EMPTY_INNER_TRANSACTION
-         );
+    pub fn new_bonded(
+        deadline: Deadline,
+        inner_txs: Vec<Box<dyn Transaction>>,
+        network_type: NetworkType,
+    ) -> Result<Self> {
+        ensure!(!inner_txs.is_empty(), ERR_EMPTY_INNER_TRANSACTION);
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
@@ -70,19 +69,29 @@ impl AggregateTransaction {
             network_type,
         );
 
-        Ok(Self { abs_transaction: abs_tx, cosignatures: vec![], inner_transactions: inner_txs })
+        Ok(Self {
+            abs_transaction: abs_tx,
+            cosignatures: vec![],
+            inner_transactions: inner_txs,
+        })
     }
 
-    pub(crate) fn sign_with_cosignatories(self, account: Account, cosignatories: Vec<Account>, generation_hash: String)
-                                          -> crate::Result<SignedTransaction> {
+    pub(crate) fn sign_with_cosignatories(
+        self,
+        account: Account,
+        cosignatories: Vec<Account>,
+        generation_hash: String,
+    ) -> crate::Result<SignedTransaction> {
         sign_transaction_with_cosignatures(self, account, cosignatories, generation_hash)
     }
 }
 
 impl fmt::Display for AggregateTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}",
-               serde_json::to_string_pretty(&self).unwrap_or_default()
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
 }
@@ -96,9 +105,10 @@ impl AbsTransaction for AggregateTransaction {
 impl Transaction for AggregateTransaction {
     fn size(&self) -> usize {
         let mut size_of_inner_transactions = 0;
-        self.inner_transactions.iter().for_each(|itx|
-            size_of_inner_transactions += itx.size() - SIGNATURE_SIZE - MAX_FEE_SIZE - DEAD_LINE_SIZE
-        );
+        self.inner_transactions.iter().for_each(|itx| {
+            size_of_inner_transactions +=
+                itx.size() - SIGNATURE_SIZE - MAX_FEE_SIZE - DEAD_LINE_SIZE
+        });
         AGGREGATE_BONDED_HEADER + size_of_inner_transactions
     }
 
@@ -106,8 +116,11 @@ impl Transaction for AggregateTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(self, account: Account, generation_hash: String)
-                             -> crate::Result<SignedTransaction> {
+    fn sign_transaction_with(
+        self,
+        account: Account,
+        generation_hash: String,
+    ) -> crate::Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }
 
@@ -126,8 +139,7 @@ impl Transaction for AggregateTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
-        let mut txn_builder =
-            buffers::AggregateTransactionBufferBuilder::new(&mut _builder);
+        let mut txn_builder = buffers::AggregateTransactionBufferBuilder::new(&mut _builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);

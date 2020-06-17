@@ -2,7 +2,7 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::core::mem::size_of;
+use ::std::mem::size_of;
 
 /// The number of bytes in an `byte`.
 pub const SIZEOF_BYTE: usize = size_of::<u8>();

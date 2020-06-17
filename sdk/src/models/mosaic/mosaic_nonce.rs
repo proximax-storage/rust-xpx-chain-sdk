@@ -2,14 +2,14 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::fmt;
-
-use ::hex::FromHex;
-use ::rand::RngCore;
-use ::rand::rngs::OsRng;
-use serde::{Serialize, Serializer};
-
-use utils::{array_u8_to_u32, is_hex, u32_to_array_u8, vec_u8_to_hex};
+use {
+    ::hex::FromHex,
+    ::rand::rngs::OsRng,
+    ::rand::RngCore,
+    ::std::fmt,
+    serde::{Serialize, Serializer},
+    utils::{array_u8_to_u32, is_hex, u32_to_array_u8, vec_u8_to_hex},
+};
 
 const NONCE_SIZE: usize = 4;
 
@@ -78,8 +78,8 @@ impl fmt::Display for MosaicNonce {
 
 impl Serialize for MosaicNonce {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         serializer.serialize_u32(self.to_u32())
     }

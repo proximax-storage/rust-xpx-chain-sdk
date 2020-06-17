@@ -2,13 +2,13 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use regex::Regex;
-use sha3::{Digest, Sha3_256};
+use {
+    regex::Regex,
+    sha3::{Digest, Sha3_256},
+    utils::array_u8_to_u64,
+};
 
-use utils::array_u8_to_u64;
-
-use crate::models::errors;
-use crate::models::asset_id_model::AssetId;
+use crate::models::{asset_id_model::AssetId, errors_const};
 
 use super::NamespaceId;
 
@@ -23,9 +23,9 @@ fn is_valid_namespace_name(name: &str) -> bool {
 pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<NamespaceId>> {
     let parts: Vec<&str> = name.split(".").collect();
 
-    ensure!(parts.len() != 0, errors::ERR_INVALID_NAMESPACE_NAME);
+    ensure!(parts.len() != 0, errors_const::ERR_INVALID_NAMESPACE_NAME);
 
-    ensure!(parts.len() <= 3, errors::ERR_NAMESPACE_TOO_MANY_PART);
+    ensure!(parts.len() <= 3, errors_const::ERR_NAMESPACE_TOO_MANY_PART);
 
     let mut namespace_id = NamespaceId::default();
 
@@ -34,7 +34,7 @@ pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<Namespace
     for part in parts {
         ensure!(
             is_valid_namespace_name(part),
-            errors::ERR_INVALID_NAMESPACE_NAME
+            errors_const::ERR_INVALID_NAMESPACE_NAME
         );
 
         namespace_id = generate_namespace_id(part, namespace_id)?;

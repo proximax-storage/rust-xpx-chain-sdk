@@ -2,12 +2,12 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::core::fmt;
-
-use byteorder::{BigEndian, WriteBytesExt};
-use failure::_core::ops::BitAnd;
-
-use utils::SIZE_U64;
+use {
+    ::std::fmt,
+    byteorder::{BigEndian, WriteBytesExt},
+    failure::_core::ops::BitAnd,
+    utils::SIZE_U64,
+};
 
 /// Represents a 64-bit unsigned integer.
 ///

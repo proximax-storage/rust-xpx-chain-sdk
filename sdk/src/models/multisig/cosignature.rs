@@ -2,13 +2,11 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use failure;
-
-use crypto::Keypair;
+use {crypto::Keypair, failure};
 
 use crate::models::{
     account::Account,
-    errors,
+    errors_const,
     transaction::{
         AbsTransaction, AggregateTransaction, CosignatureSignedTransaction, Signature, Transaction,
     },
@@ -24,7 +22,7 @@ impl CosignatureTransaction {
     pub fn new(tx: Box<dyn Transaction>) -> crate::Result<Self> {
         let aggregate = tx
             .downcast::<AggregateTransaction>()
-            .map_err(|_| failure::err_msg(errors::ERR_INVALID_AGGREGATE_TRANSACTION))?;
+            .map_err(|_| failure::err_msg(errors_const::ERR_INVALID_AGGREGATE_TRANSACTION))?;
 
         Ok(Self(*aggregate))
     }
@@ -35,7 +33,7 @@ impl CosignatureTransaction {
     ) -> crate::Result<CosignatureSignedTransaction> {
         ensure!(
             !self.0.transaction_hash().is_empty(),
-            errors::ERR_EMPTY_COSIGNATURE_HASH
+            errors_const::ERR_EMPTY_COSIGNATURE_HASH
         );
 
         let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);

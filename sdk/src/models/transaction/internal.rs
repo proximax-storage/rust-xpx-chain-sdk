@@ -2,11 +2,12 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::sha3::Sha3_256;
-use fb::FlatBufferBuilder;
-use sha3::Digest;
-
-use utils::{u32_to_array_u8, vec_u8_to_hex};
+use {
+    ::sha3::Sha3_256,
+    fb::FlatBufferBuilder,
+    sha3::Digest,
+    utils::{u32_to_array_u8, vec_u8_to_hex},
+};
 
 use crate::models::{
     account::Account,
@@ -14,14 +15,14 @@ use crate::models::{
         HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE, TRANSACTION_HEADER_SIZE,
         TYPE_SIZE, VERSION_SIZE,
     },
-    errors::ERR_EMPTY_TRANSACTION_SIGNER,
+    errors_const::ERR_EMPTY_TRANSACTION_SIGNER,
     mosaic::MosaicProperty,
     multisig::CosignatoryModification,
 };
 
 use super::{
-    AbsTransaction,
-    AggregateTransaction, buffer::{modify_multisig_account as bm, mosaic_definition}, EntityVersion, SignedTransaction, Transaction,
+    buffer::{modify_multisig_account as bm, mosaic_definition},
+    AbsTransaction, AggregateTransaction, EntityVersion, SignedTransaction, Transaction,
 };
 
 pub fn extract_version(version: u32) -> EntityVersion {
@@ -152,7 +153,7 @@ pub(super) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate
     r_b.extend_from_slice(&signer_bytes[..]);
     r_b.extend_from_slice(
         &tx_bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE
-            ..SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE + VERSION_SIZE + TYPE_SIZE]
+            ..SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE + VERSION_SIZE + TYPE_SIZE],
     );
 
     r_b.extend_from_slice(&tx_bytes[TRANSACTION_HEADER_SIZE..]);

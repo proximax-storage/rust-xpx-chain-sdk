@@ -2,14 +2,13 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::core::fmt;
+use {
+    ::std::fmt,
+    serde::{Serialize, Serializer},
+    utils::has_bits,
+};
 
-use serde::{Serialize, Serializer};
-
-use utils::has_bits;
-
-use crate::models::{errors, Uint64};
-use crate::models::asset_id_model::AssetId;
+use crate::models::{asset_id_model::AssetId, errors_const, Uint64};
 
 use super::{generate_namespace_path, NAMESPACE_BIT};
 
@@ -22,7 +21,7 @@ impl NamespaceId {
     pub fn new(id: u64) -> NamespaceId {
         assert!(
             id != 0 && has_bits(id, NAMESPACE_BIT),
-            errors::ERR_WRONG_BIT_NAMESPACE_ID
+            errors_const::ERR_WRONG_BIT_NAMESPACE_ID
         );
 
         NamespaceId(Uint64::new(id))
@@ -30,11 +29,14 @@ impl NamespaceId {
 
     /// Creates a new `NamespaceId` from a hex string.
     pub fn from_name(string_name: &str) -> crate::Result<NamespaceId> {
-        ensure!(!string_name.is_empty(), errors::ERR_EMPTY_NAMESPACE_NAME);
+        ensure!(
+            !string_name.is_empty(),
+            errors_const::ERR_EMPTY_NAMESPACE_NAME
+        );
 
         let list = generate_namespace_path(string_name)?;
 
-        ensure!(!list.is_empty(), errors::ERR_INVALID_NAMESPACE_NAME);
+        ensure!(!list.is_empty(), errors_const::ERR_INVALID_NAMESPACE_NAME);
 
         Ok(list[list.len() - 1])
     }
@@ -63,8 +65,8 @@ impl fmt::Display for NamespaceId {
 
 impl Serialize for NamespaceId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         serializer.serialize_str(&self.to_hex())
     }

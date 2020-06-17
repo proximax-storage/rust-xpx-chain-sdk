@@ -2,10 +2,9 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::core::fmt;
-use ::core::fmt::{Debug, Display};
+use ::std::fmt::{Debug, Display, Formatter, Result};
 
-use crate::models::errors;
+use crate::models::errors_const;
 
 /// MIJIN private network identifier. Decimal value = 96.
 pub const MIJIN: NetworkType = NetworkType(0x60);
@@ -29,7 +28,7 @@ pub const ALIAS_ADDRESS: NetworkType = NetworkType(0x91);
 
 pub const NOT_SUPPORTED_NET: NetworkType = NetworkType(0);
 
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Copy)]// we derive Default in order to use the clear() method in Drop
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Copy)] // we derive Default in order to use the clear() method in Drop
 pub struct NetworkType(pub(self) u8);
 
 impl NetworkType {
@@ -42,7 +41,7 @@ impl NetworkType {
             PRIVATE => "PRIVATE",
             PRIVATE_TEST => "PRIVATE_TEST",
             ALIAS_ADDRESS => "ALIAS_ADDRESS",
-            _ => "NOT_SUPPORTED_NET"
+            _ => "NOT_SUPPORTED_NET",
         }
     }
 
@@ -52,7 +51,7 @@ impl NetworkType {
 }
 
 impl Display for NetworkType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "{}", self.0)
     }
 }
@@ -67,17 +66,14 @@ impl From<u8> for NetworkType {
             0xc8 => PRIVATE,
             0xb0 => PRIVATE_TEST,
             0x91 => ALIAS_ADDRESS,
-            _ => NOT_SUPPORTED_NET
+            _ => NOT_SUPPORTED_NET,
         }
     }
 }
 
 impl From<&str> for NetworkType {
     fn from(s: &str) -> Self {
-        assert!(
-            !s.is_empty(),
-            errors::ERR_EMPTY_NETWORK_TYPE
-        );
+        assert!(!s.is_empty(), errors_const::ERR_EMPTY_NETWORK_TYPE);
 
         match s {
             "MIJIN" => MIJIN,
@@ -87,7 +83,7 @@ impl From<&str> for NetworkType {
             "PRIVATE" => PRIVATE,
             "PRIVATE_TEST" => PRIVATE_TEST,
             "ALIAS_ADDRESS" => ALIAS_ADDRESS,
-            _ => NOT_SUPPORTED_NET
+            _ => NOT_SUPPORTED_NET,
         }
     }
 }

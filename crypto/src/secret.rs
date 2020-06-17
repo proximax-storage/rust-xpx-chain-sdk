@@ -417,7 +417,6 @@ impl ExpandedSecretKey {
     /// Sign a message with this `ExpandedSecretKey`.
     #[allow(non_snake_case)]
     pub fn sign(&self, message: &[u8], public_key: &PublicKey) -> Signature {
-        println!("{:?}", public_key);
         let mut h: Sha3_512 = Sha3_512::new();
         let R: CompressedEdwardsY;
         let r: Scalar;

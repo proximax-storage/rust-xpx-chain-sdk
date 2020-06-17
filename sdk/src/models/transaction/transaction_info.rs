@@ -67,11 +67,10 @@ impl AbstractTransaction {
     pub(crate) fn get_hash(&self) -> Hash {
         match self.transaction_info.to_owned() {
             Some(h) => {
-                let hash = match h.transaction_hash {
+                match h.hash {
                     Some(hs) => hs,
                     _ => "".to_string(),
-                };
-                hash
+                }
             }
             _ => "".to_string(),
         }
@@ -95,37 +94,37 @@ impl AbstractTransaction {
         }
     }
 
-    pub(crate) fn is_unconfirmed(&self) -> bool {
-        return if let Some(tx_info) = &self.transaction_info {
-            tx_info.height.0.to_owned() == 0
-                && tx_info.transaction_hash.eq(&tx_info.merkle_component_hash)
+    pub fn is_unconfirmed(&self) -> bool {
+        if let Some(tx_info) = &self.transaction_info {
+            tx_info.height.0 == 0
+                && tx_info.hash.eq(&tx_info.merkle_component_hash)
         } else {
             false
-        };
+        }
     }
 
-    pub(crate) fn is_confirmed(&self) -> bool {
-        return if let Some(tx_info) = &self.transaction_info {
+    pub fn is_confirmed(&self) -> bool {
+        if let Some(tx_info) = &self.transaction_info {
             tx_info.height.0 > 0
         } else {
             false
-        };
+        }
     }
 
-    pub(crate) fn has_missing_signatures(&self) -> bool {
-        return if let Some(tx_info) = &self.transaction_info {
-            tx_info.height.0 == 0 && tx_info.transaction_hash.eq(&tx_info.merkle_component_hash)
+    pub fn has_missing_signatures(&self) -> bool {
+        if let Some(tx_info) = &self.transaction_info {
+            tx_info.height.0 == 0 && tx_info.hash.eq(&tx_info.merkle_component_hash)
         } else {
             false
-        };
+        }
     }
 
-    pub(crate) fn is_unannounced(&self) -> bool {
-        return if let Some(tx_info) = &self.transaction_info {
-            tx_info.transaction_hash.is_some() || tx_info.agregate_hash.is_some()
+    pub fn is_unannounced(&self) -> bool {
+        if let Some(tx_info) = &self.transaction_info {
+            tx_info.hash.is_some() || tx_info.agregate_hash.is_some()
         } else {
             false
-        };
+        }
     }
 
     pub(crate) fn to_aggregate(&mut self, signer: PublicAccount) {
@@ -157,7 +156,7 @@ pub struct TransactionInfo {
     pub index: u32,
     pub id: String,
     #[serde(rename = "hash", skip_serializing_if = "Option::is_none")]
-    pub transaction_hash: Option<Hash>,
+    pub hash: Option<Hash>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub merkle_component_hash: Option<Hash>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -183,11 +182,18 @@ impl TransactionInfo {
             height,
             index,
             id,
-            transaction_hash,
+            hash: transaction_hash,
             merkle_component_hash: Some(merkle_component_hash),
             agregate_hash: Some(agregate_hash),
             aggregate_id: Some(aggregate_id),
             unique_aggregate_hash: Some(unique_aggregate),
+        }
+    }
+
+    pub fn transaction_hash(&self) -> Hash {
+        match self.hash.to_owned() {
+            Some(h) => h,
+            None => String::new()
         }
     }
 }
