@@ -2,20 +2,22 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::sync::Arc;
-
-use reqwest::Method;
-
-use sdk::{
-    account::PublicAccount,
-    network::NetworkType,
-
-    exchange::{UserExchangeInfo, OfferType, OfferInfos},
-    AssetId
+use {
+    ::std::sync::Arc,
+    reqwest::Method,
+    sdk::{
+        account::PublicAccount,
+        exchange::{OfferInfos, OfferType, UserExchangeInfo},
+        network::NetworkType,
+        AssetId,
+    },
 };
 
 use crate::{
-    dtos::{ExchangeInfoDto, OfferInfoDTOs}, request as __internal_request, Result, sirius_client::ApiClient,
+    dtos::{ExchangeInfoDto, OfferInfoDTOs},
+    request as __internal_request,
+    sirius_client::ApiClient,
+    Result,
 };
 
 use super::{EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE};
@@ -27,8 +29,7 @@ pub struct ExchangeRoutes(Arc<ApiClient>);
 
 /// Exchange related endpoints.
 ///
-impl ExchangeRoutes
-{
+impl ExchangeRoutes {
     pub(crate) fn new(client: Arc<ApiClient>) -> Self {
         ExchangeRoutes(client)
     }
@@ -52,9 +53,11 @@ impl ExchangeRoutes
 
     pub async fn get_exchange_offer_by_asset_id(
         self,
-        asset_id: impl AssetId, offer_type: OfferType
+        asset_id: impl AssetId,
+        offer_type: OfferType,
     ) -> Result<OfferInfos> {
-        let mut req = __internal_request::Request::new(Method::GET, OFFERS_BY_MOSAIC_ROUTE.to_string());
+        let mut req =
+            __internal_request::Request::new(Method::GET, OFFERS_BY_MOSAIC_ROUTE.to_string());
 
         // req = req.with_path_param("mosaic_id".to_string(), asset_id.to_string());
 
@@ -62,13 +65,13 @@ impl ExchangeRoutes
 
         let dto: OfferInfoDTOs = req.execute(self.__client()).await?;
 
-        let  network_type = NetworkType::from(168);
+        let network_type = NetworkType::from(168);
 
         let mut offer_infos: OfferInfos = vec![];
-            for offer_info_dto in dto.iter(){
-                // let offer = offer_info_dto.to_struct(network_type.to_owned())?;
-                // offer_infos.push(offer);
-            }
+        for offer_info_dto in dto.iter() {
+            // let offer = offer_info_dto.to_struct(network_type.to_owned())?;
+            // offer_infos.push(offer);
+        }
 
         Ok(offer_infos)
     }

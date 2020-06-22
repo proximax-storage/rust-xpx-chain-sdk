@@ -2,21 +2,21 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use std::fmt::{Debug, Write};
-
-use bytes::Bytes;
-use serde_json::Value;
-
-use sdk::{
-    account::AccountId,
-    errors_const,
-    mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
-    multisig::CosignatoryModification,
-    network::NetworkType,
-    Result,
-    transaction::{EntityTypeEnum as Entity, Hash}, Uint64,
+use {
+    bytes::Bytes,
+    sdk::{
+        account::AccountId,
+        errors_const,
+        mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
+        multisig::CosignatoryModification,
+        network::NetworkType,
+        transaction::{EntityTypeEnum as Entity, Hash},
+        utils::is_hex,
+        Result, Uint64,
+    },
+    serde_json::Value,
+    std::fmt::{Debug, Write},
 };
-use utils::is_hex;
 
 use crate::dtos::{CosignatoryModificationDto, MosaicPropertyDto, TransactionDto};
 
@@ -64,7 +64,12 @@ pub(crate) fn str_to_hash(hash: &str) -> Result<Hash> {
 
     ensure!(!raw_hash.is_empty(), errors_const::ERR_INVALID_HASH_HEX);
 
-    ensure!(is_hex(&raw_hash), "{} {}.", errors_const::ERR_INVALID_HASH_HEX, raw_hash);
+    ensure!(
+        is_hex(&raw_hash),
+        "{} {}.",
+        errors_const::ERR_INVALID_HASH_HEX,
+        raw_hash
+    );
 
     ensure!(
         raw_hash.len() == 64,
@@ -77,8 +82,8 @@ pub(crate) fn str_to_hash(hash: &str) -> Result<Hash> {
 }
 
 pub(crate) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()>
-    where
-        T: Debug,
+where
+    T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())
@@ -92,10 +97,8 @@ pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
             }
             Ok(id.to_uppercase())
         }
-        40 | 46 => {
-            Ok(id.to_uppercase().replace("-", ""))
-        }
-        _ => bail!(errors_const::ERR_INVALID_ACCOUNT_ID)
+        40 | 46 => Ok(id.to_uppercase().replace("-", "")),
+        _ => bail!(errors_const::ERR_INVALID_ACCOUNT_ID),
     }
 }
 
@@ -165,7 +168,7 @@ pub fn map_transaction_dto(body: Bytes) -> Result<String> {
         _ => errors_const::ERR_UNKNOWN_BLOCKCHAIN_TYPE,
     };
 
-    if entity_type  == Entity::AggregateBonded || entity_type == Entity::AggregateComplete {
+    if entity_type == Entity::AggregateBonded || entity_type == Entity::AggregateComplete {
         valid_ws(&mut value_dto)?
     }
 
@@ -177,7 +180,7 @@ pub fn map_transaction_dto(body: Bytes) -> Result<String> {
 }
 
 fn valid_ws(value_dto: &mut Value) -> Result<()> {
-    if let Some(v)  = value_dto["transaction"]["transactions"].as_array_mut() {
+    if let Some(v) = value_dto["transaction"]["transactions"].as_array_mut() {
         let mut meta_value: Vec<Value> = vec![];
 
         for item in v.into_iter() {

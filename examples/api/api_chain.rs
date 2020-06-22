@@ -5,7 +5,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_apis::SiriusClient;
+use xpx_chain_api::SiriusClient;
 
 #[tokio::main]
 async fn main() {
@@ -23,14 +23,14 @@ async fn main() {
         Ok(_res) => println!("{}", _res),
         Err(err) => eprintln!("{}", err),
     }
-    
+
     let blockchain_score = client.chain_api().get_blockchain_score().await;
 
     match blockchain_score {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
     }
-    
+
     let blockchain_storage = client.chain_api().get_blockchain_storage().await;
 
     match blockchain_storage {

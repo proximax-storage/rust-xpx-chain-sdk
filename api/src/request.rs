@@ -2,10 +2,14 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::{collections::HashMap, sync::Arc};
-
-use reqwest::{header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT}, Method, StatusCode, Url};
-use serde_json;
+use {
+    ::std::{collections::HashMap, sync::Arc},
+    reqwest::{
+        header::{HeaderMap, CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT},
+        Method, StatusCode, Url,
+    },
+    serde_json,
+};
 
 use super::{
     error::{Error, SiriusError},
@@ -66,8 +70,8 @@ impl Request {
     }
 
     pub async fn execute<U>(self, api: Arc<ApiClient>) -> super::Result<U>
-        where
-                for<'de> U: serde::Deserialize<'de>,
+    where
+        for<'de> U: serde::Deserialize<'de>,
     {
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.
@@ -117,9 +121,11 @@ impl Request {
         };
 
         // create request
-        let builder = api.client
-            .request(self.method, url.as_str())
-            .body(self.serialized_body.clone().unwrap_or_else(|| "".to_owned()));
+        let builder = api.client.request(self.method, url.as_str()).body(
+            self.serialized_body
+                .clone()
+                .unwrap_or_else(|| "".to_owned()),
+        );
 
         let mut req = builder.build()?;
 

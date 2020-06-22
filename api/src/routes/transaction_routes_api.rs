@@ -2,19 +2,19 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::{
-    fmt::{Debug, Display},
-    future::Future,
-    sync::Arc,
-};
-
-use reqwest::Method;
-
-use sdk::{
-    errors_const::{ERR_EMPTY_TRANSACTION_HASHES, ERR_EMPTY_TRANSACTION_IDS},
-    transaction::{
-        CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionHashes,
-        TransactionIds, TransactionStatus, Transactions, TransactionsStatus,
+use {
+    ::std::{
+        fmt::{Debug, Display},
+        future::Future,
+        sync::Arc,
+    },
+    reqwest::Method,
+    sdk::{
+        errors_const::{ERR_EMPTY_TRANSACTION_HASHES, ERR_EMPTY_TRANSACTION_IDS},
+        transaction::{
+            CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionHashes,
+            TransactionIds, TransactionStatus, Transactions, TransactionsStatus,
+        },
     },
 };
 

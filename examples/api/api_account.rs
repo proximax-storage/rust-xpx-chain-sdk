@@ -5,7 +5,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_apis::SiriusClient;
+use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::PublicAccount;
 
 const PUBLIC_KEY_A: &str = "c8f52a6ed98c5bcd52e090da0d1950d58b13d239e4cecc05f5d4acd706f5da75";
@@ -23,9 +23,9 @@ async fn main() {
 
     // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
     let network_type = client.network_type();
-    
+
     let public_account = PublicAccount::from_public_key(PUBLIC_KEY_A, network_type).unwrap();
-    
+
     let account_info = client.account_api().account_info(PUBLIC_KEY_A).await;
     match account_info {
         Ok(resp) => println!("{}", resp),
@@ -80,19 +80,19 @@ async fn main() {
         .account_api()
         .accounts_names(vec![PUBLIC_KEY_A, PUBLIC_KEY_B])
         .await;
-    
+
     match accounts_names {
         Ok(account_names) => account_names
             .into_iter()
             .for_each(|account| println!("{}", account)),
         Err(err) => eprintln!("{}", err),
     }
-    
+
     let tx_partial = client
         .account_api()
         .partial_transactions(&public_account, None, None, None)
         .await;
-    
+
     match tx_partial {
         Ok(txs) => txs.into_iter().for_each(|tx| println!("{}", tx)),
         Err(err) => eprintln!("{}", err),

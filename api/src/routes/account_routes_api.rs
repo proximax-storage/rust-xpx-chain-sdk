@@ -2,15 +2,15 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::{collections::HashMap, future::Future, sync::Arc};
-
-use reqwest::Method;
-
-use sdk::{
-    account::{AccountInfo, AccountName, AccountsId, PublicAccount},
-    errors_const::ERR_EMPTY_ADDRESSES_IDS,
-    multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
-    transaction::Transactions,
+use {
+    ::std::{collections::HashMap, future::Future, sync::Arc},
+    reqwest::Method,
+    sdk::{
+        account::{AccountInfo, AccountName, AccountsId, PublicAccount},
+        errors_const::ERR_EMPTY_ADDRESSES_IDS,
+        multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
+        transaction::Transactions,
+    },
 };
 
 use crate::{

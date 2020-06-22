@@ -5,7 +5,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_apis::SiriusClient;
+use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::multisig::CosignatureTransaction;
 
@@ -20,19 +20,19 @@ async fn main() {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),
     };
-    
+
     // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
     let network_type = client.network_type();
-    
+
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
-    
+
     println!("{}", account);
-    
+
     let partial = client
         .account_api()
         .partial_transactions(&account.public_account, None, None, None)
         .await;
-    
+
     match partial {
         Ok(tx) => {
             for tx_partial in tx.into_iter() {
@@ -42,7 +42,7 @@ async fn main() {
                 if let Err(err) = cosigner_tx {
                     panic!(err)
                 }
-                
+
                 let signed = account.sign_cosignature_transaction(cosigner_tx.unwrap());
 
                 let signed_transaction = match signed {

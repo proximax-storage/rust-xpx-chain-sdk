@@ -5,7 +5,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_apis::SiriusClient;
+use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::namespace::NamespaceId;
 use xpx_chain_sdk::transaction::{Deadline, RegisterNamespaceTransaction};
@@ -33,7 +33,7 @@ async fn main() {
     let deadline = Deadline::default();
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
-    
+
     let register_namespace_root =
         RegisterNamespaceTransaction::create_root(deadline, "rust", Uint64::new(100), network_type);
 
@@ -52,7 +52,7 @@ async fn main() {
 
     println!("Singer: \t{}", account.public_key_string());
     println!("Hash: \t\t{}", sig_transaction.get_hash());
-    
+
     let response_root = client.transaction_api().announce(&sig_transaction).await;
 
     match response_root {
@@ -70,7 +70,7 @@ async fn main() {
     if let Err(err) = &register_namespace_sub {
         panic!("{}", err)
     }
-    
+
     let sig_transaction_sub = account.sign(register_namespace_sub.unwrap(), &generation_hash);
 
     if let Err(err) = &sig_transaction_sub {
@@ -81,7 +81,7 @@ async fn main() {
 
     println!("Singer: \t{}", account.public_key_string());
     println!("Hash: \t\t{}", sig_transaction.get_hash());
-    
+
     let response_sub = client.transaction_api().announce(&sig_transaction).await;
 
     match response_sub {

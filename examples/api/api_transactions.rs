@@ -5,9 +5,9 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_apis::SiriusClient;
+use xpx_chain_api::SiriusClient;
 
-const HASH_ONE: &str = "FC745B654C2915880A8F11AB4D88442E67D10EE108ECD80EEB277059460BB326";
+const HASH_ONE: &str = "77CB206CB5D28D000CFF50DD53A6E755F73B14ABC442962FB2FC2AE7A24545BB";
 const HASH_TWO: &str = "5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4";
 
 #[tokio::main]
@@ -19,7 +19,7 @@ async fn main() {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),
     };
-    
+
     let transaction = client.transaction_api().get_transaction(HASH_ONE).await;
 
     match transaction {
@@ -46,7 +46,7 @@ async fn main() {
         Ok(statuses) => statuses.iter().for_each(|status| println!("{}", status)),
         Err(err) => eprintln!("{}", err),
     }
-    
+
     let transaction = client.transaction_api().get_transaction(HASH_ONE).await;
 
     match transaction {

@@ -2,9 +2,11 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::base32::Alphabet::RFC4648;
-use ::ripemd160::{Digest, Ripemd160};
-use ::sha3::Sha3_256;
+use {
+    ::base32::Alphabet::RFC4648,
+    ::ripemd160::{Digest, Ripemd160},
+    ::sha3::Sha3_256,
+};
 
 use crate::models::network::NetworkType;
 
@@ -73,7 +75,7 @@ pub(crate) fn public_key_to_address(
         &version_prefixed_ripemd160hash[..],
         &step_three_checksum[..],
     ]
-        .concat();
+    .concat();
 
     let res = base32::encode(
         RFC4648 { padding: true },

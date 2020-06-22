@@ -2,8 +2,10 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::fmt::{Display, Formatter};
-use ::std::result;
+use ::std::{
+    fmt::{Display, Formatter},
+    result,
+};
 
 /// Result type of all Api library calls.
 pub type Result<T> = result::Result<T, Error>;

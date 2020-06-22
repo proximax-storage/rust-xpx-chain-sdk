@@ -2,11 +2,11 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::sync::Arc;
-
-use reqwest::Client as ReqwestClient;
-
-use sdk::{network::NetworkType, transaction::Hash};
+use {
+    ::std::sync::Arc,
+    reqwest::Client as ReqwestClient,
+    sdk::{network::NetworkType, transaction::Hash},
+};
 
 use crate::routes::{
     account_routes_api::AccountRoutes, block_routes_api::BlockRoutes,
@@ -57,8 +57,7 @@ impl SiriusClient {
     }
 }
 
-impl SiriusClient
-{
+impl SiriusClient {
     fn __internal(urls: Vec<&'static str>) -> Box<Self> {
         let api_client = ApiClient::from_url(urls[0]);
 
@@ -67,7 +66,7 @@ impl SiriusClient
         Box::new(SiriusClient {
             generation_hash: "".to_string(),
             network_type: Default::default(),
-            client
+            client,
         })
     }
 
@@ -107,7 +106,9 @@ impl SiriusClient
 impl core::fmt::Display for SiriusClient {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
-            f, "{}", serde_json::to_string_pretty(self).unwrap_or_default()
+            f,
+            "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
         )
     }
 }
@@ -120,8 +121,7 @@ pub struct ApiClient {
     pub network_type_id: u8,
 }
 
-impl ApiClient
-{
+impl ApiClient {
     pub fn from_url(url: &'static str) -> Self {
         let client = ReqwestClient::new();
         ApiClient {
@@ -132,4 +132,3 @@ impl ApiClient
         }
     }
 }
-

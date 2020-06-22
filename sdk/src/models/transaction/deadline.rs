@@ -7,8 +7,10 @@ use {
         ops::Add,
         time::{Duration, SystemTime, UNIX_EPOCH},
     },
-    chrono::prelude::DateTime,
-    chrono::{Local, NaiveTime, Timelike},
+    chrono::{
+        prelude::DateTime,
+        {Local, NaiveTime, Timelike},
+    },
     serde::{Serialize, Serializer},
 };
 

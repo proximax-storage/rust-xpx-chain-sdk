@@ -10,15 +10,16 @@ extern crate failure;
 
 use std::thread::sleep;
 use std::time::Duration;
-use xpx_chain_apis::SiriusClient;
+
+use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::{Account, PublicAccount};
 use xpx_chain_sdk::mosaic::Mosaic;
 use xpx_chain_sdk::multisig::{CosignatoryModification, MultisigModificationType};
-use xpx_chain_sdk::Result;
 use xpx_chain_sdk::transaction::{
     AggregateTransaction, Deadline, Duration as LockDuration, Hash, LockFundsTransaction,
     ModifyMultisigAccountTransaction, SignedTransaction, Transaction,
 };
+use xpx_chain_sdk::Result;
 
 /// Future multiSig private key
 const MULTI_SIG_PRIVATE_KEY: &str =
@@ -49,25 +50,25 @@ async fn main() {
     };
 
     let generation_hash = client.generation_hash();
-    
+
     // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
     let network_type = client.network_type();
-    
+
     // Deadline default 1 hour
     let deadline = Deadline::default();
     //let deadline = Deadline::new(1, 30, 0);
-    
+
     let multi_sig_account = Account::from_private_key(MULTI_SIG_PRIVATE_KEY, network_type).unwrap();
-    
+
     println!("MSA: {}", multi_sig_account.address_string());
-    
+
     let cosignatory_one =
         PublicAccount::from_public_key(COSIGNATORY_ONE_PUBLIC_KEY, network_type).unwrap();
     let cosignatory_two =
         PublicAccount::from_public_key(COSIGNATORY_TWO_PUBLIC_KEY, network_type).unwrap();
     let cosignatory_three =
         PublicAccount::from_public_key(COSIGNATORY_THREE_PUBLIC_KEY, network_type).unwrap();
-    
+
     let modify_multi_sig_account_new = ModifyMultisigAccountTransaction::new(
         deadline,
         MINIMAL_APPROVAL,
@@ -101,14 +102,14 @@ async fn main() {
         Ok(sig) => sig,
         Err(err) => panic!("{}", err),
     };
-    
+
     let lock_fund = lock_fund(
         &client,
         &multi_sig_account,
         sig_tx.get_hash(),
         generation_hash,
     )
-        .await;
+    .await;
     if let Err(err) = &lock_fund {
         panic!("{}", err)
     }
@@ -135,11 +136,11 @@ async fn lock_fund(
 ) -> Result<()> {
     // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
     let network_type = client.network_type();
-    
+
     // Deadline default 1 hour
     // let deadline = Deadline::new(1, 0, 0);
     let deadline = Deadline::default();
-    
+
     let lock_transaction = LockFundsTransaction::new(
         deadline,
         Mosaic::xpx_relative(10),
