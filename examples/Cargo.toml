@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-examples"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
 
 homepage = "https://www.proximax.io"

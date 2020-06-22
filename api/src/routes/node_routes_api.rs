@@ -67,15 +67,11 @@ impl NodeRoutes {
     /// # Example
     ///
     /// ```
-    ///
-    ///use xpx_chain_apis::SiriusClient;
-    ///
-    ///const NODE_URL: &str = "http://bctestnet1.brimstone.xpxsirius.io:3000";
+    ///use xpx_chain_api::SiriusClient;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    ///
-    ///    let client = SiriusClient::new(NODE_URL);
+    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
     ///
     ///    let node_time = client.node.get_node_time().await;
     ///

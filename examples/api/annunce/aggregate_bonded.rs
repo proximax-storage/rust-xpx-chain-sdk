@@ -10,15 +10,16 @@ extern crate failure;
 
 use std::thread::sleep;
 use std::time::Duration;
-use xpx_chain_apis::SiriusClient;
+
+use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::{Account, PublicAccount};
 use xpx_chain_sdk::message::PlainMessage;
 use xpx_chain_sdk::mosaic::Mosaic;
-use xpx_chain_sdk::Result;
 use xpx_chain_sdk::transaction::{
     AggregateTransaction, Deadline, Duration as LockDuration, Hash, LockFundsTransaction,
     SignedTransaction, Transaction, TransferTransaction,
 };
+use xpx_chain_sdk::Result;
 
 const CO_PRIVATE_KEY: &str = "EE5D1277A862A449173C55454740BEE1A29AB837A97507021340B6EA68909097";
 const MS_PUBLIC_KEY: &str = "94E15FAC453553A716D86DADE6EA0EB052B42D62326FB684EA54031540DD674F";
@@ -26,7 +27,7 @@ const MS_PUBLIC_KEY: &str = "94E15FAC453553A716D86DADE6EA0EB052B42D62326FB684EA5
 #[tokio::main]
 async fn main() {
     let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    
+
     let sirius_client = SiriusClient::new(node_url).await;
     let client = match sirius_client {
         Ok(resp) => resp,
@@ -41,9 +42,9 @@ async fn main() {
     // Deadline default 1 hour
     let deadline = Deadline::default();
     //let deadline = Deadline::new(1, 30, 0);
-    
+
     let account = Account::from_private_key(CO_PRIVATE_KEY, network_type).unwrap();
-    
+
     let public_account = PublicAccount::from_public_key(MS_PUBLIC_KEY, network_type).unwrap();
 
     let ttx_one = TransferTransaction::new(
@@ -72,17 +73,17 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
     transfer_two.to_aggregate(account.public_account_to_owned());
-    
+
     let aggregate_bonded =
         AggregateTransaction::new_bonded(deadline, vec![Box::new(transfer_one)], network_type);
-    
+
     let sig_transaction = account.sign(aggregate_bonded.unwrap(), &generation_hash);
-    
+
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,
         Err(err) => panic!("{}", err),
     };
-    
+
     let lock_fund = lock_fund(&client, &account, sig_tx.get_hash(), generation_hash).await;
     if let Err(err) = &lock_fund {
         panic!("{}", err)
@@ -110,11 +111,11 @@ async fn lock_fund(
 ) -> Result<()> {
     // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
     let network_type = client.network_type();
-    
+
     // Deadline default 1 hour
     // let deadline = Deadline::new(1, 0, 0);
     let deadline = Deadline::default();
-    
+
     let lock_transaction = LockFundsTransaction::new(
         deadline,
         Mosaic::xpx_relative(10),
@@ -127,7 +128,7 @@ async fn lock_fund(
 
     println!("Singer Lock: \t{}", account.public_key_string());
     println!("Hash Lock: \t\t{}", &sig_tx.get_hash());
-    
+
     let response = client.transaction_api().announce(&sig_tx).await;
 
     match response {

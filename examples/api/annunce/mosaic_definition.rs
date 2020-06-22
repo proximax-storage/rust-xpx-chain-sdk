@@ -5,7 +5,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_apis::SiriusClient;
+use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::mosaic::{MosaicNonce, MosaicProperties};
 use xpx_chain_sdk::transaction::{Deadline, MosaicDefinitionTransaction};
@@ -56,7 +56,7 @@ async fn main() {
 
     println!("Singer: \t{}", account.public_key_string());
     println!("Hash: \t\t{}", sig_transaction.get_hash());
-    
+
     let response = client.transaction_api().announce(sig_transaction).await;
 
     match response {

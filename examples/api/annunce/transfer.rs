@@ -5,12 +5,14 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_apis::SiriusClient;
+use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::{Account, Address};
 use xpx_chain_sdk::blockchain::BlockInfo;
 use xpx_chain_sdk::message::PlainMessage;
 use xpx_chain_sdk::mosaic::Mosaic;
-use xpx_chain_sdk::transaction::{Deadline, Transaction, TransactionInfo, TransactionStatus, TransferTransaction};
+use xpx_chain_sdk::transaction::{
+    Deadline, Transaction, TransactionInfo, TransactionStatus, TransferTransaction,
+};
 use xpx_chain_websocket::SiriusWebsocketClient;
 
 const PRIVATE_KEY: &str = "86258172F90639811F2ABD055747D1E11B55A64B68AED2CEA9A34FBD6C0BE790";
@@ -35,7 +37,7 @@ async fn main() {
     let ws = SiriusWebsocketClient::new(client.node()).await;
     let mut ws_conn = match ws {
         Ok(ws_client) => ws_client,
-        Err(err) => panic!("{}", err)
+        Err(err) => panic!("{}", err),
     };
 
     println!("Websocket UID: {}", ws_conn.uid());
@@ -44,11 +46,17 @@ async fn main() {
         panic!("{}", err)
     }
 
-    if let Err(err) = ws_conn.add_unconfirmed_added_handlers(&account.address(), unconfirmed_added).await {
+    if let Err(err) = ws_conn
+        .add_unconfirmed_added_handlers(&account.address(), unconfirmed_added)
+        .await
+    {
         panic!("{}", err)
     }
 
-    if let Err(err) = ws_conn.add_confirmed_added_handlers(&account.address(), confirmed_added).await {
+    if let Err(err) = ws_conn
+        .add_confirmed_added_handlers(&account.address(), confirmed_added)
+        .await
+    {
         panic!("{}", err)
     }
 
@@ -84,12 +92,17 @@ async fn main() {
     println!("Singer: \t{}", account.public_key_string());
     println!("Hash: \t\t{}", hash);
 
-
-    if let Err(err) = ws_conn.add_status_handlers(&account.address(), status_handler(hash.clone())).await {
+    if let Err(err) = ws_conn
+        .add_status_handlers(&account.address(), status_handler(hash.clone()))
+        .await
+    {
         panic!("{}", err)
     }
 
-    if let Err(err) = ws_conn.add_unconfirmed_removed_handlers(&account.address(), unconfirmed_remove(hash.clone())).await {
+    if let Err(err) = ws_conn
+        .add_unconfirmed_removed_handlers(&account.address(), unconfirmed_remove(hash.clone()))
+        .await
+    {
         panic!("{}", err)
     }
 
@@ -99,10 +112,7 @@ async fn main() {
         }
     });
 
-    let response = client
-        .transaction_api()
-        .announce(&sig_tx)
-        .await;
+    let response = client.transaction_api().announce(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{} \n", resp),
@@ -116,17 +126,20 @@ async fn main() {
 }
 
 fn block_handler(info: BlockInfo) -> bool {
-    println!("Height: {}, Timestamp: {}", info.height, info.timestamp.to_time());
+    println!(
+        "Height: {}, Timestamp: {}",
+        info.height,
+        info.timestamp.to_time()
+    );
     false
 }
 
-fn status_handler(hash: String) -> Box<dyn Fn(TransactionStatus) -> bool + Send + 'static>
-{
+fn status_handler(hash: String) -> Box<dyn Fn(TransactionStatus) -> bool + Send + 'static> {
     Box::new(move |info: TransactionStatus| {
         println!("Content: {}", info.hash);
         if info.hash.eq(&hash) {
             println!("Status: {}", info.status);
-            return true
+            return true;
         };
         false
     })
@@ -143,12 +156,11 @@ fn confirmed_added(info: Box<dyn Transaction>) -> bool {
     println!("Confirmed Entity_type: {}", info.entity_type().to_string());
     println!("Confirmed Height: {}", info.height());
     println!("\n");
-    
+
     false
 }
 
-fn unconfirmed_remove(hash: String) -> Box<dyn Fn(TransactionInfo) -> bool + Send + 'static>
-{
+fn unconfirmed_remove(hash: String) -> Box<dyn Fn(TransactionInfo) -> bool + Send + 'static> {
     Box::new(move |info: TransactionInfo| {
         let hash_info = info.hash.unwrap();
         println!("UnconfirmedRemove: {}", hash_info);

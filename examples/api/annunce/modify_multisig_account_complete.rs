@@ -5,7 +5,7 @@
 #![deny(warnings)]
 #![warn(rust_2018_idioms)]
 
-use xpx_chain_apis::SiriusClient;
+use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::multisig::{CosignatoryModification, MultisigModificationType};
 use xpx_chain_sdk::transaction::{
@@ -48,18 +48,18 @@ async fn main() {
     // Deadline default 1 hour
     let deadline = Deadline::default();
     //let deadline = Deadline::new(1, 30, 0);
-    
+
     let multi_sig_account = Account::from_private_key(MULTI_SIG_PRIVATE_KEY, network_type).unwrap();
-    
+
     let cosignatory_one =
         Account::from_private_key(COSIGNATORY_ONE_PRIVATE_KEY, network_type).unwrap();
     let cosignatory_two =
         Account::from_private_key(COSIGNATORY_TWO_PRIVATE_KEY, network_type).unwrap();
     let cosignatory_three =
         Account::from_private_key(COSIGNATORY_THREE_PRIVATE_KEY, network_type).unwrap();
-    
+
     println!("CUETA {}", cosignatory_three);
-    
+
     let modify_multi_sig_account_new = ModifyMultisigAccountTransaction::new(
         deadline,
         MINIMAL_APPROVAL,
@@ -109,7 +109,7 @@ async fn main() {
 
     println!("Singer: \t{}", multi_sig_account.public_key_string());
     println!("Hash: \t\t{}", sig_tx.get_hash());
-    
+
     let response = client.transaction_api().announce(&sig_tx).await;
 
     match response {
