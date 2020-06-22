@@ -2,11 +2,11 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::sync::Arc;
-
-use reqwest::Method;
-
-use sdk::{blockchain::BlockInfo, transaction::Transactions};
+use {
+    ::std::sync::Arc,
+    reqwest::Method,
+    sdk::{blockchain::BlockInfo, transaction::Transactions},
+};
 
 use crate::{
     dtos::{BlockInfoDto, TransactionDto},
@@ -180,7 +180,7 @@ impl BlockRoutes {
     ///            for i in tx {
     ///                println!("{}", i)
     ///            }
-    ///        },
+    ///        }
     ///        Err(err) => eprintln!("{:?}", err),
     ///    }
     ///}

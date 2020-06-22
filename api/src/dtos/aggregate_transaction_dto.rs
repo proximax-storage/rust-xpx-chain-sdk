@@ -2,11 +2,13 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use serde_json::Value;
-
-use sdk::transaction::{AggregateTransaction, Transaction};
-
-use sdk::multisig::Cosignature;
+use {
+    sdk::{
+        multisig::Cosignature,
+        transaction::{AggregateTransaction, Transaction},
+    },
+    serde_json::Value,
+};
 
 use crate::internally::map_aggregate_transactions_dto;
 
@@ -58,10 +60,11 @@ impl TransactionDto for AggregateTransactionInfoDto {
             dto._type,
             dto.max_fee,
             dto.deadline,
-        ).compact(info)?;
+        )
+        .compact(info)?;
 
         let mut cosignatures: Vec<Cosignature> = vec![];
-        if let Some(c) = dto.cosignatures{
+        if let Some(c) = dto.cosignatures {
             cosignatures = c
                 .into_iter()
                 .map(|item| item.compact(abs_transaction.network_type))

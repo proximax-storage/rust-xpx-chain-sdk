@@ -2,14 +2,15 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::collections::HashMap;
-
-use sdk::{
-    account::PublicAccount,
-    exchange::{OfferIdInfo, OfferIdInfos, OfferInfo, OfferType, UserExchangeInfo},
-    exchange::OfferType::{BuyOffer, SellOffer},
-    mosaic::{Mosaic, MosaicId},
-    network::NetworkType,
+use {
+    ::std::collections::HashMap,
+    sdk::{
+        account::PublicAccount,
+        exchange::OfferType::{BuyOffer, SellOffer},
+        exchange::{OfferIdInfo, OfferIdInfos, OfferInfo, OfferType, UserExchangeInfo},
+        mosaic::{Mosaic, MosaicId},
+        network::NetworkType,
+    },
 };
 
 use super::Uint64Dto;
@@ -85,7 +86,7 @@ pub(crate) struct OfferInfoDto {
     price: u64,
     residual_cost: Option<Uint64Dto>,
     deadline: Uint64Dto,
-    owner: Option<String>
+    owner: Option<String>,
 }
 
 impl OfferInfoDto {

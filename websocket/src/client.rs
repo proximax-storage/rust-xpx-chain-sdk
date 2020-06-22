@@ -7,8 +7,7 @@ use {
     downcast_rs::Downcast,
     futures_util::{SinkExt, StreamExt},
     serde_json::Value,
-    std::borrow::Cow,
-    std::collections::HashMap,
+    std::{borrow::Cow, collections::HashMa},
     tokio_tungstenite::{connect_async, tungstenite::Message, WebSocketStream},
     url::Url,
 };

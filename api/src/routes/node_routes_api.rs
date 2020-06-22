@@ -2,11 +2,11 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::sync::Arc;
-
-use reqwest::Method;
-
-use sdk::node::{NodeInfo, NodeTime};
+use {
+    ::std::sync::Arc,
+    reqwest::Method,
+    sdk::node::{NodeInfo, NodeTime},
+};
 
 use crate::{dtos::NodeTimeDto, request as __internal_request, sirius_client::ApiClient, Result};
 

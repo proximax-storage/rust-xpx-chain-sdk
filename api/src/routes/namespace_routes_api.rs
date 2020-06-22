@@ -2,28 +2,28 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::{future::Future, pin::Pin, sync::Arc};
-
-use reqwest::Method;
-
-use sdk::{
-    account::{AccountsId, Address},
-    errors_const::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
-    AssetId,
-    namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
+use {
+    ::std::{future::Future, pin::Pin, sync::Arc},
+    reqwest::Method,
+    sdk::{
+        account::{AccountsId, Address},
+        errors_const::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
+        namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
+        AssetId,
+    },
 };
 
 use crate::{
     dtos::{NamespaceInfoDto, NamespaceNameDto},
     internally::valid_vec_len,
     request as __internal_request,
-    Result,
     sirius_client::ApiClient,
+    Result,
 };
 
 use super::{
-    NAMESPACE_NAMES_ROUTE, NAMESPACE_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES,
-    NAMESPACES_FROM_ACCOUNTS_ROUTE,
+    NAMESPACES_FROM_ACCOUNTS_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES, NAMESPACE_NAMES_ROUTE,
+    NAMESPACE_ROUTE,
 };
 
 /// Namespace ApiClient routes.
@@ -33,9 +33,7 @@ pub struct NamespaceRoutes(Arc<ApiClient>);
 
 /// Namespace related endpoints.
 ///
-impl NamespaceRoutes
-
-{
+impl NamespaceRoutes {
     pub(crate) fn new(client: Arc<ApiClient>) -> Self {
         NamespaceRoutes(client)
     }
@@ -43,7 +41,7 @@ impl NamespaceRoutes
     fn __build_namespace_hierarchy<'b>(
         self,
         ns_info: &'b mut NamespaceInfo,
-    ) -> Pin<Box<dyn Future<Output=()> + 'b>> {
+    ) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
         Box::pin(async move {
             let info_parent = match &ns_info.parent {
                 Some(info) => info,
@@ -76,7 +74,7 @@ impl NamespaceRoutes
     fn __build_namespaces_hierarchy<'b>(
         self,
         ns_infos: &'b mut Vec<NamespaceInfo>,
-    ) -> Pin<Box<dyn Future<Output=()> + 'b>> {
+    ) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
         Box::pin(async move {
             for ns_info in ns_infos.iter_mut() {
                 self.clone().__build_namespace_hierarchy(ns_info).await

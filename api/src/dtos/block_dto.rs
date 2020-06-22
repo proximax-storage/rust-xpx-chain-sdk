@@ -3,12 +3,11 @@
 // license that can be found in the LICENSE file.
 
 use sdk::{
-    account::{EMPTY_PUBLIC_KEY, PublicAccount},
+    account::{PublicAccount, EMPTY_PUBLIC_KEY},
     blockchain::BlockInfo,
     network::extract_network_type,
+    transaction::{extract_version, BlockchainTimestamp},
     Result,
-    transaction::BlockchainTimestamp,
-    transaction::extract_version,
 };
 
 use super::Uint64Dto;
@@ -38,7 +37,7 @@ pub struct BlockDto {
     previous_block_hash: String,
     block_transactions_hash: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    block_receipts_hash:  Option<String>,
+    block_receipts_hash: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     state_hash: Option<String>,
     beneficiary: Option<String>,
@@ -47,7 +46,12 @@ pub struct BlockDto {
 }
 
 impl BlockDto {
-    pub fn compact(self, generation_hash: String, num_transactions: u64, total_fee: [u32; 2] ) -> Result<BlockInfo> {
+    pub fn compact(
+        self,
+        generation_hash: String,
+        num_transactions: u64,
+        total_fee: [u32; 2],
+    ) -> Result<BlockInfo> {
         let dto = self;
 
         let network_type = extract_network_type(dto.version as u32);
@@ -57,37 +61,35 @@ impl BlockDto {
         let version = extract_version(dto.version as u32);
 
         let mut beneficiary_public_account = Option::default();
-        if let Some(v) = dto.beneficiary  {
+        if let Some(v) = dto.beneficiary {
             if v != EMPTY_PUBLIC_KEY {
-                beneficiary_public_account = Some(PublicAccount::from_public_key(
-                    &v,
-                    network_type,
-                )?);
+                beneficiary_public_account =
+                    Some(PublicAccount::from_public_key(&v, network_type)?);
             }
         }
 
         let mut fee_multiplier = 0;
-        if let Some(v) = dto.fee_multiplier{
+        if let Some(v) = dto.fee_multiplier {
             fee_multiplier = v;
         }
 
         let mut block_receipts_hash = "".to_string();
-        if let Some(v) = dto.block_receipts_hash{
+        if let Some(v) = dto.block_receipts_hash {
             block_receipts_hash = v;
         }
 
         let mut state_hash = "".to_string();
-        if let Some(v) = dto.state_hash{
+        if let Some(v) = dto.state_hash {
             state_hash = v;
         }
 
         let mut fee_interest = 0;
-        if let Some(v) = dto.fee_interest{
+        if let Some(v) = dto.fee_interest {
             fee_interest = v;
         }
 
         let mut fee_interest_denominator = 0;
-        if let Some(v) = dto.fee_interest_denominator{
+        if let Some(v) = dto.fee_interest_denominator {
             fee_interest_denominator = v;
         }
 
@@ -125,7 +127,11 @@ pub struct BlockInfoDto {
 
 impl BlockInfoDto {
     pub fn compact(self) -> Result<BlockInfo> {
-        self.block.compact(self.meta.generation_hash, self.meta.num_transactions, self.meta.total_fee.0)
+        self.block.compact(
+            self.meta.generation_hash,
+            self.meta.num_transactions,
+            self.meta.total_fee.0,
+        )
     }
 }
 

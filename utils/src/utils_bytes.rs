@@ -2,10 +2,11 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::core::mem::size_of;
-
-use byteorder::{LittleEndian, WriteBytesExt};
-use hex::{decode, encode};
+use {
+    ::core::mem::size_of,
+    byteorder::{LittleEndian, WriteBytesExt},
+    hex::{decode, encode},
+};
 
 pub const SIZE_U32: usize = size_of::<u32>();
 

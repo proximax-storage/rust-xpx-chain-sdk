@@ -2,11 +2,11 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use ::std::sync::Arc;
-
-use reqwest::Method;
-
-use sdk::blockchain::{BlockchainScore, HeightInfo, StorageInfo};
+use {
+    ::std::sync::Arc,
+    reqwest::Method,
+    sdk::blockchain::{BlockchainScore, HeightInfo, StorageInfo},
+};
 
 use crate::{
     dtos::{BlockchainScoreDto, HeightInfoDto},
