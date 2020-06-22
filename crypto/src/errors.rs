@@ -8,8 +8,7 @@
 // Display) should be snake cased, for some reason.
 #![allow(non_snake_case)]
 
-use core::fmt;
-use core::fmt::Display;
+use core::fmt::{Display, Formatter, Result};
 
 /// Internal errors.  Most application-level developers will likely not
 /// need to pay any attention to these.
@@ -31,16 +30,14 @@ pub(crate) enum InternalError {
 }
 
 impl Display for InternalError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match *self {
-            InternalError::PointDecompressionError
-                => write!(f, "Cannot decompress Edwards point"),
-            InternalError::ScalarFormatError
-                => write!(f, "Cannot use scalar with high-bit set"),
-            InternalError::BytesLengthError{ name: n, length: l}
-                => write!(f, "{} must be {} bytes in length", n, l),
-            InternalError::VerifyError
-                => write!(f, "Verification equation was not satisfied"),
+            InternalError::PointDecompressionError => write!(f, "Cannot decompress Edwards point"),
+            InternalError::ScalarFormatError => write!(f, "Cannot use scalar with high-bit set"),
+            InternalError::BytesLengthError { name: n, length: l } => {
+                write!(f, "{} must be {} bytes in length", n, l)
+            }
+            InternalError::VerifyError => write!(f, "Verification equation was not satisfied"),
         }
     }
 }
@@ -65,7 +62,7 @@ impl ::failure::Fail for InternalError {}
 pub struct SignatureError(pub(crate) InternalError);
 
 impl Display for SignatureError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         write!(f, "{}", self.0)
     }
 }

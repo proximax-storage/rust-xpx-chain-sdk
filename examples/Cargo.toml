@@ -24,6 +24,8 @@ tokio = { version = "0.2", default-features = false, features = ["io-util"] }
 
 failure = "0.1"
 
+hex = "^0.3"
+
 [[example]]
 name = "varios"
 path = "sdk/varios.rs"

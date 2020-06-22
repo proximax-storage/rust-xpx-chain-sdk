@@ -11,11 +11,11 @@ use {
         multisig::CosignatoryModification,
         network::NetworkType,
         transaction::{EntityTypeEnum as Entity, Hash},
-        utils::is_hex,
         Result, Uint64,
     },
     serde_json::Value,
     std::fmt::{Debug, Write},
+    utils::is_hex,
 };
 
 use crate::dtos::{CosignatoryModificationDto, MosaicPropertyDto, TransactionDto};

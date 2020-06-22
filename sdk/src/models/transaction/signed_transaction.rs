@@ -40,7 +40,7 @@ impl SignedTransaction {
         hex::decode(&self.hash).unwrap()
     }
 
-    pub(crate) fn payload_to_bytes(&self) -> Vec<u8> {
+    pub fn payload_to_bytes(&self) -> Vec<u8> {
         hex::decode(&self.get_payload()).unwrap()
     }
 
