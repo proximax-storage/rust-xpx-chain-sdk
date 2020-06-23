@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 use {
-    ::std::fmt,
+    ::std::{fmt, ops::Deref},
     serde::{Serialize, Serializer},
     utils::is_hex,
 };
@@ -77,5 +77,13 @@ impl From<Uint64> for MosaicId {
 impl From<u64> for MosaicId {
     fn from(e: u64) -> Self {
         MosaicId(Uint64::new(e))
+    }
+}
+
+// Enable `Deref` coercion NetworkType.
+impl Deref for MosaicId {
+    type Target = Uint64;
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }

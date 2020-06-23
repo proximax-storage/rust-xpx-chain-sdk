@@ -90,8 +90,8 @@ impl SiriusClient {
         Ok(api)
     }
 
-    pub fn generation_hash(&self) -> String {
-        self.generation_hash.to_string()
+    pub fn generation_hash(&self) -> &str {
+        &self.generation_hash
     }
 
     pub fn network_type(&self) -> NetworkType {

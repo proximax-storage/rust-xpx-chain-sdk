@@ -133,12 +133,10 @@ impl Transaction for RegisterNamespaceTransaction {
 
         let namespace_id_vec = builder.create_vector(&self.namespace_id.to_u32_array());
 
-        let mut d_vec = fb::WIPOffset::new(0);
-        if self.namespace_type == NamespaceType::Root {
-            d_vec = builder.create_vector(&self.duration.unwrap().to_int_array());
-        } else {
-            d_vec = builder.create_vector(&self.parent_id.unwrap().to_u32_array());
-        }
+        let d_vec = match self.namespace_type {
+            NamespaceType::Root => builder.create_vector(&self.duration.unwrap().to_int_array()),
+            _ => builder.create_vector(&self.parent_id.unwrap().to_u32_array()),
+        };
 
         let name_vec = builder.create_string(self.name.as_ref());
 

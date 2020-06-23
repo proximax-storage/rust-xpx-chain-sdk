@@ -96,7 +96,7 @@ async fn main() {
         panic!("{}", err)
     }
 
-    let sig_transaction = multi_sig_account.sign(aggregate_bonded.unwrap(), &generation_hash);
+    let sig_transaction = multi_sig_account.sign(aggregate_bonded.unwrap(), generation_hash);
 
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,
@@ -132,7 +132,7 @@ async fn lock_fund(
     client: &Box<SiriusClient>,
     account: &Account,
     signed_hash: Hash,
-    generation_hash: String,
+    generation_hash: &str,
 ) -> Result<()> {
     // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
     let network_type = client.network_type();
@@ -149,7 +149,7 @@ async fn lock_fund(
         network_type,
     )?;
 
-    let sig_tx = account.sign(lock_transaction, &generation_hash)?;
+    let sig_tx = account.sign(lock_transaction, generation_hash)?;
 
     println!("Singer Lock: \t{}", account.public_key_string());
     println!("Hash Lock: \t\t{}", sig_tx.get_hash());

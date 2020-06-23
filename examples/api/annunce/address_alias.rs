@@ -48,7 +48,7 @@ async fn main() {
         panic!("{}", err)
     }
 
-    let sig_transaction = account.sign(alias_transaction.unwrap(), &generation_hash);
+    let sig_transaction = account.sign(alias_transaction.unwrap(), generation_hash);
 
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,

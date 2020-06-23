@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 use {
-    ::std::fmt,
+    ::std::{fmt, ops::Deref},
     byteorder::{BigEndian, WriteBytesExt},
     failure::_core::ops::BitAnd,
     utils::SIZE_U64,
@@ -63,11 +63,6 @@ impl Uint64 {
         let higher = (self.0 >> 32) as u32;
         return [lower, higher];
     }
-
-    /// Converts to u64 Primitive.
-    pub fn to_u64(&self) -> u64 {
-        self.0
-    }
 }
 
 impl fmt::LowerHex for Uint64 {
@@ -109,5 +104,13 @@ impl fmt::Display for Uint64 {
 impl fmt::Debug for Uint64 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+// Enable `Deref` coercion Uint64.
+impl Deref for Uint64 {
+    type Target = u64;
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }

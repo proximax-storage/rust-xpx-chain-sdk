@@ -139,7 +139,9 @@ struct AccountPropertiesTransactionBodyDto {
     modifications: Vec<AccountPropertiesModificationDto>,
 }
 
-/// AccountPropertiesTransactionDto : Transaction that prevents receiving transactions from undesired addresses, mosaics or sending certain transaction types.
+/// AccountPropertiesTransactionDto :
+/// Transaction that prevents receiving transactions from undesired
+/// addresses, mosaics or sending certain transaction types.
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct AccountPropertiesTransactionDto {

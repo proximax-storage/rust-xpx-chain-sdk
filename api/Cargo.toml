@@ -9,7 +9,7 @@ homepage = "https://www.proximax.io"
 repository = "https://github.com/proximax-storage/rust-xpx-chain-sdk/api"
 documentation = "https://github.com/proximax-storage/rust-xpx-chain-sdk/wiki"
 keywords = ["blockchain", "sdk", "api"]
-categories = ["sdk"]
+categories = ["api"]
 exclude = [ ".gitignore" ]
 edition = "2018"
 
@@ -21,15 +21,28 @@ crate-type = ["lib"]
 xpx-chain-sdk = { path = "../sdk", version = "^0.1" }
 xpx-chain-utils = { path = "../utils" }
 
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "^1.0"
+[dependencies.serde]
+version = "^1.0"
+features = ["derive"]
 
-typetag = "0.1"
+[dependencies.serde_json]
+version = "^1.0"
 
-hex = "^0.3"
-bytes = "0.5"
-reqwest = "0.10"
-tokio = { version = "0.2", features = ["macros"] }
+[dependencies.typetag]
+version = "^0.1"
+
+[dependencies.hex]
+version = "^0.3"
+
+[dependencies.bytes]
+version = "^0.5"
+
+[dependencies.reqwest]
+version = "^0.10"
+
+[dependencies.tokio]
+version = "^0.2"
+features = ["macros"]
 
 [dependencies.failure]
 version = "0.1"

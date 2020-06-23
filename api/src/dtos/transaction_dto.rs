@@ -7,9 +7,9 @@ use sdk::{
     mosaic::{Mosaic, MosaicId},
     network::extract_network_type,
     transaction::{
-        AbstractTransaction,
         deadline::{BlockchainTimestamp, Deadline},
-        EntityTypeEnum, internal::extract_version, LockFundsTransaction, SignedTransaction, Transaction,
+        internal::extract_version,
+        AbstractTransaction, EntityTypeEnum, LockFundsTransaction, SignedTransaction, Transaction,
         TransactionInfo, TransactionStatus, TransferTransaction,
     },
 };
@@ -79,7 +79,7 @@ impl AbstractTransactionDto {
 
         let mut deadline = None;
         if let Some(item) = &dto.deadline {
-            let timestamp = BlockchainTimestamp::new(item.compact().to_u64() as i64);
+            let timestamp = BlockchainTimestamp::new(*item.compact() as i64);
             deadline = Some(Deadline::from(timestamp))
         }
 
@@ -202,7 +202,7 @@ impl TransactionStatusDto {
 
         let mut deadline = None;
         if let Some(value) = &dto.deadline {
-            let blockchain_timestamp = BlockchainTimestamp::new(value.compact().to_u64() as i64);
+            let blockchain_timestamp = BlockchainTimestamp::new(*value.compact() as i64);
             deadline = Some(Deadline::from(blockchain_timestamp));
         };
 
@@ -242,7 +242,7 @@ impl TransactionDto for TransferTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-            .compact(info)?;
+        .compact(info)?;
 
         let mut mosaics: Vec<Mosaic> = vec![];
         if let Some(value) = &dto.mosaics {
@@ -324,7 +324,7 @@ impl TransactionDto for HashLockTransactionInfoDto {
             dto.max_fee,
             dto.deadline,
         )
-            .compact(info)?;
+        .compact(info)?;
 
         let mosaic = Mosaic::new(
             MosaicId::from(dto.mosaic_id.compact()),

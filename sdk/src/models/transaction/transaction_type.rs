@@ -2,7 +2,44 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use {num_enum::IntoPrimitive, serde::Serialize};
+use {
+    num_enum::IntoPrimitive,
+    serde_repr::{Deserialize_repr, Serialize_repr},
+};
+
+//pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
+//pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
+//pub(crate) const ACCOUNT_PROPERTY_MOSAIC_VERSION: EntityVersion = 1;
+pub(crate) const ADDRESS_ALIAS_VERSION: EntityVersion = 1;
+//pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
+pub(crate) const AGGREGATE_BONDED_VERSION: EntityVersion = 2;
+pub(crate) const AGGREGATE_COMPLETED_VERSION: EntityVersion = 2;
+//pub(crate) const BLOCKCHAIN_UPGRADE_VERSION: EntityVersion = 1;
+//pub(crate) const DRIVE_FILES_REWARD_VERSION: EntityVersion = 1;
+//pub(crate) const DRIVE_FILE_SYSTEM_VERSION: EntityVersion = 1;
+//pub(crate) const END_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
+//pub(crate) const END_DRIVE_VERSION: EntityVersion = 1;
+//pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 2;
+//pub(crate) const FILES_DEPOSIT_VERSION: EntityVersion = 1;
+//pub(crate) const JOIN_TO_DRIVE_VERSION: EntityVersion = 1;
+//pub(crate) const LINK_ACCOUNT_VERSION: EntityVersion = 2;
+pub(crate) const LOCK_VERSION: EntityVersion = 1;
+//pub(crate) const METADATA_ADDRESS_VERSION: EntityVersion = 1;
+//pub(crate) const METADATA_MOSAIC_VERSION: EntityVersion = 1;
+//pub(crate) const METADATA_NAMESPACE_VERSION: EntityVersion = 1;
+//pub(crate) const MODIFY_CONTRACT_VERSION: EntityVersion = 3;
+pub(crate) const MODIFY_MULTISIG_VERSION: EntityVersion = 3;
+pub(crate) const MOSAIC_ALIAS_VERSION: EntityVersion = 1;
+pub(crate) const MOSAIC_DEFINITION_VERSION: EntityVersion = 3;
+pub(crate) const MOSAIC_SUPPLY_CHANGE_VERSION: EntityVersion = 2;
+//pub(crate) const NETWORK_CONFIG_VERSION: EntityVersion = 1;
+//pub(crate) const PREPARE_DRIVE_VERSION: EntityVersion = 1;
+pub(crate) const REGISTER_NAMESPACE_VERSION: EntityVersion = 2;
+//pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
+//pub(crate) const SECRET_LOCK_VERSION: EntityVersion = 1;
+//pub(crate) const SECRET_PROOF_VERSION: EntityVersion = 1;
+//pub(crate) const START_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
+pub(crate) const TRANSFER_VERSION: EntityVersion = 3;
 
 pub(crate) type EntityVersion = u32;
 
@@ -30,56 +67,32 @@ pub(crate) type EntityVersion = u32;
 /// * 0x414C (16716 decimal) - Account Link Transaction.
 /// * 0x8043 (32835 decimal) - Nemesis block.
 /// * 0x8143 (33091 decimal) - Regular block.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr, IntoPrimitive)]
 #[repr(u16)]
 pub enum EntityTypeEnum {
-    #[serde(rename = "16728")]
-    BlockchainUpgrade = 0x4158,
-    #[serde(rename = "16729")]
-    NetworkConfigEntityType = 0x4159,
-    #[serde(rename = "16701")]
     _16701 = 0x413D,
-    #[serde(rename = "16957")]
     _16957 = 0x423D,
-    #[serde(rename = "17213")]
     _17213 = 0x433D,
-    #[serde(rename = "16717")]
+    BlockchainUpgrade = 0x4158,
+    NetworkConfigEntityType = 0x4159,
     MosaicDefinition = 0x414D,
-    #[serde(rename = "16973")]
     MosaicSupplyChange = 0x424D,
-    #[serde(rename = "16718")]
     NamespaceRegistration = 0x414E,
-    #[serde(rename = "16974")]
     AddressAlias = 0x424E,
-    #[serde(rename = "17230")]
     MosaicAlias = 0x434E,
-    #[serde(rename = "16724")]
     Transfer = 0x4154,
-    #[serde(rename = "16725")]
     ModifyMultisigAccount = 0x4155,
-    #[serde(rename = "16705")]
     AggregateComplete = 0x4141,
-    #[serde(rename = "16961")]
     AggregateBonded = 0x4241,
-    #[serde(rename = "16712")]
     Lock = 0x4148,
-    #[serde(rename = "16720")]
     AccountRestrictionAddress = 0x4150,
-    #[serde(rename = "16976")]
     AccountRestrictionMosaic = 0x4250,
-    #[serde(rename = "17232")]
     AccountRestrictionOperation = 0x4350,
-    #[serde(rename = "16722")]
     SecretLock = 0x4152,
-    #[serde(rename = "16978")]
     SecretProof = 0x4252,
-    #[serde(rename = "16716")]
     AccountLink = 0x414C,
-    #[serde(rename = "32835")]
     NemesisBlock = 0x8043,
-    #[serde(rename = "33091")]
     Block = 0x8143,
-    #[serde(rename = "Unknown")]
     EntityTypeUnknown,
 }
 
@@ -123,41 +136,7 @@ impl From<u16> for EntityTypeEnum {
 }
 
 impl core::fmt::Display for EntityTypeEnum {
-    fn fmt(&self, e: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(e, "{}", self.value())
+    fn fmt(&self, e: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
     }
 }
-
-//pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
-//pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
-//pub(crate) const ACCOUNT_PROPERTY_MOSAIC_VERSION: EntityVersion = 1;
-pub(crate) const ADDRESS_ALIAS_VERSION: EntityVersion = 1;
-//pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
-pub(crate) const AGGREGATE_BONDED_VERSION: EntityVersion = 2;
-pub(crate) const AGGREGATE_COMPLETED_VERSION: EntityVersion = 2;
-//pub(crate) const BLOCKCHAIN_UPGRADE_VERSION: EntityVersion = 1;
-//pub(crate) const DRIVE_FILES_REWARD_VERSION: EntityVersion = 1;
-//pub(crate) const DRIVE_FILE_SYSTEM_VERSION: EntityVersion = 1;
-//pub(crate) const END_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
-//pub(crate) const END_DRIVE_VERSION: EntityVersion = 1;
-//pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 2;
-//pub(crate) const FILES_DEPOSIT_VERSION: EntityVersion = 1;
-//pub(crate) const JOIN_TO_DRIVE_VERSION: EntityVersion = 1;
-//pub(crate) const LINK_ACCOUNT_VERSION: EntityVersion = 2;
-pub(crate) const LOCK_VERSION: EntityVersion = 1;
-//pub(crate) const METADATA_ADDRESS_VERSION: EntityVersion = 1;
-//pub(crate) const METADATA_MOSAIC_VERSION: EntityVersion = 1;
-//pub(crate) const METADATA_NAMESPACE_VERSION: EntityVersion = 1;
-//pub(crate) const MODIFY_CONTRACT_VERSION: EntityVersion = 3;
-pub(crate) const MODIFY_MULTISIG_VERSION: EntityVersion = 3;
-pub(crate) const MOSAIC_ALIAS_VERSION: EntityVersion = 1;
-pub(crate) const MOSAIC_DEFINITION_VERSION: EntityVersion = 3;
-pub(crate) const MOSAIC_SUPPLY_CHANGE_VERSION: EntityVersion = 2;
-//pub(crate) const NETWORK_CONFIG_VERSION: EntityVersion = 1;
-//pub(crate) const PREPARE_DRIVE_VERSION: EntityVersion = 1;
-pub(crate) const REGISTER_NAMESPACE_VERSION: EntityVersion = 2;
-//pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
-//pub(crate) const SECRET_LOCK_VERSION: EntityVersion = 1;
-//pub(crate) const SECRET_PROOF_VERSION: EntityVersion = 1;
-//pub(crate) const START_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
-pub(crate) const TRANSFER_VERSION: EntityVersion = 3;

@@ -7,10 +7,7 @@ use {
     sdk::transaction::{BlockchainTimestamp, Deadline},
 };
 
-use crate::{
-    Handler,
-    model::WsSubscribeDto,
-};
+use crate::{model::WsSubscribeDto, Handler};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -33,9 +30,7 @@ impl WsSubscribeDto for WsStatusInfoDto {
     type Output = sdk::transaction::TransactionStatus;
 
     fn compact(self) -> Self::Output {
-        let blockchain_timestamp = BlockchainTimestamp::new(
-            self.deadline.compact().to_u64() as i64
-        );
+        let blockchain_timestamp = BlockchainTimestamp::new(*self.deadline.compact() as i64);
 
         let deadline = Deadline::from(blockchain_timestamp);
 
@@ -54,7 +49,7 @@ impl WsSubscribeDto for WsStatusInfoDto {
 }
 
 pub struct HandlerStatus {
-    pub handler: Box<dyn Fn(sdk::transaction::TransactionStatus) -> bool + Send>
+    pub handler: Box<dyn Fn(sdk::transaction::TransactionStatus) -> bool + Send>,
 }
 
 impl Handler for HandlerStatus {}

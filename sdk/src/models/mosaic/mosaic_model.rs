@@ -10,7 +10,7 @@ use crate::models::{
 };
 
 use super::{
-    internally::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE},
+    internally::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE, XPX_MIN_VALUE},
     MosaicId,
 };
 
@@ -103,6 +103,8 @@ impl Mosaic {
             XPX_MAX_VALUE
         );
 
+        assert!(amount > 0, "Minimum xpx value must be {}", XPX_MIN_VALUE);
+
         let xpx_mosaic_id = Box::new(MosaicId(Uint64(PRX_XPX_U64)));
 
         Self {
@@ -116,6 +118,12 @@ impl Mosaic {
             amount <= XPX_MAX_RELATIVE_VALUE,
             "Maximum xpx relative value must be {}",
             XPX_MAX_RELATIVE_VALUE
+        );
+
+        assert!(
+            amount > 0,
+            "Minimum xpx relative value must be {}",
+            XPX_MIN_VALUE
         );
 
         Mosaic::xpx(amount * XPX_DIVISIBILITY)

@@ -100,7 +100,7 @@ impl BlockDto {
             version,
             dto._type,
             dto.height.compact(),
-            BlockchainTimestamp::new(dto.timestamp.compact().to_u64() as i64).to_timestamp(),
+            BlockchainTimestamp::new(*dto.timestamp.compact() as i64).to_timestamp(),
             dto.difficulty.compact(),
             num_transactions,
             fee_multiplier,

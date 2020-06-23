@@ -34,6 +34,8 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
+    println!("account: {}", account);
+
     let ws = SiriusWebsocketClient::new(client.node()).await;
     let mut ws_conn = match ws {
         Ok(ws_client) => ws_client,
@@ -71,7 +73,7 @@ async fn main() {
     let transfer_transaction = TransferTransaction::new(
         deadline,
         recipient,
-        vec![Mosaic::xpx_relative(10)],
+        vec![Mosaic::xpx(1)],
         message,
         network_type,
     );
@@ -80,7 +82,7 @@ async fn main() {
         panic!("{}", err)
     }
 
-    let sig_transaction = account.sign(transfer_transaction.unwrap(), &generation_hash);
+    let sig_transaction = account.sign(transfer_transaction.unwrap(), generation_hash);
 
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,
@@ -127,7 +129,7 @@ async fn main() {
 
 fn block_handler(info: BlockInfo) -> bool {
     println!(
-        "Height: {}, Timestamp: {}",
+        "New Block Height: {}, Timestamp: {}",
         info.height,
         info.timestamp.to_time()
     );
@@ -164,9 +166,11 @@ fn unconfirmed_remove(hash: String) -> Box<dyn Fn(TransactionInfo) -> bool + Sen
     Box::new(move |info: TransactionInfo| {
         let hash_info = info.hash.unwrap();
         println!("UnconfirmedRemove: {}", hash_info);
+
         if hash_info.eq(&hash) {
-            true;
-        };
-        false
+            true
+        } else {
+            false
+        }
     })
 }

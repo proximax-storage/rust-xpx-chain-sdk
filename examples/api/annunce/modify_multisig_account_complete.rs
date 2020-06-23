@@ -99,7 +99,7 @@ async fn main() {
     let sig_transaction = multi_sig_account.sign_with_cosignatories(
         aggregate_bonded.unwrap(),
         vec![cosignatory_one, cosignatory_two, cosignatory_three],
-        &generation_hash,
+        generation_hash,
     );
 
     let sig_tx = match &sig_transaction {
