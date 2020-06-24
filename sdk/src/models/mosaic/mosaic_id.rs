@@ -11,6 +11,7 @@ use {
 use crate::models::{account::PublicAccount, asset_id_model::AssetId, Uint64};
 
 use super::{generate_mosaic_id, MosaicNonce};
+use serde_json::Value;
 
 /// The `MosaicId` id structure describes mosaic id.
 #[derive(Default, Debug, Clone, PartialEq, Deserialize, Eq, Hash)]
@@ -34,6 +35,11 @@ impl MosaicId {
     /// Creates a new `MosaicId` from a pair of 32-bit integers.
     pub fn from_ints(lower: u32, higher: u32) -> Self {
         Self(Uint64::from_ints(lower, higher))
+    }
+
+    /// Creates a new `MosaicId` from a pair of 32-bit integers.
+    pub fn from_value(value: Value) -> Self {
+        Self(Uint64::from_value(value))
     }
 
     /// Creates a new `MosaicId` from a given `mosaic_nonce` and owner's `PublicAccount`.

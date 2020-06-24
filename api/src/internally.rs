@@ -146,9 +146,9 @@ pub fn map_transaction_dto(body: Bytes) -> Result<String> {
 
     let entity_dto = match entity_type {
         Entity::AccountLink => "AccountLink",
-        Entity::AccountRestrictionAddress => "AccountPropertiesAddress",
-        Entity::AccountRestrictionMosaic => "AccountPropertiesMosaic",
-        Entity::AccountRestrictionEntity => "AccountPropertiesEntity",
+        Entity::AccountRestrictionAddress => "AccountProperties",
+        Entity::AccountRestrictionMosaic => "AccountProperties",
+        Entity::AccountRestrictionEntity => "AccountProperties",
         Entity::AddressAlias => "AddressAlias",
         Entity::AggregateBonded => "Aggregate",
         Entity::AggregateComplete => "Aggregate",

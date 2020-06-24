@@ -4,9 +4,10 @@
 
 use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::{
-    Account, AccountPropertiesAddressModification, AccountPropertyType, Address, ADD_PROPERTY,
+    Account, AccountPropertiesMosaicModification, AccountPropertyType, ADD_PROPERTY,
 };
-use xpx_chain_sdk::transaction::{AccountPropertiesAddressTransaction, Deadline};
+use xpx_chain_sdk::mosaic::MosaicId;
+use xpx_chain_sdk::transaction::{AccountPropertiesMosaicTransaction, Deadline};
 
 const PRIVATE_KEY: &str = "EE5D1277A862A449173C55454740BEE1A29AB837A97507021340B6EA68909097";
 
@@ -31,21 +32,21 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
-    let properties_address_transaction = AccountPropertiesAddressTransaction::new(
+    let properties_mosaic_transaction = AccountPropertiesMosaicTransaction::new(
         deadline,
-        AccountPropertyType::BlockAddress,
-        vec![AccountPropertiesAddressModification::new(
+        AccountPropertyType::BlockMosaic,
+        vec![AccountPropertiesMosaicModification::new(
             ADD_PROPERTY,
-            Address::from_raw("VCAEM4A2O3FDANHJICR5UVQUHIB3AOQEUO7L6QQN").unwrap(),
+            MosaicId::from_hex("57701A9B6E746988").unwrap(),
         )],
         network_type,
     );
 
-    if let Err(err) = &properties_address_transaction {
+    if let Err(err) = &properties_mosaic_transaction {
         panic!("{}", err)
     }
 
-    let tx = properties_address_transaction.unwrap();
+    let tx = properties_mosaic_transaction.unwrap();
 
     let sig_transaction = account.sign(tx, generation_hash);
 

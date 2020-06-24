@@ -6,17 +6,20 @@ use {
     sdk::{
         account::{
             AccountInfo, AccountLinkTypeEnum, AccountName, AccountPropertiesAddressModification,
-            AccountPropertyType, Address,
+            AccountPropertiesMosaicModification, AccountPropertyType, Address,
         },
-        mosaic::Mosaic,
-        transaction::{AccountPropertiesAddressTransaction, Transaction},
+        mosaic::{Mosaic, MosaicId},
+        transaction::{
+            AccountPropertiesAddressTransaction, AccountPropertiesMosaicTransaction, Transaction,
+        },
     },
+    serde::Serialize,
     serde_json::Value,
 };
 
-use crate::{AbstractTransactionDto, TransactionDto, TransactionMetaDto};
+use crate::error::Error::Failure;
 
-use super::{MosaicDto, Uint64Dto};
+use super::{AbstractTransactionDto, MosaicDto, TransactionDto, TransactionMetaDto, Uint64Dto};
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -103,7 +106,7 @@ impl AccountNamesDto {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountPropertiesAddressTransactionInfoDto {
+pub struct AccountPropertiesTransactionInfoDto {
     pub meta: TransactionMetaDto,
     pub transaction: AccountPropertiesTransactionDto,
 }
@@ -121,7 +124,7 @@ pub struct AccountPropertiesTransactionDto {
 }
 
 #[typetag::serde]
-impl TransactionDto for AccountPropertiesAddressTransactionInfoDto {
+impl TransactionDto for AccountPropertiesTransactionInfoDto {
     fn compact(&self) -> crate::Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
@@ -129,20 +132,41 @@ impl TransactionDto for AccountPropertiesAddressTransactionInfoDto {
 
         let abs_transaction = dto.r#abstract.compact(info)?;
 
-        let modifications: Vec<AccountPropertiesAddressModification> = dto
-            .modifications
-            .iter()
-            .map(move |p| AccountPropertiesAddressModification {
-                modification_type: p.r#type,
-                address: Address::from_encoded(p.value.as_str().unwrap()).unwrap_or_default(),
-            })
-            .collect();
+        if dto.property_type & AccountPropertyType::AllowAddress.value() != 0 {
+            let modifications: Vec<AccountPropertiesAddressModification> = dto
+                .modifications
+                .iter()
+                .map(move |p| AccountPropertiesAddressModification {
+                    modification_type: p.r#type,
+                    address: Address::from_encoded(p.value.as_str().unwrap()).unwrap_or_default(),
+                })
+                .collect();
 
-        Ok(Box::new(AccountPropertiesAddressTransaction {
-            abs_transaction,
-            property_type: AccountPropertyType::from(dto.property_type),
-            modifications,
-        }))
+            Ok(Box::new(AccountPropertiesAddressTransaction {
+                abs_transaction,
+                property_type: AccountPropertyType::from(dto.property_type),
+                modifications,
+            }))
+        } else if dto.property_type & AccountPropertyType::AllowMosaic.value() != 0 {
+            let modifications: Vec<AccountPropertiesMosaicModification> = dto
+                .modifications
+                .iter()
+                .map(move |p| AccountPropertiesMosaicModification {
+                    modification_type: p.r#type.to_owned(),
+                    asset_id: Box::new(MosaicId::from(
+                        Uint64Dto::from_value(p.value.to_owned()).compact(),
+                    )),
+                })
+                .collect();
+
+            Ok(Box::new(AccountPropertiesMosaicTransaction {
+                abs_transaction,
+                property_type: AccountPropertyType::from(dto.property_type),
+                modifications,
+            }))
+        } else {
+            Err(Failure(format_err!("invalid AccountPropertyType")))
+        }
     }
 }
 

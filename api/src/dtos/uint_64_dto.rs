@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 use sdk::Uint64;
+use serde_json::Value;
 
 #[derive(Debug, Clone, Deserialize, Serialize)] // we derive Default in order to use the clear() method in Drop
 pub struct Uint64Dto(pub(crate) [u32; 2]);
@@ -10,6 +11,10 @@ pub struct Uint64Dto(pub(crate) [u32; 2]);
 impl Uint64Dto {
     pub fn compact(&self) -> Uint64 {
         Uint64::from_ints(self.0[0], self.0[1])
+    }
+
+    pub fn from_value(value: Value) -> Self {
+        Self(serde_json::from_value(value).unwrap())
     }
 
     pub fn as_bytes(&self) -> [u32; 2] {

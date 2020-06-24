@@ -11,6 +11,7 @@ use {
 };
 
 use super::Address;
+use crate::AssetId;
 
 pub type PropertyModificationType = u8;
 
@@ -75,7 +76,7 @@ impl core::fmt::Display for AccountPropertyType {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct AccountPropertiesAddressModification {
     pub modification_type: PropertyModificationType,
     pub address: Address,
@@ -91,6 +92,34 @@ impl AccountPropertiesAddressModification {
 }
 
 impl core::fmt::Display for AccountPropertiesAddressModification {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
+    }
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct AccountPropertiesMosaicModification {
+    pub modification_type: PropertyModificationType,
+    pub asset_id: Box<dyn AssetId>,
+}
+
+impl AccountPropertiesMosaicModification {
+    pub fn new(
+        modification_type: PropertyModificationType,
+        asset_id: impl AssetId + 'static,
+    ) -> Self {
+        Self {
+            modification_type,
+            asset_id: Box::new(asset_id),
+        }
+    }
+}
+
+impl core::fmt::Display for AccountPropertiesMosaicModification {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f,
