@@ -3,9 +3,10 @@
 // license that can be found in the LICENSE file.
 
 use {
-    ::std::fmt,
+    ::std::{fmt, ops::Deref},
     byteorder::{BigEndian, WriteBytesExt},
     failure::_core::ops::BitAnd,
+    serde_json::Value,
     utils::SIZE_U64,
 };
 
@@ -18,12 +19,12 @@ use {
 pub struct Uint64(pub(crate) u64);
 
 impl Uint64 {
-    pub fn new(u: u64) -> Uint64 {
-        Uint64(u)
+    pub fn new(u: u64) -> Self {
+        Self(u)
     }
 
     /// Creates a `Uint64` from a pair of u32 integers.
-    pub fn from_ints(lower: u32, higher: u32) -> Uint64 {
+    pub fn from_ints(lower: u32, higher: u32) -> Self {
         let mut buf = [0u8; SIZE_U64];
         buf[..4]
             .as_mut()
@@ -33,18 +34,23 @@ impl Uint64 {
             .as_mut()
             .write_u32::<BigEndian>(lower)
             .expect("Unable to write");
-        Uint64::from_bytes(buf)
+        Self::from_bytes(buf)
     }
 
     /// Creates a `Uint64` from a u8 array.
-    pub fn from_bytes(b: [u8; 8]) -> Uint64 {
-        Uint64(u64::from_be_bytes(b))
+    pub fn from_bytes(b: [u8; 8]) -> Self {
+        Self(u64::from_be_bytes(b))
     }
 
     /// Creates a `Uint64` from a hex &str.
-    pub fn from_hex(hex_code: &str) -> Result<Uint64, core::num::ParseIntError> {
+    pub fn from_hex(hex_code: &str) -> Result<Self, core::num::ParseIntError> {
         let r: u64 = u64::from_str_radix(&hex_code, 16)?;
-        Ok(Uint64(r))
+        Ok(Self(r))
+    }
+
+    /// Converts to hex String representation.
+    pub fn from_value(value: Value) -> Self {
+        Self::new(value.as_u64().unwrap())
     }
 
     /// Converts to hex String representation.
@@ -62,11 +68,6 @@ impl Uint64 {
         let lower = self.0 as u32;
         let higher = (self.0 >> 32) as u32;
         return [lower, higher];
-    }
-
-    /// Converts to u64 Primitive.
-    pub fn to_u64(&self) -> u64 {
-        self.0
     }
 }
 
@@ -109,5 +110,13 @@ impl fmt::Display for Uint64 {
 impl fmt::Debug for Uint64 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+// Enable `Deref` coercion Uint64.
+impl Deref for Uint64 {
+    type Target = u64;
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }

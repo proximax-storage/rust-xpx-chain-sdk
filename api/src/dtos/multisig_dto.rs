@@ -13,7 +13,6 @@ use crate::internally::cosignatory_dto_vec_to_struct;
 
 use super::{
     AbstractTransactionDto, CosignatoryModificationDto, TransactionDto, TransactionMetaDto,
-    Uint64Dto,
 };
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -92,16 +91,8 @@ pub(crate) struct ModifyMultisigAccountTransactionInfoDto {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ModifyMultisigAccountTransactionDto {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    signature: Option<String>,
-    signer: String,
-    version: u32,
-    #[serde(rename = "type")]
-    _type: u16,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    max_fee: Option<Uint64Dto>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    deadline: Option<Uint64Dto>,
+    #[serde(flatten)]
+    r#abstract: AbstractTransactionDto,
     min_removal_delta: i8,
     min_approval_delta: i8,
     modifications: Vec<CosignatoryModificationDto>,
@@ -113,20 +104,13 @@ impl TransactionDto for ModifyMultisigAccountTransactionInfoDto {
         let dto = self.transaction.clone();
         let info = self.meta.compact();
 
-        let abs = AbstractTransactionDto::new(
-            dto.signature,
-            dto.signer,
-            dto.version,
-            dto._type,
-            dto.max_fee,
-            dto.deadline,
-        )
-            .compact(info)?;
+        let abs_transaction = dto.r#abstract.compact(info)?;
 
-        let modifications = cosignatory_dto_vec_to_struct(dto.modifications, abs.network_type);
+        let modifications =
+            cosignatory_dto_vec_to_struct(dto.modifications, abs_transaction.network_type);
 
         Ok(Box::new(ModifyMultisigAccountTransaction {
-            abs_transaction: abs,
+            abs_transaction,
             min_removal_delta: dto.min_removal_delta,
             min_approval_delta: dto.min_approval_delta,
             modifications,

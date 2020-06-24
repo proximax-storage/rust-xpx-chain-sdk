@@ -38,7 +38,7 @@ impl PublicAccount {
 
         Ok(PublicAccount {
             address: Address::from_public_key(public_key, network_type)?,
-            public_key: public_key.to_string(),
+            public_key: public_key.to_uppercase(),
         })
     }
 

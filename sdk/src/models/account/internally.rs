@@ -65,7 +65,7 @@ pub(crate) fn public_key_to_address(
     let ripemd160step_one_hash = Ripemd160::digest(sha3_public_key_hash.as_slice());
 
     // step 3: add version byte in front of (2)
-    let version_prefixed_ripemd160hash = [&[version.value()], &ripemd160step_one_hash[..]].concat(); // ripemd160step_one_hash.to_vec();
+    let version_prefixed_ripemd160hash = [&[*version], &ripemd160step_one_hash[..]].concat(); // ripemd160step_one_hash.to_vec();
 
     // step 4: get the checksum of (3)
     let step_three_checksum = generate_checksum(&version_prefixed_ripemd160hash);

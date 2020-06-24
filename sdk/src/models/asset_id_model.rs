@@ -14,7 +14,7 @@ where
     fn to_uint64(&self) -> Uint64;
 
     fn to_u64(&self) -> u64 {
-        self.to_uint64().to_u64()
+        *self.to_uint64()
     }
 
     fn to_mosaic_id(&self) -> MosaicId {

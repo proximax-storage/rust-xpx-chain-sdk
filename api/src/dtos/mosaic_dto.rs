@@ -5,8 +5,8 @@
 use sdk::{
     errors_const,
     mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicNonce, MosaicSupplyType},
-    Result,
     transaction::{MosaicDefinitionTransaction, MosaicSupplyChangeTransaction, Transaction},
+    Result,
 };
 
 use crate::internally::mosaic_properties;
@@ -101,16 +101,8 @@ pub(crate) struct MosaicDefinitionTransactionInfoDto {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicDefinitionTransactionDto {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    signature: Option<String>,
-    signer: String,
-    version: u32,
-    #[serde(rename = "type")]
-    _type: u16,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    max_fee: Option<Uint64Dto>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    deadline: Option<Uint64Dto>,
+    #[serde(flatten)]
+    r#abstract: AbstractTransactionDto,
     /// Random nonce used to generate the mosaic id.
     mosaic_nonce: u32,
     mosaic_id: Uint64Dto,
@@ -124,20 +116,12 @@ impl TransactionDto for MosaicDefinitionTransactionInfoDto {
 
         let info = self.meta.compact();
 
-        let abs = AbstractTransactionDto::new(
-            dto.signature,
-            dto.signer,
-            dto.version,
-            dto._type,
-            dto.max_fee,
-            dto.deadline,
-        )
-            .compact(info)?;
+        let abs_transaction = dto.r#abstract.compact(info)?;
 
         let properties = mosaic_properties(&dto.properties)?;
 
         Ok(Box::new(MosaicDefinitionTransaction {
-            abs_transaction: abs,
+            abs_transaction,
             properties,
             mosaic_nonce: MosaicNonce::from(dto.mosaic_nonce),
             mosaic_id: MosaicId::from(dto.mosaic_id.compact()),
@@ -160,13 +144,8 @@ pub(crate) struct MosaicDefinitionDto {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicMetadataTransactionDto {
-    signature: String,
-    signer: String,
-    version: u32,
-    #[serde(rename = "type")]
-    _type: u16,
-    max_fee: Uint64Dto,
-    deadline: Uint64Dto,
+    #[serde(flatten)]
+    r#abstract: AbstractTransactionDto,
     metadata_id: Uint64Dto,
     metadata_type: MetadataTypeEnum,
     /// The array of metadata modifications.
@@ -209,18 +188,10 @@ impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
 
         let info = self.meta.compact();
 
-        let abs = AbstractTransactionDto::new(
-            dto.signature,
-            dto.signer,
-            dto.version,
-            dto._type,
-            dto.max_fee,
-            dto.deadline,
-        )
-            .compact(info)?;
+        let abs_transaction = dto.r#abstract.compact(info)?;
 
         Ok(Box::new(MosaicSupplyChangeTransaction {
-            abs_transaction: abs,
+            abs_transaction,
             supply_type: MosaicSupplyType::from(dto.direction),
             asset_id: Box::new(MosaicId::from(dto.mosaic_id.compact())),
             delta: dto.delta.compact(),
@@ -232,31 +203,9 @@ impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicSupplyChangeTransactionDto {
-    signature: Option<String>,
-    signer: String,
-    version: u32,
-    #[serde(rename = "type")]
-    _type: u16,
-    max_fee: Option<Uint64Dto>,
-    deadline: Option<Uint64Dto>,
+    #[serde(flatten)]
+    r#abstract: AbstractTransactionDto,
     mosaic_id: Uint64Dto,
     direction: u8,
     delta: Uint64Dto,
-}
-
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub(crate) struct EmbeddedMosaicMetadataTransactionDto {
-    /// The public key of the entity signer formatted as hexadecimal.
-    signer: String,
-    /// The entity version. The higher byte represents the network identifier: * 0x68 (MAIN_NET) - PUBLIC main network. * 0x98 (TEST_NET) - PUBLIC test network. * 0x60 (MIJIN) - PRIVATE network. * 0x90 (MIJIN_TEST) - PRIVATE test network.
-    version: u32,
-    #[serde(rename = "type")]
-    _type: u16,
-    max_fee: Uint64Dto,
-    deadline: Uint64Dto,
-    metadata_id: Uint64Dto,
-    metadata_type: MetadataTypeEnum,
-    /// The array of metadata modifications.
-    modifications: Vec<MetadataModificationDto>,
 }

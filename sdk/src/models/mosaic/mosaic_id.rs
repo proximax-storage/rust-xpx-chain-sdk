@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 use {
-    ::std::fmt,
+    ::std::{fmt, ops::Deref},
     serde::{Serialize, Serializer},
     utils::is_hex,
 };
@@ -11,6 +11,7 @@ use {
 use crate::models::{account::PublicAccount, asset_id_model::AssetId, Uint64};
 
 use super::{generate_mosaic_id, MosaicNonce};
+use serde_json::Value;
 
 /// The `MosaicId` id structure describes mosaic id.
 #[derive(Default, Debug, Clone, PartialEq, Deserialize, Eq, Hash)]
@@ -34,6 +35,11 @@ impl MosaicId {
     /// Creates a new `MosaicId` from a pair of 32-bit integers.
     pub fn from_ints(lower: u32, higher: u32) -> Self {
         Self(Uint64::from_ints(lower, higher))
+    }
+
+    /// Creates a new `MosaicId` from a pair of 32-bit integers.
+    pub fn from_value(value: Value) -> Self {
+        Self(Uint64::from_value(value))
     }
 
     /// Creates a new `MosaicId` from a given `mosaic_nonce` and owner's `PublicAccount`.
@@ -77,5 +83,13 @@ impl From<Uint64> for MosaicId {
 impl From<u64> for MosaicId {
     fn from(e: u64) -> Self {
         MosaicId(Uint64::new(e))
+    }
+}
+
+// Enable `Deref` coercion NetworkType.
+impl Deref for MosaicId {
+    type Target = Uint64;
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }

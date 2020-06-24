@@ -146,9 +146,9 @@ pub fn map_transaction_dto(body: Bytes) -> Result<String> {
 
     let entity_dto = match entity_type {
         Entity::AccountLink => "AccountLink",
-        Entity::AccountRestrictionAddress => "AccountRestrictionAddress",
-        Entity::AccountRestrictionMosaic => "AccountRestrictionMosaic",
-        Entity::AccountRestrictionOperation => "AccountRestrictionOperation",
+        Entity::AccountRestrictionAddress => "AccountProperties",
+        Entity::AccountRestrictionMosaic => "AccountProperties",
+        Entity::AccountRestrictionEntity => "AccountProperties",
         Entity::AddressAlias => "AddressAlias",
         Entity::AggregateBonded => "Aggregate",
         Entity::AggregateComplete => "Aggregate",
@@ -235,7 +235,7 @@ pub(crate) fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> Result<MosaicPr
     for property in dto.into_iter() {
         match property.id {
             0 => flags = property.value.compact(),
-            1 => divisibility = property.value.compact().to_u64() as u8,
+            1 => divisibility = *property.value.compact() as u8,
             2 => duration = property.value.compact(),
             _ => bail!("Unknown Property Id"),
         }
@@ -260,5 +260,5 @@ pub fn cosignatory_dto_vec_to_struct(
 }
 
 pub fn has_bits(number: Uint64, bits: u8) -> bool {
-    (number.to_u64() & bits as u64) == bits as u64
+    (*number & bits as u64) == bits as u64
 }

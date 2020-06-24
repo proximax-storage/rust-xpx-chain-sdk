@@ -5,6 +5,7 @@
 use ::std::fmt::{Debug, Display, Formatter, Result};
 
 use crate::models::errors_const;
+use std::ops::Deref;
 
 /// MIJIN private network identifier. Decimal value = 96.
 pub const MIJIN: NetworkType = NetworkType(0x60);
@@ -44,10 +45,6 @@ impl NetworkType {
             _ => "NOT_SUPPORTED_NET",
         }
     }
-
-    pub fn value(&self) -> u8 {
-        self.0
-    }
 }
 
 impl Display for NetworkType {
@@ -85,5 +82,13 @@ impl From<&str> for NetworkType {
             "ALIAS_ADDRESS" => ALIAS_ADDRESS,
             _ => NOT_SUPPORTED_NET,
         }
+    }
+}
+
+// Enable `Deref` coercion NetworkType.
+impl Deref for NetworkType {
+    type Target = u8;
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
