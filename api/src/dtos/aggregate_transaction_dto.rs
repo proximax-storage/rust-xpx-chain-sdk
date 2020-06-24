@@ -12,26 +12,14 @@ use {
 
 use crate::internally::map_aggregate_transactions_dto;
 
-use super::{
-    AbstractTransactionDto, CosignatureDto, TransactionDto, TransactionMetaDto, Uint64Dto,
-};
+use super::{AbstractTransactionDto, CosignatureDto, TransactionDto, TransactionMetaDto};
 
 /// AggregateTransactionDto : Transaction that combines multiple transactions together.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AggregateTransactionDto {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    signature: Option<String>,
-    signer: String,
-    version: u32,
-    #[serde(rename = "type")]
-    pub _type: u16,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    max_fee: Option<Uint64Dto>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    deadline: Option<Uint64Dto>,
-    /// An array of transaction cosignatures.
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(flatten)]
+    pub r#abstract: AbstractTransactionDto,
     cosignatures: Option<Vec<CosignatureDto>>,
     /// The array of transactions initiated by different accounts.
     pub transactions: Vec<Value>,
@@ -53,15 +41,7 @@ impl TransactionDto for AggregateTransactionInfoDto {
 
         let txs_dto = map_aggregate_transactions_dto(dto.transactions)?;
 
-        let abs_transaction = AbstractTransactionDto::new(
-            dto.signature,
-            dto.signer,
-            dto.version,
-            dto._type,
-            dto.max_fee,
-            dto.deadline,
-        )
-        .compact(info)?;
+        let abs_transaction = dto.r#abstract.compact(info)?;
 
         let mut cosignatures: Vec<Cosignature> = vec![];
         if let Some(c) = dto.cosignatures {

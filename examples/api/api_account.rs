@@ -1,12 +1,12 @@
-// Copyright 2018 ProximaX Limited. All rights reserved.
+use xpx_chain_api::SiriusClient;
+use xpx_chain_sdk::account::PublicAccount;
+
+mod prueba;// Copyright 2018 ProximaX Limited. All rights reserved.
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-#![deny(warnings)]
-#![warn(rust_2018_idioms)]
-
-use xpx_chain_api::SiriusClient;
-use xpx_chain_sdk::account::PublicAccount;
+# ![deny(warnings)]
+# ![warn(rust_2018_idioms)]
 
 const PUBLIC_KEY_A: &str = "c8f52a6ed98c5bcd52e090da0d1950d58b13d239e4cecc05f5d4acd706f5da75";
 const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";

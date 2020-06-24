@@ -2,13 +2,13 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
+pub use self::aggregate_transaction_dto::*;
 pub use self::block_dto::*;
 pub use self::cosignature_dto::*;
 pub use self::transaction_dto::*;
 pub use self::uint_64_dto::*;
-pub use self::aggregate_transaction_dto::*;
 
-pub(crate) use self::account_dto::*;
+pub use self::account_dto::*;
 pub(crate) use self::alias_dto::*;
 pub(crate) use self::blockchain_dto::*;
 pub(crate) use self::config_dto::*;

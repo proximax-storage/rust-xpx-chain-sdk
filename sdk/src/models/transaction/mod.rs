@@ -5,6 +5,7 @@
 pub use self::deadline::*;
 pub use self::internal::*;
 pub use self::signed_transaction::*;
+pub use self::transaction_account_properties_address::*;
 pub use self::transaction_aggregate::*;
 pub use self::transaction_alias::*;
 pub use self::transaction_alias_address::*;
@@ -25,6 +26,7 @@ pub use self::transaction_type::*;
 pub mod deadline;
 pub mod internal;
 mod signed_transaction;
+mod transaction_account_properties_address;
 mod transaction_aggregate;
 mod transaction_alias;
 mod transaction_alias_address;

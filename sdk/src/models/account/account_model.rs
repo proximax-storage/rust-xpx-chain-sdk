@@ -180,7 +180,7 @@ pub struct AccountName {
 }
 
 impl core::fmt::Display for AccountName {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f,
             "{}",

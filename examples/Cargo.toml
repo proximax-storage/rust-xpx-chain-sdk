@@ -26,9 +26,12 @@ failure = "0.1"
 
 hex = "^0.3"
 
-[[example]]
-name = "varios"
-path = "sdk/varios.rs"
+[dependencies.serde]
+version = "^1.0"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "^1.0"
 
 [[example]]
 name = "crypto"
@@ -77,6 +80,10 @@ path = "api/api_node.rs"
 [[example]]
 name = "api_transactions"
 path = "api/api_transactions.rs"
+
+[[example]]
+name = "account_properties_address"
+path = "api/annunce/account_properties_address.rs"
 
 [[example]]
 name = "annunce_add_exchange_offer"
@@ -137,3 +144,7 @@ path = "api/annunce/transfer.rs"
 [[example]]
 name = "websocket"
 path = "websocket/main.rs"
+
+[[example]]
+name = "Pruebas"
+path = "api/prueba.rs"

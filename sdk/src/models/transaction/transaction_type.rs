@@ -7,7 +7,7 @@ use {
     serde_repr::{Deserialize_repr, Serialize_repr},
 };
 
-//pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
+pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
 //pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
 //pub(crate) const ACCOUNT_PROPERTY_MOSAIC_VERSION: EntityVersion = 1;
 pub(crate) const ADDRESS_ALIAS_VERSION: EntityVersion = 1;
@@ -87,7 +87,7 @@ pub enum EntityTypeEnum {
     Lock = 0x4148,
     AccountRestrictionAddress = 0x4150,
     AccountRestrictionMosaic = 0x4250,
-    AccountRestrictionOperation = 0x4350,
+    AccountRestrictionEntity = 0x4350,
     SecretLock = 0x4152,
     SecretProof = 0x4252,
     AccountLink = 0x414C,
@@ -126,7 +126,7 @@ impl From<u16> for EntityTypeEnum {
             0x4250 => EntityTypeEnum::AccountRestrictionMosaic,
             0x4252 => EntityTypeEnum::SecretProof,
             0x434E => EntityTypeEnum::MosaicAlias,
-            0x4350 => EntityTypeEnum::AccountRestrictionOperation,
+            0x4350 => EntityTypeEnum::AccountRestrictionEntity,
             0x8043 => EntityTypeEnum::NemesisBlock,
             0x8143 => EntityTypeEnum::Block,
 
