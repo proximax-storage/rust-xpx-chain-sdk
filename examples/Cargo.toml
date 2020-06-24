@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-examples"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
 
 homepage = "https://www.proximax.io"
@@ -152,7 +152,3 @@ path = "api/annunce/transfer.rs"
 [[example]]
 name = "websocket"
 path = "websocket/main.rs"
-
-[[example]]
-name = "Pruebas"
-path = "api/prueba.rs"

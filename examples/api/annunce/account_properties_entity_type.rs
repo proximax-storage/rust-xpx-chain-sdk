@@ -2,11 +2,13 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
+#![deny(warnings)]
+#![warn(rust_2018_idioms)]
+
 use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::{
     Account, AccountPropertiesEntityTypeModification, AccountPropertyType, ADD_PROPERTY,
 };
-use xpx_chain_sdk::mosaic::MosaicId;
 use xpx_chain_sdk::transaction::{
     AccountPropertiesEntityTypeTransaction, Deadline, EntityTypeEnum,
 };

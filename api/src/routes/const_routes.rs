@@ -6,7 +6,7 @@
 pub const ACCOUNTS_ROUTE: &str = "/account";
 pub const ACCOUNT_ROUTE: &str = "/account/{accountId}";
 pub const ACCOUNT_NAMES_ROUTE: &str = "/account/names";
-pub const ACCOUNT_PROPERTIES_ROUTE: &str = "/account/{accountId}/properties/";
+pub const ACCOUNT_PROPERTIES_ROUTE: &str = "/account/{accountId}/properties";
 pub const ACCOUNTS_PROPERTIES_ROUTE: &str = "/account/properties";
 pub const MULTISIG_ACCOUNT_ROUTE: &str = "/account/{accountId}/multisig";
 pub const MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE: &str = "/account/{accountId}/multisig/graph";

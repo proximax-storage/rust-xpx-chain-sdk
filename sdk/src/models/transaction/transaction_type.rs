@@ -2,10 +2,7 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-use {
-    num_enum::IntoPrimitive,
-    serde_repr::{Deserialize_repr, Serialize_repr},
-};
+use num_enum::IntoPrimitive;
 
 pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
 pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
@@ -67,7 +64,7 @@ pub(crate) type EntityVersion = u32;
 /// * 0x4350 (17232 decimal) - Account Properties Entity Type Transaction.
 /// * 0x8043 (32835 decimal) - Nemesis block.
 /// * 0x8143 (33091 decimal) - Regular block.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, IntoPrimitive)]
 #[repr(u16)]
 pub enum EntityTypeEnum {
     BlockchainUpgrade = 0x4158,

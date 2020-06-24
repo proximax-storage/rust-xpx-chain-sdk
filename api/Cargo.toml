@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-api"
-version = "0.1.3"
+version = "0.1.4"
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]

@@ -5,9 +5,9 @@
 use {
     sdk::{
         account::{
-            AccountInfo, AccountLinkTypeEnum, AccountName, AccountPropertiesAddressModification,
-            AccountPropertiesEntityTypeModification, AccountPropertiesMosaicModification,
-            AccountPropertyType, Address,
+            AccountInfo, AccountLinkTypeEnum, AccountName, AccountProperties,
+            AccountPropertiesAddressModification, AccountPropertiesEntityTypeModification,
+            AccountPropertiesMosaicModification, AccountPropertyType, Address,
         },
         mosaic::{Mosaic, MosaicId},
         transaction::{
@@ -22,6 +22,7 @@ use {
 use crate::error::Error::Failure;
 
 use super::{AbstractTransactionDto, MosaicDto, TransactionDto, TransactionMetaDto, Uint64Dto};
+use serde::{Deserialize, Deserializer};
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -66,15 +67,6 @@ impl AccountInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
-struct AccountLinkTransactionBodyDto {
-    /// The public key of the remote account.
-    #[serde(rename = "remoteAccountKey")]
-    remote_account_key: String,
-    #[serde(rename = "action")]
-    action: u8,
-}
-
 /// AccountLinkTransactionDto : Delegates the account importance score to a proxy account.
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -108,9 +100,9 @@ impl AccountNamesDto {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountPropertiesTransactionInfoDto {
-    pub meta: TransactionMetaDto,
-    pub transaction: AccountPropertiesTransactionDto,
+pub(crate) struct AccountPropertiesTransactionInfoDto {
+    meta: TransactionMetaDto,
+    transaction: AccountPropertiesTransactionDto,
 }
 
 /// AccountPropertiesTransactionDto :
@@ -118,11 +110,11 @@ pub struct AccountPropertiesTransactionInfoDto {
 /// addresses, mosaics or sending certain transaction types.
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountPropertiesTransactionDto {
+pub(crate) struct AccountPropertiesTransactionDto {
     #[serde(flatten)]
-    pub r#abstract: AbstractTransactionDto,
-    pub property_type: u8,
-    pub modifications: Vec<AccountPropertiesModificationDto>,
+    r#abstract: AbstractTransactionDto,
+    property_type: u8,
+    modifications: Vec<AccountPropertiesModificationDto>,
 }
 
 #[typetag::serde]
@@ -188,8 +180,133 @@ impl TransactionDto for AccountPropertiesTransactionInfoDto {
 }
 
 #[derive(Clone, Serialize, Deserialize)]
-pub struct AccountPropertiesModificationDto {
-    pub r#type: u8,
+struct AccountPropertiesModificationDto {
+    r#type: u8,
     /// The address, transaction type or mosaic id to filter.
-    pub value: Value,
+    value: Value,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct AccountPropertiesInfoDto {
+    account_properties: AccountPropertiesDto,
+}
+
+impl AccountPropertiesInfoDto {
+    pub fn compact(&self) -> crate::Result<AccountProperties> {
+        let dto = self.account_properties.clone();
+
+        let mut allowed_addresses: Vec<Address> = vec![];
+        let mut allowed_mosaic_id: Vec<MosaicId> = vec![];
+        let mut allowed_entity_types: Vec<EntityTypeEnum> = vec![];
+        let mut blocked_addresses: Vec<Address> = vec![];
+        let mut blocked_mosaic_id: Vec<MosaicId> = vec![];
+        let mut blocked_entity_types: Vec<EntityTypeEnum> = vec![];
+
+        dto.properties.iter().for_each(|p_dto| {
+            if let Some(item) = p_dto.addresses.clone() {
+                let property_addresses = item
+                    .into_iter()
+                    .map(|hex_address| Address::from_encoded(&hex_address).unwrap())
+                    .collect();
+                if p_dto.property_type == AccountPropertyType::AllowAddress.value() {
+                    allowed_addresses = property_addresses;
+                } else {
+                    blocked_addresses = property_addresses;
+                }
+            };
+        });
+
+        dto.properties.iter().for_each(|p_dto| {
+            if let Some(item) = p_dto.mosaic_ids.clone() {
+                let property_mosaic_id = item
+                    .into_iter()
+                    .map(|mosaic_id_dto| MosaicId::from(mosaic_id_dto.compact()))
+                    .collect();
+                if p_dto.property_type == AccountPropertyType::AllowMosaic.value() {
+                    allowed_mosaic_id = property_mosaic_id;
+                } else {
+                    blocked_mosaic_id = property_mosaic_id;
+                }
+            };
+        });
+
+        dto.properties.iter().for_each(|p_dto| {
+            if let Some(item) = p_dto.entity_types.clone() {
+                let property_entity_types = item
+                    .into_iter()
+                    .map(|entity_types_dto| EntityTypeEnum::from(entity_types_dto))
+                    .collect();
+                if p_dto.property_type == AccountPropertyType::AllowTransaction.value() {
+                    allowed_entity_types = property_entity_types;
+                } else {
+                    blocked_entity_types = property_entity_types;
+                }
+            };
+        });
+
+        Ok(AccountProperties {
+            address: Address::from_encoded(&dto.address)?,
+            allowed_addresses,
+            allowed_mosaic_id,
+            allowed_entity_types,
+            blocked_addresses,
+            blocked_mosaic_id,
+            blocked_entity_types,
+        })
+    }
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AccountPropertiesDto {
+    address: String,
+    properties: Vec<PropertiesDto>,
+}
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct PropertiesDto {
+    property_type: u8,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mosaic_ids: Option<Vec<Uint64Dto>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    addresses: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    entity_types: Option<Vec<u16>>,
+}
+
+impl<'de> Deserialize<'de> for PropertiesDto {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize, Debug)]
+        struct PropertyValue {
+            #[serde(rename = "propertyType")]
+            r#type: u8,
+            values: Value,
+        }
+
+        let property = PropertyValue::deserialize(deserializer)?;
+
+        let mut addresses = None;
+        let mut mosaic_ids = None;
+        let mut entity_types = None;
+
+        if property.r#type & AccountPropertyType::AllowAddress.value() != 0 {
+            addresses = Some(serde_json::from_value(property.values).unwrap());
+        } else if property.r#type & AccountPropertyType::AllowMosaic.value() != 0 {
+            mosaic_ids = Some(serde_json::from_value(property.values).unwrap())
+        } else if property.r#type & AccountPropertyType::AllowTransaction.value() != 0 {
+            entity_types = Some(serde_json::from_value(property.values).unwrap_or_default());
+        };
+
+        Ok(PropertiesDto {
+            property_type: property.r#type,
+            mosaic_ids,
+            addresses,
+            entity_types,
+        })
+    }
 }

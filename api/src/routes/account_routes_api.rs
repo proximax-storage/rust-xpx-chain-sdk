@@ -6,7 +6,9 @@ use {
     ::std::{collections::HashMap, future::Future, sync::Arc},
     reqwest::Method,
     sdk::{
-        account::{AccountInfo, AccountName, AccountsId, PublicAccount},
+        account::{
+            AccountInfo, AccountName, AccountProperties, AccountsId, Address, PublicAccount,
+        },
         errors_const::ERR_EMPTY_ADDRESSES_IDS,
         multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
         transaction::Transactions,
@@ -21,7 +23,7 @@ use crate::{
     internally::{str_to_account_id, valid_vec_len, AccountTransactionsOption},
     request as __internal_request,
     sirius_client::ApiClient,
-    Result,
+    AccountPropertiesInfoDto, Result,
 };
 
 use super::{
@@ -30,6 +32,7 @@ use super::{
     MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE, OUTGOING_TRANSACTIONS_ROUTE,
     TRANSACTIONS_BY_ACCOUNT_ROUTE, UNCONFIRMED_TRANSACTIONS_ROUTE,
 };
+use failure::ResultExt;
 
 /// Account ApiClient routes.
 ///
@@ -204,17 +207,21 @@ impl AccountRoutes {
         Ok(MultisigAccountGraphInfo { multisig_accounts })
     }
 
-    pub async fn account_properties(self, account_id: &str) -> Result<()> {
-        let id = str_to_account_id(account_id)?;
-
+    pub async fn account_properties(self, address: Address) -> Result<AccountProperties> {
         let mut req =
             __internal_request::Request::new(Method::GET, ACCOUNT_PROPERTIES_ROUTE.to_string());
 
-        req.with_path_param("accountId".to_string(), id);
-        unimplemented!()
+        req = req.with_path_param("accountId".to_string(), address.address_string());
+
+        let dto: Result<AccountPropertiesInfoDto> = req.execute(self.__client()).await;
+
+        dto?.compact()
     }
 
-    pub async fn accounts_properties(self, accounts_id: Vec<&str>) -> Result<Vec<()>> {
+    pub async fn accounts_properties(
+        self,
+        accounts_id: Vec<&str>,
+    ) -> Result<Vec<AccountProperties>> {
         valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
 
         let accounts = AccountsId::from(accounts_id);
@@ -222,9 +229,16 @@ impl AccountRoutes {
         let mut req =
             __internal_request::Request::new(Method::POST, ACCOUNTS_PROPERTIES_ROUTE.to_string());
 
-        req.with_body_param(&accounts);
+        req = req.with_body_param(&accounts);
 
-        unimplemented!()
+        let dto: Result<Vec<AccountPropertiesInfoDto>> = req.execute(self.__client()).await;
+
+        let mut accounts_properties: Vec<AccountProperties> = vec![];
+        for properties_dto in dto?.into_iter() {
+            accounts_properties.push(properties_dto.compact()?);
+        }
+
+        Ok(accounts_properties)
     }
 
     pub async fn transactions(

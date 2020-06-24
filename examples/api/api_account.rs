@@ -1,12 +1,12 @@
-use xpx_chain_api::SiriusClient;
-use xpx_chain_sdk::account::PublicAccount;
-
-mod prueba;// Copyright 2018 ProximaX Limited. All rights reserved.
+// Copyright 2018 ProximaX Limited. All rights reserved.
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-# ![deny(warnings)]
-# ![warn(rust_2018_idioms)]
+#![deny(warnings)]
+#![warn(rust_2018_idioms)]
+
+use xpx_chain_api::SiriusClient;
+use xpx_chain_sdk::account::{Address, PublicAccount};
 
 const PUBLIC_KEY_A: &str = "c8f52a6ed98c5bcd52e090da0d1950d58b13d239e4cecc05f5d4acd706f5da75";
 const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
@@ -95,6 +95,28 @@ async fn main() {
 
     match tx_partial {
         Ok(txs) => txs.into_iter().for_each(|tx| println!("{}", tx)),
+        Err(err) => eprintln!("{}", err),
+    }
+
+    let account_properties = client
+        .account_api()
+        .account_properties(Address::from_raw("VC6LFNKEQQEI5DOAA2OJLL4XRPDNPLRJDH6T2B7X").unwrap())
+        .await;
+
+    match account_properties {
+        Ok(properties) => println!("{}", properties),
+        Err(err) => eprintln!("{}", err),
+    }
+
+    let accounts_properties = client
+        .account_api()
+        .accounts_properties(vec!["VC6LFNKEQQEI5DOAA2OJLL4XRPDNPLRJDH6T2B7X"])
+        .await;
+
+    match accounts_properties {
+        Ok(a_properties) => a_properties
+            .into_iter()
+            .for_each(|properties| println!("{}", properties)),
         Err(err) => eprintln!("{}", err),
     }
 }

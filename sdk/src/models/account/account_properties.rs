@@ -11,8 +11,7 @@ use {
 };
 
 use super::Address;
-use crate::transaction::EntityTypeEnum;
-use crate::AssetId;
+use crate::{mosaic::MosaicId, transaction::EntityTypeEnum, AssetId};
 
 pub type PropertyModificationType = u8;
 
@@ -74,6 +73,27 @@ impl BitAnd for AccountPropertyType {
 impl core::fmt::Display for AccountPropertyType {
     fn fmt(&self, e: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
+    }
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct AccountProperties {
+    pub address: Address,
+    pub allowed_addresses: Vec<Address>,
+    pub allowed_mosaic_id: Vec<MosaicId>,
+    pub allowed_entity_types: Vec<EntityTypeEnum>,
+    pub blocked_addresses: Vec<Address>,
+    pub blocked_mosaic_id: Vec<MosaicId>,
+    pub blocked_entity_types: Vec<EntityTypeEnum>,
+}
+
+impl core::fmt::Display for AccountProperties {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
     }
 }
 
