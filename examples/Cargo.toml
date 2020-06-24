@@ -86,6 +86,10 @@ name = "account_properties_address"
 path = "api/annunce/account_properties_address.rs"
 
 [[example]]
+name = "account_properties_entity_type"
+path = "api/annunce/account_properties_entity_type.rs"
+
+[[example]]
 name = "account_properties_mosaic"
 path = "api/annunce/account_properties_mosaic.rs"
 

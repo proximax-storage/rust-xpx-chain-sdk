@@ -6,11 +6,13 @@ use {
     sdk::{
         account::{
             AccountInfo, AccountLinkTypeEnum, AccountName, AccountPropertiesAddressModification,
-            AccountPropertiesMosaicModification, AccountPropertyType, Address,
+            AccountPropertiesEntityTypeModification, AccountPropertiesMosaicModification,
+            AccountPropertyType, Address,
         },
         mosaic::{Mosaic, MosaicId},
         transaction::{
-            AccountPropertiesAddressTransaction, AccountPropertiesMosaicTransaction, Transaction,
+            AccountPropertiesAddressTransaction, AccountPropertiesEntityTypeTransaction,
+            AccountPropertiesMosaicTransaction, EntityTypeEnum, Transaction,
         },
     },
     serde::Serialize,
@@ -160,6 +162,21 @@ impl TransactionDto for AccountPropertiesTransactionInfoDto {
                 .collect();
 
             Ok(Box::new(AccountPropertiesMosaicTransaction {
+                abs_transaction,
+                property_type: AccountPropertyType::from(dto.property_type),
+                modifications,
+            }))
+        } else if dto.property_type & AccountPropertyType::AllowTransaction.value() != 0 {
+            let modifications: Vec<AccountPropertiesEntityTypeModification> = dto
+                .modifications
+                .iter()
+                .map(move |p| AccountPropertiesEntityTypeModification {
+                    modification_type: p.r#type.to_owned(),
+                    transaction_type: EntityTypeEnum::from(p.value.as_u64().unwrap() as u16),
+                })
+                .collect();
+
+            Ok(Box::new(AccountPropertiesEntityTypeTransaction {
                 abs_transaction,
                 property_type: AccountPropertyType::from(dto.property_type),
                 modifications,

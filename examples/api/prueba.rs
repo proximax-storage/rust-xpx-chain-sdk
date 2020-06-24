@@ -124,7 +124,7 @@ fn main() {
 }
 }"#;
 
-    let de: xpx_chain_api::AccountPropertiesAddressTransactionInfoDto =
+    let de: xpx_chain_api::AccountPropertiesTransactionInfoDto =
         serde_json::from_str(data).unwrap();
     println!("{}", de.compact().unwrap());
 }

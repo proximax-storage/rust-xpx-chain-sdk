@@ -46,9 +46,7 @@ async fn main() {
         panic!("{}", err)
     }
 
-    let tx = properties_mosaic_transaction.unwrap();
-
-    let sig_transaction = account.sign(tx, generation_hash);
+    let sig_transaction = account.sign(properties_mosaic_transaction.unwrap(), generation_hash);
 
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,

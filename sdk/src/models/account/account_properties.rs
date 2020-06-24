@@ -11,6 +11,7 @@ use {
 };
 
 use super::Address;
+use crate::transaction::EntityTypeEnum;
 use crate::AssetId;
 
 pub type PropertyModificationType = u8;
@@ -120,6 +121,34 @@ impl AccountPropertiesMosaicModification {
 }
 
 impl core::fmt::Display for AccountPropertiesMosaicModification {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(self).unwrap_or_default()
+        )
+    }
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct AccountPropertiesEntityTypeModification {
+    pub modification_type: PropertyModificationType,
+    pub transaction_type: EntityTypeEnum,
+}
+
+impl AccountPropertiesEntityTypeModification {
+    pub fn new(
+        modification_type: PropertyModificationType,
+        transaction_type: EntityTypeEnum,
+    ) -> Self {
+        Self {
+            modification_type,
+            transaction_type,
+        }
+    }
+}
+
+impl core::fmt::Display for AccountPropertiesEntityTypeModification {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f,

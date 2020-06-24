@@ -4,9 +4,12 @@
 
 use xpx_chain_api::SiriusClient;
 use xpx_chain_sdk::account::{
-    Account, AccountPropertiesAddressModification, AccountPropertyType, Address, ADD_PROPERTY,
+    Account, AccountPropertiesEntityTypeModification, AccountPropertyType, ADD_PROPERTY,
 };
-use xpx_chain_sdk::transaction::{AccountPropertiesAddressTransaction, Deadline};
+use xpx_chain_sdk::mosaic::MosaicId;
+use xpx_chain_sdk::transaction::{
+    AccountPropertiesEntityTypeTransaction, Deadline, EntityTypeEnum,
+};
 
 const PRIVATE_KEY: &str = "EE5D1277A862A449173C55454740BEE1A29AB837A97507021340B6EA68909097";
 
@@ -31,21 +34,21 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
-    let properties_address_transaction = AccountPropertiesAddressTransaction::new(
+    let properties_entity_transaction = AccountPropertiesEntityTypeTransaction::new(
         deadline,
-        AccountPropertyType::BlockAddress,
-        vec![AccountPropertiesAddressModification::new(
+        AccountPropertyType::BlockTransaction,
+        vec![AccountPropertiesEntityTypeModification::new(
             ADD_PROPERTY,
-            Address::from_raw("VCAEM4A2O3FDANHJICR5UVQUHIB3AOQEUO7L6QQN").unwrap(),
+            EntityTypeEnum::AccountLink,
         )],
         network_type,
     );
 
-    if let Err(err) = &properties_address_transaction {
+    if let Err(err) = &properties_entity_transaction {
         panic!("{}", err)
     }
 
-    let sig_transaction = account.sign(properties_address_transaction.unwrap(), generation_hash);
+    let sig_transaction = account.sign(properties_entity_transaction.unwrap(), generation_hash);
 
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,

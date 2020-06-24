@@ -8,6 +8,7 @@ use {
 };
 
 pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
+pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
 pub(crate) const ACCOUNT_PROPERTY_MOSAIC_VERSION: EntityVersion = 1;
 pub(crate) const ADDRESS_ALIAS_VERSION: EntityVersion = 1;
 pub(crate) const AGGREGATE_BONDED_VERSION: EntityVersion = 2;
@@ -19,7 +20,6 @@ pub(crate) const MOSAIC_DEFINITION_VERSION: EntityVersion = 3;
 pub(crate) const MOSAIC_SUPPLY_CHANGE_VERSION: EntityVersion = 2;
 pub(crate) const REGISTER_NAMESPACE_VERSION: EntityVersion = 2;
 pub(crate) const TRANSFER_VERSION: EntityVersion = 3;
-//pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
 //pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 //pub(crate) const BLOCKCHAIN_UPGRADE_VERSION: EntityVersion = 1;
 //pub(crate) const DRIVE_FILES_REWARD_VERSION: EntityVersion = 1;
@@ -96,6 +96,10 @@ pub enum EntityTypeEnum {
 impl EntityTypeEnum {
     pub fn value(self) -> u16 {
         self.into()
+    }
+
+    pub fn to_bytes(self) -> [u8; 2] {
+        self.value().to_le_bytes()
     }
 
     pub fn to_string(&self) -> String {
