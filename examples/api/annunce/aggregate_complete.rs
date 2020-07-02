@@ -69,7 +69,7 @@ async fn main() {
         network_type,
     );
 
-    let sig_transaction = account.sign(aggregate_complete.unwrap(), &generation_hash);
+    let sig_transaction = account.sign(aggregate_complete.unwrap(), generation_hash);
 
     let sig_tx = match &sig_transaction {
         Ok(sig) => sig,

@@ -10,16 +10,16 @@ extern crate erased_serde;
 extern crate failure;
 extern crate flatbuffers as fb;
 #[macro_use]
-extern crate serde_derive;
+extern crate serde;
 extern crate xpx_chain_crypto as crypto;
 extern crate xpx_chain_utils as utils;
 
 pub use self::models::account;
 pub use self::models::alias;
+pub use self::models::asset_id_model::AssetId;
 pub use self::models::blockchain;
 pub use self::models::errors_const;
 pub use self::models::exchange;
-pub use self::models::asset_id_model::AssetId;
 pub use self::models::message;
 pub use self::models::mosaic;
 pub use self::models::multisig;

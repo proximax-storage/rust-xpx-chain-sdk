@@ -6,10 +6,11 @@
 #![warn(rust_2018_idioms)]
 
 use xpx_chain_api::SiriusClient;
-use xpx_chain_sdk::account::Account;
-use xpx_chain_sdk::mosaic::{MosaicId, MosaicSupplyType};
-use xpx_chain_sdk::transaction::{Deadline, MosaicSupplyChangeTransaction};
-use xpx_chain_sdk::Uint64;
+use xpx_chain_sdk::account::{
+    Account, AccountPropertiesMosaicModification, AccountPropertyType, ADD_PROPERTY,
+};
+use xpx_chain_sdk::mosaic::MosaicId;
+use xpx_chain_sdk::transaction::{AccountPropertiesMosaicTransaction, Deadline};
 
 const PRIVATE_KEY: &str = "EE5D1277A862A449173C55454740BEE1A29AB837A97507021340B6EA68909097";
 
@@ -34,30 +35,31 @@ async fn main() {
 
     let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
 
-    let mosaic_supply = MosaicSupplyChangeTransaction::new(
+    let properties_mosaic_transaction = AccountPropertiesMosaicTransaction::new(
         deadline,
-        MosaicSupplyType::Increase,
-        MosaicId::from_hex("389B57CFE6FB5394").unwrap(),
-        Uint64::new(100000),
+        AccountPropertyType::BlockMosaic,
+        vec![AccountPropertiesMosaicModification::new(
+            ADD_PROPERTY,
+            MosaicId::from_hex("57701A9B6E746988").unwrap(),
+        )],
         network_type,
     );
 
-    if let Err(err) = &mosaic_supply {
+    if let Err(err) = &properties_mosaic_transaction {
         panic!("{}", err)
     }
 
-    let sig_mosaic_supply = account.sign(mosaic_supply.unwrap(), generation_hash);
+    let sig_transaction = account.sign(properties_mosaic_transaction.unwrap(), generation_hash);
 
-    if let Err(err) = &sig_mosaic_supply {
-        panic!("{}", err)
-    }
-
-    let sig_transaction = &sig_mosaic_supply.unwrap();
+    let sig_tx = match &sig_transaction {
+        Ok(sig) => sig,
+        Err(err) => panic!("{}", err),
+    };
 
     println!("Singer: \t{}", account.public_key_string());
-    println!("Hash: \t\t{}", sig_transaction.get_hash());
+    println!("Hash: \t\t{}", sig_tx.get_hash());
 
-    let response = client.transaction_api().announce(&sig_transaction).await;
+    let response = client.transaction_api().announce(&sig_tx).await;
 
     match response {
         Ok(resp) => println!("{}", resp),

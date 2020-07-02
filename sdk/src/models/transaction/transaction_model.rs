@@ -52,7 +52,7 @@ impl<'b> AbsVector<'b> {
             _ => Deadline::default(),
         };
 
-        let network_type: fb::UOffsetT = abs.network_type.value() as u32;
+        let network_type: fb::UOffsetT = *abs.network_type as u32;
 
         let version_vec = (network_type << 24) + abs.version as fb::UOffsetT;
         let signature_vec = builder.create_vector_direct(&[0u8; SIGNATURE_SIZE]);

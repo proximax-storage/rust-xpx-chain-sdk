@@ -5,10 +5,10 @@
 use sdk::{
     account::PublicAccount,
     errors_const,
-    AssetId,
     namespace::{NamespaceId, NamespaceInfo, NamespaceName, NamespaceType},
     network::NetworkType,
     transaction::{RegisterNamespaceTransaction, Transaction},
+    AssetId,
 };
 
 use super::{
@@ -154,16 +154,8 @@ pub(crate) struct NamespaceMetadataInfoDto {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceMetadataTransactionDto {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    signature: Option<String>,
-    signer: String,
-    version: i32,
-    #[serde(rename = "type")]
-    _type: u16,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    max_fee: Option<Uint64Dto>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    deadline: Option<Uint64Dto>,
+    #[serde(flatten)]
+    r#abstract: AbstractTransactionDto,
     metadata_id: Uint64Dto,
     metadata_type: MetadataTypeEnum,
     modifications: Vec<MetadataModificationDto>,
@@ -198,16 +190,8 @@ pub(crate) struct RegisterNamespaceTransactionInfoDto {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RegisterNamespaceTransactionDto {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    signature: Option<String>,
-    signer: String,
-    version: u32,
-    #[serde(rename = "type")]
-    _type: u16,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    max_fee: Option<Uint64Dto>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    deadline: Option<Uint64Dto>,
+    #[serde(flatten)]
+    r#abstract: AbstractTransactionDto,
     #[serde(rename = "namespaceType")]
     namespace_type: u8,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -226,15 +210,7 @@ impl TransactionDto for RegisterNamespaceTransactionInfoDto {
 
         let info = self.meta.compact();
 
-        let abs_transaction = AbstractTransactionDto::new(
-            dto.signature,
-            dto.signer,
-            dto.version,
-            dto._type,
-            dto.max_fee,
-            dto.deadline,
-        )
-            .compact(info)?;
+        let abs_transaction = dto.r#abstract.compact(info)?;
 
         let namespace_type = NamespaceType::from(dto.namespace_type);
 

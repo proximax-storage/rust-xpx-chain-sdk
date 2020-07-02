@@ -48,16 +48,8 @@ impl AliasDto {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AliasTransactionDto {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    signature: Option<String>,
-    signer: String,
-    version: u32,
-    #[serde(rename = "type")]
-    _type: u16,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    max_fee: Option<Uint64Dto>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    deadline: Option<Uint64Dto>,
+    #[serde(flatten)]
+    r#abstract: AbstractTransactionDto,
     alias_action: u8,
     namespace_id: Uint64Dto,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -84,18 +76,11 @@ impl TransactionDto for AddressAliasTransactionInfoDto {
 
         let address = Address::from_encoded(&address_encoded)?;
 
-        let abs = AbstractTransactionDto::new(
-            dto.signature.to_owned(),
-            dto.signer.to_owned(),
-            dto.version,
-            dto._type,
-            dto.max_fee.to_owned(),
-            dto.deadline.to_owned(),
-        ).compact(info)?;
+        let abs_transaction = dto.r#abstract.compact(info)?;
 
         Ok(Box::new(AddressAliasTransaction {
             alias_transaction: AliasTransaction {
-                abs_transaction: abs,
+                abs_transaction,
                 action_type: AliasActionType::from(dto.alias_action),
                 namespace_id: NamespaceId::from(dto.namespace_id.compact()),
             },
@@ -122,18 +107,11 @@ impl TransactionDto for MosaicAliasTransactionInfoDto {
 
         let mosaic_id = MosaicId::from(mosaic_id_dto.compact());
 
-        let abs = AbstractTransactionDto::new(
-            dto.signature.to_owned(),
-            dto.signer.to_owned(),
-            dto.version,
-            dto._type,
-            dto.max_fee.to_owned(),
-            dto.deadline.to_owned(),
-        ).compact(info)?;
+        let abs_transaction = dto.r#abstract.compact(info)?;
 
         Ok(Box::new(MosaicAliasTransaction {
             alias_transaction: AliasTransaction {
-                abs_transaction: abs,
+                abs_transaction,
                 action_type: AliasActionType::from(dto.alias_action),
                 namespace_id: NamespaceId::from(dto.namespace_id.compact()),
             },

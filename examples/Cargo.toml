@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-examples"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
 
 homepage = "https://www.proximax.io"
@@ -26,9 +26,12 @@ failure = "0.1"
 
 hex = "^0.3"
 
-[[example]]
-name = "varios"
-path = "sdk/varios.rs"
+[dependencies.serde]
+version = "^1.0"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "^1.0"
 
 [[example]]
 name = "crypto"
@@ -77,6 +80,18 @@ path = "api/api_node.rs"
 [[example]]
 name = "api_transactions"
 path = "api/api_transactions.rs"
+
+[[example]]
+name = "account_properties_address"
+path = "api/annunce/account_properties_address.rs"
+
+[[example]]
+name = "account_properties_entity_type"
+path = "api/annunce/account_properties_entity_type.rs"
+
+[[example]]
+name = "account_properties_mosaic"
+path = "api/annunce/account_properties_mosaic.rs"
 
 [[example]]
 name = "annunce_add_exchange_offer"

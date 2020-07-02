@@ -11,7 +11,7 @@ use xpx_chain_sdk::namespace::NamespaceId;
 use xpx_chain_sdk::transaction::{Deadline, RegisterNamespaceTransaction};
 use xpx_chain_sdk::Uint64;
 
-const PRIVATE_KEY: &str = "EE5D1277A862A449173C55454740BEE1A29AB837A97507021340B6EA68909097";
+const PRIVATE_KEY: &str = "86258172F90639811F2ABD055747D1E11B55A64B68AED2CEA9A34FBD6C0BE790";
 
 #[tokio::main]
 async fn main() {
@@ -42,7 +42,7 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    let sig_transaction_root = account.sign(namespace_root, &generation_hash);
+    let sig_transaction_root = account.sign(namespace_root, generation_hash);
 
     if let Err(err) = &sig_transaction_root {
         panic!("{}", err)
@@ -71,7 +71,7 @@ async fn main() {
         panic!("{}", err)
     }
 
-    let sig_transaction_sub = account.sign(register_namespace_sub.unwrap(), &generation_hash);
+    let sig_transaction_sub = account.sign(register_namespace_sub.unwrap(), generation_hash);
 
     if let Err(err) = &sig_transaction_sub {
         panic!("{}", err)
