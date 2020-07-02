@@ -190,6 +190,9 @@ fn valid_ws(value_dto: &mut Value) -> Result<()> {
 
                 let parse_meta: Value = serde_json::from_str(&parse_meta_srt)?;
                 meta_value.push(parse_meta)
+            } else {
+                let parse_meta: Value = serde_json::from_str(&*format!("{}", item))?;
+                meta_value.push(parse_meta)
             }
         }
         v.clear();
