@@ -169,7 +169,7 @@ pub fn map_transaction_dto(body: Bytes) -> Result<String> {
     };
 
     if entity_type == Entity::AggregateBonded || entity_type == Entity::AggregateComplete {
-        valid_ws(&mut value_dto)?
+        parse_meta_ws(&mut value_dto)?
     }
 
     if value_dto["meta"].is_null() {
@@ -179,7 +179,7 @@ pub fn map_transaction_dto(body: Bytes) -> Result<String> {
     }
 }
 
-fn valid_ws(value_dto: &mut Value) -> Result<()> {
+fn parse_meta_ws(value_dto: &mut Value) -> Result<()> {
     if let Some(v) = value_dto["transaction"]["transactions"].as_array_mut() {
         let mut meta_value: Vec<Value> = vec![];
 

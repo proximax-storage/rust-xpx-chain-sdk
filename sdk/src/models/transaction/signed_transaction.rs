@@ -3,12 +3,14 @@
 // license that can be found in the LICENSE file.
 
 use super::{EntityTypeEnum, Hash};
+use serde_json::Value;
 
 /// Used to transfer the transaction data and the signature to a nem server in order to
 /// initiate and broadcast a transaction.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct SignedTransaction {
     /// The transaction type.
+    #[serde(rename = "transactionType")]
     pub entity_type: EntityTypeEnum,
 
     /// The serialized transaction data.
@@ -61,6 +63,10 @@ impl SignedTransaction {
 
     pub fn type_to_string(&self) -> String {
         self.entity_type.to_string()
+    }
+
+    pub fn as_value(&self) -> Value {
+        serde_json::from_str(&format!("{}", self)).unwrap()
     }
 }
 
