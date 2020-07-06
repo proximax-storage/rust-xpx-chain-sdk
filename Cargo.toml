@@ -81,7 +81,8 @@ version = "^0.3"
 version = "^0.5"
 
 [dependencies.reqwest]
-version = "^0.10"
+version = "0.10"
+default-features = false
 
 [dependencies.tokio]
 version = "^0.2"
