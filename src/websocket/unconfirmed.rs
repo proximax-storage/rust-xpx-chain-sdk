@@ -20,7 +20,7 @@ impl Handler for HandlerUnconfirmedRemoved {}
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WsUnconfirmedRemovedDto {
+pub(crate) struct WsUnconfirmedRemovedDto {
     meta: WsUnconfirmedMetaDto,
 }
 
@@ -32,7 +32,7 @@ impl WsUnconfirmedRemovedDto {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WsUnconfirmedMetaDto {
+pub(crate) struct WsUnconfirmedMetaDto {
     hash: String,
     pub channel_name: String,
     address: String,

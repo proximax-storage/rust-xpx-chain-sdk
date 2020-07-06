@@ -10,7 +10,7 @@ use {
     serde_repr::{Deserialize_repr, Serialize_repr},
 };
 
-use crate::{asset_id_model::AssetId, mosaic::MosaicId, transaction::EntityTypeEnum};
+use crate::{mosaic::MosaicId, transaction::EntityTypeEnum, AssetId};
 
 use super::Address;
 

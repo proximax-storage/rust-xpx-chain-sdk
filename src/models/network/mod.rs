@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-pub use self::network_internal::*;
+pub(crate) use self::network_internal::*;
 pub use self::network_type_model::*;
 
 mod network_internal;

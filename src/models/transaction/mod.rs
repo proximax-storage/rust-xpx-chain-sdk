@@ -5,7 +5,6 @@
  */
 
 pub use self::deadline::*;
-pub use self::internal::*;
 pub use self::signed_transaction::*;
 pub use self::transaction_account_properties_address::*;
 pub use self::transaction_account_properties_entity::*;
@@ -27,8 +26,8 @@ pub use self::transaction_register_namespace::*;
 pub use self::transaction_transfer::*;
 pub use self::transaction_type::*;
 
-pub mod deadline;
-pub mod internal;
+mod deadline;
+pub(crate) mod internal;
 mod signed_transaction;
 mod transaction_account_properties_address;
 mod transaction_account_properties_entity;

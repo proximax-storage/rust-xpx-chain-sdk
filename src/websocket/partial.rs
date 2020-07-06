@@ -14,7 +14,7 @@ impl Handler for HandlerPartialAdd {}
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WsPartialRemoveDto {
+pub(crate) struct WsPartialRemoveDto {
     meta: WsUnconfirmedMetaDto,
 }
 

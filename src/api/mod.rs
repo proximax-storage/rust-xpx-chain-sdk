@@ -4,8 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
-pub use self::dtos::*;
-pub use self::internally::*;
+pub(crate) use self::dtos::*;
+pub(crate) use self::internally::*;
 pub use self::sirius_client::*;
 
 mod dtos;

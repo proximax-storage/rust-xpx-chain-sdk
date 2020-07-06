@@ -260,7 +260,7 @@ impl AccountPropertiesInfoDto {
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountPropertiesDto {
+pub(crate) struct AccountPropertiesDto {
     address: String,
     properties: Vec<PropertiesDto>,
 }

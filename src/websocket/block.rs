@@ -9,14 +9,14 @@ use crate::websocket::{model::WsSubscribeDto, Handler};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WsBlockMetaDto {
+pub(crate) struct WsBlockMetaDto {
     pub channel_name: String,
     hash: String,
     generation_hash: String,
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct WsBlockInfoDto {
+pub(crate) struct WsBlockInfoDto {
     #[serde(rename = "meta")]
     pub meta: WsBlockMetaDto,
     #[serde(rename = "block")]

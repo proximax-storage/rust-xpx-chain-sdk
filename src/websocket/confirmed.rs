@@ -10,14 +10,14 @@ use super::Handler;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WsTransactionMetaDto {
+pub(crate) struct WsTransactionMetaDto {
     pub channel_name: String,
     address: String,
 }
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WsTransactionInfoDto {
+pub(crate) struct WsTransactionInfoDto {
     pub meta: WsTransactionMetaDto,
     transaction: Box<dyn TransactionDto>,
 }

@@ -18,7 +18,7 @@ use crate::{
 };
 
 use super::{
-    buffer::lock_funds::buffers, schema::lock_funds_transaction_schema, sign_transaction,
+    buffer::lock_funds::buffers, internal::sign_transaction, schema::lock_funds_transaction_schema,
     AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum, SignedTransaction, Transaction,
     LOCK_VERSION,
 };

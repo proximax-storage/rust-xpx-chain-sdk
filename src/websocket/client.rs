@@ -30,7 +30,7 @@ use super::{
     WsPartialRemoveDto, WsStatusInfoDto, WsUnconfirmedRemovedDto,
 };
 
-pub type AutoStream<S> = S;
+pub(crate) type AutoStream<S> = S;
 
 pub trait Handler: Send + Downcast {}
 
@@ -39,7 +39,7 @@ impl_downcast!(Handler);
 pub struct SiriusWebsocketClient {
     uid: WsConnectionResponse,
     conn: WebSocketStream<AutoStream<tokio::net::TcpStream>>,
-    pub handlers: HashMap<String, Box<dyn Handler>>,
+    handlers: HashMap<String, Box<dyn Handler>>,
 }
 
 impl SiriusWebsocketClient {

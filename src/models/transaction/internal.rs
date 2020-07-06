@@ -25,11 +25,11 @@ use super::{
     AbsTransaction, AggregateTransaction, EntityVersion, SignedTransaction, Transaction,
 };
 
-pub fn extract_version(version: u32) -> EntityVersion {
+pub(crate) fn extract_version(version: u32) -> EntityVersion {
     return version & 0xFFFFFF;
 }
 
-pub(super) fn sign_transaction(
+pub(crate) fn sign_transaction(
     tx: impl Transaction,
     account: Account,
     generation_hash: String,
@@ -60,7 +60,7 @@ pub(super) fn sign_transaction(
     Ok(SignedTransaction::new(tx.entity_type(), payload, hash))
 }
 
-pub(super) fn sign_transaction_with_cosignatures(
+pub(crate) fn sign_transaction_with_cosignatures(
     tx: AggregateTransaction,
     account: Account,
     cosignatories: Vec<Account>,
@@ -97,7 +97,7 @@ pub(super) fn sign_transaction_with_cosignatures(
     ))
 }
 
-pub(super) fn create_transaction_hash(p: String, generation_hash: &str) -> String {
+pub(crate) fn create_transaction_hash(p: String, generation_hash: &str) -> String {
     let p_bytes = hex::decode(p).unwrap();
 
     let mut sb = vec![];
@@ -138,7 +138,7 @@ pub(crate) fn mosaic_property_array_to_buffer(
     builder.create_vector(&p_buffer).value()
 }
 
-pub(super) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate::Result<Vec<u8>> {
+pub(crate) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate::Result<Vec<u8>> {
     ensure!(
         tx.abs_transaction().signer.public_key != "",
         ERR_EMPTY_TRANSACTION_SIGNER
@@ -167,7 +167,7 @@ pub(super) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate
     Ok(r_b)
 }
 
-pub(super) fn cosignatory_modification_array_to_buffer<'a>(
+pub(crate) fn cosignatory_modification_array_to_buffer<'a>(
     builder: &mut FlatBufferBuilder<'a>,
     modifications: Vec<CosignatoryModification>,
 ) -> fb::UOffsetT {

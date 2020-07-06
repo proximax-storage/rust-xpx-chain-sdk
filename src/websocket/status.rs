@@ -13,14 +13,14 @@ use super::{model::WsSubscribeDto, Handler};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WsStatusMetaDto {
+pub(crate) struct WsStatusMetaDto {
     pub channel_name: String,
     address: String,
 }
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WsStatusInfoDto {
+pub(crate) struct WsStatusInfoDto {
     pub meta: WsStatusMetaDto,
     #[serde(rename = "status")]
     status: String,

@@ -8,7 +8,7 @@ use crate::{
     account::{PublicAccount, EMPTY_PUBLIC_KEY},
     blockchain::BlockInfo,
     network::extract_network_type,
-    transaction::{extract_version, BlockchainTimestamp},
+    transaction::{internal::extract_version, BlockchainTimestamp},
     Result,
 };
 
@@ -25,7 +25,7 @@ struct BlockMetaDto {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct BlockDto {
+pub(crate) struct BlockDto {
     signature: String,
     signer: String,
     version: u32,
@@ -120,7 +120,7 @@ impl BlockDto {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct BlockInfoDto {
+pub(crate) struct BlockInfoDto {
     #[serde(rename = "meta")]
     meta: BlockMetaDto,
     #[serde(rename = "block")]

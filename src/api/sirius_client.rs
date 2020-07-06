@@ -10,9 +10,9 @@ use crate::{models::error::Result, network::NetworkType, transaction::Hash};
 
 use super::routes::{
     account_routes_api::AccountRoutes, block_routes_api::BlockRoutes,
-    chain_routes_api::ChainRoutes, exchange_routes_api::ExchangeRoutes,
-    mosaic_routes_api::MosaicRoutes, namespace_routes_api::NamespaceRoutes,
-    node_routes_api::NodeRoutes, transaction_routes_api::TransactionRoutes,
+    chain_routes_api::ChainRoutes, mosaic_routes_api::MosaicRoutes,
+    namespace_routes_api::NamespaceRoutes, node_routes_api::NodeRoutes,
+    transaction_routes_api::TransactionRoutes,
 };
 
 #[derive(Clone, Serialize)]
@@ -34,10 +34,6 @@ impl SiriusClient {
 
     pub fn chain_api(&self) -> Box<ChainRoutes> {
         Box::new(ChainRoutes::new(self.client.to_owned()))
-    }
-
-    pub fn exchange_api(&self) -> Box<ExchangeRoutes> {
-        Box::new(ExchangeRoutes::new(self.client.to_owned()))
     }
 
     pub fn node_api(&self) -> Box<NodeRoutes> {
@@ -114,7 +110,7 @@ impl core::fmt::Display for SiriusClient {
 }
 
 #[derive(Clone)]
-pub struct ApiClient {
+pub(crate) struct ApiClient {
     pub base_path: &'static str,
     pub client: ReqwestClient,
     pub user_agent: Option<String>,

@@ -18,7 +18,7 @@ use super::{AbstractTransactionDto, CosignatureDto, TransactionDto, TransactionM
 /// AggregateTransactionDto : Transaction that combines multiple transactions together.
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AggregateTransactionDto {
+pub(crate) struct AggregateTransactionDto {
     #[serde(flatten)]
     pub r#abstract: AbstractTransactionDto,
     cosignatures: Option<Vec<CosignatureDto>>,
@@ -28,7 +28,7 @@ pub struct AggregateTransactionDto {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AggregateTransactionInfoDto {
+pub(crate) struct AggregateTransactionInfoDto {
     pub meta: TransactionMetaDto,
     pub transaction: AggregateTransactionDto,
 }

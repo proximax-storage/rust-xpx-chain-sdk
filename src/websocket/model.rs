@@ -14,7 +14,7 @@ pub(crate) const PATH_PARTIAL_REMOVED: &RouterPath = "partialRemoved";
 pub(crate) const PATH_COSIGNATURE: &RouterPath = "cosignature";
 pub(crate) const PATH_STATUS: &RouterPath = "status";
 
-pub trait WsSubscribeDto {
+pub(crate) trait WsSubscribeDto {
     type Output;
 
     fn compact(self) -> Self::Output;
@@ -40,13 +40,13 @@ pub struct WsConnectionResponse {
 }
 
 #[derive(Clone, Serialize, Deserialize)]
-pub struct WsMessageInfoDTO {
+pub(crate) struct WsMessageInfoDTO {
     meta: WsMessageInfoMetaDto,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WsMessageInfoMetaDto {
+pub(crate) struct WsMessageInfoMetaDto {
     channel_name: String,
     address: String,
 }

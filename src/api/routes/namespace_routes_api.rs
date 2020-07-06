@@ -15,10 +15,10 @@ use crate::{
         internally::valid_vec_len, request as __internal_request, sirius_client::ApiClient,
         NamespaceInfoDto, NamespaceNameDto,
     },
-    asset_id_model::AssetId,
     errors_const::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
     models::Result,
     namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
+    AssetId,
 };
 
 use super::{

@@ -23,9 +23,9 @@ use crate::{
 };
 
 use super::{
-    buffer::account_properties::buffers, schema::account_property_transaction_schema,
-    sign_transaction, AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum,
-    SignedTransaction, Transaction, ACCOUNT_PROPERTY_ADDRESS_VERSION,
+    buffer::account_properties::buffers, internal::sign_transaction,
+    schema::account_property_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
+    EntityTypeEnum, SignedTransaction, Transaction, ACCOUNT_PROPERTY_ADDRESS_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]

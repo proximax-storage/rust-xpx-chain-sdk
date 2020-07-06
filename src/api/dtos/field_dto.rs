@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 #[derive(Serialize, Deserialize)]
-pub struct FieldDto {
+pub(crate) struct FieldDto {
     #[serde(rename = "key")]
     key: String,
     #[serde(rename = "value")]

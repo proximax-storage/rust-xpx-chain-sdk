@@ -108,7 +108,7 @@ pub(crate) fn valid_vec_hash(vector: &Vec<&str>) -> Result<()> {
     Ok(())
 }
 
-pub fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
+pub(crate) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
     let value_dto_vec: Value = serde_json::from_slice(&body)?;
 
     let mut value_dto_vec_str: String = "".to_string();
@@ -138,7 +138,7 @@ pub fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
     Ok(value_dto_vec_str)
 }
 
-pub fn map_transaction_dto(body: Bytes) -> Result<String> {
+pub(crate) fn map_transaction_dto(body: Bytes) -> Result<String> {
     let mut value_dto: Value = serde_json::from_slice(&body)?;
 
     let entity_type = Entity::from(value_dto["transaction"]["type"].as_u64().unwrap() as u16);
@@ -216,7 +216,7 @@ fn parse_entity_type_dto(value_dto: Value, entity_dto: &str) -> String {
         .replace("}}", r#"}}}"#)
 }
 
-pub fn map_aggregate_transactions_dto(
+pub(crate) fn map_aggregate_transactions_dto(
     transactions: Vec<Value>,
 ) -> Result<Vec<Box<dyn TransactionDto>>> {
     let mut txs_dto: Vec<Box<dyn TransactionDto>> = vec![];
@@ -251,7 +251,7 @@ pub(crate) fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> Result<MosaicPr
     )
 }
 
-pub fn cosignatory_dto_vec_to_struct(
+pub(crate) fn cosignatory_dto_vec_to_struct(
     modifications: Vec<CosignatoryModificationDto>,
     network_type: NetworkType,
 ) -> Vec<CosignatoryModification> {
@@ -261,6 +261,6 @@ pub fn cosignatory_dto_vec_to_struct(
         .collect()
 }
 
-pub fn has_bits(number: Uint64, bits: u8) -> bool {
+pub(crate) fn has_bits(number: Uint64, bits: u8) -> bool {
     (*number & bits as u64) == bits as u64
 }

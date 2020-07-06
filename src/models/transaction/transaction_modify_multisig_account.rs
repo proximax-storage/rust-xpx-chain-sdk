@@ -18,9 +18,10 @@ use crate::{
 };
 
 use super::{
-    buffer::modify_multisig_account::buffers, cosignatory_modification_array_to_buffer,
-    schema::modify_multisig_account_transaction_schema, sign_transaction, AbsTransaction,
-    AbstractTransaction, Deadline, EntityTypeEnum, SignedTransaction, Transaction,
+    buffer::modify_multisig_account::buffers,
+    internal::{cosignatory_modification_array_to_buffer, sign_transaction},
+    schema::modify_multisig_account_transaction_schema,
+    AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum, SignedTransaction, Transaction,
     MODIFY_MULTISIG_VERSION,
 };
 

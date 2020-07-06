@@ -24,7 +24,7 @@ use crate::{
 };
 
 use super::{
-    sign_transaction, AbsTransaction, AbstractTransaction, AliasTransaction, Deadline,
+    internal::sign_transaction, AbsTransaction, AbstractTransaction, AliasTransaction, Deadline,
     EntityTypeEnum, SignedTransaction, Transaction, MOSAIC_ALIAS_VERSION,
 };
 
