@@ -1,0 +1,28 @@
+namespace Sirius.Buffers;
+
+table MessageBuffer {
+    type: ubyte;
+    payload: [ubyte];
+}
+
+table mosaic_buffer {
+    id: [uint];
+    amount: [uint];
+}
+
+table TransferTransactionBuffer {
+    size: uint;
+    signature: [ubyte];
+    signer: [ubyte];
+    version: uint;
+    type: ushort;
+    max_fee: [uint];
+    deadline:[uint];
+    recipient: [ubyte];
+    message_size: ushort;
+    num_mosaics: ubyte;
+    message: MessageBuffer;
+    mosaics: [mosaic_buffer];
+}
+
+root_type TransferTransactionBuffer;
