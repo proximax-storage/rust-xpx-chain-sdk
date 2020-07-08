@@ -26,9 +26,10 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    const PUBLIC_KEY: &str = "c8f52a6ed98c5bcd52e090da0d1950d58b13d239e4cecc05f5d4acd706f5da75";
+    //let account_id: &str = "VC6LFNKEQQEI5DOAA2OJLL4XRPDNPLRJDH6T2B7X";
+    let account_id: &str = "5649D09FB884424AB5E3ED16B965CF69E3048A5E641287C319AC3DE995C97FB0";
 
-    let account_info = client.account_api().account_info(PUBLIC_KEY).await;
+    let account_info = client.account_api().account_info(account_id).await;
     match account_info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
