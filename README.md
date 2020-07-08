@@ -7,7 +7,6 @@
 The ProximaX Sirius Catapult Chain Rust SDK works as a lightweight Rust library for interacting with the Sirius Blockchain. It provides a complete library set coverage, and supports synchronous and asynchronous requests. 
 
 ### Usage
-
 First, add this to your `Cargo.toml`:
 
 ```toml
@@ -15,7 +14,7 @@ First, add this to your `Cargo.toml`:
 xpx-chain-sdk = { git = "https://github.com/proximax-storage/rust-xpx-chain-sdk"}
 ```
 
-## Example
+### Example
 ```rust
 #[tokio::main]
 async fn main() {
@@ -36,3 +35,5 @@ async fn main() {
     }
 }
 ```
+
+For more examples see [wiki](https://github.com/proximax-storage/rust-xpx-chain-sdk/wiki).
