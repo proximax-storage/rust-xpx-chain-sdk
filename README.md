@@ -26,9 +26,10 @@ async fn main() {
         Err(err) => panic!("{}", err),
     };
 
-    let public_key: &str = "5649D09FB884424AB5E3ED16B965CF69E3048A5E641287C319AC3DE995C97FB0";
+    //let account_id: &str = "VC6LFNKEQQEI5DOAA2OJLL4XRPDNPLRJDH6T2B7X";
+    let account_id: &str = "5649D09FB884424AB5E3ED16B965CF69E3048A5E641287C319AC3DE995C97FB0";
 
-    let account_info = client.account_api().account_info(public_key).await;
+    let account_info = client.account_api().account_info(account_id).await;
     match account_info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),
