@@ -115,7 +115,10 @@ impl Address {
 
         let address = base32::encode(RFC4648 { padding: true }, encoded_to_bytes.as_slice());
 
-        Self::from_raw(address.as_str())
+        Ok(Self {
+            address,
+            network_type: NetworkType::from(encoded_to_bytes[0]),
+        })
     }
 
     /// Converts an `Address` String into a more readable/pretty format.

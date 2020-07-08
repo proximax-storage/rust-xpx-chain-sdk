@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::ops::Deref;
+
 use {
     ::std::fmt,
     serde::{Serialize, Serializer},
@@ -85,5 +87,13 @@ impl From<Uint64> for NamespaceId {
 impl From<&str> for NamespaceId {
     fn from(hex: &str) -> Self {
         return NamespaceId::from(Uint64::from_hex(hex).unwrap());
+    }
+}
+
+// Enable `Deref` coercion NetworkType.
+impl Deref for NamespaceId {
+    type Target = u64;
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }

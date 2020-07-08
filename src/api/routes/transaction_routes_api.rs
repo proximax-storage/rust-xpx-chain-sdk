@@ -189,8 +189,13 @@ impl TransactionRoutes {
     pub async fn get_transaction(self, transaction_id: &str) -> Result<Box<dyn Transaction>> {
         let mut req = __internal_request::Request::new(Method::GET, TRANSACTION_ROUTE.to_string());
 
+        let mut id = transaction_id.to_string();
+        if transaction_id.len() != 24 {
+            id = str_to_hash(&transaction_id)?
+        }
+
         req = req
-            .with_path_param("transactionId".to_string(), str_to_hash(&transaction_id)?)
+            .with_path_param("transactionId".to_string(), id)
             .set_transaction();
 
         let version: Box<dyn TransactionDto> = req.execute(self.__client()).await?;

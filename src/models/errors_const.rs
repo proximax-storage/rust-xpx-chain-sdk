@@ -34,7 +34,8 @@ pub static ERR_EMPTY_MODIFICATIONS: &str = "modifications must not empty";
 pub static ERR_EMPTY_TRANSACTION_SIGNER: &str = "some of the transaction does not have a signer";
 pub static ERR_EMPTY_COSIGNATURE_HASH: &str = "Cosignature transaction hash it should not be empty";
 pub static ERR_EMPTY_GENERATION_HASH: &str = "Generation hash it should not be empty";
-pub static ERR_INVALID_AGGREGATE_TRANSACTION: &str = "The transaction is not an AggregateTransaction.";
+pub static ERR_INVALID_AGGREGATE_TRANSACTION: &str =
+    "The transaction is not an AggregateTransaction.";
 
 // Common errors
 //pub static ERR_NIL_ASSET_ID: &str = "AssetId should not be null.";
@@ -52,4 +53,3 @@ pub static ERR_INVALID_SIGNATURE_LENGTH: &str = "The length of Signature is inva
 pub static ERR_INVALID_SIGNATURE_HEX: &str = "Signature must be hexadecimal.";
 pub static ERR_UNKNOWN_TYPE: &str = "Not supported value Type.";
 pub static ERR_INVALID_DATA_LENGTH: &str = "The length of data is invalid.";
-

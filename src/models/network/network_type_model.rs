@@ -35,7 +35,7 @@ pub const NOT_SUPPORTED_NET: NetworkType = NetworkType(0);
 pub struct NetworkType(pub(self) u8);
 
 impl NetworkType {
-    pub fn to_string(self) -> &'static str {
+    pub fn to_str(self) -> &'static str {
         match self {
             MIJIN => "MIJIN",
             MIJIN_TEST => "MIJIN_TEST",
@@ -46,6 +46,10 @@ impl NetworkType {
             ALIAS_ADDRESS => "ALIAS_ADDRESS",
             _ => "NOT_SUPPORTED_NET",
         }
+    }
+
+    pub fn to_hex(self) -> String {
+        format!("{:x?}", self.0)
     }
 }
 

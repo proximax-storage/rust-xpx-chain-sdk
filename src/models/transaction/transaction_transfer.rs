@@ -13,9 +13,10 @@ use crate::{
         errors_const,
         message::Message,
         mosaic::Mosaic,
+        namespace::{new_address_from_namespace, NamespaceId},
         network::NetworkType,
     },
-    Result,
+    AssetId, Result,
 };
 
 use super::{
@@ -57,6 +58,35 @@ impl TransferTransaction {
             EntityTypeEnum::Transfer,
             network_type,
         );
+
+        Ok(Self {
+            abs_transaction: abs_tx,
+            recipient,
+            mosaics,
+            message: Box::new(message),
+        })
+    }
+
+    pub fn with_namespace(
+        deadline: Deadline,
+        recipient: NamespaceId,
+        mosaics: Vec<Mosaic>,
+        message: impl Message + 'static,
+        network_type: NetworkType,
+    ) -> Result<Self> {
+        ensure!(
+            recipient.to_u64() != 0,
+            errors_const::ERR_EMPTY_NAMESPACE_ID
+        );
+
+        let abs_tx = AbstractTransaction::new_from_type(
+            deadline,
+            TRANSFER_VERSION,
+            EntityTypeEnum::Transfer,
+            network_type,
+        );
+
+        let recipient = new_address_from_namespace(recipient)?;
 
         Ok(Self {
             abs_transaction: abs_tx,

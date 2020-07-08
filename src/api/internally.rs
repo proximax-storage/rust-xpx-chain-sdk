@@ -103,7 +103,9 @@ pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
 
 pub(crate) fn valid_vec_hash(vector: &Vec<&str>) -> Result<()> {
     for hash in vector {
-        str_to_hash(hash)?;
+        if hash.len() != 24 {
+            str_to_hash(hash)?;
+        }
     }
     Ok(())
 }
