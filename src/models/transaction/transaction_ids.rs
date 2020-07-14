@@ -15,6 +15,6 @@ impl From<Vec<&str>> for TransactionIds {
         for id in e {
             ids.transaction_ids.push(id.trim().to_uppercase())
         }
-        return ids;
+        ids
     }
 }

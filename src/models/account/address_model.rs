@@ -30,7 +30,7 @@ const REGEX_DASH: &str = "-";
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Address {
-    /// The address in hexadecimal.
+    /// The address in base32.
     pub address: String,
     pub network_type: NetworkType,
 }

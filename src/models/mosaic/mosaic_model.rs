@@ -157,7 +157,7 @@ impl From<Vec<MosaicId>> for MosaicIds {
         for m in e {
             ids.mosaic_ids.push(m.to_hex())
         }
-        return ids;
+        ids
     }
 }
 

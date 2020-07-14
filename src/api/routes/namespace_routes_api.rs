@@ -45,11 +45,11 @@ impl NamespaceRoutes {
         Box::pin(async move {
             let info_parent = match &ns_info.parent {
                 Some(info) => info,
-                _ => return (),
+                _ => return,
             };
 
             if info_parent.namespace_id.to_u64() == 0 {
-                return ();
+                return;
             }
 
             let rest_info = self
@@ -58,13 +58,13 @@ impl NamespaceRoutes {
                 .await;
             let mut parent_ns_info = match rest_info {
                 Ok(parent) => Box::new(parent),
-                _ => return (),
+                _ => return,
             };
 
             ns_info.parent = Some(parent_ns_info.to_owned());
 
-            if let None = parent_ns_info.to_owned().parent {
-                return ();
+            if parent_ns_info.to_owned().parent.is_none() {
+                return;
             }
 
             self.__build_namespace_hierarchy(&mut parent_ns_info).await

@@ -37,31 +37,31 @@ impl ::failure::Fail for Error {}
 
 impl From<reqwest::Error> for Error {
     fn from(e: reqwest::Error) -> Self {
-        return Error::Reqwest(e);
+        Error::Reqwest(e)
     }
 }
 
 impl From<SiriusError> for Error {
     fn from(e: SiriusError) -> Self {
-        return Error::SiriusError(e);
+        Error::SiriusError(e)
     }
 }
 
 impl From<WsError> for Error {
     fn from(e: WsError) -> Self {
-        return Error::Tungsten(e);
+        Error::Tungsten(e)
     }
 }
 
 impl From<serde_json::Error> for Error {
     fn from(e: serde_json::Error) -> Self {
-        return Error::Serde(e);
+        Error::Serde(e)
     }
 }
 
 impl From<failure::Error> for Error {
     fn from(e: failure::Error) -> Self {
-        return Error::Failure(e);
+        Error::Failure(e)
     }
 }
 

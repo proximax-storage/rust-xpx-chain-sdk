@@ -27,9 +27,9 @@ fn is_valid_namespace_name(name: &str) -> bool {
 
 /// Generates a `NamespaceId` from a namespaceFullName.
 pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<NamespaceId>> {
-    let parts: Vec<&str> = name.split(".").collect();
+    let parts: Vec<&str> = name.split('.').collect();
 
-    ensure!(parts.len() != 0, errors_const::ERR_INVALID_NAMESPACE_NAME);
+    ensure!(!parts.is_empty(), errors_const::ERR_INVALID_NAMESPACE_NAME);
 
     ensure!(parts.len() <= 3, errors_const::ERR_NAMESPACE_TOO_MANY_PART);
 

@@ -90,12 +90,12 @@ impl AbstractSchemaAttribute {
 
     fn offset(&mut self, inner_object_position: usize, position: usize, buffer: &[u8]) -> usize {
         let read_uint32 = self.read_uint32(inner_object_position, buffer);
-        let inner_object_position_i64 = inner_object_position as i64;
-        let vtable: i64 = inner_object_position_i64 - read_uint32 as i64;
-        let vtable_u32 = vtable as u32;
+        let inner_object_position = inner_object_position as i64;
+        let v_table: i64 = inner_object_position - read_uint32 as i64;
+        let v_table = v_table as u32;
 
-        if position < self.read_uint16(vtable_u32 as usize, buffer) as usize {
-            return self.read_uint16(vtable_u32 as usize + position, buffer) as usize;
+        if position < self.read_uint16(v_table as usize, buffer) as usize {
+            self.read_uint16(v_table as usize + position, buffer) as usize
         } else {
             0
         }

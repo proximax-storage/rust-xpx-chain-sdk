@@ -79,7 +79,7 @@ pub(crate) fn str_to_hash(hash: &str) -> Result<Hash> {
     Ok(raw_hash)
 }
 
-pub(crate) fn valid_vec_len<T>(vector: &Vec<T>, msg: &str) -> Result<()>
+pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
 where
     T: Debug,
 {
@@ -100,7 +100,7 @@ pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
     }
 }
 
-pub(crate) fn valid_vec_hash(vector: &Vec<&str>) -> Result<()> {
+pub(crate) fn valid_vec_hash(vector: &[&str]) -> Result<()> {
     for hash in vector {
         if hash.len() != 24 {
             str_to_hash(hash)?;
@@ -183,7 +183,7 @@ fn parse_meta_ws(value_dto: &mut Value) -> Result<()> {
     if let Some(v) = value_dto["transaction"]["transactions"].as_array_mut() {
         let mut meta_value: Vec<Value> = vec![];
 
-        for item in v.into_iter() {
+        for item in v.iter_mut() {
             if item["meta"].is_null() {
                 let meta = r#""meta": {}, "transaction":"#;
                 let parse_meta_srt = format!("{}", item).replace(r#""transaction":"#, meta);
@@ -230,12 +230,12 @@ pub(crate) fn map_aggregate_transactions_dto(
     Ok(txs_dto)
 }
 
-pub(crate) fn mosaic_properties(dto: &Vec<MosaicPropertyDto>) -> Result<MosaicProperties> {
+pub(crate) fn mosaic_properties(dto: &[MosaicPropertyDto]) -> Result<MosaicProperties> {
     let mut flags: Uint64 = Uint64::default();
     let mut divisibility: u8 = 0;
     let mut duration: Uint64 = Uint64::default();
 
-    for property in dto.into_iter() {
+    for property in dto.iter() {
         match property.id {
             0 => flags = property.value.compact(),
             1 => divisibility = *property.value.compact() as u8,

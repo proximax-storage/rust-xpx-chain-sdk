@@ -234,10 +234,7 @@ impl AccountPropertiesInfoDto {
 
         dto.properties.iter().for_each(|p_dto| {
             if let Some(item) = p_dto.entity_types.clone() {
-                let property_entity_types = item
-                    .into_iter()
-                    .map(|entity_types_dto| EntityTypeEnum::from(entity_types_dto))
-                    .collect();
+                let property_entity_types = item.into_iter().map(EntityTypeEnum::from).collect();
                 if p_dto.property_type == AccountPropertyType::AllowTransaction.value() {
                     allowed_entity_types = property_entity_types;
                 } else {

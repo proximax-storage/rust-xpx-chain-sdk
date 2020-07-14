@@ -17,12 +17,14 @@ pub(crate) struct MessageDto {
 impl MessageDto {
     pub fn compact(&self) -> Box<dyn Message> {
         if self._type == 0 {
-            let mut plain = PlainMessage::default();
-            if self.payload.len() != 0 {
+            let plain = if !self.payload.is_empty() {
                 let b = hex::decode(&self.payload).unwrap();
-                plain = PlainMessage::new(&String::from_utf8(b).unwrap());
-            }
-            return Box::new(plain);
+                PlainMessage::new(&String::from_utf8(b).unwrap())
+            } else {
+                PlainMessage::default()
+            };
+
+            Box::new(plain)
         } else {
             unimplemented!()
         }

@@ -333,10 +333,10 @@ impl AccountRoutes {
             req = req.with_query_param("pageSize".to_string(), s.to_string());
         }
         if let Some(s) = options.id {
-            req = req.with_query_param("id".to_string(), s.to_string());
+            req = req.with_query_param("id".to_string(), s);
         }
         if let Some(s) = options.ordering {
-            req = req.with_query_param("ordering".to_string(), s.to_string());
+            req = req.with_query_param("ordering".to_string(), s);
         }
 
         req = req.with_path_param(

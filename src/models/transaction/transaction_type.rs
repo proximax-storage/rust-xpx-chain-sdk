@@ -100,10 +100,6 @@ impl EntityTypeEnum {
     pub fn to_bytes(self) -> [u8; 2] {
         self.value().to_le_bytes()
     }
-
-    pub fn to_string(&self) -> String {
-        format!("{:?}", self)
-    }
 }
 
 impl From<u16> for EntityTypeEnum {

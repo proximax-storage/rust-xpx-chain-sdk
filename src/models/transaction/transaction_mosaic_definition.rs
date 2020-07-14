@@ -130,8 +130,8 @@ impl Transaction for MosaicDefinitionTransaction {
         Ok(mosaic_definition_transaction_schema().serialize(&mut buf.to_vec()))
     }
 
-    fn to_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.to_aggregate(signer)
+    fn set_aggregate(&mut self, signer: PublicAccount) {
+        self.abs_transaction.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

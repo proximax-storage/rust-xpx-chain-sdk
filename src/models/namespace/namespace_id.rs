@@ -59,7 +59,7 @@ impl AssetId for NamespaceId {
     }
 
     fn box_clone(&self) -> Box<dyn AssetId + 'static> {
-        Box::new((*self).clone())
+        Box::new(*self)
     }
 }
 
@@ -80,17 +80,17 @@ impl Serialize for NamespaceId {
 
 impl From<Uint64> for NamespaceId {
     fn from(e: Uint64) -> Self {
-        return NamespaceId(e);
+        NamespaceId(e)
     }
 }
 
 impl From<&str> for NamespaceId {
     fn from(hex: &str) -> Self {
-        return NamespaceId::from(Uint64::from_hex(hex).unwrap());
+        NamespaceId::from(Uint64::from_hex(hex).unwrap())
     }
 }
 
-// Enable `Deref` coercion NetworkType.
+// Enable `Deref` coercion NamespaceId.
 impl Deref for NamespaceId {
     type Target = u64;
     fn deref(&self) -> &Self::Target {

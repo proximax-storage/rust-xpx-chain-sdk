@@ -26,7 +26,7 @@ use super::{
 };
 
 pub(crate) fn extract_version(version: u32) -> EntityVersion {
-    return version & 0xFFFFFF;
+    version & 0xFFFFFF
 }
 
 pub(crate) fn sign_transaction(

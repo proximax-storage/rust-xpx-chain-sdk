@@ -108,7 +108,7 @@ impl core::fmt::Display for Deadline {
 
 impl From<BlockchainTimestamp> for Deadline {
     fn from(e: BlockchainTimestamp) -> Self {
-        return Deadline(e.to_timestamp());
+        Deadline(e.to_timestamp())
     }
 }
 

@@ -118,6 +118,6 @@ impl From<Vec<NamespaceId>> for NamespaceIds {
         for m in e {
             ids.namespace_ids.push(m.to_string())
         }
-        return ids;
+        ids
     }
 }

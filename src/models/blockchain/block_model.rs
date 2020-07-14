@@ -88,52 +88,6 @@ pub struct BlockInfo {
     pub fee_interest_denominator: u32,
 }
 
-impl BlockInfo {
-    pub fn new(
-        network_type: NetworkType,
-        signature: String,
-        signer: PublicAccount,
-        version: EntityVersion,
-        ver_type: u32,
-        height: Height,
-        timestamp: Timestamp,
-        difficulty: Uint64,
-        num_transactions: u64,
-        fee_multiplier: i32,
-        generation_hash: Hash,
-        previous_block_hash: Hash,
-        block_transactions_hash: Hash,
-        block_receipts_hash: Hash,
-        state_hash: String,
-        beneficiary: Option<PublicAccount>,
-        fee_interest: u32,
-        total_fee: Uint64,
-        fee_interest_denominator: u32,
-    ) -> Self {
-        BlockInfo {
-            network_type,
-            signature,
-            signer,
-            version,
-            ver_type,
-            height,
-            timestamp,
-            difficulty,
-            num_transactions,
-            fee_multiplier,
-            generation_hash,
-            previous_block_hash,
-            block_transactions_hash,
-            block_receipts_hash,
-            state_hash,
-            beneficiary,
-            fee_interest,
-            total_fee,
-            fee_interest_denominator,
-        }
-    }
-}
-
 impl<'a> core::fmt::Display for BlockInfo {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(

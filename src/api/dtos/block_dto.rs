@@ -95,27 +95,27 @@ impl BlockDto {
             fee_interest_denominator = v;
         }
 
-        Ok(BlockInfo::new(
+        Ok(BlockInfo {
             network_type,
-            dto.signature,
-            signer_public_account,
+            signature: dto.signature,
+            signer: signer_public_account,
             version,
-            dto._type,
-            dto.height.compact(),
-            BlockchainTimestamp::new(*dto.timestamp.compact() as i64).to_timestamp(),
-            dto.difficulty.compact(),
+            ver_type: dto._type,
+            height: dto.height.compact(),
+            timestamp: BlockchainTimestamp::new(*dto.timestamp.compact() as i64).to_timestamp(),
+            difficulty: dto.difficulty.compact(),
             num_transactions,
             fee_multiplier,
             generation_hash,
-            dto.previous_block_hash,
-            dto.block_transactions_hash,
+            previous_block_hash: dto.previous_block_hash,
+            block_transactions_hash: dto.block_transactions_hash,
             block_receipts_hash,
             state_hash,
-            beneficiary_public_account,
+            beneficiary: beneficiary_public_account,
             fee_interest,
-            Uint64Dto(total_fee).compact(),
+            total_fee: Uint64Dto(total_fee).compact(),
             fee_interest_denominator,
-        ))
+        })
     }
 }
 

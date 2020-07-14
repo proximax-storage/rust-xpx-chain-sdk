@@ -106,8 +106,8 @@ impl Transaction for AddressAliasTransaction {
             .embedded_to_bytes(&mut builder, address_vector, ADDRESS_SIZE)
     }
 
-    fn to_aggregate(&mut self, signer: PublicAccount) {
-        self.alias_transaction.to_aggregate(signer)
+    fn set_aggregate(&mut self, signer: PublicAccount) {
+        self.alias_transaction.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

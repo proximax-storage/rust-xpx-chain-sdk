@@ -46,7 +46,7 @@ impl TransactionRoutes {
     }
 
     fn __client(self) -> Arc<ApiClient> {
-        self.0.to_owned()
+        self.0
     }
 
     /// Get transaction status

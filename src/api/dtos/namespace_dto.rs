@@ -77,7 +77,7 @@ impl NamespaceInfoDto {
     pub fn compact(&self) -> crate::Result<NamespaceInfo> {
         let public_account = PublicAccount::from_public_key(
             &self.namespace.owner,
-            NetworkType::from(NetworkType::from(self.namespace._type)),
+            NetworkType::from(self.namespace._type),
         )?;
 
         let levels = self.namespace.extract_levels()?;
@@ -226,10 +226,8 @@ impl TransactionDto for RegisterNamespaceTransactionInfoDto {
             if let Some(d) = dto.duration {
                 duration = Some(d.compact())
             };
-        } else {
-            if let Some(p) = dto.parent_id {
-                parent_id = Some(NamespaceId::from(p.compact()))
-            };
+        } else if let Some(p) = dto.parent_id {
+            parent_id = Some(NamespaceId::from(p.compact()))
         }
 
         Ok(Box::new(RegisterNamespaceTransaction {

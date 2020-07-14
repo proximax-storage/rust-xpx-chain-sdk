@@ -46,7 +46,7 @@ impl RegisterNamespaceTransaction {
         network_type: NetworkType,
     ) -> Result<RegisterNamespaceTransaction> {
         ensure!(
-            namespace_name.len() != 0 && namespace_name.len() <= 16,
+            !namespace_name.is_empty() && namespace_name.len() <= 16,
             errors_const::ERR_INVALID_NAMESPACE_NAME
         );
 
@@ -76,7 +76,7 @@ impl RegisterNamespaceTransaction {
         network_type: NetworkType,
     ) -> Result<Self> {
         ensure!(
-            namespace_name.len() != 0 && namespace_name.len() <= 64,
+            !namespace_name.is_empty() && namespace_name.len() <= 64,
             errors_const::ERR_INVALID_NAMESPACE_NAME
         );
 
@@ -167,8 +167,8 @@ impl Transaction for RegisterNamespaceTransaction {
         Ok(register_namespace_transaction_schema().serialize(&mut buf.to_vec()))
     }
 
-    fn to_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.to_aggregate(signer)
+    fn set_aggregate(&mut self, signer: PublicAccount) {
+        self.abs_transaction.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

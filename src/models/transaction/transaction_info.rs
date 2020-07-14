@@ -44,28 +44,6 @@ pub struct AbstractTransaction {
 }
 
 impl AbstractTransaction {
-    pub fn new(
-        tx_info: Option<TransactionInfo>,
-        network_type: NetworkType,
-        signature: Option<String>,
-        signer: PublicAccount,
-        version: EntityVersion,
-        transaction_type: EntityTypeEnum,
-        max_fee: Option<Uint64>,
-        deadline: Option<Deadline>,
-    ) -> Self {
-        AbstractTransaction {
-            transaction_info: tx_info,
-            network_type,
-            signature,
-            signer,
-            version,
-            transaction_type,
-            max_fee,
-            deadline,
-        }
-    }
-
     pub(crate) fn get_hash(&self) -> Hash {
         match self.transaction_info.to_owned() {
             Some(h) => match h.hash {
@@ -126,7 +104,7 @@ impl AbstractTransaction {
         }
     }
 
-    pub(crate) fn to_aggregate(&mut self, signer: PublicAccount) {
+    pub(crate) fn set_aggregate(&mut self, signer: PublicAccount) {
         self.signer = signer;
     }
 
@@ -167,28 +145,6 @@ pub struct TransactionInfo {
 }
 
 impl TransactionInfo {
-    pub fn new(
-        height: Height,
-        index: u32,
-        id: String,
-        transaction_hash: Option<Hash>,
-        merkle_component_hash: Hash,
-        agregate_hash: Hash,
-        aggregate_id: String,
-        unique_aggregate: Hash,
-    ) -> Self {
-        TransactionInfo {
-            height,
-            index,
-            id,
-            hash: transaction_hash,
-            merkle_component_hash: Some(merkle_component_hash),
-            agregate_hash: Some(agregate_hash),
-            aggregate_id: Some(aggregate_id),
-            unique_aggregate_hash: Some(unique_aggregate),
-        }
-    }
-
     pub fn transaction_hash(&self) -> Hash {
         match self.hash.to_owned() {
             Some(h) => h,

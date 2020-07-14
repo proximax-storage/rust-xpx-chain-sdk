@@ -57,7 +57,7 @@ serialize_trait_object!(AssetId);
 
 impl<'a> PartialEq for &'a dyn AssetId {
     fn eq(&self, other: &Self) -> bool {
-        &self.to_bytes() == &other.to_bytes()
+        self.to_bytes() == other.to_bytes()
     }
 }
 

@@ -50,8 +50,8 @@ impl AliasTransaction {
         })
     }
 
-    pub(crate) fn to_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.to_aggregate(signer)
+    pub(crate) fn set_aggregate(&mut self, signer: PublicAccount) {
+        self.abs_transaction.set_aggregate(signer)
     }
 
     pub(crate) fn abs_transaction(&self) -> AbstractTransaction {

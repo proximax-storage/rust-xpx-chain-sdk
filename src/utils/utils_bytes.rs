@@ -20,7 +20,7 @@ pub fn u32_to_array_u8(value: u32) -> [u8; SIZE_U32] {
     buf.as_mut()
         .write_u32::<LittleEndian>(value)
         .expect("Unable to write");
-    return buf;
+    buf
 }
 
 #[inline]
@@ -29,7 +29,7 @@ pub fn u64_to_array_u8(value: u64) -> [u8; SIZE_U64] {
     buf.as_mut()
         .write_u64::<LittleEndian>(value)
         .expect("Unable to write");
-    return buf;
+    buf
 }
 
 pub fn array_u8_to_u32(bytes: [u8; SIZE_U32]) -> u32 {

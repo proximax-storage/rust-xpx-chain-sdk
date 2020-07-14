@@ -70,7 +70,7 @@ impl Uint64 {
     pub fn to_int_array(&self) -> [u32; 2] {
         let lower = self.0 as u32;
         let higher = (self.0 >> 32) as u32;
-        return [lower, higher];
+        [lower, higher]
     }
 }
 

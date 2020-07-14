@@ -21,10 +21,6 @@ impl AccountLinkAction {
     pub fn value(self) -> u8 {
         self.into()
     }
-
-    pub fn to_string(&self) -> String {
-        format!("{:?}", self)
-    }
 }
 
 impl From<u8> for AccountLinkAction {
@@ -33,6 +29,12 @@ impl From<u8> for AccountLinkAction {
             1 => AccountLinkAction::AccountUnlink,
             _ => AccountLinkAction::AccountLink,
         }
+    }
+}
+
+impl std::fmt::Display for AccountLinkAction {
+    fn fmt(&self, e: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
     }
 }
 
@@ -53,10 +55,6 @@ impl AliasType {
     pub fn value(self) -> u8 {
         self.into()
     }
-
-    pub fn to_string(&self) -> String {
-        format!("{:?}", self)
-    }
 }
 
 impl From<u8> for AliasType {
@@ -66,6 +64,12 @@ impl From<u8> for AliasType {
             2 => AliasType::AddressAliasType,
             _ => AliasType::NoneAliasType,
         }
+    }
+}
+
+impl std::fmt::Display for AliasType {
+    fn fmt(&self, e: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
     }
 }
 
@@ -84,10 +88,6 @@ impl AliasActionType {
     pub fn value(self) -> u8 {
         self.into()
     }
-
-    pub fn to_string(&self) -> String {
-        format!("{:?}", self)
-    }
 }
 
 impl From<u8> for AliasActionType {
@@ -96,5 +96,11 @@ impl From<u8> for AliasActionType {
             1 => AliasActionType::AliasUnlink,
             _ => AliasActionType::AliasLink,
         }
+    }
+}
+
+impl std::fmt::Display for AliasActionType {
+    fn fmt(&self, e: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
     }
 }

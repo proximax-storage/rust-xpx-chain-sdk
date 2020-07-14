@@ -81,16 +81,16 @@ impl AbstractTransactionDto {
 
         let transaction_type = EntityTypeEnum::from(dto.r#type);
 
-        Ok(AbstractTransaction::new(
-            Some(info),
+        Ok(AbstractTransaction {
+            transaction_info: Some(info),
             network_type,
-            dto.signature.clone(),
+            signature: dto.signature.clone(),
             signer,
             version,
             transaction_type,
             max_fee,
             deadline,
-        ))
+        })
     }
 }
 
@@ -297,7 +297,7 @@ impl TransactionDto for HashLockTransactionInfoDto {
             signed_transaction: SignedTransaction::new(
                 EntityTypeEnum::AggregateBonded,
                 "".to_string(),
-                dto.hash.to_string(),
+                dto.hash,
             ),
         }))
     }

@@ -43,7 +43,7 @@ impl ModifyMultisigAccountTransaction {
         network_type: NetworkType,
     ) -> Result<Self> {
         ensure!(
-            modifications.len() != 0 && min_approval_delta != 0 && min_removal_delta != 0,
+            !modifications.is_empty() && min_approval_delta != 0 && min_removal_delta != 0,
             ERR_EMPTY_MODIFICATIONS
         );
 
@@ -125,8 +125,8 @@ impl Transaction for ModifyMultisigAccountTransaction {
         Ok(modify_multisig_account_transaction_schema().serialize(&mut buf.to_vec()))
     }
 
-    fn to_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.to_aggregate(signer)
+    fn set_aggregate(&mut self, signer: PublicAccount) {
+        self.abs_transaction.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

@@ -5,18 +5,25 @@
  */
 
 use {
+    ::std::{borrow::Cow, collections::HashMap},
     bytes::Bytes,
     downcast_rs::Downcast,
     futures_util::{SinkExt, StreamExt},
     serde_json::Value,
-    std::{borrow::Cow, collections::HashMap},
     tokio_tungstenite::{connect_async, tungstenite::Message, WebSocketStream},
     url::Url,
 };
 
 use crate::{
     api::{map_transaction_dto, TransactionDto},
-    models::{error::Error, Result},
+    models::{
+        account::Address,
+        blockchain::BlockInfo,
+        error::Error,
+        multisig::CosignatureInfo,
+        transaction::{AggregateTransaction, Transaction, TransactionInfo, TransactionStatus},
+        Result,
+    },
 };
 
 use super::{
@@ -45,7 +52,7 @@ pub struct SiriusWebsocketClient {
 impl SiriusWebsocketClient {
     pub async fn add_block_handlers<F>(&mut self, handler_fn: F) -> Result<()>
     where
-        F: Fn(crate::blockchain::BlockInfo) -> bool + Send + 'static,
+        F: Fn(BlockInfo) -> bool + Send + 'static,
     {
         let handler = HandlerBlock {
             handler: Box::new(handler_fn),
@@ -57,13 +64,9 @@ impl SiriusWebsocketClient {
         Ok(())
     }
 
-    pub async fn add_status_handlers<F>(
-        &mut self,
-        address: &crate::account::Address,
-        handler_fn: F,
-    ) -> Result<()>
+    pub async fn add_status_handlers<F>(&mut self, address: &Address, handler_fn: F) -> Result<()>
     where
-        F: Fn(crate::transaction::TransactionStatus) -> bool + Send + 'static,
+        F: Fn(TransactionStatus) -> bool + Send + 'static,
     {
         let handler = HandlerStatus {
             handler: Box::new(handler_fn),
@@ -78,11 +81,11 @@ impl SiriusWebsocketClient {
 
     pub async fn add_confirmed_added_handlers<F>(
         &mut self,
-        address: &crate::account::Address,
+        address: &Address,
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(Box<dyn crate::transaction::Transaction>) -> bool + Send + 'static,
+        F: Fn(Box<dyn Transaction>) -> bool + Send + 'static,
     {
         let handler = HandlerConfirmedAdd {
             handler: Box::new(handler_fn),
@@ -100,11 +103,11 @@ impl SiriusWebsocketClient {
 
     pub async fn add_unconfirmed_removed_handlers<F>(
         &mut self,
-        address: &crate::account::Address,
+        address: &Address,
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(crate::transaction::TransactionInfo) -> bool + Send + 'static,
+        F: Fn(TransactionInfo) -> bool + Send + 'static,
     {
         let handler = HandlerUnconfirmedRemoved {
             handler: Box::new(handler_fn),
@@ -122,11 +125,11 @@ impl SiriusWebsocketClient {
 
     pub async fn add_unconfirmed_added_handlers<F>(
         &mut self,
-        address: &crate::account::Address,
+        address: &Address,
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(Box<dyn crate::transaction::Transaction>) -> bool + Send + 'static,
+        F: Fn(Box<dyn Transaction>) -> bool + Send + 'static,
     {
         let handler = HandlerUnconfirmedAdd {
             handler: Box::new(handler_fn),
@@ -144,11 +147,11 @@ impl SiriusWebsocketClient {
 
     pub async fn add_partial_added_handlers<F>(
         &mut self,
-        address: &crate::account::Address,
+        address: &Address,
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(crate::transaction::AggregateTransaction) -> bool + Send + 'static,
+        F: Fn(AggregateTransaction) -> bool + Send + 'static,
     {
         let handler = HandlerPartialAdd {
             handler: Box::new(handler_fn),
@@ -166,11 +169,11 @@ impl SiriusWebsocketClient {
 
     pub async fn add_partial_removed_handlers<F>(
         &mut self,
-        address: &crate::account::Address,
+        address: &Address,
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(crate::transaction::TransactionInfo) -> bool + Send + 'static,
+        F: Fn(TransactionInfo) -> bool + Send + 'static,
     {
         let handler = HandlerUnconfirmedRemoved {
             handler: Box::new(handler_fn),
@@ -188,11 +191,11 @@ impl SiriusWebsocketClient {
 
     pub async fn add_cosignature_handlers<F>(
         &mut self,
-        address: &crate::account::Address,
+        address: &Address,
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(crate::multisig::CosignatureInfo) -> bool + Send + 'static,
+        F: Fn(CosignatureInfo) -> bool + Send + 'static,
     {
         let handler = HandlerCosignature {
             handler: Box::new(handler_fn),
@@ -303,10 +306,7 @@ impl SiriusWebsocketClient {
                             break;
                         }
                     } else if let Some(handler_info) = base.downcast_ref::<HandlerCosignature>() {
-                        let channel = get_channel_data::<crate::multisig::CosignatureInfo>(
-                            &msg_string,
-                            false,
-                        )?;
+                        let channel = get_channel_data::<CosignatureInfo>(&msg_string, false)?;
                         if (handler_info.handler)(channel) {
                             break;
                         }
@@ -319,7 +319,7 @@ impl SiriusWebsocketClient {
 }
 
 fn convert_to_ws_url(url: &str) -> Result<Url> {
-    let scheme_vec: Vec<&str> = url.split(":").collect();
+    let scheme_vec: Vec<&str> = url.split(':').collect();
 
     let scheme_str = match scheme_vec[0] {
         "https" => "wss",
@@ -333,7 +333,7 @@ fn convert_to_ws_url(url: &str) -> Result<Url> {
     Url::parse(&url).map_err(|e| Error::Url(Cow::from(e.to_string())))
 }
 
-fn path_parse_address(mut path: String, address: &crate::account::Address) -> String {
+fn path_parse_address(mut path: String, address: &Address) -> String {
     path.push_str("/");
     path.push_str(&address.address);
     path

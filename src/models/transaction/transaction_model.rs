@@ -184,7 +184,7 @@ where
     /// An abstract method to generate the embedded transaction bytes.
     fn embedded_to_bytes(&self) -> crate::Result<Vec<u8>>;
 
-    fn to_aggregate(&mut self, signer: PublicAccount);
+    fn set_aggregate(&mut self, signer: PublicAccount);
 
     fn as_any(&self) -> &dyn Any;
 
@@ -200,7 +200,7 @@ impl Clone for Box<dyn Transaction + 'static> {
 
 impl<'a> PartialEq for &'a dyn Transaction {
     fn eq(&self, other: &Self) -> bool {
-        &self.embedded_to_bytes().unwrap() == &other.embedded_to_bytes().unwrap()
+        self.embedded_to_bytes().unwrap() == other.embedded_to_bytes().unwrap()
     }
 }
 

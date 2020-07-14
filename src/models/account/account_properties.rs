@@ -20,11 +20,11 @@ pub const ADD_PROPERTY: PropertyModificationType = 0;
 pub const REMOVE_PROPERTY: PropertyModificationType = 1;
 
 /// Account property type
-/// 0x01	The property type is an address.
-/// 0x02	The property type is mosaic id.
-/// 0x04	The property type is a transaction type.
-/// 0x05	Property type sentinel.
-/// 0x80 + type	The property is interpreted as a blocking operation.
+/// 0x01 The property type is an address.
+/// 0x02 The property type is a mosaic id.
+/// 0x04 The property type is a transaction type.
+/// 0x05 Property type sentinel.
+/// 0x80 + type The property is interpreted as a blocking operation.
 #[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr, IntoPrimitive)]
 #[repr(u8)]
 pub enum AccountPropertyType {
@@ -40,10 +40,6 @@ pub enum AccountPropertyType {
 impl AccountPropertyType {
     pub fn value(self) -> u8 {
         self.into()
-    }
-
-    pub fn to_string(&self) -> String {
-        format!("{:?}", self)
     }
 }
 

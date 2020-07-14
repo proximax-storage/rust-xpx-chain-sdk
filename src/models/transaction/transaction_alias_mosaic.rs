@@ -104,8 +104,8 @@ impl Transaction for MosaicAliasTransaction {
             .embedded_to_bytes(&mut builder, mosaic_vector, MOSAIC_ID_SIZE)
     }
 
-    fn to_aggregate(&mut self, signer: PublicAccount) {
-        self.alias_transaction.to_aggregate(signer)
+    fn set_aggregate(&mut self, signer: PublicAccount) {
+        self.alias_transaction.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

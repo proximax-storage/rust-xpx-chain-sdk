@@ -44,7 +44,7 @@ pub(crate) struct MosaicInfoDto {
 impl MosaicInfoDto {
     pub fn compact(&self) -> crate::Result<MosaicInfo> {
         ensure!(
-            self.mosaic.properties.len() > 0,
+            !self.mosaic.properties.is_empty(),
             errors_const::ERR_INVALID_MOSAIC_PROPERTIES
         );
 
