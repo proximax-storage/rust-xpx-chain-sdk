@@ -19,8 +19,8 @@ use {
 use crate::models::Uint64;
 
 /// It is Friday, 01 April 2016 00:00:00 +0000 UTC (1459468800000 milliseconds since the epoch time).
-static TIMESTAMP_NEMESIS_BLOCK_MILLISECONDS: i64 = 1459468800 * 1000;
-static MILLISECONDS: i64 = 1000000;
+const TIMESTAMP_NEMESIS_BLOCK_MILLISECONDS: i64 = 1_459_468_800 * 1_000;
+const MILLISECONDS: i64 = 1_000_000;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct BlockchainTimestamp(i64);

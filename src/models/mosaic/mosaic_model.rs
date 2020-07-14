@@ -6,13 +6,15 @@
 
 use {::std::fmt, num_enum::IntoPrimitive};
 
-use crate::models::{
-    asset_id_model::AssetId, errors_const::ERR_INVALID_MOSAIC_PROPERTY_ID,
-    mosaic::internally::PRX_XPX_U64, Uint64,
+use crate::{
+    models::{asset_id_model::AssetId, errors_const::ERR_INVALID_MOSAIC_PROPERTY_ID},
+    Uint64,
 };
 
 use super::{
-    internally::{XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE, XPX_MIN_VALUE},
+    internally::{
+        PRX_XPX_U64, XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE, XPX_MIN_VALUE,
+    },
     MosaicId,
 };
 

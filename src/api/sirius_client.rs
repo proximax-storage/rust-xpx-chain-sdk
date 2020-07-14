@@ -54,8 +54,8 @@ impl SiriusClient {
 }
 
 impl SiriusClient {
-    fn __internal(urls: Vec<&'static str>) -> Box<Self> {
-        let api_client = ApiClient::from_url(urls[0]);
+    fn __internal(url_node: &'static str) -> Box<Self> {
+        let api_client = ApiClient::from_url(url_node);
 
         let client = Arc::new(api_client);
 
@@ -80,7 +80,10 @@ impl SiriusClient {
     }
 
     pub async fn new(urls: Vec<&'static str>) -> Result<Box<Self>> {
-        let mut api = Self::__internal(urls);
+        //TODO
+        let url_node = urls[0];
+
+        let mut api = Self::__internal(url_node);
         api.__generation_info().await?;
 
         Ok(api)
@@ -114,7 +117,6 @@ pub(crate) struct ApiClient {
     pub base_path: &'static str,
     pub client: ReqwestClient,
     pub user_agent: Option<String>,
-    pub network_type_id: u8,
 }
 
 impl ApiClient {
@@ -124,7 +126,6 @@ impl ApiClient {
             base_path: url,
             client,
             user_agent: Some("Sirius/0.0.1/rust".to_owned()),
-            network_type_id: 0,
         }
     }
 }

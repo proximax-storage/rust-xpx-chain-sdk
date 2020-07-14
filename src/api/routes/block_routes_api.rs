@@ -117,19 +117,19 @@ impl BlockRoutes {
     pub async fn get_blocks_by_height_with_limit(
         self,
         height: u64,
-        mut limit: i32,
+        limit: i32,
     ) -> Result<Vec<BlockInfo>> {
         assert_ne!(height, 0, "Block height should not be zero.");
 
         assert_ne!(limit, 0, "Limit should not be zero.");
 
-        if limit < 25 {
-            limit = 25;
+        let limit = if limit < 25 {
+            25
         } else if limit < 50 {
-            limit = 50;
+            50
         } else {
-            limit = 100;
-        }
+            100
+        };
 
         let mut req = __internal_request::Request::new(Method::GET, BLOCK_INFO_ROUTE.to_string());
 

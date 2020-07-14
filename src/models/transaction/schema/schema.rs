@@ -4,8 +4,6 @@
  * license that can be found in the LICENSE file.
  */
 
-use ::std::rc::Rc;
-
 use super::SchemaAttribute;
 
 pub struct Schema {
@@ -21,10 +19,9 @@ impl Schema {
         let mut result_bytes: Vec<u8> = Vec::new();
 
         for i in 0..self.definition.len() {
-            let temp: &Vec<u8> =
+            let temp: &[u8] =
                 &self.definition[i].serialize(buffer, 4 + (i * 2), buffer[0] as usize);
 
-            let temp = Rc::new(temp);
             result_bytes.append(&mut temp.to_vec());
         }
         result_bytes

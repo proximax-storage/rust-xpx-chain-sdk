@@ -23,9 +23,8 @@ use crate::{
 
 use super::dtos::{CosignatoryModificationDto, MosaicPropertyDto, TransactionDto};
 
-static TRANSACTION_ORDER_ASC: &str = "id";
-
-static TRANSACTION_ORDER_DESC: &str = "-id";
+const TRANSACTION_ORDER_ASC: &str = "id";
+const TRANSACTION_ORDER_DESC: &str = "-id";
 
 pub(crate) struct AccountTransactionsOption {
     pub page_size: Option<i32>,

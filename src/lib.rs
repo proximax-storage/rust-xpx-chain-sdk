@@ -22,4 +22,4 @@ mod models;
 mod utils;
 pub mod websocket;
 
-type Result<T> = ::std::result::Result<T, failure::Error>;
+pub type Result<T> = ::std::result::Result<T, failure::Error>;
