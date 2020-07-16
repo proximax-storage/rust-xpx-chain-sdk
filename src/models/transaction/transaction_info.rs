@@ -74,7 +74,7 @@ impl AbstractTransaction {
 
     pub fn is_unconfirmed(&self) -> bool {
         if let Some(tx_info) = &self.transaction_info {
-            tx_info.height.0 == 0 && tx_info.hash.eq(&tx_info.merkle_component_hash)
+            *tx_info.height == 0 && tx_info.hash.eq(&tx_info.merkle_component_hash)
         } else {
             false
         }
@@ -82,7 +82,7 @@ impl AbstractTransaction {
 
     pub fn is_confirmed(&self) -> bool {
         if let Some(tx_info) = &self.transaction_info {
-            tx_info.height.0 > 0
+            *tx_info.height > 0
         } else {
             false
         }
@@ -90,7 +90,7 @@ impl AbstractTransaction {
 
     pub fn has_missing_signatures(&self) -> bool {
         if let Some(tx_info) = &self.transaction_info {
-            tx_info.height.0 == 0 && tx_info.hash.eq(&tx_info.merkle_component_hash)
+            *tx_info.height == 0 && tx_info.hash.eq(&tx_info.merkle_component_hash)
         } else {
             false
         }

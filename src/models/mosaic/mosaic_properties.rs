@@ -46,7 +46,7 @@ impl MosaicProperties {
         ensure!(!0 > divisibility, "Divisibility must not be negative.");
 
         let mut properties = vec![];
-        if duration.0 != 0 {
+        if *duration != 0 {
             properties.push(MosaicProperty {
                 id: MosaicPropertyId::Duration,
                 value: duration,
