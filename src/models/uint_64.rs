@@ -19,7 +19,7 @@ use crate::utils::SIZE_U64;
 /// `u64` will be translated correctly into JavaScript (supported by dart2js).
 /// Value range is 0 through 18446744073709551615.
 #[derive(Default, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Hash)] // we derive Default in order to use the clear() method in Drop
-pub struct Uint64(pub(crate) u64);
+pub struct Uint64(u64);
 
 impl Uint64 {
     pub fn new(u: u64) -> Self {
@@ -76,22 +76,19 @@ impl Uint64 {
 
 impl fmt::LowerHex for Uint64 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let val = self.0;
-        write!(f, "{:x}", val) // delegate to u64's implementation
+        write!(f, "{:x}", self.0) // delegate to u64's implementation
     }
 }
 
 impl fmt::UpperHex for Uint64 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let val = self.0;
-        write!(f, "{:X}", val) // delegate to u64's implementation
+        write!(f, "{:X}", self.0) // delegate to u64's implementation
     }
 }
 
 impl fmt::Binary for Uint64 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let val = self.0;
-        write!(f, "{:b}", val) // delegate to i32's implementation
+        write!(f, "{:b}", self.0) // delegate to i32's implementation
     }
 }
 
@@ -121,5 +118,11 @@ impl Deref for Uint64 {
     type Target = u64;
     fn deref(&self) -> &Self::Target {
         &self.0
+    }
+}
+
+impl From<u64> for Uint64 {
+    fn from(u: u64) -> Self {
+        Uint64(u)
     }
 }

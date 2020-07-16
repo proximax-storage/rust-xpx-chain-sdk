@@ -55,12 +55,12 @@ impl core::fmt::Display for PlainMessage {
     }
 }
 
-/// Creates `MosaicFlags` with the default parameters.
+/// Creates `PlainMessage` with the default parameters.
 impl Default for PlainMessage {
     fn default() -> Self {
         PlainMessage {
             _type: MessageType::PlainMessageType,
-            payload: "".to_string(),
+            payload: String::new(),
         }
     }
 }

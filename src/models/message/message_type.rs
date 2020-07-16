@@ -4,13 +4,13 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::fmt;
+use {num_enum::IntoPrimitive, std::fmt};
 
 /// MessageType:
 /// The type of the message:
 /// * 0 - Plain text or unencrypted message.
 /// * 1 - Secured text or encrypted message.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Copy)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Copy, IntoPrimitive)]
 #[repr(u8)]
 pub enum MessageType {
     /// Plain text or unencrypted message.
@@ -19,25 +19,12 @@ pub enum MessageType {
     /// Secured text or encrypted message.
     #[serde(rename = "1")]
     SecureMessageType = 0x01,
+    UnknownMessageType,
 }
 
 impl MessageType {
-    /// Returns a 'MessageType' for the given int value.
-    ///
-    /// Throws an error when the type is unknown.
-    pub fn get_type(value: u8) -> crate::Result<Self> {
-        match value {
-            0x00 => Ok(MessageType::PlainMessageType),
-            0x01 => Ok(MessageType::SecureMessageType),
-            _ => bail!("unknown message type"),
-        }
-    }
-
-    pub fn value(&self) -> u8 {
-        match &self {
-            MessageType::PlainMessageType => 0x00,
-            MessageType::SecureMessageType => 0x01,
-        }
+    pub fn value(self) -> u8 {
+        self.into()
     }
 }
 
@@ -46,6 +33,20 @@ impl fmt::Display for MessageType {
         match *self {
             MessageType::PlainMessageType => write!(f, "PlainMessageType"),
             MessageType::SecureMessageType => write!(f, "SecureMessageType"),
+            MessageType::UnknownMessageType => write!(f, "UnknownMessageType"),
+        }
+    }
+}
+
+/// Returns a 'MessageType' for the given u8 value.
+///
+/// Throws an UnknownMessageType when the type is unknown.
+impl From<u8> for MessageType {
+    fn from(num: u8) -> Self {
+        match num {
+            0x00 => MessageType::PlainMessageType,
+            0x01 => MessageType::SecureMessageType,
+            _ => MessageType::UnknownMessageType,
         }
     }
 }

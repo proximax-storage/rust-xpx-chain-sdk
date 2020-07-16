@@ -109,7 +109,7 @@ impl Mosaic {
 
         assert!(amount > 0, "Minimum xpx value must be {}", XPX_MIN_VALUE);
 
-        let xpx_mosaic_id = Box::new(MosaicId(Uint64(PRX_XPX_U64)));
+        let xpx_mosaic_id = Box::new(MosaicId(Uint64::new(PRX_XPX_U64)));
 
         Self {
             asset_id: xpx_mosaic_id,

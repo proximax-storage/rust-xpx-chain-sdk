@@ -36,5 +36,5 @@ pub(super) fn generate_mosaic_id(nonce: MosaicNonce, owner_public_id: PublicAcco
 
     let hash_to_array = hash.result();
 
-    Uint64(array_u8_to_u64(hash_to_array.as_slice()) ^ NAMESPACE_BIT)
+    Uint64::new(array_u8_to_u64(hash_to_array.as_slice()) ^ NAMESPACE_BIT)
 }
