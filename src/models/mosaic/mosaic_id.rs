@@ -14,6 +14,7 @@ use {
 use crate::{
     models::{account::PublicAccount, asset_id_model::AssetId, Uint64},
     utils::is_hex,
+    AssetIdType,
 };
 
 use super::{generate_mosaic_id, MosaicNonce};
@@ -61,6 +62,10 @@ impl AssetId for MosaicId {
 
     fn box_clone(&self) -> Box<dyn AssetId + 'static> {
         Box::new((*self).clone())
+    }
+
+    fn get_type(&self) -> AssetIdType {
+        AssetIdType::Mosaic
     }
 }
 

@@ -14,6 +14,7 @@ use {
 use crate::{
     models::{asset_id_model::AssetId, errors_const, Uint64},
     utils::has_bits,
+    AssetIdType,
 };
 
 use super::{generate_namespace_path, NAMESPACE_BIT};
@@ -60,6 +61,10 @@ impl AssetId for NamespaceId {
 
     fn box_clone(&self) -> Box<dyn AssetId + 'static> {
         Box::new(*self)
+    }
+
+    fn get_type(&self) -> AssetIdType {
+        AssetIdType::Namespace
     }
 }
 

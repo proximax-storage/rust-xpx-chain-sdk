@@ -58,6 +58,7 @@ impl Request {
     }
 
     pub fn with_path_param(mut self, basename: String, param: String) -> Self {
+        let param = param.replace('"', "");
         self.path_params.insert(basename, param);
         self
     }

@@ -27,8 +27,8 @@ pub const CHAIN_SCORE_ROUTE: &str = "/chain/score";
 pub const CHAIN_HEIGHT_ROUTE: &str = "/chain/height";
 
 ///  Exchange routes
-//pub const EXCHANGE_ROUTE: &str = "/account/{accountId}/exchange";
-//pub const OFFERS_BY_MOSAIC_ROUTE: &str = "/exchange/{offerType}/{mosaic_id}";
+pub const EXCHANGE_ROUTE: &str = "/account/{account_id}/exchange";
+pub const OFFERS_BY_MOSAIC_ROUTE: &str = "/exchange/{offer_type}/{mosaic_id}";
 
 /// Mosaic routes.
 pub const MOSAICS_ROUTE: &str = "/mosaic";

@@ -8,6 +8,11 @@ use ::core::fmt;
 
 use super::{mosaic::MosaicId, namespace::NamespaceId, Uint64};
 
+pub enum AssetIdType {
+    Namespace,
+    Mosaic,
+}
+
 /// An `trait` identifier used to define mosaic_id and namespace_id.
 pub trait AssetId: Send + Sync + erased_serde::Serialize
 where
@@ -44,6 +49,8 @@ where
     }
 
     fn box_clone(&self) -> Box<dyn AssetId>;
+
+    fn get_type(&self) -> AssetIdType;
 }
 
 // implement Clone manually by forwarding to clone_box.

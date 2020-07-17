@@ -10,8 +10,9 @@ use crate::{models::error::Result, network::NetworkType, transaction::Hash};
 
 use super::routes::{
     account_routes_api::AccountRoutes, block_routes_api::BlockRoutes,
-    chain_routes_api::ChainRoutes, mosaic_routes_api::MosaicRoutes,
-    namespace_routes_api::NamespaceRoutes, node_routes_api::NodeRoutes,
+    chain_routes_api::ChainRoutes, exchange_routes_api::ExchangeRoutes,
+    mosaic_routes_api::MosaicRoutes, namespace_routes_api::NamespaceRoutes,
+    node_routes_api::NodeRoutes, resolver_routes_api::ResolverRoutes,
     transaction_routes_api::TransactionRoutes,
 };
 
@@ -36,6 +37,14 @@ impl SiriusClient {
         Box::new(ChainRoutes::new(self.client.to_owned()))
     }
 
+    pub fn exchange_api(&self) -> Box<ExchangeRoutes> {
+        Box::new(ExchangeRoutes::new(
+            self.client.to_owned(),
+            self.network_type(),
+            *self.resolver_api(),
+        ))
+    }
+
     pub fn node_api(&self) -> Box<NodeRoutes> {
         Box::new(NodeRoutes::new(self.client.to_owned()))
     }
@@ -50,6 +59,14 @@ impl SiriusClient {
 
     pub fn transaction_api(&self) -> Box<TransactionRoutes> {
         Box::new(TransactionRoutes::new(self.client.to_owned()))
+    }
+
+    pub fn resolver_api(&self) -> Box<ResolverRoutes> {
+        Box::new(ResolverRoutes::new(
+            self.client.to_owned(),
+            *self.namespace_api(),
+            *self.mosaic_api(),
+        ))
     }
 }
 
