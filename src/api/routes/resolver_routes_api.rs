@@ -9,9 +9,7 @@ use ::std::sync::Arc;
 use crate::{
     api::{valid_vec_len, ApiClient},
     error::Error,
-    errors_const::{
-        ERR_INVALID_ASSET_ID, ERR_INVALID_NAMESPACE_ALIASED, ERR_UNKNOWN_BLOCKCHAIN_TYPE,
-    },
+    errors_const::{ERR_INVALID_ASSET_ID, ERR_INVALID_NAMESPACE_ALIASED},
     models::Result,
     mosaic::{MosaicId, MosaicInfo},
     namespace::NamespaceId,
@@ -71,8 +69,6 @@ impl ResolverRoutes {
                 let mosaic_id = MosaicId::from(asset_id.to_u64());
                 self.__mosaic_routes().get_mosaic_info(mosaic_id).await
             }
-
-            _ => Err(Error::from(ERR_UNKNOWN_BLOCKCHAIN_TYPE)),
         }
     }
 
