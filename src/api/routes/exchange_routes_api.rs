@@ -6,11 +6,10 @@
 
 use {::std::sync::Arc, reqwest::Method};
 
+use crate::api::OfferInfoDTOs;
 use crate::{
     account::PublicAccount,
-    api::{
-        request as __internal_request, sirius_client::ApiClient, ExchangeInfoDto, OfferInfoDTOs,
-    },
+    api::{request as __internal_request, sirius_client::ApiClient, ExchangeInfoDto},
     exchange::{OfferInfos, OfferType, UserExchangeInfo},
     models::Result,
     network::NetworkType,

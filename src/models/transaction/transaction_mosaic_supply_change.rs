@@ -87,7 +87,7 @@ impl Transaction for MosaicSupplyChangeTransaction {
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
         let mosaic_vec = builder.create_vector(&self.asset_id.to_u32_array());
-        let delta_vec = builder.create_vector(&self.delta.to_int_array());
+        let delta_vec = builder.create_vector(&self.delta.to_i32_array());
 
         let abs_vector = self.abs_transaction.build_vector(&mut builder);
 

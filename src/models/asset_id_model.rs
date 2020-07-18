@@ -41,7 +41,7 @@ where
     }
 
     fn to_u32_array(&self) -> [u32; 2] {
-        self.to_uint64().to_int_array()
+        self.to_uint64().to_i32_array()
     }
 
     fn is_empty(&self) -> bool {

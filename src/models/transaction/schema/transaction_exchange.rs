@@ -6,7 +6,7 @@
 
 use super::{
     schema_common_definition::schema_common_definition, ArrayAttribute, ScalarAttribute, Schema,
-    SchemaAttribute, TableArrayAttribute, SIZEOF_BYTE, SIZEOF_INT, SIZEOF_SHORT,
+    SchemaAttribute, TableArrayAttribute, SIZEOF_BYTE, SIZEOF_INT,
 };
 
 pub fn add_exchange_offer_transaction_schema() -> Schema {

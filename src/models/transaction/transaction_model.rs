@@ -63,10 +63,10 @@ impl<'b> AbsVector<'b> {
             &deadline
                 .to_blockchain_timestamp()
                 .to_uint64()
-                .to_int_array(),
+                .to_i32_array(),
         );
 
-        let max_fee_vec = builder.create_vector_direct(&max_fee.to_int_array());
+        let max_fee_vec = builder.create_vector_direct(&max_fee.to_i32_array());
 
         AbsVector {
             signature_vec,

@@ -198,9 +198,9 @@ impl TransactionRoutes {
             .with_path_param("transactionId".to_string(), id)
             .set_transaction();
 
-        let version: Box<dyn TransactionDto> = req.execute(self.__client()).await?;
+        let transaction: Box<dyn TransactionDto> = req.execute(self.__client()).await?;
 
-        Ok(version.compact()?)
+        Ok(transaction.compact()?)
     }
 
     /// Get [Transactions] information.

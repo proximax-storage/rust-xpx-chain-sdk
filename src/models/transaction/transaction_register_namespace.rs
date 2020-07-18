@@ -136,7 +136,7 @@ impl Transaction for RegisterNamespaceTransaction {
         let namespace_id_vec = builder.create_vector(&self.namespace_id.to_u32_array());
 
         let d_vec = match self.namespace_type {
-            NamespaceType::Root => builder.create_vector(&self.duration.unwrap().to_int_array()),
+            NamespaceType::Root => builder.create_vector(&self.duration.unwrap().to_i32_array()),
             _ => builder.create_vector(&self.parent_id.unwrap().to_u32_array()),
         };
 
