@@ -120,6 +120,15 @@ pub struct RemoveOffer {
     pub asset_id: Box<dyn AssetId>,
 }
 
+impl RemoveOffer {
+    pub fn new(offer_type: OfferType, asset_id: impl AssetId + 'static) -> Self {
+        Self {
+            r#type: offer_type,
+            asset_id: Box::new(asset_id),
+        }
+    }
+}
+
 impl fmt::Display for RemoveOffer {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
