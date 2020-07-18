@@ -224,6 +224,12 @@ pub struct ExchangeConfirmation {
     pub owner: PublicAccount,
 }
 
+impl ExchangeConfirmation {
+    pub fn new(offer: Offer, owner: PublicAccount) -> Self {
+        Self { offer, owner }
+    }
+}
+
 impl core::fmt::Display for ExchangeConfirmation {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(

@@ -20,7 +20,7 @@ pub(crate) const MOSAIC_SUPPLY_CHANGE_VERSION: EntityVersion = 2;
 pub(crate) const REGISTER_NAMESPACE_VERSION: EntityVersion = 2;
 pub(crate) const TRANSFER_VERSION: EntityVersion = 3;
 pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 3;
-pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 3;
+pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 
 //pub(crate) const BLOCKCHAIN_UPGRADE_VERSION: EntityVersion = 1;
