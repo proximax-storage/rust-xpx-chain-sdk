@@ -287,7 +287,7 @@ impl TransactionDto for HashLockTransactionInfoDto {
 
         let mosaic = Mosaic::new(
             MosaicId::from(dto.mosaic_id.compact()),
-            dto.amount.compact(),
+            dto.amount.compact().as_u64(),
         );
 
         Ok(Box::new(LockFundsTransaction {

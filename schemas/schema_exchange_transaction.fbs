@@ -8,7 +8,7 @@ table AddExchangeOfferTransactionBuffer {
     type: ushort;
     max_fee: [uint];
     deadline:[uint];
-    offersCount:ubyte;
+    offers_count:ubyte;
     offers: [AddExchangeOfferBuffer];
 }
 
@@ -20,7 +20,7 @@ table ExchangeOfferTransactionBuffer {
     type: ushort;
     max_fee: [uint];
     deadline:[uint];
-    offersCount:ubyte;
+    offers_count:ubyte;
     offers: [ExchangeOfferBuffer];
 }
 
@@ -32,7 +32,7 @@ table RemoveExchangeOfferTransactionBuffer {
     type: ushort;
     max_fee: [uint];
     deadline:[uint];
-    offersCount:ubyte;
+    offers_count:ubyte;
     offers: [RemoveExchangeOfferBuffer];
 }
 

@@ -139,7 +139,7 @@ impl Transaction for TransferTransaction {
 
         for mosaic in self.mosaics.iter() {
             let mosaic_id = _builder.create_vector(&mosaic.asset_id.to_u32_array());
-            let mosaic_amount = _builder.create_vector(&mosaic.amount.to_int_array());
+            let mosaic_amount = _builder.create_vector(&mosaic.amount.to_i32_array());
 
             let mut mosaic_buffer = buffers::MosaicBufferBuilder::new(&mut _builder);
             mosaic_buffer.add_id(mosaic_id);

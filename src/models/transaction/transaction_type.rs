@@ -19,13 +19,15 @@ pub(crate) const MOSAIC_DEFINITION_VERSION: EntityVersion = 3;
 pub(crate) const MOSAIC_SUPPLY_CHANGE_VERSION: EntityVersion = 2;
 pub(crate) const REGISTER_NAMESPACE_VERSION: EntityVersion = 2;
 pub(crate) const TRANSFER_VERSION: EntityVersion = 3;
-//pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
+pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 3;
+pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 1;
+pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
+
 //pub(crate) const BLOCKCHAIN_UPGRADE_VERSION: EntityVersion = 1;
 //pub(crate) const DRIVE_FILES_REWARD_VERSION: EntityVersion = 1;
 //pub(crate) const DRIVE_FILE_SYSTEM_VERSION: EntityVersion = 1;
 //pub(crate) const END_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
 //pub(crate) const END_DRIVE_VERSION: EntityVersion = 1;
-//pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 2;
 //pub(crate) const FILES_DEPOSIT_VERSION: EntityVersion = 1;
 //pub(crate) const JOIN_TO_DRIVE_VERSION: EntityVersion = 1;
 //pub(crate) const LINK_ACCOUNT_VERSION: EntityVersion = 2;
@@ -74,6 +76,9 @@ pub enum EntityTypeEnum {
     MosaicDefinition = 0x414D,
     MosaicSupplyChange = 0x424D,
     NamespaceRegistration = 0x414E,
+    AddExchangeOffer = 0x415D,
+    ExchangeOffer = 0x425D,
+    RemoveExchangeOffer = 0x435D,
     AddressAlias = 0x424E,
     MosaicAlias = 0x434E,
     Transfer = 0x4154,
@@ -114,6 +119,9 @@ impl From<u16> for EntityTypeEnum {
             0x414C => EntityTypeEnum::AccountLink,
             0x414D => EntityTypeEnum::MosaicDefinition,
             0x414E => EntityTypeEnum::NamespaceRegistration,
+            0x415D => EntityTypeEnum::AddExchangeOffer,
+            0x425D => EntityTypeEnum::ExchangeOffer,
+            0x435D => EntityTypeEnum::RemoveExchangeOffer,
             0x4150 => EntityTypeEnum::AccountRestrictionAddress,
             0x4152 => EntityTypeEnum::SecretLock,
             0x4154 => EntityTypeEnum::Transfer,

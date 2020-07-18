@@ -29,7 +29,7 @@ impl MosaicDto {
     pub fn compact(&self) -> Mosaic {
         let mosaic_id = MosaicId::from(self.id.compact());
         let amount = self.amount.compact();
-        Mosaic::new(mosaic_id, amount)
+        Mosaic::new(mosaic_id, amount.as_u64())
     }
 }
 

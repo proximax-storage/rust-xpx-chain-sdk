@@ -4,70 +4,64 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::fmt, failure::_core::any::Any, serde_json::Value};
+use {::std::fmt, failure::_core::any::Any, fb::FlatBufferBuilder, serde_json::Value};
 
 use crate::{
     models::{
         account::{Account, PublicAccount},
-        asset_id_model::AssetId,
-        consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
-        mosaic::MosaicSupplyType,
+        consts::{REMOVE_EXCHANGE_OFFER_HEADER_SIZE, REMOVE_EXCHANGE_OFFER_SIZE},
+        errors_const,
+        exchange::RemoveOffer,
         network::NetworkType,
-        uint_64::Uint64,
+        transaction::schema::remove_exchange_offer_transaction_schema,
     },
     Result,
 };
 
 use super::{
-    buffer::mosaic_supply_change::buffers, deadline::Deadline, internal::sign_transaction,
-    schema::mosaic_supply_change_transaction_schema, AbsTransaction, AbstractTransaction,
-    EntityTypeEnum, SignedTransaction, Transaction, MOSAIC_SUPPLY_CHANGE_VERSION,
+    buffer::exchange as buffer, deadline::Deadline, internal::sign_transaction, AbsTransaction,
+    AbstractTransaction, EntityTypeEnum, SignedTransaction, Transaction,
+    REMOVE_EXCHANGE_OFFER_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct MosaicSupplyChangeTransaction {
+pub struct RemoveExchangeOfferTransaction {
     pub abs_transaction: AbstractTransaction,
-    pub supply_type: MosaicSupplyType,
-    pub asset_id: Box<dyn AssetId>,
-    pub delta: Uint64,
+    pub offers: Vec<RemoveOffer>,
 }
 
-impl MosaicSupplyChangeTransaction {
+impl RemoveExchangeOfferTransaction {
     pub fn new(
         deadline: Deadline,
-        supply_type: MosaicSupplyType,
-        asset_id: impl AssetId + 'static,
-        delta: Uint64,
+        offers: Vec<RemoveOffer>,
         network_type: NetworkType,
     ) -> Result<Self> {
+        ensure!(!offers.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
+
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
-            MOSAIC_SUPPLY_CHANGE_VERSION,
-            EntityTypeEnum::MosaicSupplyChange,
+            REMOVE_EXCHANGE_OFFER_VERSION,
+            EntityTypeEnum::RemoveExchangeOffer,
             network_type,
         );
 
-        let id = Box::new(asset_id);
-
         Ok(Self {
             abs_transaction: abs_tx,
-            supply_type,
-            asset_id: id,
-            delta,
+            offers,
         })
     }
 }
 
-impl AbsTransaction for MosaicSupplyChangeTransaction {
+impl AbsTransaction for RemoveExchangeOfferTransaction {
     fn abs_transaction(&self) -> AbstractTransaction {
         self.abs_transaction.to_owned()
     }
 }
 
-impl Transaction for MosaicSupplyChangeTransaction {
+impl Transaction for RemoveExchangeOfferTransaction {
     fn size(&self) -> usize {
-        MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE
+        REMOVE_EXCHANGE_OFFER_HEADER_SIZE + self.offers.len() * REMOVE_EXCHANGE_OFFER_SIZE
     }
 
     fn to_json(&self) -> Value {
@@ -86,13 +80,15 @@ impl Transaction for MosaicSupplyChangeTransaction {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
-        let mosaic_vec = builder.create_vector(&self.asset_id.to_u32_array());
-        let delta_vec = builder.create_vector(&self.delta.to_i32_array());
 
         let abs_vector = self.abs_transaction.build_vector(&mut builder);
 
+        let offers_vector =
+            remove_exchange_offer_to_array_to_buffer(&mut builder, self.offers.clone());
+
         let mut txn_builder =
-            buffers::MosaicSupplyChangeTransactionBufferBuilder::new(&mut builder);
+            buffer::RemoveExchangeOfferTransactionBufferBuilder::new(&mut builder);
+
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
@@ -100,15 +96,16 @@ impl Transaction for MosaicSupplyChangeTransaction {
         txn_builder.add_type_(abs_vector.type_vec);
         txn_builder.add_max_fee(abs_vector.max_fee_vec);
         txn_builder.add_deadline(abs_vector.deadline_vec);
-        txn_builder.add_mosaic_id(mosaic_vec);
-        txn_builder.add_direction(self.supply_type.clone() as u8);
-        txn_builder.add_delta(delta_vec);
+        txn_builder.add_offers_count(self.offers.len() as u8);
+        txn_builder.add_offers(fb::WIPOffset::new(offers_vector));
+
         let t = txn_builder.finish();
 
         builder.finish(t, None);
 
         let buf = builder.finished_data();
-        Ok(mosaic_supply_change_transaction_schema().serialize(&mut buf.to_vec()))
+
+        Ok(remove_exchange_offer_transaction_schema().serialize(&mut buf.to_vec()))
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
@@ -124,7 +121,7 @@ impl Transaction for MosaicSupplyChangeTransaction {
     }
 }
 
-impl fmt::Display for MosaicSupplyChangeTransaction {
+impl fmt::Display for RemoveExchangeOfferTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
@@ -132,4 +129,24 @@ impl fmt::Display for MosaicSupplyChangeTransaction {
             serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }
+}
+
+pub(crate) fn remove_exchange_offer_to_array_to_buffer<'a>(
+    builder: &mut FlatBufferBuilder<'a>,
+    offers: Vec<RemoveOffer>,
+) -> fb::UOffsetT {
+    let mut offers_buffer: Vec<fb::WIPOffset<buffer::RemoveExchangeOfferBuffer<'a>>> =
+        Vec::with_capacity(offers.len());
+
+    for item in offers {
+        let mosaic_vector = builder.create_vector_direct(&item.asset_id.to_u32_array());
+
+        let mut add_exchange_offer = buffer::RemoveExchangeOfferBufferBuilder::new(builder);
+        add_exchange_offer.add_mosaic_id(mosaic_vector);
+        add_exchange_offer.add_type_(item.r#type.value());
+
+        offers_buffer.push(add_exchange_offer.finish());
+    }
+
+    builder.create_vector(&offers_buffer).value()
 }

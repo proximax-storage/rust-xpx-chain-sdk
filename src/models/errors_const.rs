@@ -2,6 +2,10 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
+// Common errors
+pub const ERR_INVALID_NAMESPACE_ALIASED: &str = "Namespace is not aliased to Mosaic";
+pub const ERR_INVALID_ASSET_ID: &str = "AssetId's vector should not be empty";
+
 // Accounts errors
 pub const ERR_EMPTY_ADDRESSES_IDS: &str = "list of addresses should not be empty";
 pub const ERR_EMPTY_ADDRESSES_ID: &str = "account_id is empty";
@@ -38,8 +42,6 @@ pub const ERR_INVALID_AGGREGATE_TRANSACTION: &str =
     "The transaction is not an AggregateTransaction.";
 
 // Common errors
-//pub const ERR_NIL_ASSET_ID: &str = "AssetId should not be null.";
-//pub const ERR_EMPTY_ASSET_IDS: &str = "AssetId's vec should not be empty.";
 pub const ERR_UNKNOWN_BLOCKCHAIN_TYPE: &str = "Not supported Blockchain Type.";
 pub const ERR_INVALID_HASH_LENGTH: &str = "The length of Hash is invalid.";
 pub const ERR_INVALID_HASH_HEX: &str = "Invalid Hash it's not hex.";

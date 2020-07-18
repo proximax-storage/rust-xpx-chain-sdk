@@ -36,32 +36,38 @@ pub enum Error {
 impl ::failure::Fail for Error {}
 
 impl From<reqwest::Error> for Error {
-    fn from(e: reqwest::Error) -> Self {
-        Error::Reqwest(e)
+    fn from(reqwest: reqwest::Error) -> Self {
+        Error::Reqwest(reqwest)
     }
 }
 
 impl From<SiriusError> for Error {
-    fn from(e: SiriusError) -> Self {
-        Error::SiriusError(e)
+    fn from(sirius: SiriusError) -> Self {
+        Error::SiriusError(sirius)
     }
 }
 
 impl From<WsError> for Error {
-    fn from(e: WsError) -> Self {
-        Error::Tungsten(e)
+    fn from(ws: WsError) -> Self {
+        Error::Tungsten(ws)
     }
 }
 
 impl From<serde_json::Error> for Error {
-    fn from(e: serde_json::Error) -> Self {
-        Error::Serde(e)
+    fn from(serde: serde_json::Error) -> Self {
+        Error::Serde(serde)
     }
 }
 
 impl From<failure::Error> for Error {
-    fn from(e: failure::Error) -> Self {
-        Error::Failure(e)
+    fn from(failure: failure::Error) -> Self {
+        Error::Failure(failure)
+    }
+}
+
+impl From<&'static str> for Error {
+    fn from(msg: &'static str) -> Self {
+        Error::Failure(failure::err_msg(msg))
     }
 }
 

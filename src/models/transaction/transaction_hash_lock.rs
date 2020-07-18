@@ -90,8 +90,8 @@ impl Transaction for LockFundsTransaction {
         let mut _builder = fb::FlatBufferBuilder::new();
 
         let mosaic_id_vector = _builder.create_vector_direct(&self.mosaic.asset_id.to_u32_array());
-        let amount_vector = _builder.create_vector_direct(&self.mosaic.amount.to_int_array());
-        let duration_vector = _builder.create_vector_direct(&self.duration.to_int_array());
+        let amount_vector = _builder.create_vector_direct(&self.mosaic.amount.to_i32_array());
+        let duration_vector = _builder.create_vector_direct(&self.duration.to_i32_array());
         let hash_vector = _builder.create_vector_direct(&self.signed_transaction.hash_to_bytes());
 
         let abs_vector = self.abs_transaction.build_vector(&mut _builder);

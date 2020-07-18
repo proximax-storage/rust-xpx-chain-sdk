@@ -10,9 +10,10 @@ pub use self::uint_64::Uint64;
 
 pub mod account;
 pub mod alias;
-mod asset_id_model;
 pub mod blockchain;
+pub(crate) mod error;
 pub mod errors_const;
+pub mod exchange;
 pub mod message;
 pub mod mosaic;
 pub mod multisig;
@@ -21,9 +22,8 @@ pub mod network;
 pub mod node;
 pub mod transaction;
 
+mod asset_id_model;
 mod consts;
-pub(crate) mod error;
 mod merkle_model;
 mod roles_type_enum;
-
 mod uint_64;

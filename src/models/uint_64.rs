@@ -61,13 +61,17 @@ impl Uint64 {
         format!("{:X}", &self.0)
     }
 
+    pub fn as_u64(&self) -> u64 {
+        self.0
+    }
+
     /// Converts to 64-bit byte array.
     pub fn to_bytes(&self) -> [u8; SIZE_U64] {
         self.0.to_le_bytes()
     }
 
     /// Converts to a pair of i32 integers ([lower, higher]).
-    pub fn to_int_array(&self) -> [u32; 2] {
+    pub fn to_i32_array(&self) -> [u32; 2] {
         let lower = self.0 as u32;
         let higher = (self.0 >> 32) as u32;
         [lower, higher]

@@ -126,7 +126,7 @@ pub(crate) fn mosaic_property_array_to_buffer(
     let mut p_buffer: Vec<fb::UOffsetT> = Vec::with_capacity(properties.len());
 
     for p in properties {
-        let value_v = builder.create_vector(&p.value.to_int_array());
+        let value_v = builder.create_vector(&p.value.to_i32_array());
 
         let mut mosaic_property = mosaic_definition::buffers::MosaicPropertyBuilder::new(builder);
         mosaic_property.add_mosaic_property_id(p.id.value());
