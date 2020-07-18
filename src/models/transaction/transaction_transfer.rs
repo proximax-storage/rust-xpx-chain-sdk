@@ -20,7 +20,7 @@ use crate::{
 };
 
 use super::{
-    buffer::transfer::buffers, deadline::Deadline, internal::sign_transaction,
+    buffer::transfer as buffer, deadline::Deadline, internal::sign_transaction,
     schema::transfer_transaction_schema, AbsTransaction, AbstractTransaction, EntityTypeEnum,
     SignedTransaction, Transaction, TRANSFER_VERSION,
 };
@@ -134,14 +134,14 @@ impl Transaction for TransferTransaction {
         // Create mosaics
         let ml = self.mosaics.len();
 
-        let mut mosaics_buffer: Vec<fb::WIPOffset<buffers::MosaicBuffer<'a>>> =
+        let mut mosaics_buffer: Vec<fb::WIPOffset<buffer::MosaicBuffer<'a>>> =
             Vec::with_capacity(ml);
 
         for mosaic in self.mosaics.iter() {
             let mosaic_id = _builder.create_vector(&mosaic.asset_id.to_u32_array());
             let mosaic_amount = _builder.create_vector(&mosaic.amount.to_i32_array());
 
-            let mut mosaic_buffer = buffers::MosaicBufferBuilder::new(&mut _builder);
+            let mut mosaic_buffer = buffer::MosaicBufferBuilder::new(&mut _builder);
             mosaic_buffer.add_id(mosaic_id);
             mosaic_buffer.add_amount(mosaic_amount);
 
@@ -151,7 +151,7 @@ impl Transaction for TransferTransaction {
         // Create message;
         let payload_vec = _builder.create_vector_direct(self.message.payload_to_bytes());
 
-        let mut message_buffer = buffers::MessageBufferBuilder::new(&mut _builder);
+        let mut message_buffer = buffer::MessageBufferBuilder::new(&mut _builder);
         message_buffer.add_type_(self.message.message_type().value());
         message_buffer.add_payload(payload_vec);
         let message_vec = message_buffer.finish();
@@ -164,7 +164,7 @@ impl Transaction for TransferTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
-        let mut txn_builder = buffers::TransferTransactionBufferBuilder::new(&mut _builder);
+        let mut txn_builder = buffer::TransferTransactionBufferBuilder::new(&mut _builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);

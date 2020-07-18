@@ -26,7 +26,7 @@ use crate::{
 };
 
 use super::{
-    buffer::account_properties::buffers, internal::sign_transaction,
+    buffer::account_properties as buffer, internal::sign_transaction,
     schema::account_property_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
     EntityTypeEnum, SignedTransaction, Transaction,
 };
@@ -101,7 +101,7 @@ impl Transaction for AccountPropertiesEntityTypeTransaction {
 
         let ml = self.modifications.len();
 
-        let mut modifications_buffer: Vec<fb::WIPOffset<buffers::PropertyModificationBuffer<'a>>> =
+        let mut modifications_buffer: Vec<fb::WIPOffset<buffer::PropertyModificationBuffer<'a>>> =
             Vec::with_capacity(ml);
 
         for modification in self.modifications.iter() {
@@ -110,7 +110,7 @@ impl Transaction for AccountPropertiesEntityTypeTransaction {
             let v_entity = builder.create_vector(&b_entity);
 
             let mut modification_buffer =
-                buffers::PropertyModificationBufferBuilder::new(&mut builder);
+                buffer::PropertyModificationBufferBuilder::new(&mut builder);
             modification_buffer.add_modification_type(modification.modification_type);
             modification_buffer.add_value(v_entity);
 
@@ -121,7 +121,7 @@ impl Transaction for AccountPropertiesEntityTypeTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut builder);
 
-        let mut txn_builder = buffers::AccountPropertiesTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder = buffer::AccountPropertiesTransactionBufferBuilder::new(&mut builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);

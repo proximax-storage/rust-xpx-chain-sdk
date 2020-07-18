@@ -19,7 +19,7 @@ use crate::{
 };
 
 use super::{
-    buffer::mosaic_supply_change::buffers, deadline::Deadline, internal::sign_transaction,
+    buffer::mosaic_supply_change as buffer, deadline::Deadline, internal::sign_transaction,
     schema::mosaic_supply_change_transaction_schema, AbsTransaction, AbstractTransaction,
     EntityTypeEnum, SignedTransaction, Transaction, MOSAIC_SUPPLY_CHANGE_VERSION,
 };
@@ -91,8 +91,7 @@ impl Transaction for MosaicSupplyChangeTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut builder);
 
-        let mut txn_builder =
-            buffers::MosaicSupplyChangeTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder = buffer::MosaicSupplyChangeTransactionBufferBuilder::new(&mut builder);
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);

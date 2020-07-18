@@ -18,7 +18,7 @@ use crate::{
 };
 
 use super::{
-    buffer::mosaic_definition::buffers,
+    buffer::mosaic_definition as buffer,
     deadline::Deadline,
     internal::{mosaic_property_array_to_buffer, sign_transaction},
     schema::mosaic_definition_transaction_schema,
@@ -107,7 +107,7 @@ impl Transaction for MosaicDefinitionTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut builder);
 
-        let mut txn_builder = buffers::MosaicDefinitionTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder = buffer::MosaicDefinitionTransactionBufferBuilder::new(&mut builder);
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
