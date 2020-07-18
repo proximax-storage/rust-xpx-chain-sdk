@@ -18,9 +18,9 @@ use crate::{
 };
 
 use super::{
-    buffer::lock_funds::buffers, internal::sign_transaction, schema::lock_funds_transaction_schema,
-    AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum, SignedTransaction, Transaction,
-    LOCK_VERSION,
+    buffer::lock_funds as buffer, internal::sign_transaction,
+    schema::lock_funds_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
+    EntityTypeEnum, SignedTransaction, Transaction, LOCK_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -96,7 +96,7 @@ impl Transaction for LockFundsTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
-        let mut txn_builder = buffers::LockFundsTransactionBufferBuilder::new(&mut _builder);
+        let mut txn_builder = buffer::LockFundsTransactionBufferBuilder::new(&mut _builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);

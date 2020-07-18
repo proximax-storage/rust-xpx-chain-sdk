@@ -18,7 +18,7 @@ use crate::{
 };
 
 use super::{
-    buffer::modify_multisig_account::buffers,
+    buffer::modify_multisig_account as buffer,
     internal::{cosignatory_modification_array_to_buffer, sign_transaction},
     schema::modify_multisig_account_transaction_schema,
     AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum, SignedTransaction, Transaction,
@@ -103,7 +103,7 @@ impl Transaction for ModifyMultisigAccountTransaction {
         let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
         let mut txn_builder =
-            buffers::ModifyMultisigAccountTransactionBufferBuilder::new(&mut _builder);
+            buffer::ModifyMultisigAccountTransactionBufferBuilder::new(&mut _builder);
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);

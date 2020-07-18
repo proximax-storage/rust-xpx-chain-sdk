@@ -18,7 +18,7 @@ use crate::{
 };
 
 use super::{
-    buffer::aggregate::buffers,
+    buffer::aggregate as buffer,
     internal::{
         sign_transaction, sign_transaction_with_cosignatures, to_aggregate_transaction_bytes,
     },
@@ -144,7 +144,7 @@ impl Transaction for AggregateTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 
-        let mut txn_builder = buffers::AggregateTransactionBufferBuilder::new(&mut _builder);
+        let mut txn_builder = buffer::AggregateTransactionBufferBuilder::new(&mut _builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);

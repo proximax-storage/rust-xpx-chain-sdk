@@ -14,7 +14,7 @@ use crate::models::{
 };
 
 use super::{
-    buffer::alias::buffers, schema::alias_transaction_schema, AbstractTransaction, Deadline,
+    buffer::alias as buffer, schema::alias_transaction_schema, AbstractTransaction, Deadline,
     EntityTypeEnum, ADDRESS_ALIAS_VERSION,
 };
 
@@ -72,7 +72,7 @@ impl AliasTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(builder);
 
-        let mut txn_builder = buffers::AliasTransactionBufferBuilder::new(builder);
+        let mut txn_builder = buffer::AliasTransactionBufferBuilder::new(builder);
         txn_builder.add_size_((self.size() + alias_size) as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);

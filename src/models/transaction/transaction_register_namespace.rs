@@ -20,7 +20,7 @@ use crate::{
 };
 
 use super::{
-    buffer::register_namespace::buffers, internal::sign_transaction,
+    buffer::register_namespace as buffer, internal::sign_transaction,
     schema::register_namespace_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
     EntityTypeEnum, SignedTransaction, Transaction, REGISTER_NAMESPACE_VERSION,
 };
@@ -144,7 +144,7 @@ impl Transaction for RegisterNamespaceTransaction {
 
         let abs_vector = self.abs_transaction.build_vector(&mut builder);
 
-        let mut txn_builder = buffers::RegisterNamespaceTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder = buffer::RegisterNamespaceTransactionBufferBuilder::new(&mut builder);
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);

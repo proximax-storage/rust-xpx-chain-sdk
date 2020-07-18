@@ -21,7 +21,7 @@ use crate::{
 };
 
 use super::{
-    buffer::{modify_multisig_account as bm, mosaic_definition},
+    buffer::{modify_multisig_account as buffer, mosaic_definition},
     AbsTransaction, AggregateTransaction, EntityVersion, SignedTransaction, Transaction,
 };
 
@@ -128,7 +128,7 @@ pub(crate) fn mosaic_property_array_to_buffer(
     for p in properties {
         let value_v = builder.create_vector(&p.value.to_i32_array());
 
-        let mut mosaic_property = mosaic_definition::buffers::MosaicPropertyBuilder::new(builder);
+        let mut mosaic_property = mosaic_definition::MosaicPropertyBuilder::new(builder);
         mosaic_property.add_mosaic_property_id(p.id.value());
         mosaic_property.add_value(value_v);
 
@@ -171,7 +171,7 @@ pub(crate) fn cosignatory_modification_array_to_buffer<'a>(
     builder: &mut FlatBufferBuilder<'a>,
     modifications: Vec<CosignatoryModification>,
 ) -> fb::UOffsetT {
-    let mut cosignatory_buffer: Vec<fb::WIPOffset<bm::buffers::CosignatoryModificationBuffer<'a>>> =
+    let mut cosignatory_buffer: Vec<fb::WIPOffset<buffer::CosignatoryModificationBuffer<'a>>> =
         Vec::with_capacity(modifications.len());
 
     for modification in modifications {
@@ -179,7 +179,7 @@ pub(crate) fn cosignatory_modification_array_to_buffer<'a>(
 
         let public_key_vector = builder.create_vector_direct(&public_key.to_bytes());
 
-        let mut modify_multisig = bm::buffers::CosignatoryModificationBufferBuilder::new(builder);
+        let mut modify_multisig = buffer::CosignatoryModificationBufferBuilder::new(builder);
         modify_multisig.add_type_(modification.modification_type.value());
         modify_multisig.add_cosignatory_public_key(public_key_vector);
 
