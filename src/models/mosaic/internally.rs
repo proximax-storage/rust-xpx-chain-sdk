@@ -26,9 +26,7 @@ pub(super) const PRX_XPX_U64: u64 = 13_833_723_942_089_965_046;
 pub(super) fn generate_mosaic_id(nonce: MosaicNonce, owner_public_id: PublicAccount) -> Uint64 {
     let mut hash = Sha3_256::default();
 
-    let nonce_bytes = nonce.to_array();
-
-    hash.input(nonce_bytes);
+    hash.input(*nonce);
 
     let owner_bytes: [u8; 32] = owner_public_id.to_bytes();
 

@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::ops::Deref;
+
 use {
     ::hex::FromHex,
     ::rand::rngs::OsRng,
@@ -17,8 +19,8 @@ use crate::utils::{array_u8_to_u32, is_hex, u32_to_array_u8, vec_u8_to_hex};
 const NONCE_SIZE: usize = 4;
 
 /// The mosaic nonce structure.
-#[derive(Debug, Clone, Deserialize)]
-pub struct MosaicNonce(pub(crate) [u8; NONCE_SIZE]);
+#[derive(Debug, Clone, Deserialize, Copy)]
+pub struct MosaicNonce([u8; NONCE_SIZE]);
 
 impl MosaicNonce {
     /// Creates a new `mosaic_nonce` from a `[u8; 4]`.
@@ -85,5 +87,13 @@ impl Serialize for MosaicNonce {
         S: Serializer,
     {
         serializer.serialize_u32(self.to_u32())
+    }
+}
+
+// Enable `Deref` coercion MosaicNonce.
+impl Deref for MosaicNonce {
+    type Target = [u8; NONCE_SIZE];
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }

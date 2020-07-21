@@ -103,7 +103,7 @@ impl ExchangeInfoDto {
         for offer_info in buy_offer_offers.into_iter() {
             let id = &offer_info.mosaic.asset_id;
             buy_offer.push(OfferIdInfo {
-                mosaic_id: id.to_mosaic_id(),
+                mosaic_id: id.as_mosaic_id(),
                 offer_info,
             });
         }
@@ -117,7 +117,7 @@ impl ExchangeInfoDto {
         for offer_info in sell_offer_offers.into_iter() {
             let id = &offer_info.mosaic.asset_id;
             sell_offer.push(OfferIdInfo {
-                mosaic_id: id.to_mosaic_id(),
+                mosaic_id: id.as_mosaic_id(),
                 offer_info,
             });
         }

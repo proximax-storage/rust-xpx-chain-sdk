@@ -81,15 +81,11 @@ impl PublicAccount {
 
         array.copy_from_slice(&public_key_to_bytes);
 
-        return array;
+        array
     }
 
     pub fn public_key_string(&self) -> String {
         self.public_key.to_uppercase()
-    }
-
-    pub fn address_to_owned(&self) -> Address {
-        self.address.to_owned()
     }
 }
 

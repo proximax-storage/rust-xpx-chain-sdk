@@ -12,7 +12,7 @@ use {
 };
 
 use crate::{
-    models::{account::PublicAccount, asset_id_model::AssetId, Uint64},
+    models::{account::PublicAccount, asset_id_model::AssetId, Result, Uint64},
     utils::is_hex,
     AssetIdType,
 };
@@ -38,14 +38,9 @@ impl MosaicId {
         Ok(Self(Uint64::from_hex(string_hex)?))
     }
 
-    /// Creates a new `MosaicId` from a pair of 32-bit integers.
-    pub fn from_ints(lower: u32, higher: u32) -> Self {
-        Self(Uint64::from_ints(lower, higher))
-    }
-
-    /// Creates a new `MosaicId` from a pair of 32-bit integers.
-    pub fn from_value(value: Value) -> Self {
-        Self(Uint64::from_value(value))
+    /// Creates a `MosaicId` from a Value type str.
+    pub fn from_value(value: Value) -> Result<Self> {
+        Ok(Self(Uint64::from_value(value)?))
     }
 
     /// Creates a new `MosaicId` from a given `mosaic_nonce` and owner's `PublicAccount`.
@@ -76,7 +71,7 @@ impl fmt::Display for MosaicId {
 }
 
 impl Serialize for MosaicId {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
@@ -96,9 +91,16 @@ impl From<u64> for MosaicId {
     }
 }
 
+/// Creates a new `MosaicId` from a pair of 32-bit integers.
+impl From<(u32, u32)> for MosaicId {
+    fn from(lo_hi: (u32, u32)) -> Self {
+        Self(Uint64::from(lo_hi))
+    }
+}
+
 // Enable `Deref` coercion NetworkType.
 impl Deref for MosaicId {
-    type Target = Uint64;
+    type Target = u64;
     fn deref(&self) -> &Self::Target {
         &self.0
     }

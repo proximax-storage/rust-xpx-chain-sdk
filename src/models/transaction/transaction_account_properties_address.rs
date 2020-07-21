@@ -102,9 +102,9 @@ impl Transaction for AccountPropertiesAddressTransaction {
             Vec::with_capacity(ml);
 
         for modification in self.modifications.iter() {
-            let address = modification.address.to_decode();
+            let address = modification.address.as_bytes();
 
-            let v_address = builder.create_vector(&address);
+            let v_address = builder.create_vector(address);
 
             let mut modification_buffer =
                 buffer::PropertyModificationBufferBuilder::new(&mut builder);

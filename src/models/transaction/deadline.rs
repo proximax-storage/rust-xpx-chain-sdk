@@ -98,6 +98,14 @@ impl Deadline {
     pub fn to_blockchain_timestamp(&self) -> BlockchainTimestamp {
         self.0.to_blockchain_timestamp()
     }
+
+    pub fn to_uint64(&self) -> Uint64 {
+        self.to_blockchain_timestamp().to_uint64()
+    }
+
+    pub fn to_i32_array(&self) -> [u32; 2] {
+        self.to_uint64().to_i32_array()
+    }
 }
 
 impl core::fmt::Display for Deadline {

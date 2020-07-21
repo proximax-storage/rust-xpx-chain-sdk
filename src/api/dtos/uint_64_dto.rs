@@ -13,7 +13,7 @@ pub(crate) struct Uint64Dto(pub(crate) [u32; 2]);
 
 impl Uint64Dto {
     pub fn compact(&self) -> Uint64 {
-        Uint64::from_ints(self.0[0], self.0[1])
+        Uint64::from((self.0[0], self.0[1]))
     }
 
     pub fn from_value(value: Value) -> Self {

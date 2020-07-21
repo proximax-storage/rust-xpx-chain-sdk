@@ -50,7 +50,7 @@ impl NamespaceId {
 
     /// Creates a new `MosaicId` from a pair of 32-bit integers.
     pub fn from_ints(lower: u32, higher: u32) -> NamespaceId {
-        NamespaceId(Uint64::from_ints(lower, higher))
+        NamespaceId(Uint64::from((lower, higher)))
     }
 }
 

@@ -42,10 +42,7 @@ impl AddressAliasTransaction {
         action_type: AliasActionType,
         network_type: NetworkType,
     ) -> Result<Self> {
-        ensure!(
-            !address.address.is_empty(),
-            errors_const::ERR_EMPTY_ADDRESSES
-        );
+        ensure!(!address.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
 
         ensure!(
             !namespace_id.is_empty(),
@@ -98,9 +95,9 @@ impl Transaction for AddressAliasTransaction {
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
 
-        let address_bytes = self.address.to_decode();
+        let address_bytes = self.address.as_bytes();
 
-        let address_vector = builder.create_vector_direct(&address_bytes);
+        let address_vector = builder.create_vector_direct(address_bytes);
 
         self.alias_transaction
             .embedded_to_bytes(&mut builder, address_vector, ADDRESS_SIZE)

@@ -109,7 +109,7 @@ impl Mosaic {
 
         assert!(amount > 0, "Minimum xpx value must be {}", XPX_MIN_VALUE);
 
-        let xpx_mosaic_id = Box::new(MosaicId(Uint64::new(PRX_XPX_U64)));
+        let xpx_mosaic_id = Box::new(MosaicId::from(PRX_XPX_U64));
 
         Self {
             asset_id: xpx_mosaic_id,
@@ -153,11 +153,8 @@ pub struct MosaicIds {
 
 impl From<Vec<MosaicId>> for MosaicIds {
     fn from(e: Vec<MosaicId>) -> Self {
-        let mut ids = MosaicIds::default();
-        for m in e {
-            ids.mosaic_ids.push(m.to_hex())
-        }
-        ids
+        let mosaic_ids = e.into_iter().map(|m| m.to_hex()).collect();
+        Self { mosaic_ids }
     }
 }
 

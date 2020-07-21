@@ -47,10 +47,7 @@ impl TransferTransaction {
         message: impl Message + 'static,
         network_type: NetworkType,
     ) -> Result<Self> {
-        ensure!(
-            !recipient.address.is_empty(),
-            errors_const::ERR_EMPTY_ADDRESSES
-        );
+        ensure!(!recipient.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
@@ -156,9 +153,9 @@ impl Transaction for TransferTransaction {
         message_buffer.add_payload(payload_vec);
         let message_vec = message_buffer.finish();
 
-        let recipient = self.recipient.to_decode();
+        let recipient = self.recipient.as_bytes();
 
-        let recipient_vec = _builder.create_vector_direct(&recipient);
+        let recipient_vec = _builder.create_vector_direct(recipient);
 
         let mosaic_vec = _builder.create_vector(&mosaics_buffer);
 

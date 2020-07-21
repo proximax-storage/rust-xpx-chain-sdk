@@ -11,7 +11,8 @@ use {
     serde_json::Value,
 };
 
-use crate::utils::SIZE_U64;
+use crate::models::error::Error;
+use crate::{models::Result, utils::SIZE_U64};
 
 /// Represents a 64-bit unsigned integer.
 ///
@@ -27,7 +28,7 @@ impl Uint64 {
     }
 
     /// Creates a `Uint64` from a pair of u32 integers.
-    pub fn from_ints(lower: u32, higher: u32) -> Self {
+    fn from_u32_array(lower: u32, higher: u32) -> Self {
         let mut buf = [0u8; SIZE_U64];
         buf[..4]
             .as_mut()
@@ -46,14 +47,18 @@ impl Uint64 {
     }
 
     /// Creates a `Uint64` from a hex &str.
-    pub fn from_hex(hex_code: &str) -> Result<Self, core::num::ParseIntError> {
+    pub fn from_hex(hex_code: &str) -> Result<Self> {
         let r: u64 = u64::from_str_radix(&hex_code, 16)?;
         Ok(Self(r))
     }
 
-    /// Converts to hex String representation.
-    pub fn from_value(value: Value) -> Self {
-        Self::new(value.as_u64().unwrap())
+    /// Creates a `Uint64` from a Value type str.
+    pub fn from_value(value: Value) -> Result<Self> {
+        Self::from_hex(
+            value
+                .as_str()
+                .ok_or_else(|| Error::from("fail to create Uint64 from Value"))?,
+        )
     }
 
     /// Converts to hex String representation.
@@ -128,5 +133,11 @@ impl Deref for Uint64 {
 impl From<u64> for Uint64 {
     fn from(u: u64) -> Self {
         Uint64(u)
+    }
+}
+
+impl From<(u32, u32)> for Uint64 {
+    fn from(lo_hi: (u32, u32)) -> Self {
+        Self::from_u32_array(lo_hi.0, lo_hi.1)
     }
 }

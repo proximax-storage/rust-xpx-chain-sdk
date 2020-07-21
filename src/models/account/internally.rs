@@ -5,7 +5,6 @@
  */
 
 use {
-    ::base32::Alphabet::RFC4648,
     ::ripemd160::{Digest, Ripemd160},
     ::sha3::Sha3_256,
 };
@@ -57,7 +56,7 @@ pub enum AccountPropertiesModificationTypeEnum {
 pub(crate) fn public_key_to_address(
     public_key: &str,
     version: NetworkType,
-) -> crate::Result<String> {
+) -> crate::Result<[u8; 25]> {
     let pk: Vec<u8> = hex::decode(public_key)?;
 
     // step 1: sha3 hash of the public key
@@ -79,12 +78,17 @@ pub(crate) fn public_key_to_address(
     ]
     .concat();
 
-    let res = base32::encode(
-        RFC4648 { padding: true },
-        concat_step_three_and_step_six.as_slice(),
-    );
+    let mut bts: [u8; 25] = [0u8; 25];
+    bts.copy_from_slice(&concat_step_three_and_step_six.as_slice()[..25]);
 
-    Ok(res)
+    Ok(bts)
+
+    //let res = base32::encode(
+    //    RFC4648 { padding: true },
+    //    concat_step_three_and_step_six.as_slice(),
+    //);
+
+    //Ok(res)
 }
 
 fn generate_checksum(input: &[u8]) -> Box<[u8]> {

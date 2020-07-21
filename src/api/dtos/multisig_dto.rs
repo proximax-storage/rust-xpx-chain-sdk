@@ -57,7 +57,7 @@ impl MultisigAccountInfoDto {
     pub fn compact(&self) -> crate::Result<MultisigAccountInfo> {
         let dto = self.multisig.to_owned();
         let network_type: NetworkType =
-            Address::from_encoded(&dto.account_address.unwrap())?.network_type;
+            Address::from_encoded(&dto.account_address.unwrap())?.network_type();
         let account = PublicAccount::from_public_key(&dto.account, network_type)?;
 
         let cs = dto

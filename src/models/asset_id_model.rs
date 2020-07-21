@@ -18,18 +18,18 @@ pub trait AssetId: Send + Sync + erased_serde::Serialize
 where
     Self: fmt::Debug,
 {
+    fn as_mosaic_id(&self) -> MosaicId {
+        MosaicId::from(self.to_uint64())
+    }
+
+    fn as_namespace_id(&self) -> NamespaceId {
+        NamespaceId::from(self.to_uint64())
+    }
+
     fn to_uint64(&self) -> Uint64;
 
     fn to_u64(&self) -> u64 {
         *self.to_uint64()
-    }
-
-    fn to_mosaic_id(&self) -> MosaicId {
-        MosaicId::from(self.to_uint64())
-    }
-
-    fn to_nemspace_id(&self) -> NamespaceId {
-        NamespaceId::from(self.to_uint64())
     }
 
     fn to_bytes(&self) -> [u8; 8] {

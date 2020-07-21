@@ -136,7 +136,7 @@ impl NamespaceRoutes {
             req = req.with_query_param("id".to_string(), s.to_hex());
         }
 
-        req = req.with_path_param("accountId".to_string(), address.address.to_string());
+        req = req.with_path_param("accountId".to_string(), address.as_string());
 
         let dto: Vec<NamespaceInfoDto> = req.execute(self.0.to_owned()).await?;
 

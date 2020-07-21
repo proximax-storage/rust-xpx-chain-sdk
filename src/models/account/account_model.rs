@@ -65,11 +65,11 @@ impl Account {
     }
 
     pub fn address(&self) -> Address {
-        self.public_account.address_to_owned()
+        self.public_account.address
     }
 
     pub fn address_string(&self) -> String {
-        self.address().address_string()
+        self.address().as_string()
     }
 
     /// Create a `Account` from a private key for the given `NetworkType`.

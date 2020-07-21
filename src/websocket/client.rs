@@ -335,7 +335,7 @@ fn convert_to_ws_url(url: &str) -> Result<Url> {
 
 fn path_parse_address(mut path: String, address: &Address) -> String {
     path.push_str("/");
-    path.push_str(&address.address);
+    path.push_str(&address.as_string());
     path
 }
 

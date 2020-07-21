@@ -26,9 +26,9 @@ pub type Duration = Uint64;
 
 pub type Hash = String;
 
-pub type Transactions = Vec<Box<dyn Transaction>>;
-
 pub type TransactionsStatus = Vec<TransactionStatus>;
+
+pub type Transactions = Vec<Box<dyn Transaction>>;
 
 pub(crate) struct AbsVector<'b> {
     pub signature_vec: fb::WIPOffset<fb::Vector<'b, u8>>,
@@ -59,12 +59,7 @@ impl<'b> AbsVector<'b> {
         let version_vec = (network_type << 24) + abs.version as fb::UOffsetT;
         let signature_vec = builder.create_vector_direct(&[0u8; SIGNATURE_SIZE]);
         let signer_vec = builder.create_vector_direct(&[0u8; SIGNER_SIZE]);
-        let deadline_vec = builder.create_vector_direct(
-            &deadline
-                .to_blockchain_timestamp()
-                .to_uint64()
-                .to_i32_array(),
-        );
+        let deadline_vec = builder.create_vector_direct(&deadline.to_i32_array());
 
         let max_fee_vec = builder.create_vector_direct(&max_fee.to_i32_array());
 

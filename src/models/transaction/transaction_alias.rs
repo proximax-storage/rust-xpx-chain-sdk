@@ -34,7 +34,7 @@ impl AliasTransaction {
         action_type: AliasActionType,
         network_type: NetworkType,
     ) -> crate::Result<Self> {
-        ensure!(!address.address.is_empty(), "address string is empty.");
+        ensure!(!address.is_empty(), "address string is empty.");
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,

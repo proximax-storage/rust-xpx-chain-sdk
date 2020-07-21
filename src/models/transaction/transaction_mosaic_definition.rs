@@ -50,7 +50,7 @@ impl MosaicDefinitionTransaction {
             network_type,
         );
 
-        let mosaic_id = MosaicId::from_nonce_and_owner(nonce.clone(), owner_public_account);
+        let mosaic_id = MosaicId::from_nonce_and_owner(nonce, owner_public_account);
 
         Ok(Self {
             abs_transaction: abs_tx,
@@ -90,13 +90,13 @@ impl Transaction for MosaicDefinitionTransaction {
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
 
-        let mut f: u8 = 0;
+        let mut flags: u8 = 0;
         if self.properties.supply_mutable {
-            f += SUPPLY_MUTABLE;
+            flags += SUPPLY_MUTABLE;
         }
 
         if self.properties.transferable {
-            f += TRANSFERABLE;
+            flags += TRANSFERABLE;
         }
 
         let mosaic_vec = builder.create_vector(&self.mosaic_id.to_u32_array());
@@ -118,7 +118,7 @@ impl Transaction for MosaicDefinitionTransaction {
 
         txn_builder.add_mosaic_nonce(self.mosaic_nonce.to_u32());
         txn_builder.add_mosaic_id(mosaic_vec);
-        txn_builder.add_flags(f);
+        txn_builder.add_flags(flags);
         txn_builder.add_divisibility(self.properties.divisibility);
         txn_builder.add_num_optional_properties(self.properties.optional_properties.len() as u8);
         txn_builder.add_optional_properties(fb::WIPOffset::new(property_vec));

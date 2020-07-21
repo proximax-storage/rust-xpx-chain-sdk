@@ -8,7 +8,7 @@ use {
     std::{
         borrow::Cow,
         fmt::{Display, Formatter},
-        result,
+        num, result,
     },
     tokio_tungstenite::tungstenite::Error as WsError,
 };
@@ -22,7 +22,6 @@ pub struct SiriusError {
     pub code: String,
     pub message: String,
 }
-
 #[derive(Debug)]
 pub enum Error {
     Serde(serde_json::Error),
@@ -31,6 +30,7 @@ pub enum Error {
     Tungsten(WsError),
     Failure(failure::Error),
     Url(Cow<'static, str>),
+    Parse(num::ParseIntError),
 }
 
 impl ::failure::Fail for Error {}
@@ -71,6 +71,12 @@ impl From<&'static str> for Error {
     }
 }
 
+impl From<num::ParseIntError> for Error {
+    fn from(parse: num::ParseIntError) -> Self {
+        Error::Parse(parse)
+    }
+}
+
 impl Display for Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> ::std::fmt::Result {
         match self.to_owned() {
@@ -82,6 +88,7 @@ impl Display for Error {
             Error::Tungsten(e) => write!(f, "{}", e),
             Error::Failure(e) => write!(f, "{}", e),
             Error::Url(ref msg) => write!(f, "{}", msg),
+            Error::Parse(e) => write!(f, "{}", e),
         }
     }
 }

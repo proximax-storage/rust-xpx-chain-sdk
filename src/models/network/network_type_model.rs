@@ -7,6 +7,10 @@
 use ::std::fmt::{Debug, Display, Formatter, Result};
 use std::ops::Deref;
 
+use crate::account::{
+    PREFIX_MIJIN, PREFIX_MIJIN_TEST, PREFIX_PRIVATE, PREFIX_PRIVATE_TEST, PREFIX_PUBLIC,
+    PREFIX_PUBLIC_TEST,
+};
 use crate::models::errors_const;
 
 /// MIJIN private network identifier. Decimal value = 96.
@@ -32,7 +36,7 @@ pub const ALIAS_ADDRESS: NetworkType = NetworkType(0x91);
 pub const NOT_SUPPORTED_NET: NetworkType = NetworkType(0);
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Copy)] // we derive Default in order to use the clear() method in Drop
-pub struct NetworkType(pub(self) u8);
+pub struct NetworkType(u8);
 
 impl NetworkType {
     pub fn to_str(self) -> &'static str {
@@ -86,6 +90,20 @@ impl From<&str> for NetworkType {
             "PRIVATE" => PRIVATE,
             "PRIVATE_TEST" => PRIVATE_TEST,
             "ALIAS_ADDRESS" => ALIAS_ADDRESS,
+            _ => NOT_SUPPORTED_NET,
+        }
+    }
+}
+
+impl From<char> for NetworkType {
+    fn from(c: char) -> Self {
+        match c {
+            PREFIX_MIJIN => MIJIN,
+            PREFIX_MIJIN_TEST => MIJIN_TEST,
+            PREFIX_PUBLIC => PUBLIC,
+            PREFIX_PUBLIC_TEST => PUBLIC_TEST,
+            PREFIX_PRIVATE => PRIVATE,
+            PREFIX_PRIVATE_TEST => PRIVATE_TEST,
             _ => NOT_SUPPORTED_NET,
         }
     }
