@@ -4,6 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
+use serde::{
+    ser::SerializeStruct,
+    {Serialize, Serializer},
+};
+
 use crate::{
     models::{consts::PUBLIC_KEY_BYTES_SIZE, errors_const},
     utils::is_hex,
@@ -13,13 +18,13 @@ use crate::{
 use super::Address;
 
 /// The `PublicAccount` account structure contains account's `Address` and public key.
-#[derive(Default, Clone, Debug, Serialize, Deserialize)]
+#[derive(Default, Clone, Debug, Deserialize, Copy)]
 #[serde(rename_all = "camelCase")]
 pub struct PublicAccount {
     /// Retrieves the `Address` of this public account.
     pub address: Address,
     /// Retrieves the public key of this public account.
-    pub public_key: String,
+    pub public_key: [u8; PUBLIC_KEY_BYTES_SIZE],
 }
 
 impl PublicAccount {
@@ -39,7 +44,7 @@ impl PublicAccount {
 
         Ok(PublicAccount {
             address: Address::from_public_key(public_key, network_type)?,
-            public_key: public_key.to_uppercase(),
+            public_key: Self::decode(public_key),
         })
     }
 
@@ -73,19 +78,25 @@ impl PublicAccount {
         }
     }
 
-    /// Convert this public key to a byte array.
+    /// Convert this public key hex to a byte array.
     #[inline]
-    pub fn to_bytes(&self) -> [u8; PUBLIC_KEY_BYTES_SIZE] {
+    fn decode(public_key: &str) -> [u8; PUBLIC_KEY_BYTES_SIZE] {
         let mut array = [0; PUBLIC_KEY_BYTES_SIZE];
-        let public_key_to_bytes = hex::decode(&self.public_key).unwrap();
+        let public_key_to_bytes = hex::decode(public_key).unwrap();
 
         array.copy_from_slice(&public_key_to_bytes);
 
         array
     }
 
+    /// Convert this public key to a byte array.
+    #[inline]
+    pub fn to_bytes(&self) -> &[u8] {
+        &self.public_key
+    }
+
     pub fn public_key_string(&self) -> String {
-        self.public_key.to_uppercase()
+        hex::encode_upper(self.to_bytes())
     }
 }
 
@@ -96,5 +107,17 @@ impl core::fmt::Display for PublicAccount {
             "{}",
             serde_json::to_string_pretty(self).unwrap_or_default()
         )
+    }
+}
+
+impl Serialize for PublicAccount {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut rgb = serializer.serialize_struct("PublicAccount", 2)?;
+        rgb.serialize_field("address", &self.address)?;
+        rgb.serialize_field("public_key", &self.public_key_string())?;
+        rgb.end()
     }
 }

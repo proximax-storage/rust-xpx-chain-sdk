@@ -47,15 +47,15 @@ impl ExchangeRoutes {
 
     pub async fn get_account_exchange_info(
         self,
-        account: PublicAccount,
+        public_account: PublicAccount,
     ) -> Result<UserExchangeInfo> {
         let mut req = __internal_request::Request::new(Method::GET, EXCHANGE_ROUTE.to_string());
 
-        req = req.with_path_param("account_id".to_string(), account.public_key.to_string());
+        req = req.with_path_param("account_id".to_string(), public_account.public_key_string());
 
         let dto: Result<ExchangeInfoDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.compact(account.address.network_type())?)
+        Ok(dto?.compact(public_account.address.network_type())?)
     }
 
     pub async fn get_exchange_offer_by_asset_id(

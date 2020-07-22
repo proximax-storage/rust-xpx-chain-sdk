@@ -38,6 +38,7 @@ impl CosignatureTransaction {
             errors_const::ERR_EMPTY_COSIGNATURE_HASH
         );
 
+        let signer = account.public_key_string();
         let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
 
         let hash_bytes = hex::decode(&self.0.transaction_hash())?;
@@ -47,7 +48,7 @@ impl CosignatureTransaction {
         Ok(CosignatureSignedTransaction::new(
             self.0.transaction_hash(),
             Signature::new(signature.to_bytes()),
-            account.public_account.public_key,
+            signer,
         ))
     }
 }

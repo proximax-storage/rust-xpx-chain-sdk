@@ -77,7 +77,7 @@ pub(crate) fn sign_transaction_with_cosignatures(
         let signature = key_pair.sign(&hash_bytes);
         payload.push_str(&format!(
             "{}{}",
-            item.public_account.public_key,
+            item.public_key_string(),
             hex::encode(&signature.to_bytes()[..])
         ));
     });
@@ -140,11 +140,11 @@ pub(crate) fn mosaic_property_array_to_buffer(
 
 pub(crate) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> crate::Result<Vec<u8>> {
     ensure!(
-        tx.abs_transaction().signer.public_key != "",
+        tx.abs_transaction().signer.public_key_string() != "",
         ERR_EMPTY_TRANSACTION_SIGNER
     );
 
-    let signer_bytes = tx.to_owned().abs_transaction().signer.to_bytes();
+    let signer_bytes = tx.to_owned().abs_transaction().signer.public_key;
 
     let tx_bytes = tx.embedded_to_bytes()?;
 

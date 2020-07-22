@@ -64,7 +64,7 @@ impl SiriusWebsocketClient {
         Ok(())
     }
 
-    pub async fn add_status_handlers<F>(&mut self, address: &Address, handler_fn: F) -> Result<()>
+    pub async fn add_status_handlers<F>(&mut self, address: Address, handler_fn: F) -> Result<()>
     where
         F: Fn(TransactionStatus) -> bool + Send + 'static,
     {
@@ -81,7 +81,7 @@ impl SiriusWebsocketClient {
 
     pub async fn add_confirmed_added_handlers<F>(
         &mut self,
-        address: &Address,
+        address: Address,
         handler_fn: F,
     ) -> Result<()>
     where
@@ -103,7 +103,7 @@ impl SiriusWebsocketClient {
 
     pub async fn add_unconfirmed_removed_handlers<F>(
         &mut self,
-        address: &Address,
+        address: Address,
         handler_fn: F,
     ) -> Result<()>
     where
@@ -125,7 +125,7 @@ impl SiriusWebsocketClient {
 
     pub async fn add_unconfirmed_added_handlers<F>(
         &mut self,
-        address: &Address,
+        address: Address,
         handler_fn: F,
     ) -> Result<()>
     where
@@ -147,7 +147,7 @@ impl SiriusWebsocketClient {
 
     pub async fn add_partial_added_handlers<F>(
         &mut self,
-        address: &Address,
+        address: Address,
         handler_fn: F,
     ) -> Result<()>
     where
@@ -169,7 +169,7 @@ impl SiriusWebsocketClient {
 
     pub async fn add_partial_removed_handlers<F>(
         &mut self,
-        address: &Address,
+        address: Address,
         handler_fn: F,
     ) -> Result<()>
     where
@@ -191,7 +191,7 @@ impl SiriusWebsocketClient {
 
     pub async fn add_cosignature_handlers<F>(
         &mut self,
-        address: &Address,
+        address: Address,
         handler_fn: F,
     ) -> Result<()>
     where
@@ -333,7 +333,7 @@ fn convert_to_ws_url(url: &str) -> Result<Url> {
     Url::parse(&url).map_err(|e| Error::Url(Cow::from(e.to_string())))
 }
 
-fn path_parse_address(mut path: String, address: &Address) -> String {
+fn path_parse_address(mut path: String, address: Address) -> String {
     path.push_str("/");
     path.push_str(&address.as_string());
     path

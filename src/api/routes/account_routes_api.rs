@@ -238,7 +238,7 @@ impl AccountRoutes {
 
     pub async fn transactions(
         self,
-        public_account: &PublicAccount,
+        public_account: PublicAccount,
         page_size: Option<i32>,
         id: Option<&str>,
         ordering: Option<&str>,
@@ -255,7 +255,7 @@ impl AccountRoutes {
 
     pub async fn incoming_transactions(
         self,
-        public_account: &PublicAccount,
+        public_account: PublicAccount,
         page_size: Option<i32>,
         id: Option<&str>,
         ordering: Option<&str>,
@@ -272,7 +272,7 @@ impl AccountRoutes {
 
     pub async fn outgoing_transactions(
         self,
-        public_account: &PublicAccount,
+        public_account: PublicAccount,
         page_size: Option<i32>,
         id: Option<&str>,
         ordering: Option<&str>,
@@ -289,7 +289,7 @@ impl AccountRoutes {
 
     pub async fn unconfirmed_transactions(
         self,
-        public_account: &PublicAccount,
+        public_account: PublicAccount,
         page_size: Option<i32>,
         id: Option<&str>,
         ordering: Option<&str>,
@@ -306,7 +306,7 @@ impl AccountRoutes {
 
     pub async fn partial_transactions(
         self,
-        public_account: &PublicAccount,
+        public_account: PublicAccount,
         page_size: Option<i32>,
         id: Option<&str>,
         ordering: Option<&str>,
@@ -323,7 +323,7 @@ impl AccountRoutes {
 
     fn __internal_transactions(
         self,
-        public_account: &PublicAccount,
+        public_account: PublicAccount,
         route: &str,
         options: AccountTransactionsOption,
     ) -> impl Future<Output = Result<Transactions>> {
@@ -339,10 +339,7 @@ impl AccountRoutes {
             req = req.with_query_param("ordering".to_string(), s);
         }
 
-        req = req.with_path_param(
-            "publicKey".to_string(),
-            public_account.public_key.to_string(),
-        );
+        req = req.with_path_param("publicKey".to_string(), public_account.public_key_string());
 
         req = req.set_transaction_vec();
 
