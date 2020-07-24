@@ -63,7 +63,7 @@ impl Transaction for ExchangeOfferTransaction {
         EXCHANGE_OFFER_HEADER_SIZE + self.confirmations.len() * EXCHANGE_OFFER_SIZE
     }
 
-    fn to_json(&self) -> Value {
+    fn as_value(&self) -> Value {
         serde_json::to_value(self).unwrap_or_default()
     }
 

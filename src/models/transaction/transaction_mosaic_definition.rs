@@ -73,7 +73,7 @@ impl Transaction for MosaicDefinitionTransaction {
             + self.properties.optional_properties.len() * MOSAIC_OPTIONAL_PROPERTY_SIZE
     }
 
-    fn to_json(&self) -> Value {
+    fn as_value(&self) -> Value {
         serde_json::to_value(self).unwrap_or_default()
     }
 

@@ -116,7 +116,7 @@ impl Transaction for RegisterNamespaceTransaction {
         REGISTER_NAMESPACE_HEADER_SIZE + self.name.len()
     }
 
-    fn to_json(&self) -> Value {
+    fn as_value(&self) -> Value {
         serde_json::to_value(self).unwrap_or_default()
     }
 

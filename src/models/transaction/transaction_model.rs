@@ -166,7 +166,7 @@ where
     fn size(&self) -> usize;
 
     /// Serialize this transaction object.
-    fn to_json(&self) -> Value;
+    fn as_value(&self) -> Value;
 
     /// Serialize and sign [Transaction] with the given [Account] and network generationHash and
     /// create a new signed_transaction.

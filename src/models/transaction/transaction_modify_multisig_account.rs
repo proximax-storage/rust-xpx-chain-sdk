@@ -78,7 +78,7 @@ impl Transaction for ModifyMultisigAccountTransaction {
         MODIFY_MULTISIG_HEADER_SIZE + ((KEY_SIZE + 1) * self.modifications.len())
     }
 
-    fn to_json(&self) -> Value {
+    fn as_value(&self) -> Value {
         serde_json::to_value(self).unwrap_or_default()
     }
 

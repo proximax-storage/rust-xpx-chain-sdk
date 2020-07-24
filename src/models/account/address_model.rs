@@ -80,7 +80,7 @@ impl Address {
             bail!("Wrong address")
         }
 
-        let address = Self::decode_from_base32(raw_address);
+        let address = Self::decode_from_base32(&address);
 
         Ok(Self {
             address,

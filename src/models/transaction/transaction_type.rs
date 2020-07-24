@@ -5,6 +5,7 @@
  */
 
 use num_enum::IntoPrimitive;
+use serde::{Serialize, Serializer};
 
 pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
 pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
@@ -68,7 +69,7 @@ pub(crate) type EntityVersion = u32;
 /// * 0x4350 (17232 decimal) - Account Properties Entity Type Transaction.
 /// * 0x8043 (32835 decimal) - Nemesis block.
 /// * 0x8143 (33091 decimal) - Regular block.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize, IntoPrimitive)]
 #[repr(u16)]
 pub enum EntityTypeEnum {
     BlockchainUpgrade = 0x4158,
@@ -145,6 +146,15 @@ impl From<u16> for EntityTypeEnum {
 
 impl core::fmt::Display for EntityTypeEnum {
     fn fmt(&self, e: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
+        write!(e, "{:?}", &self)
+    }
+}
+
+impl Serialize for EntityTypeEnum {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_u16(self.value())
     }
 }

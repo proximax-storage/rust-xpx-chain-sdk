@@ -82,7 +82,7 @@ impl Transaction for AccountPropertiesEntityTypeTransaction {
             + (ACCOUNT_PROPERTIES_ENTITY_MODIFICATION_SIZE * self.modifications.len())
     }
 
-    fn to_json(&self) -> Value {
+    fn as_value(&self) -> Value {
         serde_json::to_value(self).unwrap_or_default()
     }
 
