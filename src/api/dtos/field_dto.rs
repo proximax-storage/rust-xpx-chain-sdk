@@ -5,7 +5,7 @@
 #[derive(Serialize, Deserialize)]
 pub(crate) struct FieldDto {
     #[serde(rename = "key")]
-    key: String,
+    pub key: String,
     #[serde(rename = "value")]
-    value: String,
+    pub value: String,
 }

@@ -15,8 +15,8 @@ use crate::{
 };
 
 use super::{
-    AbstractTransactionDto, AliasDto, FieldDto, MetadataModificationDto, MetadataTypeEnum,
-    TransactionDto, TransactionMetaDto, Uint64Dto,
+    AbstractTransactionDto, AliasDto, FieldDto, MetadataModificationDto, TransactionDto,
+    TransactionMetaDto, Uint64Dto,
 };
 
 type NamespaceIdDto = Option<Uint64Dto>;
@@ -160,7 +160,7 @@ pub(crate) struct NamespaceMetadataTransactionDto {
     #[serde(flatten)]
     r#abstract: AbstractTransactionDto,
     metadata_id: Uint64Dto,
-    metadata_type: MetadataTypeEnum,
+    metadata_type: u8,
     modifications: Vec<MetadataModificationDto>,
 }
 
