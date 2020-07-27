@@ -10,7 +10,7 @@ use {
     serde::{Serialize, Serializer},
 };
 
-use crate::{account::Address, mosaic::MosaicId, namespace::NamespaceId};
+use crate::{account::Address, mosaic::MosaicId, namespace::NamespaceId, AssetId};
 
 /// MetadataTypeEnum :
 ///The type of the metadata:
@@ -124,4 +124,68 @@ pub struct MosaicMetadataInfo {
 pub struct NamespaceMetadataInfo {
     pub info: MetadataInfo,
     pub namespace_id: NamespaceId,
+}
+
+#[derive(Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MetadataIds {
+    /// The array of addresses.
+    #[serde(rename = "metadataIds", skip_serializing_if = "Option::is_none")]
+    pub ids: Option<Vec<String>>,
+}
+
+impl From<Vec<&str>> for MetadataIds {
+    #[inline]
+    fn from(ids: Vec<&str>) -> Self {
+        let mut addresses = vec![];
+
+        let mut accounts = MetadataIds::default();
+
+        for (i, id) in ids.iter().enumerate() {
+            let _id = id.trim();
+
+            addresses.push(_id.replace("-", "").to_uppercase());
+
+            if i == ids.len() - 1 && !addresses.is_empty() {
+                accounts.ids = Some(addresses.to_owned())
+            }
+        }
+        accounts
+    }
+}
+
+impl From<Vec<MosaicId>> for MetadataIds {
+    #[inline]
+    fn from(ids: Vec<MosaicId>) -> Self {
+        let mut mosaic_ids = vec![];
+
+        let mut metadata_ids = MetadataIds::default();
+
+        for (i, id) in ids.iter().enumerate() {
+            mosaic_ids.push(id.to_hex());
+
+            if i == ids.len() - 1 && !mosaic_ids.is_empty() {
+                metadata_ids.ids = Some(mosaic_ids.to_owned())
+            }
+        }
+        metadata_ids
+    }
+}
+
+impl From<Vec<NamespaceId>> for MetadataIds {
+    #[inline]
+    fn from(ids: Vec<NamespaceId>) -> Self {
+        let mut namespace_ids = vec![];
+
+        let mut metadata_ids = MetadataIds::default();
+
+        for (i, id) in ids.iter().enumerate() {
+            namespace_ids.push(id.to_hex());
+
+            if i == ids.len() - 1 && !namespace_ids.is_empty() {
+                metadata_ids.ids = Some(namespace_ids.to_owned())
+            }
+        }
+        metadata_ids
+    }
 }

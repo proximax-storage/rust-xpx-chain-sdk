@@ -140,7 +140,7 @@ impl Transaction for AggregateTransaction {
             txsb.append(&mut tx_byte)
         }
 
-        let tx_vec = _builder.create_vector(&txsb);
+        let tx_vec = _builder.create_vector_direct(&txsb);
 
         let abs_vector = self.abs_transaction.build_vector(&mut _builder);
 

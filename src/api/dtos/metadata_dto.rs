@@ -44,12 +44,6 @@ impl MetadataInfoDto {
 }
 
 #[derive(Serialize, Deserialize)]
-pub(crate) struct MetadataIds {
-    #[serde(rename = "metadataIds", skip_serializing_if = "Option::is_none")]
-    metadata_ids: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize)]
 pub(crate) struct MetadataModificationDto {
     modification_type: u8,
     /// The key of metadata modification.
