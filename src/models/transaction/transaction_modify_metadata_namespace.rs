@@ -12,10 +12,10 @@ use {
 use crate::{
     models::{
         account::{Account, PublicAccount},
-        consts::MOSAIC_ID_SIZE,
+        consts::NAMESPACE_SIZE,
         errors_const,
         metadata::{MetadataModification, MetadataType},
-        mosaic::MosaicId,
+        namespace::NamespaceId,
         network::NetworkType,
     },
     AssetId, Result,
@@ -23,20 +23,20 @@ use crate::{
 
 use super::{
     internal::sign_transaction, AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum,
-    ModifyMetadataTransaction, SignedTransaction, Transaction, METADATA_MOSAIC_VERSION,
+    ModifyMetadataTransaction, SignedTransaction, Transaction, METADATA_NAMESPACE_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct MetadataMosaicTransaction {
+pub struct MetadataNamespaceTransaction {
     pub metadata_transaction: ModifyMetadataTransaction,
-    pub mosaic_id: MosaicId,
+    pub namespace_id: NamespaceId,
 }
 
-impl MetadataMosaicTransaction {
+impl MetadataNamespaceTransaction {
     pub fn new(
         deadline: Deadline,
-        mosaic_id: MosaicId,
+        namespace_id: NamespaceId,
         modifications: Vec<MetadataModification>,
         network_type: NetworkType,
     ) -> Result<Self> {
@@ -47,31 +47,31 @@ impl MetadataMosaicTransaction {
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
-            METADATA_MOSAIC_VERSION,
-            EntityTypeEnum::ModifyMetadataMosaic,
+            METADATA_NAMESPACE_VERSION,
+            EntityTypeEnum::ModifyMetadataNamespace,
             network_type,
         );
 
         Ok(Self {
             metadata_transaction: ModifyMetadataTransaction {
                 abs_transaction: abs_tx,
-                metadata_type: MetadataType::MetadataMosaicType,
+                metadata_type: MetadataType::MetadataNamespaceType,
                 modifications,
             },
-            mosaic_id,
+            namespace_id,
         })
     }
 }
 
-impl AbsTransaction for MetadataMosaicTransaction {
+impl AbsTransaction for MetadataNamespaceTransaction {
     fn abs_transaction(&self) -> AbstractTransaction {
         self.metadata_transaction.abs_transaction()
     }
 }
 
-impl Transaction for MetadataMosaicTransaction {
+impl Transaction for MetadataNamespaceTransaction {
     fn size(&self) -> usize {
-        self.metadata_transaction.size() + MOSAIC_ID_SIZE
+        self.metadata_transaction.size() + NAMESPACE_SIZE
     }
 
     fn as_value(&self) -> Value {
@@ -91,12 +91,15 @@ impl Transaction for MetadataMosaicTransaction {
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
 
-        let mosaic_id_bytes = self.mosaic_id.to_bytes();
+        let namespace_id_bytes = self.namespace_id.to_bytes();
 
-        let mosaic_id_vector = builder.create_vector_direct(&mosaic_id_bytes);
+        let namespace_id_vector = builder.create_vector_direct(&namespace_id_bytes);
 
-        self.metadata_transaction
-            .embedded_to_bytes(&mut builder, mosaic_id_vector, MOSAIC_ID_SIZE)
+        self.metadata_transaction.embedded_to_bytes(
+            &mut builder,
+            namespace_id_vector,
+            NAMESPACE_SIZE,
+        )
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
@@ -112,7 +115,7 @@ impl Transaction for MetadataMosaicTransaction {
     }
 }
 
-impl fmt::Display for MetadataMosaicTransaction {
+impl fmt::Display for MetadataNamespaceTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,

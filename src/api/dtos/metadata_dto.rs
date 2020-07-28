@@ -6,7 +6,6 @@
 
 use downcast_rs::__std::collections::HashMap;
 
-use crate::models::metadata::{MetadataModification, MetadataModificationType};
 use crate::{
     api::Uint64Dto,
     models::{
@@ -51,16 +50,6 @@ pub(crate) struct MetadataModificationDto {
     key: String,
     /// The value of metadata modification.
     value: String,
-}
-
-impl MetadataModificationDto {
-    pub fn compact(&self) -> MetadataModification {
-        MetadataModification {
-            r#type: MetadataModificationType::from(self.modification_type),
-            key: self.key.to_string(),
-            value: self.value.to_string(),
-        }
-    }
 }
 
 #[derive(Serialize, Deserialize)]

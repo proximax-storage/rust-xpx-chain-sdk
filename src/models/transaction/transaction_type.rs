@@ -25,6 +25,7 @@ pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 pub(crate) const METADATA_ADDRESS_VERSION: EntityVersion = 1;
 pub(crate) const METADATA_MOSAIC_VERSION: EntityVersion = 1;
+pub(crate) const METADATA_NAMESPACE_VERSION: EntityVersion = 1;
 
 //pub(crate) const BLOCKCHAIN_UPGRADE_VERSION: EntityVersion = 1;
 //pub(crate) const DRIVE_FILES_REWARD_VERSION: EntityVersion = 1;
@@ -34,7 +35,6 @@ pub(crate) const METADATA_MOSAIC_VERSION: EntityVersion = 1;
 //pub(crate) const FILES_DEPOSIT_VERSION: EntityVersion = 1;
 //pub(crate) const JOIN_TO_DRIVE_VERSION: EntityVersion = 1;
 //pub(crate) const LINK_ACCOUNT_VERSION: EntityVersion = 2;
-//pub(crate) const METADATA_NAMESPACE_VERSION: EntityVersion = 1;
 //pub(crate) const MODIFY_CONTRACT_VERSION: EntityVersion = 3;
 //pub(crate) const NETWORK_CONFIG_VERSION: EntityVersion = 1;
 //pub(crate) const PREPARE_DRIVE_VERSION: EntityVersion = 1;
