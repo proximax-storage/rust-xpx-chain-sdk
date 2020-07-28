@@ -4,8 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
-use num_enum::IntoPrimitive;
-use serde::{Serialize, Serializer};
+use {
+    num_enum::IntoPrimitive,
+    serde::{Serialize, Serializer},
+};
 
 pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
 pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
