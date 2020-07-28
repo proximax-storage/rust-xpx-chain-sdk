@@ -4,21 +4,15 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::models::consts::METADATA_HEADER_SIZE;
-use crate::models::metadata::{MetadataModification, MetadataType};
-use crate::models::transaction::internal::metadata_modification_array_to_buffer;
-use crate::models::transaction::schema::modify_metadata_transaction_schema;
 use crate::models::{
-    account::{Address, PublicAccount},
-    alias::AliasActionType,
-    asset_id_model::AssetId,
-    namespace::NamespaceId,
-    network::NetworkType,
+    account::PublicAccount,
+    consts::METADATA_HEADER_SIZE,
+    metadata::{MetadataModification, MetadataType},
 };
 
 use super::{
-    buffer::modify_metadata as buffer, schema::alias_transaction_schema, AbstractTransaction,
-    Deadline, EntityTypeEnum, ADDRESS_ALIAS_VERSION,
+    buffer::modify_metadata as buffer, internal::metadata_modification_array_to_buffer,
+    schema::modify_metadata_transaction_schema, AbstractTransaction,
 };
 
 #[derive(Clone, Debug, Serialize)]

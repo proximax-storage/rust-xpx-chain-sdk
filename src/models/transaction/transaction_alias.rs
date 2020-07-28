@@ -5,18 +5,11 @@
  */
 
 use crate::models::{
-    account::{Address, PublicAccount},
-    alias::AliasActionType,
-    asset_id_model::AssetId,
-    consts::ALIAS_TRANSACTION_HEADER,
-    namespace::NamespaceId,
-    network::NetworkType,
+    account::PublicAccount, alias::AliasActionType, asset_id_model::AssetId,
+    consts::ALIAS_TRANSACTION_HEADER, namespace::NamespaceId,
 };
 
-use super::{
-    buffer::alias as buffer, schema::alias_transaction_schema, AbstractTransaction, Deadline,
-    EntityTypeEnum, ADDRESS_ALIAS_VERSION,
-};
+use super::{buffer::alias as buffer, schema::alias_transaction_schema, AbstractTransaction};
 
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]

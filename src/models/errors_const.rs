@@ -61,3 +61,4 @@ pub const ERR_INVALID_DATA_LENGTH: &str = "The length of data is invalid.";
 pub const ERR_METADATA_EMPTY_ADDRESSES: &str = "list adresses ids must not by empty.";
 pub const ERR_METADATA_EMPTY_MOSAIC_IDS: &str = "list mosaics ids must not by empty.";
 pub const ERR_METADATA_EMPTY_NAMESPACE_IDS: &str = "list namespaces ids must not by empty.";
+pub const ERR_METADATA_EMPTY_MODIFICATIONS: &str = "modifications must not empty.";

@@ -48,9 +48,13 @@ impl MetadataRoutes {
 
         req = req.with_path_param("address_id".to_string(), address.as_string());
 
-        let dto: AddressMetadataInfoDto = req.execute(self.__client()).await?;
+        #[derive(Deserialize)]
+        struct MetadataDto {
+            metadata: AddressMetadataInfoDto,
+        }
+        let dto: MetadataDto = req.execute(self.__client()).await?;
 
-        Ok(dto.compact()?)
+        Ok(dto.metadata.compact()?)
     }
 
     pub async fn get_metadata_by_mosaic_id(

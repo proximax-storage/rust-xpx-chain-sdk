@@ -106,6 +106,7 @@ impl core::fmt::Display for MetadataModificationType {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MetadataInfo {
+    #[serde(rename = "metadataId")]
     pub r#type: MetadataType,
     pub fields: HashMap<String, String>,
 }
@@ -116,16 +117,46 @@ pub struct AddressMetadataInfo {
     pub address: Address,
 }
 
+impl core::fmt::Display for AddressMetadataInfo {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MosaicMetadataInfo {
     pub info: MetadataInfo,
     pub mosaic_id: MosaicId,
 }
 
+impl core::fmt::Display for MosaicMetadataInfo {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NamespaceMetadataInfo {
     pub info: MetadataInfo,
     pub namespace_id: NamespaceId,
+}
+
+impl core::fmt::Display for NamespaceMetadataInfo {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
+    }
 }
 
 #[derive(Default, Serialize)]
