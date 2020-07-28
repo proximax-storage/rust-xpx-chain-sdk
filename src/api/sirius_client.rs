@@ -11,9 +11,9 @@ use crate::{models::error::Result, network::NetworkType, transaction::Hash};
 use super::routes::{
     account_routes_api::AccountRoutes, block_routes_api::BlockRoutes,
     chain_routes_api::ChainRoutes, exchange_routes_api::ExchangeRoutes,
-    mosaic_routes_api::MosaicRoutes, namespace_routes_api::NamespaceRoutes,
-    node_routes_api::NodeRoutes, resolver_routes_api::ResolverRoutes,
-    transaction_routes_api::TransactionRoutes,
+    metadata_routes_api::MetadataRoutes, mosaic_routes_api::MosaicRoutes,
+    namespace_routes_api::NamespaceRoutes, node_routes_api::NodeRoutes,
+    resolver_routes_api::ResolverRoutes, transaction_routes_api::TransactionRoutes,
 };
 
 #[derive(Clone, Serialize)]
@@ -67,6 +67,10 @@ impl SiriusClient {
             *self.namespace_api(),
             *self.mosaic_api(),
         ))
+    }
+
+    pub fn metadata_api(&self) -> Box<MetadataRoutes> {
+        Box::new(MetadataRoutes::new(self.client.to_owned()))
     }
 }
 

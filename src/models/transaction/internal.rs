@@ -14,6 +14,7 @@ use crate::{
             TYPE_SIZE, VERSION_SIZE,
         },
         errors_const::ERR_EMPTY_TRANSACTION_SIGNER,
+        metadata::MetadataModification,
         mosaic::MosaicProperty,
         multisig::CosignatoryModification,
     },
@@ -21,7 +22,7 @@ use crate::{
 };
 
 use super::{
-    buffer::{modify_multisig_account as buffer, mosaic_definition},
+    buffer::{modify_metadata, modify_multisig_account as modify_multisig, mosaic_definition},
     AbsTransaction, AggregateTransaction, EntityVersion, SignedTransaction, Transaction,
 };
 
@@ -171,15 +172,17 @@ pub(crate) fn cosignatory_modification_array_to_buffer<'a>(
     builder: &mut FlatBufferBuilder<'a>,
     modifications: Vec<CosignatoryModification>,
 ) -> fb::UOffsetT {
-    let mut cosignatory_buffer: Vec<fb::WIPOffset<buffer::CosignatoryModificationBuffer<'a>>> =
-        Vec::with_capacity(modifications.len());
+    let mut cosignatory_buffer: Vec<
+        fb::WIPOffset<modify_multisig::CosignatoryModificationBuffer<'a>>,
+    > = Vec::with_capacity(modifications.len());
 
     for modification in modifications {
         let public_key = &modification.public_account;
 
         let public_key_vector = builder.create_vector_direct(&public_key.to_bytes());
 
-        let mut modify_multisig = buffer::CosignatoryModificationBufferBuilder::new(builder);
+        let mut modify_multisig =
+            modify_multisig::CosignatoryModificationBufferBuilder::new(builder);
         modify_multisig.add_type_(modification.modification_type.value());
         modify_multisig.add_cosignatory_public_key(public_key_vector);
 
@@ -187,4 +190,40 @@ pub(crate) fn cosignatory_modification_array_to_buffer<'a>(
     }
 
     builder.create_vector(&cosignatory_buffer).value()
+}
+
+pub(crate) fn metadata_modification_array_to_buffer<'a>(
+    builder: &mut FlatBufferBuilder<'a>,
+    modifications: Vec<MetadataModification>,
+) -> fb::UOffsetT {
+    let mut modification_buffer: Vec<
+        fb::WIPOffset<modify_metadata::MetadataModificationBuffer<'a>>,
+    > = Vec::with_capacity(modifications.len());
+
+    for modification in modifications {
+        let key_size = modification.key.len();
+        if key_size == 0 {
+            return 0;
+        }
+
+        let key_vector = builder.create_vector_direct(modification.key.as_bytes());
+
+        let value_size = modification.value.len() as u16;
+
+        let value_size = builder.create_vector_direct(&value_size.to_le_bytes());
+
+        let value_vector = builder.create_vector_direct(modification.value.as_bytes());
+
+        let mut modify_metadata = modify_metadata::MetadataModificationBufferBuilder::new(builder);
+        modify_metadata.add_size_(modification.size() as u32);
+        modify_metadata.add_modification_type(modification.r#type.value());
+        modify_metadata.add_key_size(key_size as u8);
+        modify_metadata.add_value_size(value_size);
+        modify_metadata.add_key(key_vector);
+        modify_metadata.add_value(value_vector);
+
+        modification_buffer.push(modify_metadata.finish());
+    }
+
+    builder.create_vector(&modification_buffer).value()
 }

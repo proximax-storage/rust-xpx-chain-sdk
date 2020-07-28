@@ -15,6 +15,7 @@ pub(crate) mod error;
 pub mod errors_const;
 pub mod exchange;
 pub mod message;
+pub mod metadata;
 pub mod mosaic;
 pub mod multisig;
 pub mod namespace;

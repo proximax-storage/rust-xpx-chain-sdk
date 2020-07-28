@@ -82,7 +82,7 @@ impl AccountRoutes {
 
         let mut req = __internal_request::Request::new(Method::GET, ACCOUNT_ROUTE.to_string());
 
-        req = req.with_path_param("accountId".to_string(), id);
+        req = req.with_path_param("address_id".to_string(), id);
 
         let dto: Result<AccountInfoDto> = req.execute(self.__client()).await;
 
@@ -171,7 +171,7 @@ impl AccountRoutes {
         let mut req =
             __internal_request::Request::new(Method::GET, MULTISIG_ACCOUNT_ROUTE.to_string());
 
-        req = req.with_path_param("accountId".to_string(), id);
+        req = req.with_path_param("address_id".to_string(), id);
 
         let dto: Result<MultisigAccountInfoDto> = req.execute(self.__client()).await;
 
@@ -189,7 +189,7 @@ impl AccountRoutes {
             MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE.to_string(),
         );
 
-        req = req.with_path_param("accountId".to_string(), id);
+        req = req.with_path_param("address_id".to_string(), id);
 
         let dto: Result<Vec<MultisigAccountGraphInfoDto>> = req.execute(self.__client()).await;
 
@@ -206,7 +206,7 @@ impl AccountRoutes {
         let mut req =
             __internal_request::Request::new(Method::GET, ACCOUNT_PROPERTIES_ROUTE.to_string());
 
-        req = req.with_path_param("accountId".to_string(), address.as_string());
+        req = req.with_path_param("address_id".to_string(), address.as_string());
 
         let dto: Result<AccountPropertiesInfoDto> = req.execute(self.__client()).await;
 

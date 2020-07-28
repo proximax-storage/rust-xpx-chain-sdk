@@ -82,13 +82,6 @@ pub(crate) fn public_key_to_address(
     bts.copy_from_slice(&concat_step_three_and_step_six.as_slice()[..25]);
 
     Ok(bts)
-
-    //let res = base32::encode(
-    //    RFC4648 { padding: true },
-    //    concat_step_three_and_step_six.as_slice(),
-    //);
-
-    //Ok(res)
 }
 
 fn generate_checksum(input: &[u8]) -> Box<[u8]> {

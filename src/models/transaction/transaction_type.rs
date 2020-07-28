@@ -4,8 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
-use num_enum::IntoPrimitive;
-use serde::{Serialize, Serializer};
+use {
+    num_enum::IntoPrimitive,
+    serde::{Serialize, Serializer},
+};
 
 pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
 pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
@@ -23,6 +25,9 @@ pub(crate) const TRANSFER_VERSION: EntityVersion = 3;
 pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 3;
 pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
+pub(crate) const METADATA_ADDRESS_VERSION: EntityVersion = 1;
+pub(crate) const METADATA_MOSAIC_VERSION: EntityVersion = 1;
+pub(crate) const METADATA_NAMESPACE_VERSION: EntityVersion = 1;
 
 //pub(crate) const BLOCKCHAIN_UPGRADE_VERSION: EntityVersion = 1;
 //pub(crate) const DRIVE_FILES_REWARD_VERSION: EntityVersion = 1;
@@ -32,13 +37,9 @@ pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 //pub(crate) const FILES_DEPOSIT_VERSION: EntityVersion = 1;
 //pub(crate) const JOIN_TO_DRIVE_VERSION: EntityVersion = 1;
 //pub(crate) const LINK_ACCOUNT_VERSION: EntityVersion = 2;
-//pub(crate) const METADATA_ADDRESS_VERSION: EntityVersion = 1;
-//pub(crate) const METADATA_MOSAIC_VERSION: EntityVersion = 1;
-//pub(crate) const METADATA_NAMESPACE_VERSION: EntityVersion = 1;
 //pub(crate) const MODIFY_CONTRACT_VERSION: EntityVersion = 3;
 //pub(crate) const NETWORK_CONFIG_VERSION: EntityVersion = 1;
 //pub(crate) const PREPARE_DRIVE_VERSION: EntityVersion = 1;
-//pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 //pub(crate) const SECRET_LOCK_VERSION: EntityVersion = 1;
 //pub(crate) const SECRET_PROOF_VERSION: EntityVersion = 1;
 //pub(crate) const START_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
@@ -46,7 +47,6 @@ pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 pub(crate) type EntityVersion = u32;
 
 /// entity_type The entity type:
-/// * 0x413D (16701 decimal) - Address Metadata Transaction.
 /// * 0x4141 (16705 decimal) - Aggregate Complete Transaction.
 /// * 0x4148 (16712 decimal) - Hash Lock Transaction.
 /// * 0x414C (16716 decimal) - Account Link Transaction.
@@ -56,6 +56,9 @@ pub(crate) type EntityVersion = u32;
 /// * 0x4152 (16722 decimal) - Secret Lock Transaction.
 /// * 0x4154 (16724 decimal) - Transfer Transaction.
 /// * 0x4155 (16725 decimal) - Modify Multisig Account Transaction.
+/// * 0x413D (16701 decimal) - Modify Metadata Address Transaction.
+/// * 0x423D (16957 decimal) - Modify Metadata Mosaic Transaction.
+/// * 0x433D (17213 decimal) - Modify Metadata Namespace Transaction.
 /// * 0x4158 (16728 decimal) - Blockchain Upgrade Transaction.
 /// * 0x4159 (16729 decimal) - Network Config Transaction.
 /// * 0x423D (16957 decimal) - Mosaic Metadata Transaction.
@@ -83,6 +86,9 @@ pub enum EntityTypeEnum {
     AddressAlias = 0x424E,
     MosaicAlias = 0x434E,
     Transfer = 0x4154,
+    ModifyMetadataAddress = 0x413D,
+    ModifyMetadataMosaic = 0x423D,
+    ModifyMetadataNamespace = 0x433D,
     ModifyMultisigAccount = 0x4155,
     AggregateComplete = 0x4141,
     AggregateBonded = 0x4241,
@@ -127,6 +133,7 @@ impl From<u16> for EntityTypeEnum {
             0x4152 => EntityTypeEnum::SecretLock,
             0x4154 => EntityTypeEnum::Transfer,
             0x4155 => EntityTypeEnum::ModifyMultisigAccount,
+            0x413D => EntityTypeEnum::ModifyMetadataAddress,
             0x4158 => EntityTypeEnum::BlockchainUpgrade,
             0x4159 => EntityTypeEnum::NetworkConfigEntityType,
             0x4241 => EntityTypeEnum::AggregateBonded,

@@ -5,21 +5,25 @@
  */
 
 use crate::models::{
-    account::PublicAccount, alias::AliasActionType, asset_id_model::AssetId,
-    consts::ALIAS_TRANSACTION_HEADER, namespace::NamespaceId,
+    account::PublicAccount,
+    consts::METADATA_HEADER_SIZE,
+    metadata::{MetadataModification, MetadataType},
 };
 
-use super::{buffer::alias as buffer, schema::alias_transaction_schema, AbstractTransaction};
+use super::{
+    buffer::modify_metadata as buffer, internal::metadata_modification_array_to_buffer,
+    schema::modify_metadata_transaction_schema, AbstractTransaction,
+};
 
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AliasTransaction {
+pub struct ModifyMetadataTransaction {
     pub abs_transaction: AbstractTransaction,
-    pub action_type: AliasActionType,
-    pub namespace_id: NamespaceId,
+    pub metadata_type: MetadataType,
+    pub modifications: Vec<MetadataModification>,
 }
 
-impl AliasTransaction {
+impl ModifyMetadataTransaction {
     pub(crate) fn set_aggregate(&mut self, signer: PublicAccount) {
         self.abs_transaction.set_aggregate(signer)
     }
@@ -29,20 +33,23 @@ impl AliasTransaction {
     }
 
     pub(crate) fn size(&self) -> usize {
-        ALIAS_TRANSACTION_HEADER
+        let size_of_modifications: usize = self.modifications.iter().map(|m| m.size()).sum();
+
+        METADATA_HEADER_SIZE + size_of_modifications
     }
 
     pub(crate) fn embedded_to_bytes(
         &self,
         builder: &mut fb::FlatBufferBuilder,
-        alias_vec: fb::WIPOffset<fb::Vector<u8>>,
+        metadata_vec: fb::WIPOffset<fb::Vector<u8>>,
         alias_size: usize,
     ) -> crate::Result<Vec<u8>> {
-        let namespace_vec = builder.create_vector_direct(&self.namespace_id.to_u32_array());
+        let modification_vec =
+            metadata_modification_array_to_buffer(builder, self.modifications.to_owned());
 
         let abs_vector = self.abs_transaction.build_vector(builder);
 
-        let mut txn_builder = buffer::AliasTransactionBufferBuilder::new(builder);
+        let mut txn_builder = buffer::ModifyMetadataTransactionBufferBuilder::new(builder);
         txn_builder.add_size_((self.size() + alias_size) as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
@@ -50,15 +57,15 @@ impl AliasTransaction {
         txn_builder.add_type_(abs_vector.type_vec);
         txn_builder.add_max_fee(abs_vector.max_fee_vec);
         txn_builder.add_deadline(abs_vector.deadline_vec);
-        txn_builder.add_action_type(self.action_type.value());
-        txn_builder.add_namespace_id(namespace_vec);
-        txn_builder.add_alias_id(alias_vec);
+        txn_builder.add_metadata_type(self.metadata_type.value());
+        txn_builder.add_metadata_id(metadata_vec);
+        txn_builder.add_modifications(fb::WIPOffset::new(modification_vec));
         let t = txn_builder.finish();
 
         builder.finish(t, None);
 
         let buf = builder.finished_data();
 
-        Ok(alias_transaction_schema().serialize(&mut buf.to_vec()))
+        Ok(modify_metadata_transaction_schema().serialize(&mut buf.to_vec()))
     }
 }

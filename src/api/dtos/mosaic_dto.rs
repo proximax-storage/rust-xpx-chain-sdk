@@ -13,8 +13,8 @@ use crate::{
 };
 
 use super::{
-    AbstractTransactionDto, FieldDto, MetadataModificationDto, MetadataTypeEnum, TransactionDto,
-    TransactionMetaDto, Uint64Dto,
+    AbstractTransactionDto, FieldDto, MetadataModificationDto, TransactionDto, TransactionMetaDto,
+    Uint64Dto,
 };
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -148,7 +148,7 @@ pub(crate) struct MosaicMetadataTransactionDto {
     #[serde(flatten)]
     r#abstract: AbstractTransactionDto,
     metadata_id: Uint64Dto,
-    metadata_type: MetadataTypeEnum,
+    metadata_type: u8,
     /// The array of metadata modifications.
     modifications: Vec<MetadataModificationDto>,
 }
