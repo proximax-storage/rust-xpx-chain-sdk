@@ -10,7 +10,9 @@ use {
     serde::{Serialize, Serializer},
 };
 
-use crate::{account::Address, mosaic::MosaicId, namespace::NamespaceId, AssetId};
+use crate::models::{
+    account::Address, consts::SIZE_SIZE, mosaic::MosaicId, namespace::NamespaceId, AssetId,
+};
 
 /// MetadataTypeEnum :
 ///The type of the metadata:
@@ -66,7 +68,7 @@ impl Serialize for MetadataType {
 /// The type of the metadata modification:
 ///* 0 - Add metadata.
 ///* 1 - Remove metadata.
-#[derive(Debug, Clone, Copy, PartialEq, Deserialize, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize, Serialize, IntoPrimitive)]
 #[repr(u8)]
 pub enum MetadataModificationType {
     #[serde(rename = "0")]
@@ -137,36 +139,29 @@ pub struct MetadataIds {
 impl From<Vec<&str>> for MetadataIds {
     #[inline]
     fn from(ids: Vec<&str>) -> Self {
-        let mut addresses = vec![];
+        let mut metadata_ids = MetadataIds::default();
 
-        let mut accounts = MetadataIds::default();
+        let addresses: Vec<String> = ids
+            .into_iter()
+            .map(|id| id.trim().replace("-", "").to_uppercase())
+            .collect();
 
-        for (i, id) in ids.iter().enumerate() {
-            let _id = id.trim();
-
-            addresses.push(_id.replace("-", "").to_uppercase());
-
-            if i == ids.len() - 1 && !addresses.is_empty() {
-                accounts.ids = Some(addresses.to_owned())
-            }
+        if !addresses.is_empty() {
+            metadata_ids.ids = Some(addresses);
         }
-        accounts
+        metadata_ids
     }
 }
 
 impl From<Vec<MosaicId>> for MetadataIds {
     #[inline]
     fn from(ids: Vec<MosaicId>) -> Self {
-        let mut mosaic_ids = vec![];
-
         let mut metadata_ids = MetadataIds::default();
 
-        for (i, id) in ids.iter().enumerate() {
-            mosaic_ids.push(id.to_hex());
+        let mosaic_ids: Vec<String> = ids.into_iter().map(|id| id.to_hex()).collect();
 
-            if i == ids.len() - 1 && !mosaic_ids.is_empty() {
-                metadata_ids.ids = Some(mosaic_ids.to_owned())
-            }
+        if !mosaic_ids.is_empty() {
+            metadata_ids.ids = Some(mosaic_ids);
         }
         metadata_ids
     }
@@ -175,17 +170,50 @@ impl From<Vec<MosaicId>> for MetadataIds {
 impl From<Vec<NamespaceId>> for MetadataIds {
     #[inline]
     fn from(ids: Vec<NamespaceId>) -> Self {
-        let mut namespace_ids = vec![];
-
         let mut metadata_ids = MetadataIds::default();
 
-        for (i, id) in ids.iter().enumerate() {
-            namespace_ids.push(id.to_hex());
+        let namespace_ids: Vec<String> = ids.into_iter().map(|id| id.to_hex()).collect();
 
-            if i == ids.len() - 1 && !namespace_ids.is_empty() {
-                metadata_ids.ids = Some(namespace_ids.to_owned())
-            }
+        if !namespace_ids.is_empty() {
+            metadata_ids.ids = Some(namespace_ids);
         }
+
         metadata_ids
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct MetadataModification {
+    pub r#type: MetadataModificationType,
+    pub key: String,
+    pub value: String,
+}
+
+impl MetadataModification {
+    pub fn new(modification_type: MetadataModificationType, key: &str, value: &str) -> Self {
+        Self {
+            r#type: modification_type,
+            key: key.to_string(),
+            value: value.to_string(),
+        }
+    }
+
+    pub fn size(&self) -> usize {
+        SIZE_SIZE
+            + 1 /* MetadataModificationType size */
+            + 1 /* KeySize size */
+            + 2 /* ValueSize size */
+            + self.key.len()
+            + self.value.len()
+    }
+}
+
+impl core::fmt::Display for MetadataModification {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
     }
 }
