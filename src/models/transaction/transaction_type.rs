@@ -38,7 +38,6 @@ pub(crate) const METADATA_NAMESPACE_VERSION: EntityVersion = 1;
 //pub(crate) const MODIFY_CONTRACT_VERSION: EntityVersion = 3;
 //pub(crate) const NETWORK_CONFIG_VERSION: EntityVersion = 1;
 //pub(crate) const PREPARE_DRIVE_VERSION: EntityVersion = 1;
-//pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
 //pub(crate) const SECRET_LOCK_VERSION: EntityVersion = 1;
 //pub(crate) const SECRET_PROOF_VERSION: EntityVersion = 1;
 //pub(crate) const START_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
