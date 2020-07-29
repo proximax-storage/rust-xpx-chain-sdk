@@ -110,8 +110,6 @@ pub mod modify_multisig_account {
         }
     }
 
-    pub enum ModifyMultisigAccountTransactionBufferOffset {}
-
     #[derive(Copy, Clone, Debug, PartialEq)]
     pub struct ModifyMultisigAccountTransactionBuffer<'a> {
         pub _tab: fb::Table<'a>,

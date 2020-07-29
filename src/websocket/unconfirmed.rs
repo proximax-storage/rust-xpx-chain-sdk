@@ -4,6 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
+use ::std::str::FromStr;
+
+use crate::models::transaction::HashValue;
+
 use super::Handler;
 
 pub struct HandlerUnconfirmedAdd {
@@ -44,9 +48,9 @@ impl WsUnconfirmedMetaDto {
             height: crate::Uint64::default(),
             index: 0,
             id: String::new(),
-            hash: Some(self.hash.to_owned()),
+            hash: Some(HashValue::from_str(&self.hash).unwrap()),
             merkle_component_hash: None,
-            agregate_hash: None,
+            aggregate_hash: None,
             aggregate_id: None,
             unique_aggregate_hash: None,
         }

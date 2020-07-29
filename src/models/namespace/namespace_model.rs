@@ -13,7 +13,6 @@ use crate::models::{
     transaction::Height,
 };
 
-/// NamespaceTypeEnum :
 /// The namespace type:
 /// * 0 -  Root namespace.
 /// * 1 -  Subnamespace.

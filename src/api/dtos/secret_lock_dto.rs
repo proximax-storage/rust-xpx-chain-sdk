@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use super::{AbstractTransactionDto, HashAlgorithmEnum, Uint64Dto};
+use super::{AbstractTransactionDto, HashAlgorithm, Uint64Dto};
 
 /// SecretLockTransactionDto : Transaction that sends mosaics to a recipient if the proof used is revealed. If the duration is reached, the locked funds go back to the sender of the transaction.
 #[derive(Serialize, Deserialize)]
@@ -18,7 +18,7 @@ pub(crate) struct SecretLockTransactionDto {
     #[serde(rename = "amount")]
     amount: Uint64Dto,
     #[serde(rename = "hashAlgorithm")]
-    hash_algorithm: HashAlgorithmEnum,
+    hash_algorithm: HashAlgorithm,
     /// The proof hashed.
     #[serde(rename = "secret")]
     secret: String,

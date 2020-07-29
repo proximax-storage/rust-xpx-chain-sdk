@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-The ProximaX Sirius Catapult Chain Rust SDK works as a lightweight Rust library for interacting with the Sirius Blockchain. It provides a complete library set coverage, and supports asynchronous requests. 
+The ProximaX Sirius Chain Rust SDK works as a lightweight Rust library for interacting with the Sirius Blockchain. It provides a complete library set coverage, and supports asynchronous requests. 
 
 ### Usage
 First, add this to your `Cargo.toml`:

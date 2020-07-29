@@ -13,7 +13,8 @@ use crate::{
     account::{
         AccountInfo, AccountLinkType, AccountName, AccountProperties,
         AccountPropertiesAddressModification, AccountPropertiesEntityTypeModification,
-        AccountPropertiesMosaicModification, AccountPropertyType, Address,
+        AccountPropertiesModificationType, AccountPropertiesMosaicModification,
+        AccountPropertyType, Address,
     },
     models::{error::Error::Failure, Result},
     mosaic::{Mosaic, MosaicId},
@@ -123,7 +124,7 @@ impl TransactionDto for AccountPropertiesTransactionInfoDto {
     fn compact(&self) -> Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.compact();
+        let info = self.meta.compact()?;
 
         let abs_transaction = dto.r#abstract.compact(info)?;
 
@@ -132,7 +133,7 @@ impl TransactionDto for AccountPropertiesTransactionInfoDto {
                 .modifications
                 .iter()
                 .map(move |p| AccountPropertiesAddressModification {
-                    modification_type: p.r#type,
+                    modification_type: AccountPropertiesModificationType::from(p.r#type),
                     address: Address::from_encoded(p.value.as_str().unwrap()).unwrap_or_default(),
                 })
                 .collect();
@@ -147,7 +148,7 @@ impl TransactionDto for AccountPropertiesTransactionInfoDto {
                 .modifications
                 .iter()
                 .map(move |p| AccountPropertiesMosaicModification {
-                    modification_type: p.r#type.to_owned(),
+                    modification_type: AccountPropertiesModificationType::from(p.r#type),
                     asset_id: Box::new(MosaicId::from(
                         Uint64Dto::from_value(p.value.to_owned()).compact(),
                     )),
@@ -164,7 +165,7 @@ impl TransactionDto for AccountPropertiesTransactionInfoDto {
                 .modifications
                 .iter()
                 .map(move |p| AccountPropertiesEntityTypeModification {
-                    modification_type: p.r#type.to_owned(),
+                    modification_type: AccountPropertiesModificationType::from(p.r#type),
                     transaction_type: TransactionType::from(p.value.as_u64().unwrap() as u16),
                 })
                 .collect();

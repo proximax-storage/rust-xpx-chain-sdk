@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use super::{ReceiptTypeEnum, Uint64Dto};
+use super::{ReceiptType, Uint64Dto};
 
 /// BalanceChangeReceiptDto : The invisible state change changed an account balance.
 #[derive(Serialize, Deserialize)]
@@ -13,7 +13,7 @@ pub(crate) struct BalanceChangeReceiptDto {
     #[serde(rename = "version")]
     version: i32,
     #[serde(rename = "type")]
-    _type: ReceiptTypeEnum,
+    _type: ReceiptType,
     /// The target account public key.
     #[serde(rename = "account")]
     account: String,
@@ -38,7 +38,7 @@ pub(crate) struct BalanceTransferReceiptDto {
     #[serde(rename = "version")]
     version: i32,
     #[serde(rename = "type")]
-    _type: ReceiptTypeEnum,
+    _type: ReceiptType,
     /// The public key of the sender.
     #[serde(rename = "sender")]
     sender: String,

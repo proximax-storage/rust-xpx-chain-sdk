@@ -4,13 +4,15 @@
  * license that can be found in the LICENSE file.
  */
 
+use ::std::str::FromStr;
+
 use crate::{
     account::{Address, PublicAccount},
     models::Result,
     mosaic::{Mosaic, MosaicId},
     network::extract_network_type,
     transaction::{
-        internal::extract_version, AbstractTransaction, BlockchainTimestamp, Deadline,
+        internal::extract_version, AbstractTransaction, BlockchainTimestamp, Deadline, HashValue,
         LockFundsTransaction, SignedTransaction, Transaction, TransactionInfo, TransactionStatus,
         TransactionType, TransferTransaction,
     },
@@ -18,10 +20,13 @@ use crate::{
 
 use super::{MessageDto, MosaicDto, Uint64Dto};
 
-/// HashAlgorithmEnum : The hash algorithm used to hash te proof: * 0 (Op_Sha3_256)  - The proof is hashed using sha3 256. * 1 (Op_Keccak_256)  - The proof is hashed using Keccak (ETH compatibility). * 2 (Op_Hash_160)  - The proof is hashed twice: first with Sha-256 and then with RIPEMD-160 (bitcoin’s OP_HASH160). * 3 (Op_Hash_256)  - The proof is hashed twice with Sha-256 (bitcoin’s OP_HASH256).
-/// The hash algorithm used to hash te proof: * 0 (Op_Sha3_256)  - The proof is hashed using sha3 256. * 1 (Op_Keccak_256)  - The proof is hashed using Keccak (ETH compatibility). * 2 (Op_Hash_160)  - The proof is hashed twice: first with Sha-256 and then with RIPEMD-160 (bitcoin’s OP_HASH160). * 3 (Op_Hash_256)  - The proof is hashed twice with Sha-256 (bitcoin’s OP_HASH256).
+/// The hash algorithm used to hash te proof:
+///* 0 (Op_Sha3_256)  - The proof is hashed using sha3 256.
+///* 1 (Op_Keccak_256)  - The proof is hashed using Keccak (ETH compatibility).
+///* 2 (Op_Hash_160)  - The proof is hashed twice: first with Sha-256 and then with RIPEMD-160 (bitcoin’s OP_HASH160).
+///* 3 (Op_Hash_256)  - The proof is hashed twice with Sha-256 (bitcoin’s OP_HASH256).
 #[derive(Serialize, Deserialize)]
-pub(crate) enum HashAlgorithmEnum {
+pub(crate) enum HashAlgorithm {
     #[serde(rename = "0")]
     _0,
     #[serde(rename = "1")]
@@ -116,59 +121,63 @@ pub(crate) struct TransactionMetaDto {
 }
 
 impl TransactionMetaDto {
-    pub fn compact(&self) -> TransactionInfo {
+    pub fn compact(&self) -> crate::Result<TransactionInfo> {
         let dto = self.clone();
 
-        let mut agregate_hash = None;
-        if let Some(t) = dto.aggregate_hash.clone() {
-            agregate_hash = Some(t)
-        }
+        let aggregate_hash = if let Some(t) = dto.aggregate_hash {
+            Some(HashValue::from_str(&t)?)
+        } else {
+            None
+        };
 
-        let mut aggregate_id = None;
-        if let Some(t) = dto.aggregate_id.clone() {
-            aggregate_id = Some(t)
-        }
+        let aggregate_id = if let Some(t) = dto.aggregate_id {
+            Some(t)
+        } else {
+            None
+        };
 
-        let mut unique_aggregate_hash = None;
-        if let Some(t) = dto.unique_aggregate_hash.clone() {
-            unique_aggregate_hash = Some(t)
-        }
+        let unique_aggregate_hash = if let Some(t) = dto.unique_aggregate_hash {
+            Some(t)
+        } else {
+            None
+        };
 
-        let mut transaction_hash = None;
-        if let Some(t) = dto.transaction_hash.clone() {
-            transaction_hash = Some(t)
-        }
+        let transaction_hash = if let Some(t) = dto.transaction_hash {
+            Some(HashValue::from_str(&t)?)
+        } else {
+            None
+        };
 
-        let mut merkle_component_hash = None;
-        if let Some(t) = dto.merkle_component_hash.clone() {
-            merkle_component_hash = Some(t)
-        }
+        let merkle_component_hash = if let Some(t) = dto.merkle_component_hash {
+            Some(HashValue::from_str(&t)?)
+        } else {
+            None
+        };
 
-        let mut index = 0;
-        if let Some(i) = dto.index {
-            index = i
-        }
+        let index = if let Some(i) = dto.index { i } else { 0 };
 
-        let mut id = "".to_string();
-        if let Some(i) = dto.id {
-            id = i
-        }
+        let id = if let Some(item) = dto.id {
+            item
+        } else {
+            String::new()
+        };
 
-        let mut height = crate::Uint64::default();
-        if let Some(h) = dto.height {
-            height = h.compact()
-        }
+        let height = if let Some(h) = dto.height {
+            h.compact()
+        } else {
+            crate::Uint64::default()
+        };
 
-        TransactionInfo {
+        Ok(TransactionInfo {
             height,
             index,
             id,
             hash: transaction_hash,
             merkle_component_hash,
-            agregate_hash,
+            aggregate_hash,
             aggregate_id,
             unique_aggregate_hash,
-        }
+        })
     }
 }
 
@@ -188,27 +197,29 @@ pub(crate) struct TransactionStatusDto {
 }
 
 impl TransactionStatusDto {
-    pub fn compact(&self) -> TransactionStatus {
+    pub fn compact(&self) -> crate::Result<TransactionStatus> {
         let dto = &self.to_owned();
 
-        let mut deadline = None;
-        if let Some(value) = &dto.deadline {
+        let deadline = if let Some(value) = &dto.deadline {
             let blockchain_timestamp = BlockchainTimestamp::new(*value.compact() as i64);
-            deadline = Some(Deadline::from(blockchain_timestamp));
+            Some(Deadline::from(blockchain_timestamp))
+        } else {
+            None
         };
 
-        let mut height = None;
-        if let Some(value) = &dto.height {
-            height = Some(value.compact());
+        let height = if let Some(value) = &dto.height {
+            Some(value.compact())
+        } else {
+            None
         };
 
-        TransactionStatus::new(
+        Ok(TransactionStatus::new(
             dto.group.clone().unwrap(),
             dto.status.clone(),
-            dto.hash.clone().unwrap(),
+            HashValue::from_str(&dto.hash.as_ref().unwrap())?,
             deadline,
             height,
-        )
+        ))
     }
 }
 
@@ -223,7 +234,7 @@ pub(crate) struct TransferTransactionInfoDto {
 impl TransactionDto for TransferTransactionInfoDto {
     fn compact(&self) -> Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
-        let info = self.meta.compact();
+        let info = self.meta.compact()?;
 
         let abs_transaction = dto.r#abstract.compact(info)?;
 
@@ -281,7 +292,7 @@ pub(crate) struct HashLockTransactionInfoDto {
 impl TransactionDto for HashLockTransactionInfoDto {
     fn compact(&self) -> Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
-        let info = self.meta.compact();
+        let info = self.meta.compact()?;
 
         let abs_transaction = dto.r#abstract.compact(info)?;
 
@@ -297,7 +308,7 @@ impl TransactionDto for HashLockTransactionInfoDto {
             signed_transaction: SignedTransaction::new(
                 TransactionType::AggregateBonded,
                 "".to_string(),
-                dto.hash,
+                HashValue::from_str(&dto.hash)?,
             ),
         }))
     }

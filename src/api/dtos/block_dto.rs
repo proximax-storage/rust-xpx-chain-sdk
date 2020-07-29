@@ -4,11 +4,13 @@
  * license that can be found in the LICENSE file.
  */
 
+use ::std::str::FromStr;
+
 use crate::{
     account::{PublicAccount, EMPTY_PUBLIC_KEY},
     blockchain::BlockInfo,
     network::extract_network_type,
-    transaction::{internal::extract_version, BlockchainTimestamp},
+    transaction::{internal::extract_version, BlockchainTimestamp, HashValue},
     Result,
 };
 
@@ -62,38 +64,41 @@ impl BlockDto {
 
         let version = extract_version(dto.version as u32);
 
-        let mut beneficiary_public_account = Option::default();
-        if let Some(v) = dto.beneficiary {
+        let beneficiary_public_account = if let Some(v) = dto.beneficiary {
             if v != EMPTY_PUBLIC_KEY {
-                beneficiary_public_account =
-                    Some(PublicAccount::from_public_key(&v, network_type)?);
+                Some(PublicAccount::from_public_key(&v, network_type)?)
+            } else {
+                None
             }
-        }
+        } else {
+            Option::default()
+        };
 
-        let mut fee_multiplier = 0;
-        if let Some(v) = dto.fee_multiplier {
-            fee_multiplier = v;
-        }
+        let fee_multiplier = if let Some(v) = dto.fee_multiplier {
+            v
+        } else {
+            0
+        };
 
-        let mut block_receipts_hash = "".to_string();
-        if let Some(v) = dto.block_receipts_hash {
-            block_receipts_hash = v;
-        }
+        let block_receipts_hash = if let Some(v) = dto.block_receipts_hash {
+            HashValue::from_str(&v)?
+        } else {
+            HashValue::zero()
+        };
 
-        let mut state_hash = "".to_string();
-        if let Some(v) = dto.state_hash {
-            state_hash = v;
-        }
+        let state_hash = if let Some(v) = dto.state_hash {
+            HashValue::from_str(&v)?
+        } else {
+            HashValue::zero()
+        };
 
-        let mut fee_interest = 0;
-        if let Some(v) = dto.fee_interest {
-            fee_interest = v;
-        }
+        let fee_interest = if let Some(v) = dto.fee_interest { v } else { 0 };
 
-        let mut fee_interest_denominator = 0;
-        if let Some(v) = dto.fee_interest_denominator {
-            fee_interest_denominator = v;
-        }
+        let fee_interest_denominator = if let Some(v) = dto.fee_interest_denominator {
+            v
+        } else {
+            0
+        };
 
         Ok(BlockInfo {
             network_type,
@@ -106,9 +111,9 @@ impl BlockDto {
             difficulty: dto.difficulty.compact(),
             num_transactions,
             fee_multiplier,
-            generation_hash,
-            previous_block_hash: dto.previous_block_hash,
-            block_transactions_hash: dto.block_transactions_hash,
+            generation_hash: HashValue::from_str(&generation_hash)?,
+            previous_block_hash: HashValue::from_str(&dto.previous_block_hash)?,
+            block_transactions_hash: HashValue::from_str(&dto.block_transactions_hash)?,
             block_receipts_hash,
             state_hash,
             beneficiary: beneficiary_public_account,

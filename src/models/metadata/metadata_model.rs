@@ -14,7 +14,6 @@ use crate::models::{
     account::Address, consts::SIZE_SIZE, mosaic::MosaicId, namespace::NamespaceId, AssetId,
 };
 
-/// MetadataTypeEnum :
 ///The type of the metadata:
 ///* 1 - Address metadata.
 ///* 2 - Mosaic metadata.
@@ -40,11 +39,12 @@ impl MetadataType {
 
 impl From<u8> for MetadataType {
     fn from(num: u8) -> Self {
+        use MetadataType::*;
         match num {
-            1 => MetadataType::MetadataAddressType,
-            2 => MetadataType::MetadataMosaicType,
-            3 => MetadataType::MetadataNamespaceType,
-            _ => MetadataType::MetadataNone,
+            1 => MetadataAddressType,
+            2 => MetadataMosaicType,
+            3 => MetadataNamespaceType,
+            _ => MetadataNone,
         }
     }
 }
@@ -64,7 +64,6 @@ impl Serialize for MetadataType {
     }
 }
 
-/// MetadataModificationTypeEnum :
 /// The type of the metadata modification:
 ///* 0 - Add metadata.
 ///* 1 - Remove metadata.
@@ -90,10 +89,11 @@ impl MetadataModificationType {
 
 impl From<u8> for MetadataModificationType {
     fn from(num: u8) -> Self {
+        use MetadataModificationType::*;
         match num {
-            1 => MetadataModificationType::Add,
-            2 => MetadataModificationType::Remove,
-            _ => MetadataModificationType::NotSupported,
+            1 => Add,
+            2 => Remove,
+            _ => NotSupported,
         }
     }
 }

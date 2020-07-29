@@ -7,7 +7,7 @@
 use crate::models::{
     account::PublicAccount,
     network::NetworkType,
-    transaction::{EntityVersion, Hash, Height, Timestamp},
+    transaction::{EntityVersion, HashValue, Height, Timestamp},
     Uint64,
 };
 
@@ -56,22 +56,22 @@ pub struct BlockInfo {
     pub fee_multiplier: i32,
 
     /// The generation hash.
-    pub generation_hash: Hash,
+    pub generation_hash: HashValue,
 
     /// The hash of the previous block.
-    pub previous_block_hash: Hash,
+    pub previous_block_hash: HashValue,
 
     /// The transactions included in a block are hashed forming a merkle tree.
     /// The root of the tree summarizes them.
-    pub block_transactions_hash: Hash,
+    pub block_transactions_hash: HashValue,
 
     /// The collection of receipts  are hashed into a merkle tree and linked to a block.
     /// The block header stores the root hash.
-    pub block_receipts_hash: Hash,
+    pub block_receipts_hash: HashValue,
 
     /// For each block, the state of the blockchain is stored in RocksDB, forming a patricia tree.
     /// The root of the tree summarizes the state of the blockchain for the given block.
-    pub state_hash: Hash,
+    pub state_hash: HashValue,
 
     /// The 'PublicAccount' of the optional beneficiary designated by harvester.
     pub beneficiary: Option<PublicAccount>,

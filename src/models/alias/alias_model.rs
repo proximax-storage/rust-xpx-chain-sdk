@@ -38,7 +38,6 @@ impl std::fmt::Display for AccountLinkAction {
     }
 }
 
-/// AliasType :
 /// The alias type:
 /// * 0 -  No alias.
 /// * 1 -  Mosaic id alias.
@@ -59,10 +58,11 @@ impl AliasType {
 
 impl From<u8> for AliasType {
     fn from(num: u8) -> Self {
+        use AliasType::*;
         match num {
-            1 => AliasType::MosaicAliasType,
-            2 => AliasType::AddressAliasType,
-            _ => AliasType::NoneAliasType,
+            1 => MosaicAliasType,
+            2 => AddressAliasType,
+            _ => NoneAliasType,
         }
     }
 }
@@ -73,7 +73,6 @@ impl std::fmt::Display for AliasType {
     }
 }
 
-/// AliasActionType :
 /// The alias action:
 /// * 0 -  Link alias.
 /// * 1 -  Unlink alias.

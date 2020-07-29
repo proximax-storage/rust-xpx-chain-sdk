@@ -2,6 +2,10 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
+use crate::models::account::Address;
+
+use super::transaction::Signature;
+
 pub const ACCOUNT_PROPERTIES_ADDRESS_MODIFICATION_SIZE: usize =
     PROPERTY_MODIFICATION_TYPE_SIZE + ADDRESS_SIZE;
 pub const ACCOUNT_PROPERTIES_ENTITY_MODIFICATION_SIZE: usize =
@@ -11,9 +15,7 @@ pub const ACCOUNT_PROPERTIES_MOSAIC_MODIFICATION_SIZE: usize =
     PROPERTY_MODIFICATION_TYPE_SIZE + MOSAIC_ID_SIZE;
 pub const ACCOUNT_PROPERTY_ADDRESS_HEADER: usize = TRANSACTION_HEADER_SIZE + PROPERTY_TYPE_SIZE;
 pub const ACCOUNT_PROPERTY_MOSAIC_HEADER: usize = TRANSACTION_HEADER_SIZE + PROPERTY_TYPE_SIZE;
-pub const ADDRESS_DECODE_SIZE: usize = 40;
-pub const ADDRESS_ENCODE_SIZE: usize = ADDRESS_SIZE + ADDRESS_SIZE;
-pub const ADDRESS_SIZE: usize = 25;
+pub const ADDRESS_SIZE: usize = Address::LENGTH;
 pub const AGGREGATE_BONDED_HEADER: usize = TRANSACTION_HEADER_SIZE + SIZE_SIZE;
 pub const ALIAS_ACTION_SIZE: usize = 1;
 pub const ALIAS_TRANSACTION_HEADER: usize =
@@ -56,7 +58,7 @@ pub const REGISTER_NAMESPACE_HEADER_SIZE: usize = TRANSACTION_HEADER_SIZE
     + DURATION_SIZE
     + NAMESPACE_SIZE
     + NAMESPACE_NAME_SIZE_SIZE;
-pub const SIGNATURE_SIZE: usize = 64;
+pub const SIGNATURE_SIZE: usize = Signature::LENGTH;
 pub const SIGNER_SIZE: usize = KEY_SIZE;
 pub const SIZE_SIZE: usize = 4;
 pub const TRANSACTION_HEADER_SIZE: usize = SIZE_SIZE

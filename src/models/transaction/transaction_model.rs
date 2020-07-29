@@ -16,15 +16,15 @@ use crate::models::{
     uint_64::Uint64,
 };
 
-use super::{deadline::Deadline, AbstractTransaction, SignedTransaction, TransactionType};
+use super::{
+    deadline::Deadline, AbstractTransaction, HashValue, SignedTransaction, TransactionType,
+};
 
 pub type Amount = Uint64;
 
 pub type Height = Uint64;
 
 pub type Duration = Uint64;
-
-pub type Hash = String;
 
 pub type TransactionsStatus = Vec<TransactionStatus>;
 
@@ -79,7 +79,7 @@ impl<'b> AbsVector<'b> {
 pub struct TransactionStatus {
     pub group: String,
     pub status: String,
-    pub hash: Hash,
+    pub hash: HashValue,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deadline: Option<Deadline>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -90,7 +90,7 @@ impl TransactionStatus {
     pub fn new(
         group: String,
         status: String,
-        hash: String,
+        hash: HashValue,
         deadline: Option<Deadline>,
         height: Option<Height>,
     ) -> Self {
@@ -141,7 +141,7 @@ pub trait AbsTransaction {
         self.abs_transaction().transaction_type
     }
 
-    fn transaction_hash(&self) -> Hash {
+    fn transaction_hash(&self) -> HashValue {
         self.abs_transaction().get_hash()
     }
 

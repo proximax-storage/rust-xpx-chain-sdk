@@ -46,7 +46,7 @@ pub(crate) const METADATA_NAMESPACE_VERSION: EntityVersion = 1;
 
 pub(crate) type EntityVersion = u32;
 
-/// entity_type The entity type:
+/// The entity type:
 /// * 0x4141 (16705 decimal) - Aggregate Complete Transaction.
 /// * 0x4148 (16712 decimal) - Hash Lock Transaction.
 /// * 0x414C (16716 decimal) - Account Link Transaction.
@@ -119,33 +119,35 @@ impl TransactionType {
 
 impl From<u16> for TransactionType {
     fn from(num: u16) -> Self {
-        match num {
-            0x4141 => TransactionType::AggregateComplete,
-            0x4148 => TransactionType::Lock,
-            0x414C => TransactionType::AccountLink,
-            0x414D => TransactionType::MosaicDefinition,
-            0x414E => TransactionType::NamespaceRegistration,
-            0x415D => TransactionType::AddExchangeOffer,
-            0x425D => TransactionType::ExchangeOffer,
-            0x435D => TransactionType::RemoveExchangeOffer,
-            0x4150 => TransactionType::AccountRestrictionAddress,
-            0x4152 => TransactionType::SecretLock,
-            0x4154 => TransactionType::Transfer,
-            0x4155 => TransactionType::ModifyMultisigAccount,
-            0x413D => TransactionType::ModifyMetadataAddress,
-            0x4158 => TransactionType::BlockchainUpgrade,
-            0x4159 => TransactionType::NetworkConfigEntityType,
-            0x4241 => TransactionType::AggregateBonded,
-            0x424D => TransactionType::MosaicSupplyChange,
-            0x424E => TransactionType::AddressAlias,
-            0x4250 => TransactionType::AccountRestrictionMosaic,
-            0x4252 => TransactionType::SecretProof,
-            0x434E => TransactionType::MosaicAlias,
-            0x4350 => TransactionType::AccountRestrictionEntity,
-            0x8043 => TransactionType::NemesisBlock,
-            0x8143 => TransactionType::Block,
+        use TransactionType::*;
 
-            _ => TransactionType::EntityTypeUnknown,
+        match num {
+            0x4141 => AggregateComplete,
+            0x4148 => Lock,
+            0x414C => AccountLink,
+            0x414D => MosaicDefinition,
+            0x414E => NamespaceRegistration,
+            0x415D => AddExchangeOffer,
+            0x425D => ExchangeOffer,
+            0x435D => RemoveExchangeOffer,
+            0x4150 => AccountRestrictionAddress,
+            0x4152 => SecretLock,
+            0x4154 => Transfer,
+            0x4155 => ModifyMultisigAccount,
+            0x413D => ModifyMetadataAddress,
+            0x4158 => BlockchainUpgrade,
+            0x4159 => NetworkConfigEntityType,
+            0x4241 => AggregateBonded,
+            0x424D => MosaicSupplyChange,
+            0x424E => AddressAlias,
+            0x4250 => AccountRestrictionMosaic,
+            0x4252 => SecretProof,
+            0x434E => MosaicAlias,
+            0x4350 => AccountRestrictionEntity,
+            0x8043 => NemesisBlock,
+            0x8143 => Block,
+
+            _ => EntityTypeUnknown,
         }
     }
 }

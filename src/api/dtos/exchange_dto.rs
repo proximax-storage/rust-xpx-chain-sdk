@@ -182,7 +182,7 @@ pub(crate) struct AddExchangeOfferTransactionInfoDto {
 impl TransactionDto for AddExchangeOfferTransactionInfoDto {
     fn compact(&self) -> Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
-        let info = self.meta.compact();
+        let info = self.meta.compact()?;
 
         let abs_transaction = dto.r#abstract.compact(info)?;
 
@@ -225,7 +225,7 @@ pub(crate) struct ExchangeOfferTransactionInfoDto {
 impl TransactionDto for ExchangeOfferTransactionInfoDto {
     fn compact(&self) -> Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
-        let info = self.meta.compact();
+        let info = self.meta.compact()?;
 
         let abs_transaction = dto.r#abstract.compact(info)?;
 
@@ -272,7 +272,7 @@ pub(crate) struct RemoveExchangeOfferTransactionInfoDto {
 impl TransactionDto for RemoveExchangeOfferTransactionInfoDto {
     fn compact(&self) -> Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
-        let info = self.meta.compact();
+        let info = self.meta.compact()?;
 
         let abs_transaction = dto.r#abstract.compact(info)?;
 

@@ -6,7 +6,6 @@
 
 use {num_enum::IntoPrimitive, std::fmt};
 
-/// MessageType:
 /// The type of the message:
 /// * 0 - Plain text or unencrypted message.
 /// * 1 - Secured text or encrypted message.
@@ -30,10 +29,11 @@ impl MessageType {
 
 impl fmt::Display for MessageType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use MessageType::*;
         match *self {
-            MessageType::PlainMessageType => write!(f, "PlainMessageType"),
-            MessageType::SecureMessageType => write!(f, "SecureMessageType"),
-            MessageType::UnknownMessageType => write!(f, "UnknownMessageType"),
+            PlainMessageType => write!(f, "PlainMessageType"),
+            SecureMessageType => write!(f, "SecureMessageType"),
+            UnknownMessageType => write!(f, "UnknownMessageType"),
         }
     }
 }

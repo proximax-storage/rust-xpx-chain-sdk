@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::sha3::Sha3_256, fb::FlatBufferBuilder, sha3::Digest};
+use {::sha3::Sha3_256, ::std::str::FromStr, fb::FlatBufferBuilder, sha3::Digest};
 
 use crate::{
     models::{
@@ -23,7 +23,7 @@ use crate::{
 
 use super::{
     buffer::{modify_metadata, modify_multisig_account as modify_multisig, mosaic_definition},
-    AbsTransaction, AggregateTransaction, EntityVersion, SignedTransaction, Transaction,
+    AbsTransaction, AggregateTransaction, EntityVersion, HashValue, SignedTransaction, Transaction,
 };
 
 pub(crate) fn extract_version(version: u32) -> EntityVersion {
@@ -58,7 +58,11 @@ pub(crate) fn sign_transaction(
 
     let hash = create_transaction_hash(payload.clone(), &generation_hash);
 
-    Ok(SignedTransaction::new(tx.entity_type(), payload, hash))
+    Ok(SignedTransaction::new(
+        tx.entity_type(),
+        payload,
+        HashValue::from_str(&hash)?,
+    ))
 }
 
 pub(crate) fn sign_transaction_with_cosignatures(
@@ -74,7 +78,7 @@ pub(crate) fn sign_transaction_with_cosignatures(
     cosignatories.iter().for_each(|item| {
         let key_pair: crypto::Keypair =
             crypto::Keypair::from_private_key(item.to_owned().key_pair.secret);
-        let hash_bytes = hex::decode(&stx.hash).unwrap();
+        let hash_bytes = stx.hash.to_vec();
         let signature = key_pair.sign(&hash_bytes);
         payload.push_str(&format!(
             "{}{}",

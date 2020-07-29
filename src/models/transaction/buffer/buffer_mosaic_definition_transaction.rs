@@ -99,8 +99,6 @@ pub mod mosaic_definition {
         }
     }
 
-    pub enum MosaicDefinitionTransactionBufferOffset {}
-
     #[derive(Copy, Clone, Debug, PartialEq)]
     pub struct MosaicDefinitionTransactionBuffer<'a> {
         pub _tab: fb::Table<'a>,

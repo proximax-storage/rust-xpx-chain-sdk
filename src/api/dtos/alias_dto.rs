@@ -73,7 +73,7 @@ impl TransactionDto for AddressAliasTransactionInfoDto {
     fn compact(&self) -> Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.compact();
+        let info = self.meta.compact()?;
 
         let address_encoded = dto.address.unwrap();
 
@@ -104,7 +104,7 @@ impl TransactionDto for MosaicAliasTransactionInfoDto {
     fn compact(&self) -> Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.compact();
+        let info = self.meta.compact()?;
 
         let mosaic_id_dto = dto.mosaic_id.unwrap();
 
