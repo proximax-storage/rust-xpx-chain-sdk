@@ -20,7 +20,7 @@ use crate::{
 use super::{
     buffer::lock_funds as buffer, internal::sign_transaction,
     schema::lock_funds_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    EntityTypeEnum, SignedTransaction, Transaction, LOCK_VERSION,
+    SignedTransaction, Transaction, TransactionType, LOCK_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -41,14 +41,14 @@ impl LockFundsTransaction {
         network_type: NetworkType,
     ) -> Result<Self> {
         ensure!(
-            signed_tx.get_type() == EntityTypeEnum::AggregateBonded,
+            signed_tx.get_type() == TransactionType::AggregateBonded,
             "signed_tx must be of type AggregateBonded."
         );
 
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             LOCK_VERSION,
-            EntityTypeEnum::Lock,
+            TransactionType::Lock,
             network_type,
         );
 

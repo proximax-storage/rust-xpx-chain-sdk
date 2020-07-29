@@ -11,8 +11,8 @@ use crate::{
     network::extract_network_type,
     transaction::{
         internal::extract_version, AbstractTransaction, BlockchainTimestamp, Deadline,
-        EntityTypeEnum, LockFundsTransaction, SignedTransaction, Transaction, TransactionInfo,
-        TransactionStatus, TransferTransaction,
+        LockFundsTransaction, SignedTransaction, Transaction, TransactionInfo, TransactionStatus,
+        TransactionType, TransferTransaction,
     },
 };
 
@@ -79,7 +79,7 @@ impl AbstractTransactionDto {
             max_fee = Some(item.compact());
         }
 
-        let transaction_type = EntityTypeEnum::from(dto.r#type);
+        let transaction_type = TransactionType::from(dto.r#type);
 
         Ok(AbstractTransaction {
             transaction_info: Some(info),
@@ -295,7 +295,7 @@ impl TransactionDto for HashLockTransactionInfoDto {
             mosaic,
             duration: dto.duration.compact(),
             signed_transaction: SignedTransaction::new(
-                EntityTypeEnum::AggregateBonded,
+                TransactionType::AggregateBonded,
                 "".to_string(),
                 dto.hash,
             ),

@@ -6,7 +6,7 @@
 
 use serde_json::Value;
 
-use super::{EntityTypeEnum, Hash};
+use super::{Hash, TransactionType};
 
 /// Used to transfer the transaction data and the signature to a nem server in order to
 /// initiate and broadcast a transaction.
@@ -14,7 +14,7 @@ use super::{EntityTypeEnum, Hash};
 pub struct SignedTransaction {
     /// The transaction type.
     #[serde(rename = "transactionType")]
-    pub entity_type: EntityTypeEnum,
+    pub entity_type: TransactionType,
 
     /// The serialized transaction data.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29,11 +29,11 @@ impl SignedTransaction {
         Self {
             payload: None,
             hash,
-            entity_type: EntityTypeEnum::AggregateBonded,
+            entity_type: TransactionType::AggregateBonded,
         }
     }
 
-    pub fn new(entity_type: EntityTypeEnum, payload: String, hash: Hash) -> Self {
+    pub fn new(entity_type: TransactionType, payload: String, hash: Hash) -> Self {
         SignedTransaction {
             payload: Some(payload),
             hash,
@@ -56,7 +56,7 @@ impl SignedTransaction {
         }
     }
 
-    pub fn get_type(&self) -> EntityTypeEnum {
+    pub fn get_type(&self) -> TransactionType {
         self.entity_type
     }
 

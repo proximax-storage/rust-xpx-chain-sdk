@@ -6,7 +6,7 @@
 
 use crate::models::{mosaic::Mosaic, Uint64};
 
-use super::{account_type::AccountLinkTypeEnum, address_model::Address};
+use super::{account_type::AccountLinkType, address_model::Address};
 
 /// The 'AccountInfo' structure describes basic information for an account.
 #[derive(Debug, Serialize)]
@@ -27,7 +27,7 @@ pub struct AccountInfo {
     pub public_key_height: Uint64,
 
     /// The account type.
-    pub account_type: AccountLinkTypeEnum,
+    pub account_type: AccountLinkType,
 
     pub mosaics: Vec<Mosaic>,
 }
@@ -38,7 +38,7 @@ impl AccountInfo {
         address_height: Uint64,
         public_key: String,
         public_key_height: Uint64,
-        account_type: AccountLinkTypeEnum,
+        account_type: AccountLinkType,
         mosaics: Vec<Mosaic>,
     ) -> Self {
         AccountInfo {

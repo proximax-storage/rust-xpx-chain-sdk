@@ -11,7 +11,7 @@ use {
 
 use crate::{
     account::{
-        AccountInfo, AccountLinkTypeEnum, AccountName, AccountProperties,
+        AccountInfo, AccountLinkType, AccountName, AccountProperties,
         AccountPropertiesAddressModification, AccountPropertiesEntityTypeModification,
         AccountPropertiesMosaicModification, AccountPropertyType, Address,
     },
@@ -19,7 +19,7 @@ use crate::{
     mosaic::{Mosaic, MosaicId},
     transaction::{
         AccountPropertiesAddressTransaction, AccountPropertiesEntityTypeTransaction,
-        AccountPropertiesMosaicTransaction, EntityTypeEnum, Transaction,
+        AccountPropertiesMosaicTransaction, Transaction, TransactionType,
     },
 };
 
@@ -49,7 +49,7 @@ impl AccountInfoDto {
     pub(crate) fn compact(&self) -> crate::Result<AccountInfo> {
         let dto = &self.account;
         let add = Address::from_encoded(&dto.clone().address)?;
-        let acc_type = AccountLinkTypeEnum::new(dto.clone().account_type);
+        let acc_type = AccountLinkType::new(dto.clone().account_type);
 
         let mosaics: Vec<Mosaic> = dto
             .mosaics
@@ -165,7 +165,7 @@ impl TransactionDto for AccountPropertiesTransactionInfoDto {
                 .iter()
                 .map(move |p| AccountPropertiesEntityTypeModification {
                     modification_type: p.r#type.to_owned(),
-                    transaction_type: EntityTypeEnum::from(p.value.as_u64().unwrap() as u16),
+                    transaction_type: TransactionType::from(p.value.as_u64().unwrap() as u16),
                 })
                 .collect();
 
@@ -199,10 +199,10 @@ impl AccountPropertiesInfoDto {
 
         let mut allowed_addresses: Vec<Address> = vec![];
         let mut allowed_mosaic_id: Vec<MosaicId> = vec![];
-        let mut allowed_entity_types: Vec<EntityTypeEnum> = vec![];
+        let mut allowed_entity_types: Vec<TransactionType> = vec![];
         let mut blocked_addresses: Vec<Address> = vec![];
         let mut blocked_mosaic_id: Vec<MosaicId> = vec![];
-        let mut blocked_entity_types: Vec<EntityTypeEnum> = vec![];
+        let mut blocked_entity_types: Vec<TransactionType> = vec![];
 
         dto.properties.iter().for_each(|p_dto| {
             if let Some(item) = p_dto.addresses.clone() {
@@ -234,7 +234,7 @@ impl AccountPropertiesInfoDto {
 
         dto.properties.iter().for_each(|p_dto| {
             if let Some(item) = p_dto.entity_types.clone() {
-                let property_entity_types = item.into_iter().map(EntityTypeEnum::from).collect();
+                let property_entity_types = item.into_iter().map(TransactionType::from).collect();
                 if p_dto.property_type == AccountPropertyType::AllowTransaction.value() {
                     allowed_entity_types = property_entity_types;
                 } else {

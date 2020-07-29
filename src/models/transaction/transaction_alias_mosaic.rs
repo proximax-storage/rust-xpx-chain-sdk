@@ -25,7 +25,7 @@ use crate::{
 
 use super::{
     internal::sign_transaction, AbsTransaction, AbstractTransaction, AliasTransaction, Deadline,
-    EntityTypeEnum, SignedTransaction, Transaction, MOSAIC_ALIAS_VERSION,
+    SignedTransaction, Transaction, TransactionType, MOSAIC_ALIAS_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -53,7 +53,7 @@ impl MosaicAliasTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             MOSAIC_ALIAS_VERSION,
-            EntityTypeEnum::MosaicAlias,
+            TransactionType::MosaicAlias,
             network_type,
         );
 

@@ -22,7 +22,7 @@ use crate::{
 use super::{
     buffer::register_namespace as buffer, internal::sign_transaction,
     schema::register_namespace_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    EntityTypeEnum, SignedTransaction, Transaction, REGISTER_NAMESPACE_VERSION,
+    SignedTransaction, Transaction, TransactionType, REGISTER_NAMESPACE_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -53,7 +53,7 @@ impl RegisterNamespaceTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             REGISTER_NAMESPACE_VERSION,
-            EntityTypeEnum::NamespaceRegistration,
+            TransactionType::NamespaceRegistration,
             network_type,
         );
 
@@ -88,7 +88,7 @@ impl RegisterNamespaceTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             REGISTER_NAMESPACE_VERSION,
-            EntityTypeEnum::NamespaceRegistration,
+            TransactionType::NamespaceRegistration,
             network_type,
         );
 

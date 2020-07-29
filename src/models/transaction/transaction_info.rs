@@ -6,7 +6,7 @@
 
 use crate::models::{account::PublicAccount, network::NetworkType, uint_64::Uint64};
 
-use super::{deadline::Deadline, AbsVector, EntityTypeEnum, EntityVersion, Hash, Height};
+use super::{deadline::Deadline, AbsVector, EntityVersion, Hash, Height, TransactionType};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -29,7 +29,7 @@ pub struct AbstractTransaction {
 
     /// The transaction type.
     #[serde(rename = "type")]
-    pub transaction_type: EntityTypeEnum,
+    pub transaction_type: TransactionType,
 
     /// The maximum fee allowed to be spent for this transaction.
     ///
@@ -57,7 +57,7 @@ impl AbstractTransaction {
     pub fn new_from_type(
         deadline: Deadline,
         version: EntityVersion,
-        transaction_type: EntityTypeEnum,
+        transaction_type: TransactionType,
         network_type: NetworkType,
     ) -> Self {
         AbstractTransaction {

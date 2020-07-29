@@ -22,7 +22,7 @@ use super::{
     deadline::Deadline,
     internal::{mosaic_property_array_to_buffer, sign_transaction},
     schema::mosaic_definition_transaction_schema,
-    AbsTransaction, AbstractTransaction, EntityTypeEnum, SignedTransaction, Transaction,
+    AbsTransaction, AbstractTransaction, SignedTransaction, Transaction, TransactionType,
     MOSAIC_DEFINITION_VERSION,
 };
 
@@ -46,7 +46,7 @@ impl MosaicDefinitionTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             MOSAIC_DEFINITION_VERSION,
-            EntityTypeEnum::MosaicDefinition,
+            TransactionType::MosaicDefinition,
             network_type,
         );
 

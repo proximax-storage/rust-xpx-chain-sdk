@@ -23,7 +23,7 @@ use super::{
         sign_transaction, sign_transaction_with_cosignatures, to_aggregate_transaction_bytes,
     },
     schema::aggregate_transaction_schema,
-    AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum, SignedTransaction, Transaction,
+    AbsTransaction, AbstractTransaction, Deadline, SignedTransaction, Transaction, TransactionType,
     Transactions, AGGREGATE_BONDED_VERSION, AGGREGATE_COMPLETED_VERSION,
 };
 
@@ -49,7 +49,7 @@ impl AggregateTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             AGGREGATE_COMPLETED_VERSION,
-            EntityTypeEnum::AggregateComplete,
+            TransactionType::AggregateComplete,
             network_type,
         );
 
@@ -70,7 +70,7 @@ impl AggregateTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             AGGREGATE_BONDED_VERSION,
-            EntityTypeEnum::AggregateBonded,
+            TransactionType::AggregateBonded,
             network_type,
         );
 

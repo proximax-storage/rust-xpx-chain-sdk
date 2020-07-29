@@ -21,8 +21,9 @@ use crate::{
 };
 
 use super::{
-    internal::sign_transaction, AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum,
-    ModifyMetadataTransaction, SignedTransaction, Transaction, METADATA_ADDRESS_VERSION,
+    internal::sign_transaction, AbsTransaction, AbstractTransaction, Deadline,
+    ModifyMetadataTransaction, SignedTransaction, Transaction, TransactionType,
+    METADATA_ADDRESS_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -47,7 +48,7 @@ impl MetadataAddressTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             METADATA_ADDRESS_VERSION,
-            EntityTypeEnum::ModifyMetadataAddress,
+            TransactionType::ModifyMetadataAddress,
             network_type,
         );
 
