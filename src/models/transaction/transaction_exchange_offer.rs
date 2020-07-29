@@ -20,7 +20,7 @@ use crate::{
 
 use super::{
     buffer::exchange as buffer, deadline::Deadline, internal::sign_transaction, AbsTransaction,
-    AbstractTransaction, EntityTypeEnum, SignedTransaction, Transaction, EXCHANGE_OFFER_VERSION,
+    AbstractTransaction, SignedTransaction, Transaction, TransactionType, EXCHANGE_OFFER_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -41,7 +41,7 @@ impl ExchangeOfferTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             EXCHANGE_OFFER_VERSION,
-            EntityTypeEnum::ExchangeOffer,
+            TransactionType::ExchangeOffer,
             network_type,
         );
 

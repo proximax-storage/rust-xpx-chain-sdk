@@ -24,7 +24,7 @@ use crate::{
 use super::{
     buffer::account_properties as buffer, internal::sign_transaction,
     schema::account_property_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    EntityTypeEnum, SignedTransaction, Transaction,
+    SignedTransaction, Transaction, TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -54,7 +54,7 @@ impl AccountPropertiesMosaicTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             ACCOUNT_PROPERTY_MOSAIC_VERSION,
-            EntityTypeEnum::AccountRestrictionMosaic,
+            TransactionType::AccountRestrictionMosaic,
             network_type,
         );
 

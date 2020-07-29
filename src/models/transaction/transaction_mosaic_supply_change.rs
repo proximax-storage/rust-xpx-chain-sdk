@@ -21,7 +21,7 @@ use crate::{
 use super::{
     buffer::mosaic_supply_change as buffer, deadline::Deadline, internal::sign_transaction,
     schema::mosaic_supply_change_transaction_schema, AbsTransaction, AbstractTransaction,
-    EntityTypeEnum, SignedTransaction, Transaction, MOSAIC_SUPPLY_CHANGE_VERSION,
+    SignedTransaction, Transaction, TransactionType, MOSAIC_SUPPLY_CHANGE_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -44,7 +44,7 @@ impl MosaicSupplyChangeTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             MOSAIC_SUPPLY_CHANGE_VERSION,
-            EntityTypeEnum::MosaicSupplyChange,
+            TransactionType::MosaicSupplyChange,
             network_type,
         );
 

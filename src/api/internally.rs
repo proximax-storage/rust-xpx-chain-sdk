@@ -16,7 +16,7 @@ use crate::{
     mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     multisig::CosignatoryModification,
     network::NetworkType,
-    transaction::{EntityTypeEnum as Entity, Hash},
+    transaction::{Hash, TransactionType as Entity},
     utils::is_hex,
     Result, Uint64,
 };

@@ -21,7 +21,7 @@ use super::{
     buffer::modify_multisig_account as buffer,
     internal::{cosignatory_modification_array_to_buffer, sign_transaction},
     schema::modify_multisig_account_transaction_schema,
-    AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum, SignedTransaction, Transaction,
+    AbsTransaction, AbstractTransaction, Deadline, SignedTransaction, Transaction, TransactionType,
     MODIFY_MULTISIG_VERSION,
 };
 
@@ -53,7 +53,7 @@ impl ModifyMultisigAccountTransaction {
             signature: None,
             signer: Default::default(),
             version: MODIFY_MULTISIG_VERSION,
-            transaction_type: EntityTypeEnum::ModifyMultisigAccount,
+            transaction_type: TransactionType::ModifyMultisigAccount,
             max_fee: None,
             deadline: Some(deadline),
         };

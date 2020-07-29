@@ -55,7 +55,6 @@ pub(crate) type EntityVersion = u32;
 /// * 0x4150 (16720 decimal) - Account Properties Address Transaction.
 /// * 0x4152 (16722 decimal) - Secret Lock Transaction.
 /// * 0x4154 (16724 decimal) - Transfer Transaction.
-/// * 0x4155 (16725 decimal) - Modify Multisig Account Transaction.
 /// * 0x413D (16701 decimal) - Modify Metadata Address Transaction.
 /// * 0x423D (16957 decimal) - Modify Metadata Mosaic Transaction.
 /// * 0x433D (17213 decimal) - Modify Metadata Namespace Transaction.
@@ -74,9 +73,10 @@ pub(crate) type EntityVersion = u32;
 /// * 0x8143 (33091 decimal) - Regular block.
 #[derive(Debug, Clone, Copy, PartialEq, Deserialize, IntoPrimitive)]
 #[repr(u16)]
-pub enum EntityTypeEnum {
+pub enum TransactionType {
     BlockchainUpgrade = 0x4158,
     NetworkConfigEntityType = 0x4159,
+    MosaicAlias = 0x434E,
     MosaicDefinition = 0x414D,
     MosaicSupplyChange = 0x424D,
     NamespaceRegistration = 0x414E,
@@ -84,7 +84,6 @@ pub enum EntityTypeEnum {
     ExchangeOffer = 0x425D,
     RemoveExchangeOffer = 0x435D,
     AddressAlias = 0x424E,
-    MosaicAlias = 0x434E,
     Transfer = 0x4154,
     ModifyMetadataAddress = 0x413D,
     ModifyMetadataMosaic = 0x423D,
@@ -104,7 +103,7 @@ pub enum EntityTypeEnum {
     EntityTypeUnknown,
 }
 
-impl EntityTypeEnum {
+impl TransactionType {
     pub fn value(self) -> u16 {
         self.into()
     }
@@ -118,46 +117,46 @@ impl EntityTypeEnum {
     }
 }
 
-impl From<u16> for EntityTypeEnum {
+impl From<u16> for TransactionType {
     fn from(num: u16) -> Self {
         match num {
-            0x4141 => EntityTypeEnum::AggregateComplete,
-            0x4148 => EntityTypeEnum::Lock,
-            0x414C => EntityTypeEnum::AccountLink,
-            0x414D => EntityTypeEnum::MosaicDefinition,
-            0x414E => EntityTypeEnum::NamespaceRegistration,
-            0x415D => EntityTypeEnum::AddExchangeOffer,
-            0x425D => EntityTypeEnum::ExchangeOffer,
-            0x435D => EntityTypeEnum::RemoveExchangeOffer,
-            0x4150 => EntityTypeEnum::AccountRestrictionAddress,
-            0x4152 => EntityTypeEnum::SecretLock,
-            0x4154 => EntityTypeEnum::Transfer,
-            0x4155 => EntityTypeEnum::ModifyMultisigAccount,
-            0x413D => EntityTypeEnum::ModifyMetadataAddress,
-            0x4158 => EntityTypeEnum::BlockchainUpgrade,
-            0x4159 => EntityTypeEnum::NetworkConfigEntityType,
-            0x4241 => EntityTypeEnum::AggregateBonded,
-            0x424D => EntityTypeEnum::MosaicSupplyChange,
-            0x424E => EntityTypeEnum::AddressAlias,
-            0x4250 => EntityTypeEnum::AccountRestrictionMosaic,
-            0x4252 => EntityTypeEnum::SecretProof,
-            0x434E => EntityTypeEnum::MosaicAlias,
-            0x4350 => EntityTypeEnum::AccountRestrictionEntity,
-            0x8043 => EntityTypeEnum::NemesisBlock,
-            0x8143 => EntityTypeEnum::Block,
+            0x4141 => TransactionType::AggregateComplete,
+            0x4148 => TransactionType::Lock,
+            0x414C => TransactionType::AccountLink,
+            0x414D => TransactionType::MosaicDefinition,
+            0x414E => TransactionType::NamespaceRegistration,
+            0x415D => TransactionType::AddExchangeOffer,
+            0x425D => TransactionType::ExchangeOffer,
+            0x435D => TransactionType::RemoveExchangeOffer,
+            0x4150 => TransactionType::AccountRestrictionAddress,
+            0x4152 => TransactionType::SecretLock,
+            0x4154 => TransactionType::Transfer,
+            0x4155 => TransactionType::ModifyMultisigAccount,
+            0x413D => TransactionType::ModifyMetadataAddress,
+            0x4158 => TransactionType::BlockchainUpgrade,
+            0x4159 => TransactionType::NetworkConfigEntityType,
+            0x4241 => TransactionType::AggregateBonded,
+            0x424D => TransactionType::MosaicSupplyChange,
+            0x424E => TransactionType::AddressAlias,
+            0x4250 => TransactionType::AccountRestrictionMosaic,
+            0x4252 => TransactionType::SecretProof,
+            0x434E => TransactionType::MosaicAlias,
+            0x4350 => TransactionType::AccountRestrictionEntity,
+            0x8043 => TransactionType::NemesisBlock,
+            0x8143 => TransactionType::Block,
 
-            _ => EntityTypeEnum::EntityTypeUnknown,
+            _ => TransactionType::EntityTypeUnknown,
         }
     }
 }
 
-impl core::fmt::Display for EntityTypeEnum {
+impl core::fmt::Display for TransactionType {
     fn fmt(&self, e: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(e, "{:?}", &self)
     }
 }
 
-impl Serialize for EntityTypeEnum {
+impl Serialize for TransactionType {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: Serializer,

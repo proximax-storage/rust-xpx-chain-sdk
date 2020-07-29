@@ -20,7 +20,7 @@ use crate::{
 
 use super::{
     buffer::exchange as buffer, deadline::Deadline, internal::sign_transaction, AbsTransaction,
-    AbstractTransaction, EntityTypeEnum, SignedTransaction, Transaction,
+    AbstractTransaction, SignedTransaction, Transaction, TransactionType,
     REMOVE_EXCHANGE_OFFER_VERSION,
 };
 
@@ -42,7 +42,7 @@ impl RemoveExchangeOfferTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             REMOVE_EXCHANGE_OFFER_VERSION,
-            EntityTypeEnum::RemoveExchangeOffer,
+            TransactionType::RemoveExchangeOffer,
             network_type,
         );
 

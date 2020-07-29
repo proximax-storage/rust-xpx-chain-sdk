@@ -9,7 +9,7 @@
 /// * 2 -  Remote. Account is a remote harvester account that is linked to a balance-holding account.
 /// * 3 -  Remote_Unlinked. Account is a remote harvester eligible account that is unlinked.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub enum AccountLinkTypeEnum {
+pub enum AccountLinkType {
     /// Unlinked.
     #[serde(rename = "0")]
     _0,
@@ -27,13 +27,13 @@ pub enum AccountLinkTypeEnum {
     _3,
 }
 
-impl AccountLinkTypeEnum {
+impl AccountLinkType {
     pub fn new(value: u8) -> Self {
         match value {
-            1 => AccountLinkTypeEnum::_1,
-            2 => AccountLinkTypeEnum::_2,
-            3 => AccountLinkTypeEnum::_3,
-            _ => AccountLinkTypeEnum::_0
+            1 => AccountLinkType::_1,
+            2 => AccountLinkType::_2,
+            3 => AccountLinkType::_3,
+            _ => AccountLinkType::_0,
         }
     }
 }

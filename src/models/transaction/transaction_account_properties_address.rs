@@ -25,7 +25,7 @@ use crate::{
 use super::{
     buffer::account_properties as buffer, internal::sign_transaction,
     schema::account_property_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    EntityTypeEnum, SignedTransaction, Transaction, ACCOUNT_PROPERTY_ADDRESS_VERSION,
+    SignedTransaction, Transaction, TransactionType, ACCOUNT_PROPERTY_ADDRESS_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -55,7 +55,7 @@ impl AccountPropertiesAddressTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             ACCOUNT_PROPERTY_ADDRESS_VERSION,
-            EntityTypeEnum::AccountRestrictionAddress,
+            TransactionType::AccountRestrictionAddress,
             network_type,
         );
 

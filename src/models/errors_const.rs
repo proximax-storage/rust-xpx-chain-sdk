@@ -25,8 +25,6 @@ pub const ERR_INVALID_NAMESPACE_NAME: &str = "Namespace name is invalid";
 // Mosaic errors
 pub const ERR_EMPTY_MOSAIC_IDS: &str = "Mosaics ids vec must not by empty";
 pub const ERR_EMPTY_MOSAIC_ID: &str = "MosaicId must not be empty";
-//pub const ERR_WRONG_BIT_MOSAIC_ID: &str = "MosaicId has 64th bit";
-//pub const ERR_INVALID_OWNER_PUBLIC_KEY: &str = "Public owner key is invalid";
 pub const ERR_INVALID_MOSAIC_PROPERTIES: &str = "Mosaic Properties is not valid.";
 pub const ERR_INVALID_MOSAIC_PROPERTY_ID: &str = "Unknown Property Id.";
 

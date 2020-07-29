@@ -21,8 +21,8 @@ use crate::{
 
 use super::{
     buffer::transfer as buffer, deadline::Deadline, internal::sign_transaction,
-    schema::transfer_transaction_schema, AbsTransaction, AbstractTransaction, EntityTypeEnum,
-    SignedTransaction, Transaction, TRANSFER_VERSION,
+    schema::transfer_transaction_schema, AbsTransaction, AbstractTransaction, SignedTransaction,
+    Transaction, TransactionType, TRANSFER_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -52,7 +52,7 @@ impl TransferTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             TRANSFER_VERSION,
-            EntityTypeEnum::Transfer,
+            TransactionType::Transfer,
             network_type,
         );
 
@@ -79,7 +79,7 @@ impl TransferTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             TRANSFER_VERSION,
-            EntityTypeEnum::Transfer,
+            TransactionType::Transfer,
             network_type,
         );
 

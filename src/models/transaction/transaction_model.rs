@@ -16,7 +16,7 @@ use crate::models::{
     uint_64::Uint64,
 };
 
-use super::{deadline::Deadline, AbstractTransaction, EntityTypeEnum, SignedTransaction};
+use super::{deadline::Deadline, AbstractTransaction, SignedTransaction, TransactionType};
 
 pub type Amount = Uint64;
 
@@ -137,7 +137,7 @@ pub trait AbsTransaction {
 
     fn abs_transaction(&self) -> AbstractTransaction;
 
-    fn entity_type(&self) -> EntityTypeEnum {
+    fn entity_type(&self) -> TransactionType {
         self.abs_transaction().transaction_type
     }
 

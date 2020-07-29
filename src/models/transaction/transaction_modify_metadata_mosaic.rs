@@ -22,8 +22,9 @@ use crate::{
 };
 
 use super::{
-    internal::sign_transaction, AbsTransaction, AbstractTransaction, Deadline, EntityTypeEnum,
-    ModifyMetadataTransaction, SignedTransaction, Transaction, METADATA_MOSAIC_VERSION,
+    internal::sign_transaction, AbsTransaction, AbstractTransaction, Deadline,
+    ModifyMetadataTransaction, SignedTransaction, Transaction, TransactionType,
+    METADATA_MOSAIC_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -48,7 +49,7 @@ impl MetadataMosaicTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             METADATA_MOSAIC_VERSION,
-            EntityTypeEnum::ModifyMetadataMosaic,
+            TransactionType::ModifyMetadataMosaic,
             network_type,
         );
 

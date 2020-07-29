@@ -88,7 +88,8 @@ impl Address {
         })
     }
 
-    /// Create an `Address` from the given encoded address.
+    /// Create an `Address` from the given encoded address
+    /// A raw address string hex looks like: A8EE6C6659D09B9CD25AAF1ED8796CE15000A19D31FD3BDE94.
     pub fn from_encoded(encoded: &str) -> Result<Self> {
         ensure!(!encoded.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
 
@@ -99,7 +100,7 @@ impl Address {
 
         ensure!(is_hex(encoded), errors_const::ERR_INVALID_ADDRESSES_HEX);
 
-        let address = Self::decode_from_hex(encoded);
+        let address = Self::decode_from_hex(encoded)?;
 
         Ok(Self {
             address,
@@ -135,12 +136,12 @@ impl Address {
     }
 
     #[inline]
-    fn decode_from_hex(data: &str) -> [u8; ADDRESS_SIZE] {
-        let add_decode = hex::decode(data).unwrap();
+    fn decode_from_hex(data: &str) -> Result<[u8; ADDRESS_SIZE]> {
+        let add_decode = hex::decode(data)?;
 
         let mut bts: [u8; 25] = [0u8; 25];
         bts.copy_from_slice(&add_decode);
-        bts
+        Ok(bts)
     }
 
     #[inline]
@@ -148,12 +149,22 @@ impl Address {
         base32::encode(RFC4648 { padding: true }, data)
     }
 
+    /// Get the address in an raw address string format.
+    ///
+    /// For example: VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU
     pub fn as_string(&self) -> String {
         Self::encode_as_base32(&self.address).to_uppercase()
     }
 
     pub fn as_bytes(&self) -> &[u8] {
         &self.address
+    }
+
+    /// Get the address in an encoded format.
+    ///
+    /// For example: A8EE6C6659D09B9CD25AAF1ED8796CE15000A19D31FD3BDE94
+    pub fn encode_as_hex(&self) -> String {
+        hex::encode_upper(&self.address)
     }
 
     pub fn network_type(&self) -> NetworkType {

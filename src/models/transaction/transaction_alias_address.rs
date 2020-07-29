@@ -24,7 +24,7 @@ use crate::{
 
 use super::{
     internal::sign_transaction, AbsTransaction, AbstractTransaction, AliasTransaction, Deadline,
-    EntityTypeEnum, SignedTransaction, Transaction, ADDRESS_ALIAS_VERSION,
+    SignedTransaction, Transaction, TransactionType, ADDRESS_ALIAS_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -52,7 +52,7 @@ impl AddressAliasTransaction {
         let abs_tx = AbstractTransaction::new_from_type(
             deadline,
             ADDRESS_ALIAS_VERSION,
-            EntityTypeEnum::AddressAlias,
+            TransactionType::AddressAlias,
             network_type,
         );
 

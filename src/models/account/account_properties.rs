@@ -10,7 +10,7 @@ use {
     serde_repr::{Deserialize_repr, Serialize_repr},
 };
 
-use crate::{mosaic::MosaicId, transaction::EntityTypeEnum, AssetId};
+use crate::{mosaic::MosaicId, transaction::TransactionType, AssetId};
 
 use super::Address;
 
@@ -78,10 +78,10 @@ pub struct AccountProperties {
     pub address: Address,
     pub allowed_addresses: Vec<Address>,
     pub allowed_mosaic_id: Vec<MosaicId>,
-    pub allowed_entity_types: Vec<EntityTypeEnum>,
+    pub allowed_entity_types: Vec<TransactionType>,
     pub blocked_addresses: Vec<Address>,
     pub blocked_mosaic_id: Vec<MosaicId>,
-    pub blocked_entity_types: Vec<EntityTypeEnum>,
+    pub blocked_entity_types: Vec<TransactionType>,
 }
 
 impl core::fmt::Display for AccountProperties {
@@ -150,13 +150,13 @@ impl core::fmt::Display for AccountPropertiesMosaicModification {
 #[derive(Debug, Clone, Serialize)]
 pub struct AccountPropertiesEntityTypeModification {
     pub modification_type: PropertyModificationType,
-    pub transaction_type: EntityTypeEnum,
+    pub transaction_type: TransactionType,
 }
 
 impl AccountPropertiesEntityTypeModification {
     pub fn new(
         modification_type: PropertyModificationType,
-        transaction_type: EntityTypeEnum,
+        transaction_type: TransactionType,
     ) -> Self {
         Self {
             modification_type,
