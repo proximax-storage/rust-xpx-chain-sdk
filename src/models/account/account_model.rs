@@ -15,7 +15,8 @@ use crate::{
         multisig::CosignatureTransaction,
         network::NetworkType,
         transaction::{
-            AggregateTransaction, CosignatureSignedTransaction, SignedTransaction, Transaction,
+            AggregateTransaction, CosignatureSignedTransaction, HashValue, SignedTransaction,
+            Signer, Transaction,
         },
     },
     utils::{is_hex, vec_u8_to_hex},
@@ -69,7 +70,7 @@ impl Account {
     }
 
     pub fn address_string(&self) -> String {
-        self.address().as_string()
+        self.address().address_string()
     }
 
     /// Create a `Account` from a private key for the given `NetworkType`.
@@ -108,18 +109,22 @@ impl Account {
         vec_u8_to_hex(self.key_pair.secret.to_bytes().to_vec())
     }
 
+    pub fn to_signer(&self) -> Signer {
+        Signer::from_slice(self.public_account.to_bytes()).unwrap()
+    }
+
     /// Signs 'Transaction'.
     pub fn sign(
         &self,
         tx: impl Transaction,
-        generation_hash: &str,
+        generation_hash: HashValue,
     ) -> crate::Result<SignedTransaction> {
         ensure!(
             !generation_hash.is_empty(),
             errors_const::ERR_EMPTY_GENERATION_HASH
         );
 
-        tx.sign_transaction_with(self.to_owned(), generation_hash.parse()?)
+        tx.sign_transaction_with(self.to_owned(), generation_hash.to_string())
     }
 
     /// Signs raw data.

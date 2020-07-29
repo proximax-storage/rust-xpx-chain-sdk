@@ -6,7 +6,7 @@
 
 use serde_json::Value;
 
-use super::{Hash, TransactionType};
+use super::{HashValue, TransactionType};
 
 /// Used to transfer the transaction data and the signature to a nem server in order to
 /// initiate and broadcast a transaction.
@@ -21,11 +21,11 @@ pub struct SignedTransaction {
     pub payload: Option<String>,
 
     /// The transaction hash.
-    pub hash: Hash,
+    pub hash: HashValue,
 }
 
 impl SignedTransaction {
-    pub fn from_hash(hash: Hash) -> Self {
+    pub fn from_hash(hash: HashValue) -> Self {
         Self {
             payload: None,
             hash,
@@ -33,7 +33,7 @@ impl SignedTransaction {
         }
     }
 
-    pub fn new(entity_type: TransactionType, payload: String, hash: Hash) -> Self {
+    pub fn new(entity_type: TransactionType, payload: String, hash: HashValue) -> Self {
         SignedTransaction {
             payload: Some(payload),
             hash,
@@ -42,7 +42,7 @@ impl SignedTransaction {
     }
 
     pub(crate) fn hash_to_bytes(&self) -> Vec<u8> {
-        hex::decode(&self.hash).unwrap()
+        self.hash.to_vec()
     }
 
     pub fn payload_to_bytes(&self) -> Vec<u8> {
@@ -60,8 +60,8 @@ impl SignedTransaction {
         self.entity_type
     }
 
-    pub fn get_hash(&self) -> Hash {
-        self.hash.to_owned().to_uppercase()
+    pub fn get_hash(&self) -> HashValue {
+        self.hash
     }
 
     pub fn type_to_string(&self) -> String {

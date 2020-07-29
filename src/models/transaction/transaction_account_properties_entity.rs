@@ -5,10 +5,7 @@
  */
 
 use {
-    ::std::{
-        fmt,
-        fmt::{Display, Formatter},
-    },
+    ::std::fmt::{self, Display, Formatter},
     failure::_core::any::Any,
     serde_json::Value,
 };
@@ -111,7 +108,7 @@ impl Transaction for AccountPropertiesEntityTypeTransaction {
 
             let mut modification_buffer =
                 buffer::PropertyModificationBufferBuilder::new(&mut builder);
-            modification_buffer.add_modification_type(modification.modification_type);
+            modification_buffer.add_modification_type(modification.modification_type.value());
             modification_buffer.add_value(v_entity);
 
             modifications_buffer.push(modification_buffer.finish());

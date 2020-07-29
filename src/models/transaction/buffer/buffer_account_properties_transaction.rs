@@ -112,8 +112,6 @@ pub mod account_properties {
         }
     }
 
-    pub enum AccountPropertiesTransactionBufferOffset {}
-
     #[derive(Copy, Clone, Debug, PartialEq)]
     pub struct AccountPropertiesTransactionBuffer<'a> {
         pub _tab: fb::Table<'a>,

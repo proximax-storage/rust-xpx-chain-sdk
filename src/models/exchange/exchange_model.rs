@@ -8,11 +8,10 @@ use std::fmt;
 
 use {num_enum::IntoPrimitive, std::collections::HashMap};
 
-use crate::models::transaction::Amount;
 use crate::models::{
     account::PublicAccount,
     mosaic::{Mosaic, MosaicId},
-    transaction::Height,
+    transaction::{Amount, Height},
     uint_64::Uint64,
 };
 use crate::AssetId;
@@ -37,20 +36,22 @@ impl OfferType {
     }
 
     pub fn counter_offer(self) -> Self {
+        use OfferType::*;
         match self {
-            OfferType::SellOffer => OfferType::BuyOffer,
-            OfferType::BuyOffer => OfferType::SellOffer,
-            _ => OfferType::UnknownType,
+            SellOffer => BuyOffer,
+            BuyOffer => SellOffer,
+            _ => UnknownType,
         }
     }
 }
 
 impl From<u8> for OfferType {
     fn from(num: u8) -> Self {
+        use OfferType::*;
         match num {
-            0 => OfferType::SellOffer,
-            1 => OfferType::BuyOffer,
-            _ => OfferType::UnknownType,
+            0 => SellOffer,
+            1 => BuyOffer,
+            _ => UnknownType,
         }
     }
 }

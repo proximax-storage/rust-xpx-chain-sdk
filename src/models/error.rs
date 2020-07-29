@@ -5,7 +5,7 @@
  */
 
 use {
-    std::{
+    ::std::{
         borrow::Cow,
         fmt::{Display, Formatter},
         num, result,
@@ -79,16 +79,15 @@ impl From<num::ParseIntError> for Error {
 
 impl Display for Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> ::std::fmt::Result {
+        use Error::*;
         match self.to_owned() {
-            Error::SiriusError(e) => {
-                write!(f, "{{ code: \"{}\", message: \"{}\" }}", e.code, e.message)
-            }
-            Error::Reqwest(e) => write!(f, "{}", e),
-            Error::Serde(e) => write!(f, "{}", e),
-            Error::Tungsten(e) => write!(f, "{}", e),
-            Error::Failure(e) => write!(f, "{}", e),
-            Error::Url(ref msg) => write!(f, "{}", msg),
-            Error::Parse(e) => write!(f, "{}", e),
+            SiriusError(e) => write!(f, "{{ code: \"{}\", message: \"{}\" }}", e.code, e.message),
+            Reqwest(e) => write!(f, "{}", e),
+            Serde(e) => write!(f, "{}", e),
+            Tungsten(e) => write!(f, "{}", e),
+            Failure(e) => write!(f, "{}", e),
+            Url(ref msg) => write!(f, "{}", msg),
+            Parse(e) => write!(f, "{}", e),
         }
     }
 }

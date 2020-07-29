@@ -46,7 +46,7 @@ impl MetadataRoutes {
         let mut req =
             __internal_request::Request::new(Method::GET, METADATA_BY_ACCOUNT_ROUTE.to_string());
 
-        req = req.with_path_param("address_id".to_string(), address.as_string());
+        req = req.with_path_param("address_id".to_string(), address.address_string());
 
         #[derive(Deserialize)]
         struct MetadataDto {

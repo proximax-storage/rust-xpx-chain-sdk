@@ -38,7 +38,7 @@ impl TransactionDto for AggregateTransactionInfoDto {
     fn compact(&self) -> Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.compact();
+        let info = self.meta.compact()?;
 
         let txs_dto = map_aggregate_transactions_dto(dto.transactions)?;
 

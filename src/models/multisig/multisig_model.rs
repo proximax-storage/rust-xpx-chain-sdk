@@ -9,9 +9,10 @@ use {
     std::{collections::HashMap, fmt},
 };
 
-use crate::models::{account::PublicAccount, errors_const::ERR_UNKNOWN_TYPE, transaction::Hash};
+use crate::models::{
+    account::PublicAccount, errors_const::ERR_UNKNOWN_TYPE, transaction::HashValue,
+};
 
-/// MultisigModificationTypeEnum :
 /// The type of the modification:
 /// * 0 - Add cosignatory.
 /// * 1 - Remove cosignatory.
@@ -73,7 +74,7 @@ pub struct CosignatureInfo {
     pub signature: String,
     /// The public account of the cosignatory.
     pub signer: String,
-    pub parent_hash: Hash,
+    pub parent_hash: HashValue,
 }
 
 impl fmt::Display for CosignatureInfo {
@@ -87,7 +88,7 @@ impl fmt::Display for CosignatureInfo {
 }
 
 impl CosignatureInfo {
-    pub fn transaction_hash(&self) -> Hash {
+    pub fn transaction_hash(&self) -> HashValue {
         self.parent_hash.to_owned()
     }
 }

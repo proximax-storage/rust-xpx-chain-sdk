@@ -16,7 +16,7 @@ use crate::{
     mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     multisig::CosignatoryModification,
     network::NetworkType,
-    transaction::{Hash, TransactionType as Entity},
+    transaction::{HashValue, TransactionType as Entity},
     utils::is_hex,
     Result, Uint64,
 };
@@ -57,7 +57,7 @@ impl AccountTransactionsOption {
     }
 }
 
-pub(crate) fn str_to_hash(hash: &str) -> Result<Hash> {
+pub(crate) fn str_to_hash(hash: &str) -> Result<Vec<u8>> {
     let raw_hash = hash.trim().to_uppercase();
 
     ensure!(!raw_hash.is_empty(), errors_const::ERR_INVALID_HASH_HEX);
@@ -70,13 +70,14 @@ pub(crate) fn str_to_hash(hash: &str) -> Result<Hash> {
     );
 
     ensure!(
-        raw_hash.len() == 64,
-        "{} {}.",
-        errors_const::ERR_INVALID_HASH_LENGTH,
-        raw_hash
+        hash.len() == HashValue::LENGTH_IN_HEX,
+        "Hash encoding failed due to length mismatch. Hash \
+             length: {}, src length: {}",
+        HashValue::LENGTH_IN_HEX,
+        hash.len()
     );
 
-    Ok(raw_hash)
+    Ok(hex::decode(hash)?)
 }
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>

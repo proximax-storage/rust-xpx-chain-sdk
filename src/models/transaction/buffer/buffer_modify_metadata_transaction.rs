@@ -182,8 +182,6 @@ pub mod modify_metadata {
         }
     }
 
-    pub enum ModifyMetadataTransactionBufferOffset {}
-
     #[derive(Copy, Clone, Debug, PartialEq)]
     pub struct ModifyMetadataTransactionBuffer<'a> {
         pub _tab: fb::Table<'a>,

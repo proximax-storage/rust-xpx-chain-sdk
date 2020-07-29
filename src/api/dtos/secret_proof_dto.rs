@@ -4,14 +4,14 @@
  * license that can be found in the LICENSE file.
  */
 
-use super::{AbstractTransactionDto, HashAlgorithmEnum};
+use super::{AbstractTransactionDto, HashAlgorithm};
 
 /// SecretProofTransactionDto : Transaction that revealed a proof.
 #[derive(Serialize, Deserialize)]
 pub(crate) struct SecretProofTransactionDto {
     #[serde(flatten)]
     r#abstract: AbstractTransactionDto,
-    hash_algorithm: HashAlgorithmEnum,
+    hash_algorithm: HashAlgorithm,
     /// The proof hashed.
     #[serde(rename = "secret")]
     secret: String,

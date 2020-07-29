@@ -4,9 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
+use ::std::str::FromStr;
+
 use crate::{
     api::Uint64Dto,
-    transaction::{BlockchainTimestamp, Deadline},
+    transaction::{BlockchainTimestamp, Deadline, HashValue, TransactionStatus},
 };
 
 use super::{model::WsSubscribeDto, Handler};
@@ -29,17 +31,17 @@ pub(crate) struct WsStatusInfoDto {
 }
 
 impl WsSubscribeDto for WsStatusInfoDto {
-    type Output = crate::transaction::TransactionStatus;
+    type Output = TransactionStatus;
 
     fn compact(self) -> Self::Output {
         let blockchain_timestamp = BlockchainTimestamp::new(*self.deadline.compact() as i64);
 
         let deadline = Deadline::from(blockchain_timestamp);
 
-        crate::transaction::TransactionStatus {
+        TransactionStatus {
             group: "".to_string(),
             status: self.status,
-            hash: self.hash,
+            hash: HashValue::from_str(&self.hash).unwrap(),
             deadline: Some(deadline),
             height: None,
         }

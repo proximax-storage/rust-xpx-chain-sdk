@@ -6,7 +6,7 @@
 
 use crate::models::{account::PublicAccount, network::NetworkType, uint_64::Uint64};
 
-use super::{deadline::Deadline, AbsVector, EntityVersion, Hash, Height, TransactionType};
+use super::{deadline::Deadline, AbsVector, EntityVersion, HashValue, Height, TransactionType};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -44,13 +44,13 @@ pub struct AbstractTransaction {
 }
 
 impl AbstractTransaction {
-    pub(crate) fn get_hash(&self) -> Hash {
+    pub(crate) fn get_hash(&self) -> HashValue {
         match self.transaction_info.to_owned() {
             Some(h) => match h.hash {
                 Some(hs) => hs,
-                _ => "".to_string(),
+                _ => HashValue::zero(),
             },
-            _ => "".to_string(),
+            _ => HashValue::zero(),
         }
     }
 
@@ -98,7 +98,7 @@ impl AbstractTransaction {
 
     pub fn is_unannounced(&self) -> bool {
         if let Some(tx_info) = &self.transaction_info {
-            tx_info.hash.is_some() || tx_info.agregate_hash.is_some()
+            tx_info.hash.is_some() || tx_info.aggregate_hash.is_some()
         } else {
             false
         }
@@ -133,11 +133,11 @@ pub struct TransactionInfo {
     pub index: u32,
     pub id: String,
     #[serde(rename = "hash", skip_serializing_if = "Option::is_none")]
-    pub hash: Option<Hash>,
+    pub hash: Option<HashValue>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub merkle_component_hash: Option<Hash>,
+    pub merkle_component_hash: Option<HashValue>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub agregate_hash: Option<Hash>,
+    pub aggregate_hash: Option<HashValue>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -145,10 +145,10 @@ pub struct TransactionInfo {
 }
 
 impl TransactionInfo {
-    pub fn transaction_hash(&self) -> Hash {
+    pub fn transaction_hash(&self) -> HashValue {
         match self.hash.to_owned() {
             Some(h) => h,
-            None => String::new(),
+            None => HashValue::zero(),
         }
     }
 }

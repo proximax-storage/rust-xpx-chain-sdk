@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-/// AccountLinkTypeEnum :
 /// The account link types:
 /// * 0 -  Unlinked. Account is not linked to another account.
 /// * 1 -  Main. Account is a balance-holding account that is linked to a remote harvester account.
@@ -29,11 +28,12 @@ pub enum AccountLinkType {
 
 impl AccountLinkType {
     pub fn new(value: u8) -> Self {
+        use AccountLinkType::*;
         match value {
-            1 => AccountLinkType::_1,
-            2 => AccountLinkType::_2,
-            3 => AccountLinkType::_3,
-            _ => AccountLinkType::_0,
+            1 => _1,
+            2 => _2,
+            3 => _3,
+            _ => _0,
         }
     }
 }

@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use super::{ReceiptTypeEnum, Uint64Dto};
+use super::{ReceiptType, Uint64Dto};
 
 /// ArtifactExpiryReceiptDto : An artifact namespace or mosaic expired.
 #[derive(Serialize, Deserialize)]
@@ -13,7 +13,7 @@ pub(crate) struct ArtifactExpiryReceiptDto {
     #[serde(rename = "version")]
     version: i32,
     #[serde(rename = "type")]
-    _type: ReceiptTypeEnum,
+    _type: ReceiptType,
     #[serde(rename = "artifactId")]
     artifact_id: Uint64Dto,
 }

@@ -12,11 +12,7 @@ use {
 };
 
 use crate::{
-    models::{
-        consts::{ADDRESS_DECODE_SIZE, ADDRESS_ENCODE_SIZE, ADDRESS_SIZE},
-        errors_const,
-        network::*,
-    },
+    models::{errors_const, network::*},
     utils::is_hex,
     Result,
 };
@@ -43,6 +39,15 @@ pub struct Address {
 }
 
 impl Address {
+    /// The length of the Address in bytes.
+    pub const LENGTH: usize = 25;
+    /// The length of the Address in bits.
+    pub const LENGTH_IN_BITS: usize = Self::LENGTH * 8;
+    /// The length of the Address in hex string.
+    pub const LENGTH_IN_HEX: usize = Self::LENGTH * 2;
+    /// The length of the Address in base32 string.
+    pub const LENGTH_IN_BASE32: usize = 40;
+
     /// Creates an `Address` from a given public_key string for the given `NetworkType`.
     pub fn from_public_key(public_key: &str, network_type: NetworkType) -> Result<Self> {
         ensure!(
@@ -71,7 +76,7 @@ impl Address {
 
         let address = raw_address.trim().replace(REGEX_DASH, EMPTY_STRING);
         ensure!(
-            address.len() == ADDRESS_DECODE_SIZE,
+            address.len() == Self::LENGTH_IN_BASE32,
             errors_const::ERR_INVALID_ADDRESSES_LEN
         );
 
@@ -94,7 +99,7 @@ impl Address {
         ensure!(!encoded.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
 
         ensure!(
-            encoded.len() == ADDRESS_ENCODE_SIZE,
+            encoded.len() == Self::LENGTH_IN_HEX,
             errors_const::ERR_INVALID_ADDRESSES_LEN
         );
 
@@ -115,7 +120,7 @@ impl Address {
     pub fn prettify(&self) -> String {
         let mut res: String = String::new();
 
-        let address_string = &self.as_string();
+        let address_string = &self.address_string();
 
         for i in 0..6 {
             res += &address_string[i * 6..i * 6 + 6];
@@ -127,7 +132,7 @@ impl Address {
     }
 
     #[inline]
-    fn decode_from_base32(data: &str) -> [u8; ADDRESS_SIZE] {
+    fn decode_from_base32(data: &str) -> [u8; Self::LENGTH] {
         let add_decode = base32::decode(RFC4648 { padding: true }, data).unwrap();
 
         let mut bts: [u8; 25] = [0u8; 25];
@@ -136,7 +141,7 @@ impl Address {
     }
 
     #[inline]
-    fn decode_from_hex(data: &str) -> Result<[u8; ADDRESS_SIZE]> {
+    fn decode_from_hex(data: &str) -> Result<[u8; Self::LENGTH]> {
         let add_decode = hex::decode(data)?;
 
         let mut bts: [u8; 25] = [0u8; 25];
@@ -152,7 +157,7 @@ impl Address {
     /// Get the address in an raw address string format.
     ///
     /// For example: VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU
-    pub fn as_string(&self) -> String {
+    pub fn address_string(&self) -> String {
         Self::encode_as_base32(&self.address).to_uppercase()
     }
 
@@ -188,7 +193,7 @@ impl Serialize for Address {
         S: Serializer,
     {
         let mut rgb = serializer.serialize_struct("Address", 2)?;
-        rgb.serialize_field("address", &self.as_string())?;
+        rgb.serialize_field("address", &self.address_string())?;
         rgb.serialize_field("network_type", &self.network_type)?;
         rgb.end()
     }

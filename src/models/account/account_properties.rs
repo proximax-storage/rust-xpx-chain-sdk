@@ -14,17 +14,42 @@ use crate::{mosaic::MosaicId, transaction::TransactionType, AssetId};
 
 use super::Address;
 
-pub type PropertyModificationType = u8;
+/// The account properties modification type:
+///* 0 - Add property.
+///* 1 - Remove property.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr, IntoPrimitive)]
+#[repr(u8)]
+pub enum AccountPropertiesModificationType {
+    AddProperty,
+    RemoveProperty,
+    AccountPropertiesModificationTypeUnknown,
+}
 
-pub const ADD_PROPERTY: PropertyModificationType = 0;
-pub const REMOVE_PROPERTY: PropertyModificationType = 1;
+impl AccountPropertiesModificationType {
+    pub fn value(self) -> u8 {
+        self.into()
+    }
+}
+
+impl From<u8> for AccountPropertiesModificationType {
+    fn from(num: u8) -> Self {
+        use AccountPropertiesModificationType::*;
+        match num {
+            0x00 => AddProperty,
+            0x01 => RemoveProperty,
+            _ => AccountPropertiesModificationTypeUnknown,
+        }
+    }
+}
 
 /// Account property type
-/// 0x01 The property type is an address.
-/// 0x02 The property type is a mosaic id.
-/// 0x04 The property type is a transaction type.
-/// 0x05 Property type sentinel.
-/// 0x80 + type The property is interpreted as a blocking operation.
+/// * 0x01 (1 decimal) - The property type only allows receiving transactions from an address.
+/// * 0x02 (2 decimal) - The property type only allows receiving transactions containing a mosaic id.
+/// * 0x04 (4 decimal) - The property type only allows sending transactions with a given transaction type.
+/// * 0x05 (5 decimal) - Property type sentinel.
+/// * 0x81 (129 decimal) - The property type blocks receiving transactions from an address.
+/// * 0x82 (130 decimal) - The property type blocks receiving transactions containing a mosaic id.
+/// * 0x84 (132 decimal) -  The property type blocks sending transactions with a given transaction type.
 #[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr, IntoPrimitive)]
 #[repr(u8)]
 pub enum AccountPropertyType {
@@ -34,7 +59,7 @@ pub enum AccountPropertyType {
     BlockAddress = 0x80 + 0x01,
     BlockMosaic = 0x80 + 0x02,
     BlockTransaction = 0x80 + 0x04,
-    EntityTypeUnknown,
+    AccountPropertyTypeUnknown,
 }
 
 impl AccountPropertyType {
@@ -45,15 +70,16 @@ impl AccountPropertyType {
 
 impl From<u8> for AccountPropertyType {
     fn from(num: u8) -> Self {
+        use AccountPropertyType::*;
         match num {
-            0x01 => AccountPropertyType::AllowAddress,
-            0x02 => AccountPropertyType::AllowMosaic,
-            0x04 => AccountPropertyType::AllowTransaction,
-            0x81 => AccountPropertyType::BlockAddress,
-            0x82 => AccountPropertyType::BlockMosaic,
-            0x84 => AccountPropertyType::BlockTransaction,
+            0x01 => AllowAddress,
+            0x02 => AllowMosaic,
+            0x04 => AllowTransaction,
+            0x81 => BlockAddress,
+            0x82 => BlockMosaic,
+            0x84 => BlockTransaction,
 
-            _ => AccountPropertyType::EntityTypeUnknown,
+            _ => AccountPropertyTypeUnknown,
         }
     }
 }
@@ -96,12 +122,12 @@ impl core::fmt::Display for AccountProperties {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct AccountPropertiesAddressModification {
-    pub modification_type: PropertyModificationType,
+    pub modification_type: AccountPropertiesModificationType,
     pub address: Address,
 }
 
 impl AccountPropertiesAddressModification {
-    pub fn new(modification_type: PropertyModificationType, address: Address) -> Self {
+    pub fn new(modification_type: AccountPropertiesModificationType, address: Address) -> Self {
         Self {
             modification_type,
             address,
@@ -121,13 +147,13 @@ impl core::fmt::Display for AccountPropertiesAddressModification {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct AccountPropertiesMosaicModification {
-    pub modification_type: PropertyModificationType,
+    pub modification_type: AccountPropertiesModificationType,
     pub asset_id: Box<dyn AssetId>,
 }
 
 impl AccountPropertiesMosaicModification {
     pub fn new(
-        modification_type: PropertyModificationType,
+        modification_type: AccountPropertiesModificationType,
         asset_id: impl AssetId + 'static,
     ) -> Self {
         Self {
@@ -149,13 +175,13 @@ impl core::fmt::Display for AccountPropertiesMosaicModification {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct AccountPropertiesEntityTypeModification {
-    pub modification_type: PropertyModificationType,
+    pub modification_type: AccountPropertiesModificationType,
     pub transaction_type: TransactionType,
 }
 
 impl AccountPropertiesEntityTypeModification {
     pub fn new(
-        modification_type: PropertyModificationType,
+        modification_type: AccountPropertiesModificationType,
         transaction_type: TransactionType,
     ) -> Self {
         Self {

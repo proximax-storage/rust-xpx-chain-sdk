@@ -211,7 +211,7 @@ impl TransactionDto for RegisterNamespaceTransactionInfoDto {
     fn compact(&self) -> Result<Box<dyn Transaction>> {
         let dto = self.transaction.clone();
 
-        let info = self.meta.compact();
+        let info = self.meta.compact()?;
 
         let abs_transaction = dto.r#abstract.compact(info)?;
 

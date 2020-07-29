@@ -13,6 +13,7 @@ use {
     reqwest::Method,
 };
 
+use crate::models::transaction::HashValue;
 use crate::{
     api::{
         internally::{str_to_hash, valid_vec_hash, valid_vec_len},
@@ -81,15 +82,15 @@ impl TransactionRoutes {
     ///
     /// Returns a Future `Result` whose okay value is an [TransactionStatus] for a given hash or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn get_transaction_status(self, hash: &str) -> Result<TransactionStatus> {
+    pub async fn get_transaction_status(self, hash: HashValue) -> Result<TransactionStatus> {
         let mut req =
             __internal_request::Request::new(Method::GET, TRANSACTION_STATUS_ROUTE.to_string());
 
-        req = req.with_path_param("hash".to_string(), str_to_hash(hash)?);
+        req = req.with_path_param("hash".to_string(), hash.to_string());
 
         let dto: Result<TransactionStatusDto> = req.execute(self.__client()).await;
 
-        Ok(dto?.compact())
+        Ok(dto?.compact()?)
     }
 
     /// Get transactions status.
@@ -148,7 +149,7 @@ impl TransactionRoutes {
 
         let statuses: TransactionsStatus = dto
             .into_iter()
-            .map(move |status_dto| status_dto.compact())
+            .map(move |status_dto| status_dto.compact().unwrap())
             .collect();
 
         Ok(statuses)
@@ -191,7 +192,7 @@ impl TransactionRoutes {
 
         let mut id = transaction_id.to_string();
         if transaction_id.len() != 24 {
-            id = str_to_hash(&transaction_id)?
+            id = HashValue::from_slice(&str_to_hash(&transaction_id)?)?.to_string();
         }
 
         req = req
@@ -317,7 +318,7 @@ impl TransactionRoutes {
     ///    }
     ///
     ///    let sig_transaction = account.sign(
-    ///        &transfer_transaction.unwrap(), &generation_hash);
+    ///        &transfer_transaction.unwrap(), generation_hash);
     ///
     ///    let sig_tx = match &sig_transaction {
     ///        Ok(sig) => sig,

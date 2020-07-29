@@ -206,7 +206,7 @@ impl AccountRoutes {
         let mut req =
             __internal_request::Request::new(Method::GET, ACCOUNT_PROPERTIES_ROUTE.to_string());
 
-        req = req.with_path_param("address_id".to_string(), address.as_string());
+        req = req.with_path_param("address_id".to_string(), address.address_string());
 
         let dto: Result<AccountPropertiesInfoDto> = req.execute(self.__client()).await;
 

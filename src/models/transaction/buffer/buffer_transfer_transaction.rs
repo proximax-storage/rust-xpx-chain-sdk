@@ -99,8 +99,6 @@ pub mod transfer {
         }
     }
 
-    pub enum MosaicBufferOffset {}
-
     #[derive(Copy, Clone, Debug, PartialEq)]
     pub struct MosaicBuffer<'a> {
         pub _tab: fb::Table<'a>,
@@ -196,8 +194,6 @@ pub mod transfer {
             fb::WIPOffset::new(o.value())
         }
     }
-
-    pub enum TransferTransactionBufferOffset {}
 
     #[derive(Copy, Clone, Debug, PartialEq)]
     pub struct TransferTransactionBuffer<'a> {

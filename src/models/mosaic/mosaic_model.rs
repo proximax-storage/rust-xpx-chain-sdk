@@ -21,7 +21,6 @@ use super::{
 pub const SUPPLY_MUTABLE: u8 = 0x01;
 pub const TRANSFERABLE: u8 = 0x02;
 
-/// MosaicPropertyId :
 /// The mosaic propery id means:
 /// * 0 - MosaicFlags
 /// * 1 - Divisibility
@@ -42,11 +41,12 @@ impl MosaicPropertyId {
 
 impl From<u8> for MosaicPropertyId {
     fn from(id: u8) -> Self {
+        use MosaicPropertyId::*;
         assert!(id <= 2, ERR_INVALID_MOSAIC_PROPERTY_ID);
         match id {
-            1 => MosaicPropertyId::Divisibility,
-            2 => MosaicPropertyId::Duration,
-            _ => MosaicPropertyId::MosaicFlags,
+            1 => Divisibility,
+            2 => Duration,
+            _ => MosaicFlags,
         }
     }
 }

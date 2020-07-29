@@ -16,43 +16,6 @@ pub(crate) static HASH512_LENGTH: usize = 64;
 pub static EMPTY_PUBLIC_KEY: &str =
     "0000000000000000000000000000000000000000000000000000000000000000";
 
-/// AccountPropertyTypeEnum :
-/// The account properties type:
-/// * 0x01 (1 decimal) - The property type only allows receiving transactions from an address.
-/// * 0x02 (2 decimal) - The property type only allows receiving transactions containing a mosaic id.
-/// * 0x04 (4 decimal) - The property type only allows sending transactions with a given transaction type.
-/// * 0x05 (5 decimal) - Property type sentinel.
-/// * 0x81 (129 decimal) - The property type blocks receiving transactions from an address.
-/// * 0x82 (130 decimal) - The property type blocks receiving transactions containing a mosaic id.
-/// * 0x84 (132 decimal) -  The property type blocks sending transactions with a given transaction type.
-#[derive(Serialize, Deserialize)]
-pub enum AccountPropertyTypeEnum {
-    #[serde(rename = "1")]
-    _1,
-    #[serde(rename = "2")]
-    _2,
-    #[serde(rename = "4")]
-    _4,
-    #[serde(rename = "5")]
-    _5,
-    #[serde(rename = "129")]
-    _129,
-    #[serde(rename = "130")]
-    _130,
-    #[serde(rename = "132")]
-    _132,
-}
-
-/// AccountPropertiesModificationTypeEnum :
-/// The account properties modification type: * 0 - Add property. * 1 - Remove property.
-#[derive(Serialize, Deserialize)]
-pub enum AccountPropertiesModificationTypeEnum {
-    #[serde(rename = "0")]
-    _0,
-    #[serde(rename = "1")]
-    _1,
-}
-
 pub(crate) fn public_key_to_address(
     public_key: &str,
     version: NetworkType,

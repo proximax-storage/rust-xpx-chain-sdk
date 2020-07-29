@@ -6,7 +6,7 @@
 
 use {::std::sync::Arc, reqwest::Client as ReqwestClient};
 
-use crate::{models::error::Result, network::NetworkType, transaction::Hash};
+use crate::{models::error::Result, network::NetworkType, transaction::HashValue};
 
 use super::routes::{
     account_routes_api::AccountRoutes, block_routes_api::BlockRoutes,
@@ -18,7 +18,7 @@ use super::routes::{
 
 #[derive(Clone, Serialize)]
 pub struct SiriusClient {
-    generation_hash: Hash,
+    generation_hash: HashValue,
     network_type: NetworkType,
     #[serde(skip_serializing)]
     client: Arc<ApiClient>,
@@ -81,7 +81,7 @@ impl SiriusClient {
         let client = Arc::new(api_client);
 
         Box::new(SiriusClient {
-            generation_hash: "".to_string(),
+            generation_hash: HashValue::zero(),
             network_type: Default::default(),
             client,
         })
@@ -110,8 +110,8 @@ impl SiriusClient {
         Ok(api)
     }
 
-    pub fn generation_hash(&self) -> &str {
-        &self.generation_hash
+    pub fn generation_hash(&self) -> HashValue {
+        self.generation_hash
     }
 
     pub fn network_type(&self) -> NetworkType {
