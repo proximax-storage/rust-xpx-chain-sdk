@@ -4,10 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::models::transaction::Signature;
 use crate::models::{account::PublicAccount, network::NetworkType, uint_64::Uint64};
 
-use super::{deadline::Deadline, AbsVector, EntityVersion, HashValue, Height, TransactionType};
+use super::{
+    deadline::Deadline, AbsVector, EntityVersion, HashValue, Height, Signature, TransactionType,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

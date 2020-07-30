@@ -23,12 +23,12 @@ impl HashValue {
     /// The length of the hash in hex string.
     pub const LENGTH_IN_HEX: usize = Self::LENGTH * 2;
 
-    /// Create a new [`Hash`] from a byte array.
+    /// Create a new [`HashValue`] from a byte array.
     pub fn new(hash: [u8; HashValue::LENGTH]) -> Self {
         Self(hash)
     }
 
-    /// Create from a slice (e.g. retrieved from storage).
+    /// Create from [`HashValue`] from slice (e.g. retrieved from storage).
     pub fn from_slice(src: &[u8]) -> crate::Result<Self> {
         ensure!(
             src.len() == Self::LENGTH,

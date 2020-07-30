@@ -11,9 +11,9 @@ use {
 
 use crate::{
     account::Address,
+    helpers::{array_u8_to_u64, hex_encode, u64_to_array_u8},
     models::{asset_id_model::AssetId, errors_const},
     network::ALIAS_ADDRESS,
-    utils::{array_u8_to_u64, u64_to_array_u8, vec_u8_to_hex},
 };
 
 use super::NamespaceId;
@@ -75,7 +75,7 @@ pub(crate) fn new_address_from_namespace(namespace_id: NamespaceId) -> crate::Re
 
     let buf = u64_to_array_u8(*namespace_id);
 
-    address_raw += &vec_u8_to_hex(buf.to_vec());
+    address_raw += &hex_encode(&buf);
 
     address_raw += "00000000000000000000000000000000";
 

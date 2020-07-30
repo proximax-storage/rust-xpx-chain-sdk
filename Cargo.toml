@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-sdk"
-version = "0.4.2"
+version = "0.4.6"
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
@@ -61,7 +61,7 @@ version = "^1.0"
 version = "^0.3"
 
 [dependencies.rand]
-version = "0.6"
+version = "0.7"
 default-features = false
 
 [dependencies.sha3]

@@ -18,8 +18,8 @@ extern crate xpx_chain_crypto as crypto;
 pub use self::models::*;
 
 pub mod api;
+mod helpers;
 mod models;
-mod utils;
 pub mod websocket;
 
 pub type Result<T> = ::std::result::Result<T, failure::Error>;

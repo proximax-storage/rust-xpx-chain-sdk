@@ -4,16 +4,14 @@
  * license that can be found in the LICENSE file.
  */
 
-use serde::de;
-
 use {
-    serde::{Serialize, Serializer},
+    serde::{de, Serialize, Serializer},
     std::{fmt, ops::Deref, str::FromStr},
 };
 
 use crate::{
+    helpers::{hex_decode, is_hex},
     models::errors_const::ERR_INVALID_DATA_LENGTH,
-    utils::{hex_to_vec_u8, is_hex},
 };
 
 #[derive(Clone, Copy)]
@@ -143,7 +141,7 @@ impl FromStr for Signature {
             src.len()
         );
 
-        Ok(Self::from_slice(&hex_to_vec_u8(src))?)
+        Ok(Self::from_slice(&hex_decode(src))?)
     }
 }
 
