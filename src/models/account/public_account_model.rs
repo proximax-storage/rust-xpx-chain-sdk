@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::fmt;
+
 use serde::{
     ser::SerializeStruct,
     {Serialize, Serializer},
@@ -18,7 +20,7 @@ use crate::{
 use super::Address;
 
 /// The `PublicAccount` account structure contains account's `Address` and public key.
-#[derive(Default, Clone, Debug, Deserialize, Copy)]
+#[derive(Default, Clone, Deserialize, Copy)]
 #[serde(rename_all = "camelCase")]
 pub struct PublicAccount {
     /// Retrieves the `Address` of this public account.
@@ -100,8 +102,8 @@ impl PublicAccount {
     }
 }
 
-impl core::fmt::Display for PublicAccount {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+impl fmt::Display for PublicAccount {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
             "{}",
@@ -119,5 +121,27 @@ impl Serialize for PublicAccount {
         rgb.serialize_field("address", &self.address)?;
         rgb.serialize_field("public_key", &self.public_key_string())?;
         rgb.end()
+    }
+}
+
+impl fmt::LowerHex for PublicAccount {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for byte in &self.public_key {
+            write!(f, "{:02x}", byte)?;
+        }
+        Ok(())
+    }
+}
+
+impl fmt::Debug for PublicAccount {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "PublicAccount {{")?;
+        write!(f, "address: ")?;
+        write!(f, "{:?}", self.address)?;
+        write!(f, ", ")?;
+        write!(f, "public_key: ")?;
+        <Self as fmt::LowerHex>::fmt(self, f)?;
+        write!(f, "}}")?;
+        Ok(())
     }
 }

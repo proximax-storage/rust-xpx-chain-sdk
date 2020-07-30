@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::fmt;
+
 use {
     ::std::ops::Deref,
     base32::Alphabet::RFC4648,
@@ -30,7 +32,7 @@ const EMPTY_STRING: &str = "";
 const REGEX_DASH: &str = "-";
 
 /// The `Address` structure describes an address with its network.
-#[derive(Default, Debug, Clone, PartialEq, Deserialize, Copy)]
+#[derive(Default, Clone, PartialEq, Deserialize, Copy)]
 #[serde(rename_all = "camelCase")]
 pub struct Address {
     /// The address in bytes.
@@ -177,13 +179,26 @@ impl Address {
     }
 }
 
-impl core::fmt::Display for Address {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+impl fmt::Display for Address {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
             "{}",
             serde_json::to_string_pretty(&self).unwrap_or_default()
         )
+    }
+}
+
+impl fmt::Debug for Address {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Address {{")?;
+        write!(f, "address: ")?;
+        write!(f, "{}", self.address_string().to_lowercase())?;
+        write!(f, ", ")?;
+        write!(f, "network_type: ")?;
+        write!(f, "{:?}", self.network_type)?;
+        write!(f, "}}")?;
+        Ok(())
     }
 }
 

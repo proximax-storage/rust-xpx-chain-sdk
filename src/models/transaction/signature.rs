@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+use serde::de;
+
 use {
     serde::{Serialize, Serializer},
     std::{fmt, ops::Deref, str::FromStr},
@@ -59,6 +61,15 @@ impl Signature {
     }
 }
 
+impl fmt::Binary for Signature {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for byte in self.iter() {
+            write!(f, "{:08b}", byte)?;
+        }
+        Ok(())
+    }
+}
+
 impl fmt::Display for Signature {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for byte in self.iter() {
@@ -68,9 +79,21 @@ impl fmt::Display for Signature {
     }
 }
 
-impl fmt::Debug for Signature {
+impl fmt::LowerHex for Signature {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self.to_string())
+        for byte in self.iter() {
+            write!(f, "{:02x}", byte)?;
+        }
+        Ok(())
+    }
+}
+
+impl fmt::Debug for Signature {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Signature(")?;
+        <Self as fmt::LowerHex>::fmt(self, f)?;
+        write!(f, ")")?;
+        Ok(())
     }
 }
 
@@ -80,6 +103,27 @@ impl Serialize for Signature {
         S: Serializer,
     {
         serializer.serialize_str(&format!("{}", self))
+    }
+}
+
+impl<'de> de::Deserialize<'de> for Signature {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: de::Deserializer<'de>,
+    {
+        if deserializer.is_human_readable() {
+            let encoded_hash = <String>::deserialize(deserializer)?;
+            Signature::from_str(encoded_hash.as_str())
+                .map_err(<D::Error as ::serde::de::Error>::custom)
+        } else {
+            // See comment in serialize.
+            #[derive(::serde::Deserialize)]
+            #[serde(rename = "HashValue")]
+            struct Value<'a>(&'a [u8]);
+
+            let value = Value::deserialize(deserializer)?;
+            Self::from_slice(value.0).map_err(<D::Error as ::serde::de::Error>::custom)
+        }
     }
 }
 

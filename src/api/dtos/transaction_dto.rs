@@ -6,6 +6,7 @@
 
 use ::std::str::FromStr;
 
+use crate::models::transaction::Signature;
 use crate::{
     account::{Address, PublicAccount},
     models::Result,
@@ -73,23 +74,31 @@ impl AbstractTransactionDto {
 
         let signer = PublicAccount::from_public_key(&dto.signer, network_type)?;
 
-        let mut deadline = None;
-        if let Some(item) = &dto.deadline {
+        let deadline = if let Some(item) = &dto.deadline {
             let timestamp = BlockchainTimestamp::new(*item.compact() as i64);
-            deadline = Some(Deadline::from(timestamp))
-        }
+            Some(Deadline::from(timestamp))
+        } else {
+            None
+        };
 
-        let mut max_fee = None;
-        if let Some(item) = &dto.max_fee {
-            max_fee = Some(item.compact());
-        }
+        let max_fee = if let Some(item) = &dto.max_fee {
+            Some(item.compact())
+        } else {
+            None
+        };
 
         let transaction_type = TransactionType::from(dto.r#type);
+
+        let signature = if let Some(s) = &dto.signature {
+            Some(Signature::from_str(s)?)
+        } else {
+            None
+        };
 
         Ok(AbstractTransaction {
             transaction_info: Some(info),
             network_type,
-            signature: dto.signature.clone(),
+            signature,
             signer,
             version,
             transaction_type,
@@ -137,7 +146,7 @@ impl TransactionMetaDto {
         };
 
         let unique_aggregate_hash = if let Some(t) = dto.unique_aggregate_hash {
-            Some(t)
+            Some(HashValue::from_str(&t)?)
         } else {
             None
         };
