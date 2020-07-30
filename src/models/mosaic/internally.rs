@@ -7,8 +7,8 @@
 use sha3::{Digest, Sha3_256};
 
 use crate::{
+    helpers::array_u8_to_u64,
     models::{account::PublicAccount, namespace::NAMESPACE_BIT, Uint64},
-    utils::array_u8_to_u64,
 };
 
 use super::MosaicNonce;

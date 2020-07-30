@@ -6,23 +6,27 @@
 
 use ::std::collections::HashMap;
 
-use crate::api::{AbstractTransactionDto, TransactionDto, TransactionMetaDto};
-use crate::exchange::{AddOffer, ExchangeConfirmation, Offer, RemoveOffer};
-use crate::models::namespace::{NamespaceId, NAMESPACE_BIT};
-use crate::models::transaction::RemoveExchangeOfferTransaction;
-use crate::models::Result;
-use crate::transaction::{AddExchangeOfferTransaction, ExchangeOfferTransaction, Transaction};
-use crate::utils::has_bits;
 use crate::{
-    account::PublicAccount,
-    exchange::OfferType::{BuyOffer, SellOffer},
-    exchange::{OfferIdInfo, OfferIdInfos, OfferInfo, OfferType, UserExchangeInfo},
-    mosaic::{Mosaic, MosaicId},
-    network::NetworkType,
-    AssetId,
+    helpers::has_bits,
+    models::{
+        account::PublicAccount,
+        exchange::{
+            AddOffer, ExchangeConfirmation, Offer, OfferIdInfo, OfferIdInfos, OfferInfo, OfferType,
+            OfferType::{BuyOffer, SellOffer},
+            RemoveOffer, UserExchangeInfo,
+        },
+        mosaic::{Mosaic, MosaicId},
+        namespace::{NamespaceId, NAMESPACE_BIT},
+        network::NetworkType,
+        transaction::{
+            AddExchangeOfferTransaction, ExchangeOfferTransaction, RemoveExchangeOfferTransaction,
+            Transaction,
+        },
+        AssetId, Result,
+    },
 };
 
-use super::Uint64Dto;
+use super::{AbstractTransactionDto, TransactionDto, TransactionMetaDto, Uint64Dto};
 
 pub(crate) type OfferInfoDTOs = Vec<OfferInfoDto>;
 type AddOfferDTOs = Vec<AddOfferDto>;

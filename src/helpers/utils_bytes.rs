@@ -7,7 +7,6 @@
 use {
     ::core::mem::size_of,
     byteorder::{LittleEndian, WriteBytesExt},
-    hex::{decode, encode},
 };
 
 pub const SIZE_U32: usize = size_of::<u32>();
@@ -45,14 +44,6 @@ pub fn array_u8_to_u64(bytes: &[u8]) -> u64 {
         | (bytes[5] as u64) << 40
         | (bytes[6] as u64) << 48
         | (bytes[7] as u64) << 56
-}
-
-pub fn vec_u8_to_hex(bytes: Vec<u8>) -> String {
-    encode(bytes)
-}
-
-pub fn hex_to_vec_u8(hex: &str) -> Vec<u8> {
-    decode(hex).unwrap()
 }
 
 pub fn has_bits(number: u64, bits: u64) -> bool {

@@ -6,10 +6,11 @@
 
 use {
     crypto::{Keypair, SecretKey},
-    rand::rngs::OsRng,
+    rand::{rngs::ThreadRng, thread_rng},
 };
 
 use crate::{
+    helpers::{hex_decode, hex_encode, is_hex},
     models::{
         errors_const,
         multisig::CosignatureTransaction,
@@ -19,7 +20,6 @@ use crate::{
             Signer, Transaction,
         },
     },
-    utils::{is_hex, vec_u8_to_hex},
     Result,
 };
 
@@ -38,12 +38,13 @@ pub struct Account {
 
 impl Account {
     pub fn new(network_type: NetworkType) -> Self {
-        let mut csprng: OsRng = OsRng::new().unwrap();
+        let mut csprng: ThreadRng = thread_rng();
+
         let key_pair: Keypair = Keypair::generate(&mut csprng);
 
         let public_key_bytes = key_pair.public.as_bytes();
 
-        let public_key_hex = vec_u8_to_hex(public_key_bytes.to_vec());
+        let public_key_hex = hex_encode(public_key_bytes);
 
         let public_account = PublicAccount::from_public_key(&public_key_hex, network_type).unwrap();
 
@@ -87,7 +88,7 @@ impl Account {
 
         ensure!(is_hex(private_key), errors_const::ERR_INVALID_KEY_HEX);
 
-        let sk_hex = hex::decode(private_key)?;
+        let sk_hex = hex_decode(private_key);
 
         let secret_key = SecretKey::from_bytes(&sk_hex)?;
 
@@ -95,7 +96,7 @@ impl Account {
 
         let public_key_bytes = key_pair.public.as_bytes();
 
-        let public_key_hex = vec_u8_to_hex(public_key_bytes.to_vec());
+        let public_key_hex = hex_encode(public_key_bytes);
 
         let public_account = PublicAccount::from_public_key(&public_key_hex, network_type)?;
 
@@ -106,7 +107,7 @@ impl Account {
     }
 
     pub fn to_private_key(&self) -> String {
-        vec_u8_to_hex(self.key_pair.secret.to_bytes().to_vec())
+        hex_encode(&self.key_pair.secret.to_bytes())
     }
 
     pub fn to_signer(&self) -> Signer {
@@ -132,7 +133,7 @@ impl Account {
     pub fn sign_data(&self, data: &[u8]) -> String {
         let sig = &self.key_pair.sign(data).to_bytes()[..];
 
-        vec_u8_to_hex(sig.to_vec())
+        hex_encode(sig)
     }
 
     /// Creates a new encrypted message with this account as a sender.

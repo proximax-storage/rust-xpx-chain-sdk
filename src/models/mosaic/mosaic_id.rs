@@ -12,8 +12,8 @@ use {
 };
 
 use crate::{
+    helpers::is_hex,
     models::{account::PublicAccount, asset_id_model::AssetId, Result, Uint64},
-    utils::is_hex,
     AssetIdType,
 };
 

@@ -12,8 +12,8 @@ use {
 };
 
 use crate::{
+    helpers::has_bits,
     models::{asset_id_model::AssetId, errors_const, Uint64},
-    utils::has_bits,
     AssetIdType,
 };
 

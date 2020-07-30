@@ -15,3 +15,13 @@ pub fn is_hex(input: &str) -> bool {
 
     re.is_match(input)
 }
+
+pub fn hex_decode(data: &str) -> Vec<u8> {
+    hex::decode(data)
+        .map_err(|err| panic!("Failed to decode hex data {} : {}", data, err))
+        .unwrap()
+}
+
+pub fn hex_encode(bytes: &[u8]) -> String {
+    hex::encode(bytes)
+}

@@ -14,56 +14,57 @@ use {
     serde::{Serialize, Serializer},
 };
 
-use crate::utils::{array_u8_to_u32, is_hex, u32_to_array_u8, vec_u8_to_hex};
+use crate::helpers::{array_u8_to_u32, hex_encode, is_hex, u32_to_array_u8};
 
-const NONCE_SIZE: usize = 4;
-
-/// The mosaic nonce structure.
+/// The [`MosaicNonce`] structure.
 #[derive(Debug, Clone, Deserialize, Copy)]
-pub struct MosaicNonce([u8; NONCE_SIZE]);
+pub struct MosaicNonce([u8; MosaicNonce::LENGTH]);
 
 impl MosaicNonce {
-    /// Creates a new `mosaic_nonce` from a `[u8; 4]`.
-    pub fn new(nonce: [u8; NONCE_SIZE]) -> MosaicNonce {
+    /// The length of the [`MosaicNonce`] in bytes.
+    pub const LENGTH: usize = 4;
+    /// The length of the [`MosaicNonce`] in bits.
+    pub const LENGTH_IN_BITS: usize = Self::LENGTH * 8;
+    /// The length of the [`MosaicNonce`] in hex string.
+    pub const LENGTH_IN_HEX: usize = Self::LENGTH * 2;
+
+    /// Creates a new [`MosaicNonce`] from a `[u8; 4]`.
+    pub fn new(nonce: [u8; Self::LENGTH]) -> MosaicNonce {
         MosaicNonce(nonce)
     }
 
-    /// Creates a new `mosaic_nonce` from a hex string.
+    /// Creates a new [`MosaicNonce`] from a hex string.
     pub fn from_hex(string_hex: &str) -> crate::Result<MosaicNonce> {
         ensure!(!string_hex.is_empty(), "The hex string must not be empty.");
 
         ensure!(is_hex(string_hex), "Invalid hex string.");
 
-        let mut decoded = <[u8; NONCE_SIZE]>::from_hex(string_hex).unwrap();
+        let mut decoded = <[u8; Self::LENGTH]>::from_hex(string_hex).unwrap();
 
         decoded.reverse();
 
         Ok(MosaicNonce(decoded))
     }
 
-    /// Creates a random `mosaic_nonce`.
+    /// Creates a random [`MosaicNonce`].
     pub fn random() -> MosaicNonce {
-        let mut rng = match OsRng::new() {
-            Ok(g) => g,
-            Err(e) => panic!("Failed to obtain OS RNG: {}", e),
-        };
+        let mut key = [0u8; Self::LENGTH];
+        OsRng.fill_bytes(&mut key);
 
-        let num: u32 = rng.next_u32();
-
-        MosaicNonce(u32_to_array_u8(num))
+        MosaicNonce(key)
     }
 
-    /// Converts the `mosaic_nonce` to a hex string.
+    /// Converts the [`MosaicNonce`] to a hex string.
     pub fn to_hex(&self) -> String {
-        vec_u8_to_hex(self.0.to_vec())
+        hex_encode(&self.0)
     }
 
-    /// Converts the `mosaic_nonce` to a u32.
+    /// Converts the [`MosaicNonce`] to a u32.
     pub fn to_u32(&self) -> u32 {
         array_u8_to_u32(self.0)
     }
 
-    /// Converts the `mosaic_nonce` to a array u8.
+    /// Converts the [`MosaicNonce`] to a array u8.
     pub fn to_array(&self) -> [u8; 4] {
         self.0
     }
@@ -92,7 +93,7 @@ impl Serialize for MosaicNonce {
 
 // Enable `Deref` coercion MosaicNonce.
 impl Deref for MosaicNonce {
-    type Target = [u8; NONCE_SIZE];
+    type Target = [u8; Self::LENGTH];
     fn deref(&self) -> &Self::Target {
         &self.0
     }

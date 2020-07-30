@@ -4,7 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::message::{Message, PlainMessage};
+use crate::{
+    helpers::hex_decode,
+    message::{Message, PlainMessage},
+};
 
 #[derive(Clone, Serialize, Deserialize)]
 pub(crate) struct MessageDto {
@@ -18,7 +21,7 @@ impl MessageDto {
     pub fn compact(&self) -> Box<dyn Message> {
         if self._type == 0 {
             let plain = if !self.payload.is_empty() {
-                let b = hex::decode(&self.payload).unwrap();
+                let b = hex_decode(&self.payload);
                 PlainMessage::new(&String::from_utf8(b).unwrap())
             } else {
                 PlainMessage::default()

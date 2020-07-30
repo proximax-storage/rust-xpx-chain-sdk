@@ -5,23 +5,24 @@
  */
 
 use {
+    ::std::fmt::{Debug, Write},
     bytes::Bytes,
     serde_json::Value,
-    std::fmt::{Debug, Write},
 };
 
 use crate::{
     account::AccountId,
     errors_const,
+    helpers::hex_decode,
+    helpers::is_hex,
     mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     multisig::CosignatoryModification,
     network::NetworkType,
     transaction::{HashValue, TransactionType as Entity},
-    utils::is_hex,
     Result, Uint64,
 };
 
-use super::dtos::{CosignatoryModificationDto, MosaicPropertyDto, TransactionDto};
+use super::{CosignatoryModificationDto, MosaicPropertyDto, TransactionDto};
 
 const TRANSACTION_ORDER_ASC: &str = "id";
 const TRANSACTION_ORDER_DESC: &str = "-id";
@@ -77,7 +78,7 @@ pub(crate) fn str_to_hash(hash: &str) -> Result<Vec<u8>> {
         hash.len()
     );
 
-    Ok(hex::decode(hash)?)
+    Ok(hex_decode(hash))
 }
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>

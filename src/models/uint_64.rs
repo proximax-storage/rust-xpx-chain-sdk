@@ -11,8 +11,10 @@ use {
     serde_json::Value,
 };
 
-use crate::models::error::Error;
-use crate::{models::Result, utils::SIZE_U64};
+use crate::{
+    helpers::SIZE_U64,
+    models::{error::Error, Result},
+};
 
 /// Represents a 64-bit unsigned integer.
 ///

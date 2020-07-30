@@ -7,6 +7,7 @@
 use {::sha3::Sha3_256, ::std::str::FromStr, fb::FlatBufferBuilder, sha3::Digest};
 
 use crate::{
+    helpers::{hex_decode, hex_encode, u32_to_array_u8},
     models::{
         account::Account,
         consts::{
@@ -18,7 +19,6 @@ use crate::{
         mosaic::MosaicProperty,
         multisig::CosignatoryModification,
     },
-    utils::{u32_to_array_u8, vec_u8_to_hex},
 };
 
 use super::{
@@ -39,7 +39,7 @@ pub(crate) fn sign_transaction(
 
     let tx_bytes = tx.embedded_to_bytes()?;
 
-    let generation_hash_bytes = hex::decode(&generation_hash)?;
+    let generation_hash_bytes = hex_decode(&generation_hash);
 
     let signing_suffix = &tx_bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..];
 
@@ -54,7 +54,7 @@ pub(crate) fn sign_transaction(
     tx_vector.extend_from_slice(&key_pair.public.to_bytes());
     tx_vector.extend_from_slice(&tx_bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..]);
 
-    let payload = vec_u8_to_hex(tx_vector);
+    let payload = hex_encode(&tx_vector);
 
     let hash = create_transaction_hash(payload.clone(), &generation_hash);
 
@@ -83,11 +83,11 @@ pub(crate) fn sign_transaction_with_cosignatures(
         payload.push_str(&format!(
             "{}{}",
             item.public_key_string(),
-            hex::encode(&signature.to_bytes()[..])
+            hex_encode(&signature.to_bytes()[..])
         ));
     });
 
-    let mut payload_bytes = hex::decode(payload)?;
+    let mut payload_bytes = hex_decode(&payload);
 
     let s = u32_to_array_u8(payload_bytes.len() as u32);
 
@@ -97,13 +97,13 @@ pub(crate) fn sign_transaction_with_cosignatures(
 
     Ok(SignedTransaction::new(
         entity_type,
-        hex::encode(payload_bytes),
+        hex_encode(&payload_bytes),
         stx.hash,
     ))
 }
 
 pub(crate) fn create_transaction_hash(p: String, generation_hash: &str) -> String {
-    let p_bytes = hex::decode(p).unwrap();
+    let p_bytes = hex_decode(&p);
 
     let mut sb = vec![];
 
@@ -113,15 +113,15 @@ pub(crate) fn create_transaction_hash(p: String, generation_hash: &str) -> Strin
         &p_bytes[SIGNATURE_SIZE + SIZE_SIZE..SIZE_SIZE + SIGNATURE_SIZE + SIGNER_SIZE],
     );
 
-    let generation_hash_bytes = hex::decode(generation_hash);
+    let generation_hash_bytes = hex_decode(generation_hash);
 
-    sb.extend_from_slice(&generation_hash_bytes.unwrap());
+    sb.extend_from_slice(&generation_hash_bytes);
 
     sb.extend_from_slice(&p_bytes[100..]);
 
     let sha3_public_key_hash = Sha3_256::digest(sb.as_slice());
 
-    vec_u8_to_hex(sha3_public_key_hash[..].to_vec())
+    hex_encode(&sha3_public_key_hash[..])
 }
 
 pub(crate) fn mosaic_property_array_to_buffer(

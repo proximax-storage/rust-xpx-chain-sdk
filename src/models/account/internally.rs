@@ -9,18 +9,15 @@ use {
     ::sha3::Sha3_256,
 };
 
-use crate::models::network::NetworkType;
+use crate::{helpers::hex_decode, models::network::NetworkType};
 
 pub(crate) static HASH512_LENGTH: usize = 64;
 
 pub static EMPTY_PUBLIC_KEY: &str =
     "0000000000000000000000000000000000000000000000000000000000000000";
 
-pub(crate) fn public_key_to_address(
-    public_key: &str,
-    version: NetworkType,
-) -> crate::Result<[u8; 25]> {
-    let pk: Vec<u8> = hex::decode(public_key)?;
+pub(crate) fn public_key_to_address(public_key: &str, version: NetworkType) -> [u8; 25] {
+    let pk: Vec<u8> = hex_decode(public_key);
 
     // step 1: sha3 hash of the public key
     let sha3_public_key_hash = Sha3_256::digest(&pk);
@@ -41,7 +38,7 @@ pub(crate) fn public_key_to_address(
     let mut bts: [u8; 25] = [0u8; 25];
     bts.copy_from_slice(&concat_step_three_and_step_six[..25]);
 
-    Ok(bts)
+    bts
 }
 
 fn generate_checksum(input: &[u8]) -> Box<[u8]> {

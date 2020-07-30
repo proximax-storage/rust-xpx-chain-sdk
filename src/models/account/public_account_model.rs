@@ -12,14 +12,14 @@ use serde::{
 };
 
 use crate::{
+    helpers::{hex_decode, is_hex},
     models::{consts::PUBLIC_KEY_BYTES_SIZE, errors_const},
-    utils::is_hex,
     Result,
 };
 
 use super::Address;
 
-/// The `PublicAccount` account structure contains account's `Address` and public key.
+/// The [`PublicAccount`] account structure contains account's [`Address`] and public key.
 #[derive(Default, Clone, Deserialize, Copy)]
 #[serde(rename_all = "camelCase")]
 pub struct PublicAccount {
@@ -30,7 +30,7 @@ pub struct PublicAccount {
 }
 
 impl PublicAccount {
-    /// Create a `PublicAccount` from a public key for the given `NetworkType`.
+    /// Create a [`PublicAccount`] from a public key for the given [`NetworkType`].
     pub fn from_public_key(
         public_key: &str,
         network_type: crate::models::network::NetworkType,
@@ -50,7 +50,7 @@ impl PublicAccount {
         })
     }
 
-    /// Verify a signature on a message with this `PublicAccount` public key.
+    /// Verify a signature on a message with this [`PublicAccount`] public key.
     ///
     /// # Return
     ///
@@ -63,9 +63,9 @@ impl PublicAccount {
 
         ensure!(is_hex(signature), errors_const::ERR_INVALID_SIGNATURE_HEX);
 
-        let sig_byte: Vec<u8> = hex::decode(signature)?;
+        let sig_byte: Vec<u8> = hex_decode(signature);
 
-        let pk_byte: Vec<u8> = hex::decode(&self.public_key)?;
+        let pk_byte: Vec<u8> = self.public_key.to_vec();
 
         let pk = crypto::PublicKey::from_bytes(&pk_byte)?;
 
@@ -84,7 +84,7 @@ impl PublicAccount {
     #[inline]
     fn decode(public_key: &str) -> [u8; PUBLIC_KEY_BYTES_SIZE] {
         let mut array = [0; PUBLIC_KEY_BYTES_SIZE];
-        let public_key_to_bytes = hex::decode(public_key).unwrap();
+        let public_key_to_bytes = hex_decode(public_key);
 
         array.copy_from_slice(&public_key_to_bytes);
 

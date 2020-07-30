@@ -14,8 +14,8 @@ use {
 };
 
 use crate::{
+    helpers::{hex_decode, is_hex},
     models::{errors_const, network::*},
-    utils::is_hex,
     Result,
 };
 
@@ -31,26 +31,26 @@ pub(crate) const PREFIX_PRIVATE_TEST: char = 'W';
 const EMPTY_STRING: &str = "";
 const REGEX_DASH: &str = "-";
 
-/// The `Address` structure describes an address with its network.
+/// The [`Address`] structure describes an address with its [`NetworkType`].
 #[derive(Default, Clone, PartialEq, Deserialize, Copy)]
 #[serde(rename_all = "camelCase")]
 pub struct Address {
     /// The address in bytes.
-    address: [u8; 25],
+    address: [u8; Address::LENGTH],
     network_type: NetworkType,
 }
 
 impl Address {
-    /// The length of the Address in bytes.
+    /// The length of the [`Address`] in bytes.
     pub const LENGTH: usize = 25;
-    /// The length of the Address in bits.
+    /// The length of the [`Address`] in bits.
     pub const LENGTH_IN_BITS: usize = Self::LENGTH * 8;
-    /// The length of the Address in hex string.
+    /// The length of the [`Address`] in hex string.
     pub const LENGTH_IN_HEX: usize = Self::LENGTH * 2;
-    /// The length of the Address in base32 string.
+    /// The length of the [`Address`] in base32 string.
     pub const LENGTH_IN_BASE32: usize = 40;
 
-    /// Creates an `Address` from a given public_key string for the given `NetworkType`.
+    /// Creates an [`Address`] from a given public_key string for the given [`NetworkType`].
     pub fn from_public_key(public_key: &str, network_type: NetworkType) -> Result<Self> {
         ensure!(
             !public_key.is_empty(),
@@ -61,7 +61,7 @@ impl Address {
 
         ensure!(public_key.len() == 64, errors_const::ERR_INVALID_KEY_LENGTH);
 
-        let address = public_key_to_address(public_key, network_type)?;
+        let address = public_key_to_address(public_key, network_type);
 
         Ok(Self {
             address,
@@ -69,7 +69,7 @@ impl Address {
         })
     }
 
-    /// Creates an `Address` from a given `raw_address` string.
+    /// Creates an [`Address`] from a given `raw_address` string.
     ///
     /// A raw address string looks like:
     /// VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU or VAWOEO-WTABXR-7O3ZAK-2XNA5G-IBNE6P-ZIXDAF-DWBU
@@ -95,7 +95,7 @@ impl Address {
         })
     }
 
-    /// Create an `Address` from the given encoded address
+    /// Create an [`Address`] from the given encoded address
     /// A raw address string hex looks like: A8EE6C6659D09B9CD25AAF1ED8796CE15000A19D31FD3BDE94.
     pub fn from_encoded(encoded: &str) -> Result<Self> {
         ensure!(!encoded.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
@@ -115,7 +115,7 @@ impl Address {
         })
     }
 
-    /// Converts an `Address` String into a more readable/pretty format.
+    /// Converts an [`Address`] String into a more readable/pretty format.
     ///
     /// Before: VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU
     /// After: VAWOEO-WTABXR-7O3ZAK-2XNA5G-IBNE6P-ZIXDAF-DWBU
@@ -144,7 +144,7 @@ impl Address {
 
     #[inline]
     fn decode_from_hex(data: &str) -> Result<[u8; Self::LENGTH]> {
-        let add_decode = hex::decode(data)?;
+        let add_decode = hex_decode(data);
 
         let mut bts: [u8; 25] = [0u8; 25];
         bts.copy_from_slice(&add_decode);
