@@ -60,6 +60,15 @@ impl FromStr for HashValue {
     }
 }
 
+impl fmt::Binary for HashValue {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for byte in self.iter() {
+            write!(f, "{:08b}", byte)?;
+        }
+        Ok(())
+    }
+}
+
 impl fmt::Display for HashValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for byte in self.iter() {
