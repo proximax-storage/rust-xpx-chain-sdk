@@ -74,11 +74,8 @@ pub(crate) struct NamespaceInfoDto {
 }
 
 impl NamespaceInfoDto {
-    pub fn compact(&self) -> crate::Result<NamespaceInfo> {
-        let public_account = PublicAccount::from_public_key(
-            &self.namespace.owner,
-            NetworkType::from(self.namespace._type),
-        )?;
+    pub fn compact(&self, network_type: NetworkType) -> crate::Result<NamespaceInfo> {
+        let public_account = PublicAccount::from_public_key(&self.namespace.owner, network_type)?;
 
         let levels = self.namespace.extract_levels()?;
 

@@ -18,6 +18,7 @@ use crate::{
     errors_const::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
     models::Result,
     namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
+    network::NetworkType,
     AssetId,
 };
 
@@ -29,13 +30,13 @@ use super::{
 /// Namespace ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NamespaceRoutes(Arc<ApiClient>);
+pub struct NamespaceRoutes(Arc<ApiClient>, NetworkType);
 
 /// Namespace related endpoints.
 ///
 impl NamespaceRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
-        NamespaceRoutes(client)
+    pub(crate) fn new(client: Arc<ApiClient>, network_time: NetworkType) -> Self {
+        NamespaceRoutes(client, network_time)
     }
 
     fn __build_namespace_hierarchy<'b>(
@@ -89,7 +90,7 @@ impl NamespaceRoutes {
 
         let dto_raw: Result<NamespaceInfoDto> = req.clone().execute(self.0.to_owned()).await;
 
-        let mut dto_to_struct = dto_raw?.compact()?;
+        let mut dto_to_struct = dto_raw?.compact(self.1)?;
 
         self.__build_namespace_hierarchy(&mut dto_to_struct).await;
 
@@ -142,7 +143,7 @@ impl NamespaceRoutes {
 
         let mut namespace_info: Vec<NamespaceInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.compact()?);
+            namespace_info.push(namespace_dto.compact(self.1)?);
         }
 
         self.__build_namespaces_hierarchy(&mut namespace_info).await;
@@ -178,7 +179,7 @@ impl NamespaceRoutes {
 
         let mut namespace_info: Vec<NamespaceInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.compact()?);
+            namespace_info.push(namespace_dto.compact(self.1)?);
         }
 
         self.__build_namespaces_hierarchy(&mut namespace_info).await;

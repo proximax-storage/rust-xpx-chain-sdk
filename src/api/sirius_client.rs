@@ -54,7 +54,10 @@ impl SiriusClient {
     }
 
     pub fn namespace_api(&self) -> Box<NamespaceRoutes> {
-        Box::new(NamespaceRoutes::new(self.client.to_owned()))
+        Box::new(NamespaceRoutes::new(
+            self.client.to_owned(),
+            self.network_type(),
+        ))
     }
 
     pub fn transaction_api(&self) -> Box<TransactionRoutes> {
