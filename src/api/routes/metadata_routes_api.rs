@@ -66,9 +66,13 @@ impl MetadataRoutes {
 
         req = req.with_path_param("mosaic_id".to_string(), mosaic_id.to_hex());
 
-        let dto: MosaicMetadataInfoDto = req.execute(self.__client()).await?;
+        #[derive(Deserialize)]
+        struct MetadataDto {
+            metadata: MosaicMetadataInfoDto,
+        }
+        let dto: MetadataDto = req.execute(self.__client()).await?;
 
-        Ok(dto.compact()?)
+        Ok(dto.metadata.compact()?)
     }
 
     pub async fn get_metadata_by_namespace_id(
@@ -80,12 +84,16 @@ impl MetadataRoutes {
 
         req = req.with_path_param("namespace_id".to_string(), namespace_id.to_hex());
 
-        let dto: NamespaceMetadataInfoDto = req.execute(self.__client()).await?;
+        #[derive(Deserialize)]
+        struct MetadataDto {
+            metadata: NamespaceMetadataInfoDto,
+        }
+        let dto: MetadataDto = req.execute(self.__client()).await?;
 
-        Ok(dto.compact()?)
+        Ok(dto.metadata.compact()?)
     }
 
-    pub async fn get_addresses_metadata_info(
+    pub async fn get_addresses_metadata(
         self,
         addresses: Vec<&str>,
     ) -> Result<Vec<AddressMetadataInfo>> {
@@ -98,17 +106,22 @@ impl MetadataRoutes {
 
         req = req.with_body_param(&addresses);
 
-        let dto: Vec<AddressMetadataInfoDto> = req.execute(self.__client()).await?;
+        #[derive(Deserialize)]
+        struct MetadataDto {
+            metadata: AddressMetadataInfoDto,
+        }
+
+        let dto: Vec<MetadataDto> = req.execute(self.__client()).await?;
 
         let mut address_info: Vec<AddressMetadataInfo> = vec![];
         for address_dto in dto.into_iter() {
-            address_info.push(address_dto.compact()?);
+            address_info.push(address_dto.metadata.compact()?);
         }
 
         Ok(address_info)
     }
 
-    pub async fn get_mosaic_id_metadata_info(
+    pub async fn get_mosaics_id_metadata(
         self,
         mosaic_ids: Vec<MosaicId>,
     ) -> Result<Vec<MosaicMetadataInfo>> {
@@ -121,17 +134,22 @@ impl MetadataRoutes {
 
         req = req.with_body_param(&mosaic_ids);
 
-        let dto: Vec<MosaicMetadataInfoDto> = req.execute(self.__client()).await?;
+        #[derive(Deserialize)]
+        struct MetadataDto {
+            metadata: MosaicMetadataInfoDto,
+        }
+
+        let dto: Vec<MetadataDto> = req.execute(self.__client()).await?;
 
         let mut mosaic_info: Vec<MosaicMetadataInfo> = vec![];
         for mosaic_dto in dto.into_iter() {
-            mosaic_info.push(mosaic_dto.compact()?);
+            mosaic_info.push(mosaic_dto.metadata.compact()?);
         }
 
         Ok(mosaic_info)
     }
 
-    pub async fn get_namespace_id_metadata_info(
+    pub async fn get_namespaces_id_metadata(
         self,
         namespace_ids: Vec<NamespaceId>,
     ) -> Result<Vec<NamespaceMetadataInfo>> {
@@ -144,11 +162,16 @@ impl MetadataRoutes {
 
         req = req.with_body_param(&namespace_ids);
 
-        let dto: Vec<NamespaceMetadataInfoDto> = req.execute(self.__client()).await?;
+        #[derive(Deserialize)]
+        struct MetadataDto {
+            metadata: NamespaceMetadataInfoDto,
+        }
+
+        let dto: Vec<MetadataDto> = req.execute(self.__client()).await?;
 
         let mut namespace_info: Vec<NamespaceMetadataInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.compact()?);
+            namespace_info.push(namespace_dto.metadata.compact()?);
         }
 
         Ok(namespace_info)

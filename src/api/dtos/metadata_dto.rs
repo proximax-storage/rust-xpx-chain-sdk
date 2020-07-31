@@ -60,11 +60,6 @@ pub(crate) struct AddressMetadataInfoDto {
     address: String,
 }
 
-#[derive(Serialize, Deserialize)]
-pub(crate) struct AddressMetadataDto {
-    metadata: AddressMetadataInfoDto,
-}
-
 impl AddressMetadataInfoDto {
     pub fn compact(&self) -> crate::Result<AddressMetadataInfo> {
         let info = self.metadata.compact();
@@ -86,11 +81,6 @@ pub(crate) struct MosaicMetadataInfoDto {
     mosaic_id: Uint64Dto,
 }
 
-#[derive(Serialize, Deserialize)]
-pub(crate) struct MosaicMetadataDto {
-    metadata: MosaicMetadataInfoDto,
-}
-
 impl MosaicMetadataInfoDto {
     pub fn compact(&self) -> crate::Result<MosaicMetadataInfo> {
         let info = self.metadata.compact();
@@ -110,11 +100,6 @@ pub(crate) struct NamespaceMetadataInfoDto {
     metadata: MetadataInfoDto,
     #[serde(rename = "metadataId")]
     namespace_id: Uint64Dto,
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) struct NamespaceMetadataDto {
-    metadata: NamespaceMetadataInfoDto,
 }
 
 impl NamespaceMetadataInfoDto {

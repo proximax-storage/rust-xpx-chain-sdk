@@ -13,8 +13,7 @@ use crate::{
 };
 
 use super::{
-    AbstractTransactionDto, FieldDto, MetadataModificationDto, TransactionDto, TransactionMetaDto,
-    Uint64Dto,
+    AbstractTransactionDto, MetadataModificationDto, TransactionDto, TransactionMetaDto, Uint64Dto,
 };
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -67,28 +66,6 @@ impl MosaicInfoDto {
 struct MosaicMetaDto {
     #[serde(rename = "id")]
     id: String,
-}
-
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub(crate) struct MosaicMetadataDto {
-    metadata_type: i32,
-    fields: Vec<FieldDto>,
-    metadata_id: Uint64Dto,
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) struct MosaicMetadataDtoAllOf {
-    #[serde(rename = "metadataType", skip_serializing_if = "Option::is_none")]
-    metadata_type: Option<i32>,
-    #[serde(rename = "metadataId")]
-    metadata_id: Uint64Dto,
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) struct MosaicMetadataInfoDto {
-    #[serde(rename = "metadata")]
-    metadata: MosaicMetadataDto,
 }
 
 #[derive(Serialize, Deserialize)]
