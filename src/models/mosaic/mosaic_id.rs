@@ -20,7 +20,7 @@ use crate::{
 use super::{generate_mosaic_id, MosaicNonce};
 
 /// The `MosaicId` id structure describes mosaic id.
-#[derive(Default, Debug, Clone, PartialEq, Deserialize, Eq, Hash)]
+#[derive(Default, Debug, Clone, PartialEq, Deserialize, Eq, Hash, Copy)]
 pub struct MosaicId(pub(crate) Uint64);
 
 impl MosaicId {

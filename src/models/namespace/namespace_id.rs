@@ -21,7 +21,7 @@ use super::{generate_namespace_path, NAMESPACE_BIT};
 
 /// The `MosaicId` id structure describes mosaic id.
 #[derive(Default, Debug, Clone, PartialEq, Deserialize, Copy)]
-pub struct NamespaceId(pub(crate) Uint64);
+pub struct NamespaceId(Uint64);
 
 impl NamespaceId {
     /// Creates a new `MosaicId` from a `Uint64`.
