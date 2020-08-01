@@ -91,8 +91,8 @@ impl From<u8> for MetadataModificationType {
     fn from(num: u8) -> Self {
         use MetadataModificationType::*;
         match num {
-            1 => Add,
-            2 => Remove,
+            0 => Add,
+            1 => Remove,
             _ => NotSupported,
         }
     }

@@ -144,44 +144,42 @@ impl Request {
             req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
         }
 
-        {
-            let req_headers = req.headers_mut();
-            if let Some(ref user_agent) = api.user_agent {
-                req_headers.insert(
-                    USER_AGENT,
-                    user_agent
-                        .parse()
-                        .map_err(|err| Error::from(format_err!("{}", err)))?,
-                );
+        let req_headers = req.headers_mut();
+        if let Some(ref user_agent) = api.user_agent {
+            req_headers.insert(
+                USER_AGENT,
+                user_agent
+                    .parse()
+                    .map_err(|err| Error::from(format_err!("{}", err)))?,
+            );
+        }
+
+        req_headers.extend(headers);
+
+        let resp = api.client.execute(req).await?;
+
+        let status = resp.status();
+
+        let body = resp.bytes().await?;
+
+        match status {
+            StatusCode::OK | StatusCode::ACCEPTED => {
+                if self.is_transaction {
+                    let map_dto = map_transaction_dto(body)?;
+                    let res: U = serde_json::from_str(&map_dto)?;
+                    Ok(res)
+                } else if self.is_transaction_vec {
+                    let map_dto_vec = map_transaction_dto_vec(body)?;
+                    let res: U = serde_json::from_str(&map_dto_vec)?;
+                    Ok(res)
+                } else {
+                    let res: U = serde_json::from_slice(&body)?;
+                    Ok(res)
+                }
             }
-
-            req_headers.extend(headers);
-
-            let resp = api.client.execute(req).await?;
-
-            let status = resp.status();
-
-            let body = resp.bytes().await?;
-
-            match status {
-                StatusCode::OK | StatusCode::ACCEPTED => {
-                    if self.is_transaction {
-                        let map_dto = map_transaction_dto(body)?;
-                        let res: U = serde_json::from_str(&map_dto)?;
-                        Ok(res)
-                    } else if self.is_transaction_vec {
-                        let map_dto_vec = map_transaction_dto_vec(body)?;
-                        let res: U = serde_json::from_str(&map_dto_vec)?;
-                        Ok(res)
-                    } else {
-                        let res: U = serde_json::from_slice(&body)?;
-                        Ok(res)
-                    }
-                }
-                _ => {
-                    let err: SiriusError = serde_json::from_slice(&body)?;
-                    Err(Error::from(err))
-                }
+            _ => {
+                let err: SiriusError = serde_json::from_slice(&body)?;
+                Err(Error::from(err))
             }
         }
     }

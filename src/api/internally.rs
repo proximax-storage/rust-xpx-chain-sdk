@@ -15,6 +15,7 @@ use crate::{
     errors_const,
     helpers::hex_decode,
     helpers::is_hex,
+    metadata::MetadataModification,
     mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     multisig::CosignatoryModification,
     network::NetworkType,
@@ -22,7 +23,9 @@ use crate::{
     Result, Uint64,
 };
 
-use super::{CosignatoryModificationDto, MosaicPropertyDto, TransactionDto};
+use super::{
+    CosignatoryModificationDto, MetadataModificationDto, MosaicPropertyDto, TransactionDto,
+};
 
 const TRANSACTION_ORDER_ASC: &str = "id";
 const TRANSACTION_ORDER_DESC: &str = "-id";
@@ -158,6 +161,9 @@ pub(crate) fn map_transaction_dto(body: Bytes) -> Result<String> {
         Entity::ExchangeOffer => "ExchangeOffer",
         Entity::RemoveExchangeOffer => "RemoveExchangeOffer",
         Entity::Block => "Block",
+        Entity::ModifyMetadataAddress => "AddressMetadata",
+        Entity::ModifyMetadataMosaic => "MosaicMetadata",
+        Entity::ModifyMetadataNamespace => "NamespaceMetadata",
         Entity::BlockchainUpgrade => "BlockchainUpgrade",
         Entity::Lock => "HashLock",
         Entity::ModifyMultisigAccount => "ModifyMultisigAccount",
@@ -269,4 +275,13 @@ pub(crate) fn cosignatory_dto_vec_to_struct(
 
 pub(crate) fn has_bits(number: Uint64, bits: u8) -> bool {
     (*number & bits as u64) == bits as u64
+}
+
+pub(crate) fn metadata_dto_vec_to_struct(
+    modifications: Vec<MetadataModificationDto>,
+) -> Vec<MetadataModification> {
+    modifications
+        .iter()
+        .map(|modification| modification.compact())
+        .collect()
 }

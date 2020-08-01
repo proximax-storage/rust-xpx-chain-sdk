@@ -4,38 +4,45 @@
  * license that can be found in the LICENSE file.
  */
 
-use super::{AbstractTransactionDto, FieldDto, MetadataModificationDto};
+use crate::{
+    account::Address,
+    transaction::{MetadataAddressTransaction, Transaction},
+};
 
-#[derive(Serialize, Deserialize)]
-struct AddressMetadataDto {
-    #[serde(rename = "metadataType")]
-    metadata_type: u32,
-    #[serde(rename = "fields")]
-    fields: Vec<FieldDto>,
-    #[serde(rename = "metadataId")]
-    metadata_id: String,
-}
+use super::{ModifyMetadataTransactionDto, TransactionDto, TransactionMetaDto};
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-struct AddressMetadataDtoAllOf {
-    #[serde(rename = "metadataId")]
-    metadata_id: String,
-}
-
-#[derive(Serialize, Deserialize)]
-struct AddressMetadataInfoDto {
-    #[serde(rename = "metadata")]
-    metadata: AddressMetadataDto,
-}
-
-/// AddressMetadataTransactionDto : Transaction that addes metadata to account.
-#[derive(Serialize, Deserialize)]
-struct AddressMetadataTransactionDto {
+/// AddressMetadataTransactionDto :
+///Transaction that addes metadata to account.
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct AddressMetadataTransactionDto {
     #[serde(flatten)]
-    r#abstract: AbstractTransactionDto,
-    /// The address in hexadecimal.
-    metadata_id: String,
-    metadata_type: u8,
-    /// The array of metadata modifications.
-    modifications: Vec<MetadataModificationDto>,
+    metadata_transaction: ModifyMetadataTransactionDto,
+    #[serde(rename = "metadataId")]
+    address: String,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct AddressMetadataTransactionInfoDto {
+    meta: TransactionMetaDto,
+    transaction: AddressMetadataTransactionDto,
+}
+
+#[typetag::serde]
+impl TransactionDto for AddressMetadataTransactionInfoDto {
+    fn compact(&self) -> crate::models::Result<Box<dyn Transaction>> {
+        let dto = self.transaction.clone();
+
+        let info = self.meta.compact()?;
+
+        let metadata_transaction = dto.metadata_transaction.compact(info)?;
+
+        let address = Address::from_encoded(&dto.address)?;
+
+        Ok(Box::new(MetadataAddressTransaction {
+            metadata_transaction,
+            address,
+        }))
+    }
 }

@@ -7,21 +7,27 @@
 use downcast_rs::__std::collections::HashMap;
 
 use crate::{
-    api::Uint64Dto,
+    api::metadata_dto_vec_to_struct,
     models::{
         account::Address,
         metadata::{
-            AddressMetadataInfo, MetadataInfo, MetadataType, MosaicMetadataInfo,
-            NamespaceMetadataInfo,
+            AddressMetadataInfo, MetadataInfo, MetadataModification, MetadataModificationType,
+            MetadataType, MosaicMetadataInfo, NamespaceMetadataInfo,
         },
         mosaic::MosaicId,
         namespace::NamespaceId,
+        transaction::{ModifyMetadataTransaction, TransactionInfo},
     },
 };
 
-use super::FieldDto;
+use super::{AbstractTransactionDto, FieldDto, Uint64Dto};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
+pub(crate) struct MetadataDto<T> {
+    pub(crate) metadata: T,
+}
+
+#[derive(Deserialize)]
 pub(crate) struct MetadataInfoDto {
     #[serde(rename = "metadataType")]
     r#_type: u8,
@@ -43,8 +49,9 @@ impl MetadataInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub(crate) struct MetadataModificationDto {
+    #[serde(rename = "modificationType")]
     modification_type: u8,
     /// The key of metadata modification.
     key: String,
@@ -52,7 +59,39 @@ pub(crate) struct MetadataModificationDto {
     value: String,
 }
 
-#[derive(Serialize, Deserialize)]
+impl MetadataModificationDto {
+    pub fn compact(&self) -> MetadataModification {
+        MetadataModification {
+            r#type: MetadataModificationType::from(self.modification_type),
+            key: self.key.clone(),
+            value: self.value.clone(),
+        }
+    }
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct ModifyMetadataTransactionDto {
+    #[serde(flatten)]
+    pub r#abstract: AbstractTransactionDto,
+    pub metadata_type: u8,
+    pub modifications: Vec<MetadataModificationDto>,
+}
+
+impl ModifyMetadataTransactionDto {
+    pub fn compact(&self, info: TransactionInfo) -> crate::Result<ModifyMetadataTransaction> {
+        let abs_transaction = self.r#abstract.compact(info)?;
+
+        let modifications = metadata_dto_vec_to_struct(self.modifications.clone());
+        Ok(ModifyMetadataTransaction {
+            abs_transaction,
+            metadata_type: MetadataType::from(self.metadata_type),
+            modifications,
+        })
+    }
+}
+
+#[derive(Deserialize)]
 pub(crate) struct AddressMetadataInfoDto {
     #[serde(flatten)]
     metadata: MetadataInfoDto,
@@ -73,7 +112,7 @@ impl AddressMetadataInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct MosaicMetadataInfoDto {
     #[serde(flatten)]
     metadata: MetadataInfoDto,
@@ -94,7 +133,7 @@ impl MosaicMetadataInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct NamespaceMetadataInfoDto {
     #[serde(flatten)]
     metadata: MetadataInfoDto,

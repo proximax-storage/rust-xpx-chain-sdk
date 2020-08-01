@@ -60,13 +60,11 @@ pub(crate) type EntityVersion = u32;
 /// * 0x433D (17213 decimal) - Modify Metadata Namespace Transaction.
 /// * 0x4158 (16728 decimal) - Blockchain Upgrade Transaction.
 /// * 0x4159 (16729 decimal) - Network Config Transaction.
-/// * 0x423D (16957 decimal) - Mosaic Metadata Transaction.
 /// * 0x4241 (16961 decimal) - Aggregate Bonded Transaction.
 /// * 0x424D (16973 decimal) - Mosaic Supply Change Transaction.
 /// * 0x424E (16974 decimal) - Address Alias Transaction.
 /// * 0x4250 (16976 decimal) - Account Properties Mosaic Transaction.
 /// * 0x4252 (16978 decimal) - Secret Proof Transaction.
-/// * 0x433D (17213 decimal) - Namespace Metadata Transaction.
 /// * 0x434E (17230 decimal) - Mosaic Alias Transaction.
 /// * 0x4350 (17232 decimal) - Account Properties Entity Type Transaction.
 /// * 0x8043 (32835 decimal) - Nemesis block.
@@ -135,6 +133,8 @@ impl From<u16> for TransactionType {
             0x4154 => Transfer,
             0x4155 => ModifyMultisigAccount,
             0x413D => ModifyMetadataAddress,
+            0x423D => ModifyMetadataMosaic,
+            0x433D => ModifyMetadataNamespace,
             0x4158 => BlockchainUpgrade,
             0x4159 => NetworkConfigEntityType,
             0x4241 => AggregateBonded,

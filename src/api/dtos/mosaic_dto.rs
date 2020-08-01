@@ -6,14 +6,20 @@
 
 use crate::{
     api::mosaic_properties,
-    errors_const,
-    models::Result,
-    mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicNonce, MosaicSupplyType},
-    transaction::{MosaicDefinitionTransaction, MosaicSupplyChangeTransaction, Transaction},
+    models::{
+        errors_const,
+        mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicNonce, MosaicSupplyType},
+        transaction::{
+            MetadataMosaicTransaction, MosaicDefinitionTransaction, MosaicSupplyChangeTransaction,
+            Transaction,
+        },
+        Result,
+    },
 };
 
 use super::{
-    AbstractTransactionDto, MetadataModificationDto, TransactionDto, TransactionMetaDto, Uint64Dto,
+    AbstractTransactionDto, ModifyMetadataTransactionDto, TransactionDto, TransactionMetaDto,
+    Uint64Dto,
 };
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -118,16 +124,40 @@ pub(crate) struct MosaicDefinitionDto {
     properties: Vec<MosaicPropertyDto>,
 }
 
-/// MosaicMetadataTransactionDto : Transaction that addes metadata to mosaic.
-#[derive(Serialize, Deserialize)]
+/// MosaicMetadataTransactionDto :
+/// Transaction that addes metadata to mosaic.
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicMetadataTransactionDto {
     #[serde(flatten)]
-    r#abstract: AbstractTransactionDto,
-    metadata_id: Uint64Dto,
-    metadata_type: u8,
-    /// The array of metadata modifications.
-    modifications: Vec<MetadataModificationDto>,
+    metadata_transaction: ModifyMetadataTransactionDto,
+    #[serde(rename = "metadataId")]
+    mosaic_id: Uint64Dto,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct MosaicMetadataTransactionInfoDto {
+    meta: TransactionMetaDto,
+    transaction: MosaicMetadataTransactionDto,
+}
+
+#[typetag::serde]
+impl TransactionDto for MosaicMetadataTransactionInfoDto {
+    fn compact(&self) -> Result<Box<dyn Transaction>> {
+        let dto = self.transaction.clone();
+
+        let info = self.meta.compact()?;
+
+        let metadata_transaction = dto.metadata_transaction.compact(info)?;
+
+        let mosaic_id = MosaicId::from(dto.mosaic_id.compact());
+
+        Ok(Box::new(MetadataMosaicTransaction {
+            metadata_transaction,
+            mosaic_id,
+        }))
+    }
 }
 
 #[derive(Serialize, Deserialize)]

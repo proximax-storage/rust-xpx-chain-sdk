@@ -10,12 +10,12 @@ use crate::{
     models::Result,
     namespace::{NamespaceId, NamespaceInfo, NamespaceName, NamespaceType},
     network::NetworkType,
-    transaction::{RegisterNamespaceTransaction, Transaction},
+    transaction::{MetadataNamespaceTransaction, RegisterNamespaceTransaction, Transaction},
     AssetId,
 };
 
 use super::{
-    AbstractTransactionDto, AliasDto, FieldDto, MetadataModificationDto, TransactionDto,
+    AbstractTransactionDto, AliasDto, ModifyMetadataTransactionDto, TransactionDto,
     TransactionMetaDto, Uint64Dto,
 };
 
@@ -126,39 +126,40 @@ pub(crate) struct NamespaceMetaDto {
     index: i32,
 }
 
-#[derive(Serialize, Deserialize)]
-pub(crate) struct NamespaceMetadataDto {
-    #[serde(rename = "metadataType")]
-    metadata_type: i32,
-    #[serde(rename = "fields")]
-    fields: Vec<FieldDto>,
-    #[serde(rename = "metadataId")]
-    metadata_id: Uint64Dto,
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) struct NamespaceMetadataDtoAllOf {
-    #[serde(rename = "metadataType", skip_serializing_if = "Option::is_none")]
-    metadata_type: Option<i32>,
-    #[serde(rename = "metadataId")]
-    metadata_id: Uint64Dto,
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) struct NamespaceMetadataInfoDto {
-    #[serde(rename = "metadata")]
-    metadata: NamespaceMetadataDto,
-}
-
-/// NamespaceMetadataTransactionDto : Transaction that addes metadata to namespace.
-#[derive(Serialize, Deserialize)]
+/// NamespaceMetadataTransactionDto :
+/// Transaction that address metadata to namespace.
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceMetadataTransactionDto {
     #[serde(flatten)]
-    r#abstract: AbstractTransactionDto,
-    metadata_id: Uint64Dto,
-    metadata_type: u8,
-    modifications: Vec<MetadataModificationDto>,
+    metadata_transaction: ModifyMetadataTransactionDto,
+    #[serde(rename = "metadataId")]
+    namespace_id: Uint64Dto,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct NamespaceMetadataTransactionInfoDto {
+    meta: TransactionMetaDto,
+    transaction: NamespaceMetadataTransactionDto,
+}
+
+#[typetag::serde]
+impl TransactionDto for NamespaceMetadataTransactionInfoDto {
+    fn compact(&self) -> Result<Box<dyn Transaction>> {
+        let dto = self.transaction.clone();
+
+        let info = self.meta.compact()?;
+
+        let metadata_transaction = dto.metadata_transaction.compact(info)?;
+
+        let namespace_id = NamespaceId::from(dto.namespace_id.compact());
+
+        Ok(Box::new(MetadataNamespaceTransaction {
+            metadata_transaction,
+            namespace_id,
+        }))
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -179,13 +180,6 @@ impl NamespaceNameDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub(crate) struct RegisterNamespaceTransactionInfoDto {
-    meta: TransactionMetaDto,
-    transaction: RegisterNamespaceTransactionDto,
-}
-
 /// RegisterNamespaceTransactionDto : Transaction that creates or renew a namespace.
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -201,6 +195,13 @@ pub(crate) struct RegisterNamespaceTransactionDto {
     namespace_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     parent_id: Option<Uint64Dto>,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct RegisterNamespaceTransactionInfoDto {
+    meta: TransactionMetaDto,
+    transaction: RegisterNamespaceTransactionDto,
 }
 
 #[typetag::serde]

@@ -40,7 +40,7 @@ pub const ERR_INVALID_AGGREGATE_TRANSACTION: &str =
     "The transaction is not an AggregateTransaction.";
 
 // Common errors
-pub const ERR_UNKNOWN_BLOCKCHAIN_TYPE: &str = "Not supported Blockchain Type.";
+pub const ERR_UNKNOWN_BLOCKCHAIN_TYPE: &str = "Not supported Blockchain Type. ";
 pub const ERR_INVALID_HASH_LENGTH: &str = "The length of Hash is invalid.";
 pub const ERR_INVALID_HASH_HEX: &str = "Invalid Hash it's not hex.";
 
