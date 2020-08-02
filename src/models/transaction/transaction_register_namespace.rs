@@ -22,7 +22,7 @@ use crate::{
 use super::{
     buffer::register_namespace as buffer, internal::sign_transaction,
     schema::register_namespace_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    SignedTransaction, Transaction, TransactionType, REGISTER_NAMESPACE_VERSION,
+    HashValue, SignedTransaction, Transaction, TransactionType, REGISTER_NAMESPACE_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -123,7 +123,7 @@ impl Transaction for RegisterNamespaceTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

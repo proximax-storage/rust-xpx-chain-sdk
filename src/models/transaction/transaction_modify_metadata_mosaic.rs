@@ -22,7 +22,7 @@ use crate::{
 };
 
 use super::{
-    internal::sign_transaction, AbsTransaction, AbstractTransaction, Deadline,
+    internal::sign_transaction, AbsTransaction, AbstractTransaction, Deadline, HashValue,
     ModifyMetadataTransaction, SignedTransaction, Transaction, TransactionType,
     METADATA_MOSAIC_VERSION,
 };
@@ -82,7 +82,7 @@ impl Transaction for MetadataMosaicTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

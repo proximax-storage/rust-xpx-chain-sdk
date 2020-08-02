@@ -22,7 +22,7 @@ use crate::{
 use super::{
     buffer::account_properties as buffer, internal::sign_transaction,
     schema::account_property_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    SignedTransaction, Transaction, TransactionType, ACCOUNT_PROPERTY_ADDRESS_VERSION,
+    HashValue, SignedTransaction, Transaction, TransactionType, ACCOUNT_PROPERTY_ADDRESS_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -83,7 +83,7 @@ impl Transaction for AccountPropertiesAddressTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

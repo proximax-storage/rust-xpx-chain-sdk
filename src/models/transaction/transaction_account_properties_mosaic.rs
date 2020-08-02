@@ -14,14 +14,13 @@ use crate::{
     account::{Account, AccountPropertiesMosaicModification, AccountPropertyType, PublicAccount},
     models::consts::{ACCOUNT_PROPERTIES_MOSAIC_MODIFICATION_SIZE, ACCOUNT_PROPERTY_MOSAIC_HEADER},
     network::NetworkType,
-    transaction::ACCOUNT_PROPERTY_MOSAIC_VERSION,
     Result,
 };
 
 use super::{
     buffer::account_properties as buffer, internal::sign_transaction,
     schema::account_property_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    SignedTransaction, Transaction, TransactionType,
+    HashValue, SignedTransaction, Transaction, TransactionType, ACCOUNT_PROPERTY_MOSAIC_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -82,7 +81,7 @@ impl Transaction for AccountPropertiesMosaicTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

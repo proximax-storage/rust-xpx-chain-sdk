@@ -20,7 +20,7 @@ use crate::{
 use super::{
     buffer::lock_funds as buffer, internal::sign_transaction,
     schema::lock_funds_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    SignedTransaction, Transaction, TransactionType, LOCK_VERSION,
+    HashValue, SignedTransaction, Transaction, TransactionType, LOCK_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -79,7 +79,7 @@ impl Transaction for LockFundsTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

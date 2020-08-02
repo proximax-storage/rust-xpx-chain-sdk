@@ -21,8 +21,8 @@ use crate::{
 
 use super::{
     buffer::transfer as buffer, deadline::Deadline, internal::sign_transaction,
-    schema::transfer_transaction_schema, AbsTransaction, AbstractTransaction, SignedTransaction,
-    Transaction, TransactionType, TRANSFER_VERSION,
+    schema::transfer_transaction_schema, AbsTransaction, AbstractTransaction, HashValue,
+    SignedTransaction, Transaction, TransactionType, TRANSFER_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -118,7 +118,7 @@ impl Transaction for TransferTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

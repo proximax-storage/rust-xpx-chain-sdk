@@ -23,8 +23,8 @@ use super::{
         sign_transaction, sign_transaction_with_cosignatures, to_aggregate_transaction_bytes,
     },
     schema::aggregate_transaction_schema,
-    AbsTransaction, AbstractTransaction, Deadline, SignedTransaction, Transaction, TransactionType,
-    Transactions, AGGREGATE_BONDED_VERSION, AGGREGATE_COMPLETED_VERSION,
+    AbsTransaction, AbstractTransaction, Deadline, HashValue, SignedTransaction, Transaction,
+    TransactionType, Transactions, AGGREGATE_BONDED_VERSION, AGGREGATE_COMPLETED_VERSION,
 };
 
 /// AggregateTransaction:
@@ -85,7 +85,7 @@ impl AggregateTransaction {
         self,
         account: Account,
         cosignatories: Vec<Account>,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> crate::Result<SignedTransaction> {
         sign_transaction_with_cosignatures(self, account, cosignatories, generation_hash)
     }
@@ -124,7 +124,7 @@ impl Transaction for AggregateTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> crate::Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

@@ -20,7 +20,7 @@ use crate::{
 
 use super::{
     buffer::exchange as buffer, deadline::Deadline, internal::sign_transaction, AbsTransaction,
-    AbstractTransaction, SignedTransaction, Transaction, TransactionType,
+    AbstractTransaction, HashValue, SignedTransaction, Transaction, TransactionType,
     ADD_EXCHANGE_OFFER_VERSION,
 };
 
@@ -71,7 +71,7 @@ impl Transaction for AddExchangeOfferTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

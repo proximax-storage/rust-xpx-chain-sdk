@@ -33,17 +33,17 @@ pub(crate) fn extract_version(version: u32) -> EntityVersion {
 pub(crate) fn sign_transaction(
     tx: impl Transaction,
     account: Account,
-    generation_hash: String,
+    generation_hash: HashValue,
 ) -> crate::Result<SignedTransaction> {
     let key_pair: crypto::Keypair = crypto::Keypair::from_private_key(account.key_pair.secret);
 
     let tx_bytes = tx.embedded_to_bytes()?;
 
-    let generation_hash_bytes = hex_decode(&generation_hash);
+    let generation_hash_bytes = generation_hash.as_bytes();
 
     let signing_suffix = &tx_bytes[SIZE_SIZE + SIGNER_SIZE + SIGNATURE_SIZE..];
 
-    let signing = [generation_hash_bytes.as_slice(), signing_suffix].concat();
+    let signing = [generation_hash_bytes, signing_suffix].concat();
 
     let signature = key_pair.sign(&signing);
 
@@ -56,7 +56,7 @@ pub(crate) fn sign_transaction(
 
     let payload = hex_encode(&tx_vector);
 
-    let hash = create_transaction_hash(payload.clone(), &generation_hash);
+    let hash = create_transaction_hash(payload.clone(), generation_hash);
 
     Ok(SignedTransaction::new(
         tx.entity_type(),
@@ -69,7 +69,7 @@ pub(crate) fn sign_transaction_with_cosignatures(
     tx: AggregateTransaction,
     account: Account,
     cosignatories: Vec<Account>,
-    generation_hash: String,
+    generation_hash: HashValue,
 ) -> crate::Result<SignedTransaction> {
     let entity_type = tx.entity_type();
     let stx = sign_transaction(tx, account, generation_hash)?;
@@ -102,7 +102,7 @@ pub(crate) fn sign_transaction_with_cosignatures(
     ))
 }
 
-pub(crate) fn create_transaction_hash(p: String, generation_hash: &str) -> String {
+pub(crate) fn create_transaction_hash(p: String, generation_hash: HashValue) -> String {
     let p_bytes = hex_decode(&p);
 
     let mut sb = vec![];
@@ -113,9 +113,9 @@ pub(crate) fn create_transaction_hash(p: String, generation_hash: &str) -> Strin
         &p_bytes[SIGNATURE_SIZE + SIZE_SIZE..SIZE_SIZE + SIGNATURE_SIZE + SIGNER_SIZE],
     );
 
-    let generation_hash_bytes = hex_decode(generation_hash);
+    let generation_hash_bytes = generation_hash.as_bytes();
 
-    sb.extend_from_slice(&generation_hash_bytes);
+    sb.extend_from_slice(generation_hash_bytes);
 
     sb.extend_from_slice(&p_bytes[100..]);
 

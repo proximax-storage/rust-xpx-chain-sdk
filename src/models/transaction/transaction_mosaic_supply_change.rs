@@ -21,7 +21,7 @@ use crate::{
 use super::{
     buffer::mosaic_supply_change as buffer, deadline::Deadline, internal::sign_transaction,
     schema::mosaic_supply_change_transaction_schema, AbsTransaction, AbstractTransaction,
-    SignedTransaction, Transaction, TransactionType, MOSAIC_SUPPLY_CHANGE_VERSION,
+    HashValue, SignedTransaction, Transaction, TransactionType, MOSAIC_SUPPLY_CHANGE_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -77,7 +77,7 @@ impl Transaction for MosaicSupplyChangeTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

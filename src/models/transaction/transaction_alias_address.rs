@@ -24,7 +24,7 @@ use crate::{
 
 use super::{
     internal::sign_transaction, AbsTransaction, AbstractTransaction, AliasTransaction, Deadline,
-    SignedTransaction, Transaction, TransactionType, ADDRESS_ALIAS_VERSION,
+    HashValue, SignedTransaction, Transaction, TransactionType, ADDRESS_ALIAS_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -85,7 +85,7 @@ impl Transaction for AddressAliasTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

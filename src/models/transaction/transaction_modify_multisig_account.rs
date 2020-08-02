@@ -21,8 +21,8 @@ use super::{
     buffer::modify_multisig_account as buffer,
     internal::{cosignatory_modification_array_to_buffer, sign_transaction},
     schema::modify_multisig_account_transaction_schema,
-    AbsTransaction, AbstractTransaction, Deadline, SignedTransaction, Transaction, TransactionType,
-    MODIFY_MULTISIG_VERSION,
+    AbsTransaction, AbstractTransaction, Deadline, HashValue, SignedTransaction, Transaction,
+    TransactionType, MODIFY_MULTISIG_VERSION,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -85,7 +85,7 @@ impl Transaction for ModifyMultisigAccountTransaction {
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> Result<SignedTransaction> {
         sign_transaction(self, account, generation_hash)
     }

@@ -173,7 +173,7 @@ where
     fn sign_transaction_with(
         self,
         account: Account,
-        generation_hash: String,
+        generation_hash: HashValue,
     ) -> crate::Result<SignedTransaction>;
 
     /// An abstract method to generate the embedded transaction bytes.

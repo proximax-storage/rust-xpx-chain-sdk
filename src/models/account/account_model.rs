@@ -125,7 +125,7 @@ impl Account {
             errors_const::ERR_EMPTY_GENERATION_HASH
         );
 
-        tx.sign_transaction_with(self.to_owned(), generation_hash.to_string())
+        tx.sign_transaction_with(self.to_owned(), generation_hash)
     }
 
     /// Signs raw data.
@@ -151,14 +151,14 @@ impl Account {
         &self,
         tx: AggregateTransaction,
         cosignatories: Vec<Account>,
-        generation_hash: &str,
+        generation_hash: HashValue,
     ) -> crate::Result<SignedTransaction> {
         ensure!(
             !generation_hash.is_empty(),
             errors_const::ERR_EMPTY_GENERATION_HASH
         );
 
-        tx.sign_with_cosignatories(self.to_owned(), cosignatories, generation_hash.parse()?)
+        tx.sign_with_cosignatories(self.to_owned(), cosignatories, generation_hash)
     }
 
     /// Sign aggregate signature transaction.
