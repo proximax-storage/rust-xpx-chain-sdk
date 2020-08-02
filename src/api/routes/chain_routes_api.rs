@@ -28,8 +28,8 @@ impl ChainRoutes {
         ChainRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient> {
-        self.0
+    fn __client(&self) -> Arc<ApiClient> {
+        Arc::clone(&self.0)
     }
 
     /// Get the current height of the chain

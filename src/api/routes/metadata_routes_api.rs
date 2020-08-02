@@ -38,8 +38,8 @@ impl MetadataRoutes {
         MetadataRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient> {
-        self.0
+    fn __client(&self) -> Arc<ApiClient> {
+        Arc::clone(&self.0)
     }
 
     pub async fn get_metadata_by_address(self, address: Address) -> Result<AddressMetadataInfo> {

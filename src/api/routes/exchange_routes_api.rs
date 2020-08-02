@@ -34,13 +34,14 @@ impl ExchangeRoutes {
         ExchangeRoutes(client, network_type, resolver_routes)
     }
 
-    fn __client(self) -> Arc<ApiClient> {
-        self.0
+    fn __client(&self) -> Arc<ApiClient> {
+        Arc::clone(&self.0)
     }
 
     fn __network_type(&self) -> NetworkType {
         self.1
     }
+
     fn __resolver_routes(self) -> ResolverRoutes {
         self.2
     }

@@ -34,8 +34,8 @@ impl ResolverRoutes {
         ResolverRoutes(client, namespace_routes, mosaic_routes)
     }
 
-    fn __client(self) -> Arc<ApiClient> {
-        self.0
+    fn __client(&self) -> Arc<ApiClient> {
+        Arc::clone(&self.0)
     }
 
     fn __namespace_routes(self) -> NamespaceRoutes {

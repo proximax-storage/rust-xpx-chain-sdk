@@ -46,8 +46,8 @@ impl TransactionRoutes {
         TransactionRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient> {
-        self.0
+    fn __client(&self) -> Arc<ApiClient> {
+        Arc::clone(&self.0)
     }
 
     /// Get transaction status
@@ -190,10 +190,11 @@ impl TransactionRoutes {
     pub async fn get_transaction(self, transaction_id: &str) -> Result<Box<dyn Transaction>> {
         let mut req = __internal_request::Request::new(Method::GET, TRANSACTION_ROUTE.to_string());
 
-        let mut id = transaction_id.to_string();
-        if transaction_id.len() != 24 {
-            id = HashValue::from_slice(&str_to_hash(&transaction_id)?)?.to_string();
-        }
+        let id = if transaction_id.len() != 24 {
+            HashValue::from_slice(&str_to_hash(&transaction_id)?)?.to_string()
+        } else {
+            transaction_id.to_string()
+        };
 
         req = req
             .with_path_param("transactionId".to_string(), id)
@@ -374,7 +375,7 @@ impl TransactionRoutes {
 
         req = req.with_body_param(tx);
 
-        async { req.execute(self.__client()).await }
+        async move { req.execute(self.__client()).await }
     }
 }
 

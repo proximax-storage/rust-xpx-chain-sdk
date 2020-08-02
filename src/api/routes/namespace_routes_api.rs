@@ -39,6 +39,14 @@ impl NamespaceRoutes {
         NamespaceRoutes(client, network_time)
     }
 
+    fn __client(&self) -> Arc<ApiClient> {
+        Arc::clone(&self.0)
+    }
+
+    fn __network_type(&self) -> NetworkType {
+        self.1
+    }
+
     fn __build_namespace_hierarchy<'b>(
         self,
         ns_info: &'b mut NamespaceInfo,
@@ -88,9 +96,9 @@ impl NamespaceRoutes {
 
         req = req.with_path_param("namespaceId".to_string(), namespace_id.to_string());
 
-        let dto_raw: Result<NamespaceInfoDto> = req.clone().execute(self.0.to_owned()).await;
+        let dto_raw: Result<NamespaceInfoDto> = req.clone().execute(self.__client()).await;
 
-        let mut dto_to_struct = dto_raw?.compact(self.1)?;
+        let mut dto_to_struct = dto_raw?.compact(self.__network_type())?;
 
         self.__build_namespace_hierarchy(&mut dto_to_struct).await;
 
@@ -109,7 +117,7 @@ impl NamespaceRoutes {
 
         req = req.with_body_param(namespace_ids_);
 
-        let dto: Vec<NamespaceNameDto> = req.execute(self.0).await?;
+        let dto: Vec<NamespaceNameDto> = req.execute(self.__client()).await?;
 
         let mut namespace_name: Vec<NamespaceName> = vec![];
         for namespace_name_dto in dto.into_iter() {
@@ -139,11 +147,11 @@ impl NamespaceRoutes {
 
         req = req.with_path_param("accountId".to_string(), address.address_string());
 
-        let dto: Vec<NamespaceInfoDto> = req.execute(self.0.to_owned()).await?;
+        let dto: Vec<NamespaceInfoDto> = req.execute(self.__client()).await?;
 
         let mut namespace_info: Vec<NamespaceInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.compact(self.1)?);
+            namespace_info.push(namespace_dto.compact(self.__network_type())?);
         }
 
         self.__build_namespaces_hierarchy(&mut namespace_info).await;
@@ -175,11 +183,11 @@ impl NamespaceRoutes {
 
         req = req.with_body_param(&accounts);
 
-        let dto: Vec<NamespaceInfoDto> = req.execute(self.0.to_owned()).await?;
+        let dto: Vec<NamespaceInfoDto> = req.execute(self.__client()).await?;
 
         let mut namespace_info: Vec<NamespaceInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.compact(self.1)?);
+            namespace_info.push(namespace_dto.compact(self.__network_type())?);
         }
 
         self.__build_namespaces_hierarchy(&mut namespace_info).await;

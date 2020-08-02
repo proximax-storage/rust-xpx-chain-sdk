@@ -41,8 +41,8 @@ impl AccountRoutes {
         AccountRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient> {
-        self.0
+    fn __client(&self) -> Arc<ApiClient> {
+        Arc::clone(&self.0)
     }
 
     /// Get [Account] information
@@ -343,7 +343,7 @@ impl AccountRoutes {
 
         req = req.set_transaction_vec();
 
-        async {
+        async move {
             let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.__client()).await?;
 
             let mut transactions_info: Transactions = vec![];

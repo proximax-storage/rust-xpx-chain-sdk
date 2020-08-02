@@ -25,55 +25,56 @@ pub struct SiriusClient {
 }
 
 impl SiriusClient {
+    fn __client(&self) -> Arc<ApiClient> {
+        Arc::clone(&self.client)
+    }
+
     pub fn account_api(&self) -> Box<AccountRoutes> {
-        Box::new(AccountRoutes::new(self.client.to_owned()))
+        Box::new(AccountRoutes::new(self.__client()))
     }
 
     pub fn block_api(&self) -> Box<BlockRoutes> {
-        Box::new(BlockRoutes::new(self.client.to_owned()))
+        Box::new(BlockRoutes::new(self.__client()))
     }
 
     pub fn chain_api(&self) -> Box<ChainRoutes> {
-        Box::new(ChainRoutes::new(self.client.to_owned()))
+        Box::new(ChainRoutes::new(self.__client()))
     }
 
     pub fn exchange_api(&self) -> Box<ExchangeRoutes> {
         Box::new(ExchangeRoutes::new(
-            self.client.to_owned(),
+            self.__client(),
             self.network_type(),
             *self.resolver_api(),
         ))
     }
 
     pub fn node_api(&self) -> Box<NodeRoutes> {
-        Box::new(NodeRoutes::new(self.client.to_owned()))
+        Box::new(NodeRoutes::new(self.__client()))
     }
 
     pub fn mosaic_api(&self) -> Box<MosaicRoutes> {
-        Box::new(MosaicRoutes::new(self.client.to_owned()))
+        Box::new(MosaicRoutes::new(self.__client()))
     }
 
     pub fn namespace_api(&self) -> Box<NamespaceRoutes> {
-        Box::new(NamespaceRoutes::new(
-            self.client.to_owned(),
-            self.network_type(),
-        ))
+        Box::new(NamespaceRoutes::new(self.__client(), self.network_type()))
     }
 
     pub fn transaction_api(&self) -> Box<TransactionRoutes> {
-        Box::new(TransactionRoutes::new(self.client.to_owned()))
+        Box::new(TransactionRoutes::new(self.__client()))
     }
 
     pub fn resolver_api(&self) -> Box<ResolverRoutes> {
         Box::new(ResolverRoutes::new(
-            self.client.to_owned(),
+            self.__client(),
             *self.namespace_api(),
             *self.mosaic_api(),
         ))
     }
 
     pub fn metadata_api(&self) -> Box<MetadataRoutes> {
-        Box::new(MetadataRoutes::new(self.client.to_owned()))
+        Box::new(MetadataRoutes::new(self.__client()))
     }
 }
 
@@ -136,7 +137,6 @@ impl core::fmt::Display for SiriusClient {
     }
 }
 
-#[derive(Clone)]
 pub(crate) struct ApiClient {
     pub base_path: &'static str,
     pub client: ReqwestClient,

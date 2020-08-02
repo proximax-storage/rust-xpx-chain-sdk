@@ -28,10 +28,9 @@ impl BlockRoutes {
         BlockRoutes(client)
     }
 
-    fn __client(self) -> Arc<ApiClient> {
-        self.0
+    fn __client(&self) -> Arc<ApiClient> {
+        Arc::clone(&self.0)
     }
-
     /// Get [BlockInfo] information
     ///
     /// Gets a block from the chain that has the given height.
