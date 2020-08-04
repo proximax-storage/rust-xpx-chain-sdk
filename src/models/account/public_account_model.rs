@@ -124,24 +124,11 @@ impl Serialize for PublicAccount {
     }
 }
 
-impl fmt::LowerHex for PublicAccount {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for byte in &self.public_key {
-            write!(f, "{:02x}", byte)?;
-        }
-        Ok(())
-    }
-}
-
 impl fmt::Debug for PublicAccount {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "PublicAccount {{")?;
-        write!(f, "address: ")?;
-        write!(f, "{:?}", self.address)?;
-        write!(f, ", ")?;
-        write!(f, "public_key: ")?;
-        <Self as fmt::LowerHex>::fmt(self, f)?;
-        write!(f, "}}")?;
-        Ok(())
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("PublicAccount")
+            .field("address", &self.address)
+            .field("public_key", &self.public_key_string().to_lowercase())
+            .finish()
     }
 }

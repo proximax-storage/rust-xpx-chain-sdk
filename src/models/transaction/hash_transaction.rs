@@ -42,6 +42,10 @@ impl HashValue {
         Ok(value)
     }
 
+    pub fn to_hex(&self) -> String {
+        hex::encode_upper(&self.0[..])
+    }
+
     /// Creates a zero-initialized instance.
     pub const fn zero() -> Self {
         Self([0; Self::LENGTH])
@@ -60,19 +64,36 @@ impl FromStr for HashValue {
     }
 }
 
-impl fmt::Binary for HashValue {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+impl fmt::Display for HashValue {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for byte in self.iter() {
-            write!(f, "{:08b}", byte)?;
+            write!(f, "{:02X}", byte)?;
         }
         Ok(())
     }
 }
 
-impl fmt::Display for HashValue {
+impl Serialize for HashValue {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&self.to_string())
+    }
+}
+
+impl fmt::Debug for HashValue {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_tuple("HashValue")
+            .field(&self.to_hex().to_lowercase())
+            .finish()
+    }
+}
+
+impl fmt::Binary for HashValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for byte in self.iter() {
-            write!(f, "{:02X}", byte)?;
+            write!(f, "{:08b}", byte)?;
         }
         Ok(())
     }
@@ -86,41 +107,14 @@ impl Deref for HashValue {
     }
 }
 
-impl Serialize for HashValue {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        serializer.serialize_str(&self.to_string())
+impl AsRef<[u8; HashValue::LENGTH]> for HashValue {
+    fn as_ref(&self) -> &[u8; HashValue::LENGTH] {
+        &self.0
     }
 }
 
 impl Default for HashValue {
     fn default() -> Self {
         HashValue::zero()
-    }
-}
-
-impl fmt::LowerHex for HashValue {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for byte in self.iter() {
-            write!(f, "{:02x}", byte)?;
-        }
-        Ok(())
-    }
-}
-
-impl fmt::Debug for HashValue {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "HashValue(")?;
-        <Self as fmt::LowerHex>::fmt(self, f)?;
-        write!(f, ")")?;
-        Ok(())
-    }
-}
-
-impl AsRef<[u8; HashValue::LENGTH]> for HashValue {
-    fn as_ref(&self) -> &[u8; HashValue::LENGTH] {
-        &self.0
     }
 }

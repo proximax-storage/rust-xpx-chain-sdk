@@ -190,15 +190,11 @@ impl fmt::Display for Address {
 }
 
 impl fmt::Debug for Address {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Address {{")?;
-        write!(f, "address: ")?;
-        write!(f, "{}", self.address_string().to_lowercase())?;
-        write!(f, ", ")?;
-        write!(f, "network_type: ")?;
-        write!(f, "{:?}", self.network_type)?;
-        write!(f, "}}")?;
-        Ok(())
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Address")
+            .field("address", &self.address_string().to_lowercase())
+            .field("network_type", &self.network_type)
+            .finish()
     }
 }
 

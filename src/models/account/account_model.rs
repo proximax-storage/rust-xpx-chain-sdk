@@ -7,6 +7,7 @@
 use {
     crypto::{Keypair, SecretKey},
     rand::{rngs::ThreadRng, thread_rng},
+    std::fmt,
 };
 
 use crate::{
@@ -28,7 +29,7 @@ use super::{Address, PublicAccount};
 pub type AccountId = String;
 
 /// The `Account` account structure contains account's `PublicAccount` and private key.
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Account {
     /// The keyPair containing the public and private key of this account.
     pub key_pair: Keypair,
@@ -37,6 +38,7 @@ pub struct Account {
 }
 
 impl Account {
+    /// Generates a new [`Account`] random for the given [`NetworkType`].
     pub fn new(network_type: NetworkType) -> Self {
         let mut csprng: ThreadRng = thread_rng();
 
@@ -54,27 +56,7 @@ impl Account {
         }
     }
 
-    pub fn key_pair_to_owned(&self) -> Keypair {
-        self.key_pair.to_owned()
-    }
-
-    pub fn public_account_to_owned(&self) -> PublicAccount {
-        self.to_owned().public_account
-    }
-
-    pub fn public_key_string(&self) -> String {
-        self.public_account_to_owned().public_key_string()
-    }
-
-    pub fn address(&self) -> Address {
-        self.public_account.address
-    }
-
-    pub fn address_string(&self) -> String {
-        self.address().address_string()
-    }
-
-    /// Create a `Account` from a private key for the given `NetworkType`.
+    /// Create a [`Account`] from a private key for the given [`NetworkType`].
     pub fn from_private_key(private_key: &str, network_type: NetworkType) -> Result<Self> {
         ensure!(
             !private_key.is_empty(),
@@ -106,12 +88,46 @@ impl Account {
         })
     }
 
+    pub fn key_pair_to_owned(&self) -> Keypair {
+        self.key_pair.to_owned()
+    }
+
+    /// The public key string of this account.
+    pub fn public_key_string(&self) -> String {
+        self.public_account.public_key_string()
+    }
+
+    pub fn to_address(&self) -> Address {
+        self.public_account.address
+    }
+
+    /// The plain text address of this account.
+    pub fn address_string(&self) -> String {
+        self.to_address().address_string()
+    }
+
+    /// The private key hex string of this account.
     pub fn to_private_key(&self) -> String {
         hex_encode(&self.key_pair.secret.to_bytes())
     }
 
+    /// The network type of this account.
+    pub fn network_type(&self) -> NetworkType {
+        self.to_address().network_type()
+    }
+
     pub fn to_signer(&self) -> Signer {
         Signer::from_slice(self.public_account.to_bytes()).unwrap()
+    }
+
+    /// Creates a new encrypted message with this account as a sender.
+    pub fn encrypt_message(&self) {
+        todo!();
+    }
+
+    /// Decrypts an encrypted message sent for this account.
+    pub fn decrypt_message(&self) {
+        todo!();
     }
 
     /// Signs 'Transaction'.
@@ -134,16 +150,6 @@ impl Account {
         let sig = &self.key_pair.sign(data).to_bytes()[..];
 
         hex_encode(sig)
-    }
-
-    /// Creates a new encrypted message with this account as a sender.
-    pub fn encrypt_message(&self) {
-        todo!();
-    }
-
-    /// Decrypts an encrypted message sent for this account.
-    pub fn decrypt_message(&self) {
-        todo!();
     }
 
     /// Sign transaction with cosignatories creating a new signed_transaction.
@@ -170,13 +176,21 @@ impl Account {
     }
 }
 
-impl core::fmt::Display for Account {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+impl fmt::Display for Account {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
             "{}",
             serde_json::to_string_pretty(&self.public_account).unwrap_or_default()
         )
+    }
+}
+
+impl fmt::Debug for Account {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("Account")
+            .field(&self.public_account)
+            .finish()
     }
 }
 
@@ -187,8 +201,8 @@ pub struct AccountName {
     pub names: Vec<String>,
 }
 
-impl core::fmt::Display for AccountName {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+impl fmt::Display for AccountName {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
             "{}",

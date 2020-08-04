@@ -12,7 +12,7 @@ use {
 use crate::api::str_to_hash;
 
 /// Output value of our hash function. Intentionally opaque for safety and modularity.
-#[derive(Debug, Clone, Copy, Eq, Hash, PartialEq, PartialOrd, Ord, Deserialize)]
+#[derive(Clone, Copy, Eq, Hash, PartialEq, PartialOrd, Ord, Deserialize)]
 pub struct Signer([u8; Signer::LENGTH]);
 
 impl Signer {
@@ -42,6 +42,10 @@ impl Signer {
         Ok(value)
     }
 
+    pub fn to_hex(&self) -> String {
+        hex::encode_upper(&self.0[..])
+    }
+
     /// Creates a zero-initialized instance.
     pub const fn zero() -> Self {
         Self([0; Self::LENGTH])
@@ -66,6 +70,14 @@ impl fmt::Display for Signer {
             write!(f, "{:02X}", byte)?;
         }
         Ok(())
+    }
+}
+
+impl fmt::Debug for Signer {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("Signer")
+            .field(&self.to_hex().to_lowercase())
+            .finish()
     }
 }
 

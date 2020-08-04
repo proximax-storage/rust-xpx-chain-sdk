@@ -77,21 +77,11 @@ impl fmt::Display for Signature {
     }
 }
 
-impl fmt::LowerHex for Signature {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for byte in self.iter() {
-            write!(f, "{:02x}", byte)?;
-        }
-        Ok(())
-    }
-}
-
 impl fmt::Debug for Signature {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Signature(")?;
-        <Self as fmt::LowerHex>::fmt(self, f)?;
-        write!(f, ")")?;
-        Ok(())
+        f.debug_tuple("Signature")
+            .field(&self.to_hex().to_lowercase())
+            .finish()
     }
 }
 
