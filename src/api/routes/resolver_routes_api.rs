@@ -48,7 +48,7 @@ impl ResolverRoutes {
 
     pub async fn get_mosaic_info_by_asset_id(self, asset_id: impl AssetId) -> Result<MosaicInfo> {
         match asset_id.get_type() {
-            AssetIdType::Namespace => {
+            AssetIdType::NamespaceIdType => {
                 let namespace_id = NamespaceId::from(asset_id.to_uint64());
 
                 let namespace_info = self
@@ -65,7 +65,7 @@ impl ResolverRoutes {
                     .get_mosaic_info(namespace_info.alias.mosaic_id.unwrap())
                     .await
             }
-            AssetIdType::Mosaic => {
+            AssetIdType::MosaicIdType => {
                 let mosaic_id = MosaicId::from(asset_id.to_u64());
                 self.__mosaic_routes().get_mosaic_info(mosaic_id).await
             }
@@ -83,11 +83,11 @@ impl ResolverRoutes {
 
         for asset_id in &asset_ids {
             match asset_id.get_type() {
-                AssetIdType::Namespace => {
+                AssetIdType::NamespaceIdType => {
                     let namespace_id = NamespaceId::from(asset_id.to_uint64());
                     namespace_ids.push(namespace_id);
                 }
-                AssetIdType::Mosaic => {
+                AssetIdType::MosaicIdType => {
                     let mosaic_id = MosaicId::from(asset_id.to_uint64());
                     mosaic_ids.push(mosaic_id);
                 }

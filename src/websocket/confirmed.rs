@@ -23,7 +23,7 @@ pub(crate) struct WsTransactionInfoDto {
 }
 
 pub struct HandlerConfirmedAdd {
-    pub handler: Box<dyn Fn(Box<dyn crate::transaction::Transaction>) -> bool + Send>,
+    pub handler: Box<dyn Fn(Box<dyn crate::transaction::Transaction>) -> bool + Sync + Send>,
 }
 
 impl Handler for HandlerConfirmedAdd {}

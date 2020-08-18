@@ -6,7 +6,6 @@
 
 use {
     ::std::{any::Any, fmt},
-    downcast_rs::Downcast,
     serde_json::Value,
 };
 
@@ -161,14 +160,14 @@ pub trait AbsTransaction {
 
 pub trait Transaction
 where
-    Self: fmt::Debug + AbsTransaction + Downcast + Sync + erased_serde::Serialize,
+    Self: fmt::Debug + 'static + AbsTransaction + Sync + erased_serde::Serialize,
 {
     fn size(&self) -> usize;
 
     /// Serialize this transaction object.
     fn as_value(&self) -> Value;
 
-    /// Serialize and sign [Transaction] with the given [Account] and network generationHash and
+    /// Serialize and sign [`Transaction`] with the given [`Account`] and network generationHash and
     /// create a new signed_transaction.
     fn sign_transaction_with(
         self,
@@ -183,7 +182,57 @@ where
 
     fn as_any(&self) -> &dyn Any;
 
+    fn into_any(self: Box<Self>) -> Box<dyn Any>;
+
     fn box_clone(&self) -> Box<dyn Transaction>;
+}
+
+impl dyn Transaction {
+    /// Downcast a reference to this generic [`Transaction`] to a specific transaction type.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the transaction type is not `T`. In normal usage, you should know the
+    /// specific Transaction type. In other cases, use `try_downcast_ref`.
+    ///
+    pub fn downcast_ref<T: Transaction>(&self) -> &T {
+        self.try_downcast_ref::<T>().unwrap_or_else(|| {
+            panic!(
+                "downcast to wrong Transaction type; original transaction type: {}",
+                self.entity_type()
+            )
+        })
+    }
+
+    /// Downcast a reference to this generic [`Transaction`] to a specific transaction type.
+    #[inline]
+    pub fn try_downcast_ref<T: Transaction>(&self) -> Option<&T> {
+        self.as_any().downcast_ref::<T>()
+    }
+
+    /// Downcast this generic [`Transaction`] to a specific transaction type.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the transaction type is not `T`. In normal usage, you should know the
+    /// specific transaction type. In other cases, use `try_downcast`.
+    ///
+    pub fn downcast<T: Transaction>(self: Box<Self>) -> Box<T> {
+        self.try_downcast().unwrap_or_else(|err| panic!("{}", err))
+    }
+
+    /// Downcast this generic [`Transaction`] to a specific transaction type.
+    #[inline]
+    pub fn try_downcast<T: Transaction>(self: Box<Self>) -> crate::Result<Box<T>> {
+        if self.as_ref().as_any().is::<T>() {
+            Ok(self.into_any().downcast().unwrap())
+        } else {
+            Err(failure::err_msg(format!(
+                "downcast to wrong Transaction type; original transaction type: {}",
+                self.entity_type()
+            )))
+        }
+    }
 }
 
 // implement Clone manually by forwarding to clone_box.
@@ -208,7 +257,5 @@ impl fmt::Display for dyn Transaction {
         )
     }
 }
-
-impl_downcast!(Transaction);
 
 serialize_trait_object!(Transaction);

@@ -5,7 +5,7 @@
  */
 
 use {
-    ::std::{borrow::Cow, collections::HashMap},
+    ::std::{borrow::Cow, collections::HashMap, sync::Arc},
     bytes::Bytes,
     downcast_rs::Downcast,
     futures_util::{SinkExt, StreamExt},
@@ -39,7 +39,7 @@ use super::{
 
 pub(crate) type AutoStream<S> = S;
 
-pub trait Handler: Send + Downcast {}
+pub trait Handler: Send + Sync + Downcast {}
 
 impl_downcast!(Handler);
 
@@ -52,7 +52,7 @@ pub struct SiriusWebsocketClient {
 impl SiriusWebsocketClient {
     pub async fn add_block_handlers<F>(&mut self, handler_fn: F) -> Result<()>
     where
-        F: Fn(BlockInfo) -> bool + Send + 'static,
+        F: Fn(BlockInfo) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerBlock {
             handler: Box::new(handler_fn),
@@ -66,7 +66,7 @@ impl SiriusWebsocketClient {
 
     pub async fn add_status_handlers<F>(&mut self, address: Address, handler_fn: F) -> Result<()>
     where
-        F: Fn(TransactionStatus) -> bool + Send + 'static,
+        F: Fn(TransactionStatus) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerStatus {
             handler: Box::new(handler_fn),
@@ -85,7 +85,7 @@ impl SiriusWebsocketClient {
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(Box<dyn Transaction>) -> bool + Send + 'static,
+        F: Fn(Box<dyn Transaction>) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerConfirmedAdd {
             handler: Box::new(handler_fn),
@@ -107,7 +107,7 @@ impl SiriusWebsocketClient {
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(TransactionInfo) -> bool + Send + 'static,
+        F: Fn(TransactionInfo) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerUnconfirmedRemoved {
             handler: Box::new(handler_fn),
@@ -129,7 +129,7 @@ impl SiriusWebsocketClient {
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(Box<dyn Transaction>) -> bool + Send + 'static,
+        F: Fn(Box<dyn Transaction>) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerUnconfirmedAdd {
             handler: Box::new(handler_fn),
@@ -151,7 +151,7 @@ impl SiriusWebsocketClient {
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(AggregateTransaction) -> bool + Send + 'static,
+        F: Fn(AggregateTransaction) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerPartialAdd {
             handler: Box::new(handler_fn),
@@ -173,7 +173,7 @@ impl SiriusWebsocketClient {
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(TransactionInfo) -> bool + Send + 'static,
+        F: Fn(TransactionInfo) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerUnconfirmedRemoved {
             handler: Box::new(handler_fn),
@@ -195,7 +195,7 @@ impl SiriusWebsocketClient {
         handler_fn: F,
     ) -> Result<()>
     where
-        F: Fn(CosignatureInfo) -> bool + Send + 'static,
+        F: Fn(CosignatureInfo) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerCosignature {
             handler: Box::new(handler_fn),
@@ -293,10 +293,12 @@ impl SiriusWebsocketClient {
                             get_channel_data::<Box<dyn TransactionDto>>(&msg_string, true)?;
                         let tx = channel.compact()?;
                         let aggregate = tx
-                            .downcast::<crate::transaction::AggregateTransaction>()
+                            .try_downcast::<crate::transaction::AggregateTransaction>()
                             .map_err(|_| {
-                            failure::err_msg(crate::errors_const::ERR_INVALID_AGGREGATE_TRANSACTION)
-                        })?;
+                                failure::err_msg(
+                                    crate::errors_const::ERR_INVALID_AGGREGATE_TRANSACTION,
+                                )
+                            })?;
                         if (handler_info.handler)(*aggregate) {
                             break;
                         }

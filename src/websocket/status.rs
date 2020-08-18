@@ -53,7 +53,7 @@ impl WsSubscribeDto for WsStatusInfoDto {
 }
 
 pub struct HandlerStatus {
-    pub handler: Box<dyn Fn(crate::transaction::TransactionStatus) -> bool + Send>,
+    pub handler: Box<dyn Fn(crate::transaction::TransactionStatus) -> bool + Sync + Send>,
 }
 
 impl Handler for HandlerStatus {}

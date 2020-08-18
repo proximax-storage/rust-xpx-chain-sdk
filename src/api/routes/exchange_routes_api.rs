@@ -68,7 +68,7 @@ impl ExchangeRoutes {
             __internal_request::Request::new(Method::GET, OFFERS_BY_MOSAIC_ROUTE.to_string());
 
         let asset_id = match asset_id.get_type() {
-            AssetIdType::Namespace => {
+            AssetIdType::NamespaceIdType => {
                 let asset_info = self
                     .clone()
                     .__resolver_routes()

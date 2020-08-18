@@ -23,7 +23,7 @@ pub struct CosignatureTransaction(AggregateTransaction);
 impl CosignatureTransaction {
     pub fn new(tx: Box<dyn Transaction>) -> crate::Result<Self> {
         let aggregate = tx
-            .downcast::<AggregateTransaction>()
+            .try_downcast::<AggregateTransaction>()
             .map_err(|_| failure::err_msg(errors_const::ERR_INVALID_AGGREGATE_TRANSACTION))?;
 
         Ok(Self(*aggregate))
