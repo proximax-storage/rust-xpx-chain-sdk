@@ -4,8 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
-use ::std::fmt::{Debug, Display, Formatter, Result};
-use std::ops::Deref;
+use ::std::{
+    fmt::{Debug, Display, Formatter, Result},
+    ops::Deref,
+    str::FromStr,
+};
 
 use crate::account::{
     PREFIX_MIJIN, PREFIX_MIJIN_TEST, PREFIX_PRIVATE, PREFIX_PRIVATE_TEST, PREFIX_PUBLIC,
@@ -78,11 +81,13 @@ impl From<u8> for NetworkType {
     }
 }
 
-impl From<&str> for NetworkType {
-    fn from(s: &str) -> Self {
-        assert!(!s.is_empty(), errors_const::ERR_EMPTY_NETWORK_TYPE);
+impl FromStr for NetworkType {
+    type Err = failure::Error;
 
-        match s {
+    fn from_str(src: &str) -> crate::Result<Self> {
+        ensure!(!src.is_empty(), errors_const::ERR_EMPTY_NETWORK_TYPE);
+
+        let network_type = match src {
             "MIJIN" => MIJIN,
             "MIJIN_TEST" => MIJIN_TEST,
             "PUBLIC" => PUBLIC,
@@ -90,8 +95,9 @@ impl From<&str> for NetworkType {
             "PRIVATE" => PRIVATE,
             "PRIVATE_TEST" => PRIVATE_TEST,
             "ALIAS_ADDRESS" => ALIAS_ADDRESS,
-            _ => NOT_SUPPORTED_NET,
-        }
+            _ => return Err(failure::err_msg(NOT_SUPPORTED_NET.to_string())),
+        };
+        Ok(network_type)
     }
 }
 

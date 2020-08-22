@@ -5,7 +5,7 @@
  */
 
 use {
-    ::std::{borrow::Cow, collections::HashMap, sync::Arc},
+    ::std::{borrow::Cow, collections::HashMap},
     bytes::Bytes,
     downcast_rs::Downcast,
     futures_util::{SinkExt, StreamExt},
@@ -210,8 +210,8 @@ impl SiriusWebsocketClient {
 }
 
 impl SiriusWebsocketClient {
-    pub async fn new(url: &str) -> Result<SiriusWebsocketClient> {
-        let scheme_str = convert_to_ws_url(url)?;
+    pub async fn new<T: AsRef<str>>(url: T) -> Result<SiriusWebsocketClient> {
+        let scheme_str = convert_to_ws_url(url.as_ref())?;
 
         let (mut conn, _) = connect_async(scheme_str).await?;
 

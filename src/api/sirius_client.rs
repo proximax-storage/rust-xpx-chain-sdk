@@ -79,7 +79,7 @@ impl SiriusClient {
 }
 
 impl SiriusClient {
-    fn __internal(url_node: &'static str) -> Box<Self> {
+    fn __internal(url_node: String) -> Box<Self> {
         let api_client = ApiClient::from_url(url_node);
 
         let client = Arc::new(api_client);
@@ -104,9 +104,9 @@ impl SiriusClient {
         }
     }
 
-    pub async fn new(urls: Vec<&'static str>) -> Result<Box<Self>> {
+    pub async fn new<T: AsRef<str>>(urls: &[T]) -> Result<Box<Self>> {
         //TODO
-        let url_node = urls[0];
+        let url_node = String::from(urls[0].as_ref());
 
         let mut api = Self::__internal(url_node);
         api.__generation_info().await?;
@@ -123,7 +123,7 @@ impl SiriusClient {
     }
 
     pub fn node(&self) -> &str {
-        self.client.base_path
+        &self.client.base_path
     }
 }
 
@@ -138,13 +138,13 @@ impl core::fmt::Display for SiriusClient {
 }
 
 pub(crate) struct ApiClient {
-    pub base_path: &'static str,
+    pub base_path: String,
     pub client: ReqwestClient,
     pub user_agent: Option<String>,
 }
 
 impl ApiClient {
-    pub fn from_url(url: &'static str) -> Self {
+    pub fn from_url(url: String) -> Self {
         let client = ReqwestClient::new();
         ApiClient {
             base_path: url,
