@@ -43,7 +43,7 @@ impl ChainRoutes {
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let chain_height = client.chain.get_blockchain_height().await;
     ///
@@ -117,7 +117,7 @@ impl ChainRoutes {
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let chain_score = client.chain.get_blockchain_storage().await;
     ///
