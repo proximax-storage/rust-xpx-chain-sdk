@@ -52,7 +52,7 @@ impl MosaicRoutes {
     ///#[tokio::main]
     ///async fn main() {    
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let mosaic_id = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
     ///
@@ -97,7 +97,7 @@ impl MosaicRoutes {
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let mosaic_id_a = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
     ///    let mosaic_id_b = MosaicId::from_hex("6208AE4D56451357").unwrap();
@@ -153,7 +153,7 @@ impl MosaicRoutes {
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let mosaic_id_a = MosaicId::from_hex("3C520B7CEB2F7099").unwrap();
     ///    let mosaic_id_b = MosaicId::from_hex("6208AE4D56451357").unwrap();

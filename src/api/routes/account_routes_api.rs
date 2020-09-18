@@ -62,7 +62,7 @@ impl AccountRoutes {
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let account_info = client.account.account_info( PUBLIC_KEY).await;
     ///
@@ -107,7 +107,7 @@ impl AccountRoutes {
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let accounts_info = client.account.get_accounts_info( vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
     ///

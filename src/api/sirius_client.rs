@@ -79,15 +79,19 @@ impl SiriusClient {
 }
 
 impl SiriusClient {
-    fn __internal(url_node: &'static str) -> Box<Self> {
-        let api_client = ApiClient::from_url(url_node);
+    fn __internal(url_node: String, client: Option<ReqwestClient>) -> Box<Self> {
+        let api_client = if let Some(client) = client {
+            ApiClient::new_with_client(client, url_node)
+        } else {
+            ApiClient::new_from_url(url_node)
+        };
 
-        let client = Arc::new(api_client);
+        let arc_client = Arc::new(api_client);
 
         Box::new(SiriusClient {
             generation_hash: HashValue::zero(),
             network_type: Default::default(),
-            client,
+            client: arc_client,
         })
     }
 
@@ -104,11 +108,25 @@ impl SiriusClient {
         }
     }
 
-    pub async fn new(urls: Vec<&'static str>) -> Result<Box<Self>> {
+    pub async fn new_from_urls<T: AsRef<str>>(urls: &[T]) -> Result<Box<Self>> {
         //TODO
-        let url_node = urls[0];
+        let url_node = String::from(urls[0].as_ref());
 
-        let mut api = Self::__internal(url_node);
+        let mut api = Self::__internal(url_node, None);
+        api.__generation_info().await?;
+
+        Ok(api)
+    }
+
+    pub async fn new_with_client(client: ReqwestClient, url: &str) -> Result<Box<Self>> {
+        let mut api = Self::__internal(url.to_string(), Some(client));
+        api.__generation_info().await?;
+
+        Ok(api)
+    }
+
+    pub async fn new(url: &str) -> Result<Box<Self>> {
+        let mut api = Self::__internal(url.to_string(), None);
         api.__generation_info().await?;
 
         Ok(api)
@@ -123,7 +141,7 @@ impl SiriusClient {
     }
 
     pub fn node(&self) -> &str {
-        self.client.base_path
+        &self.client.base_path
     }
 }
 
@@ -138,14 +156,22 @@ impl core::fmt::Display for SiriusClient {
 }
 
 pub(crate) struct ApiClient {
-    pub base_path: &'static str,
+    pub base_path: String,
     pub client: ReqwestClient,
     pub user_agent: Option<String>,
 }
 
 impl ApiClient {
-    pub fn from_url(url: &'static str) -> Self {
+    fn new_from_url(url: String) -> Self {
         let client = ReqwestClient::new();
+        ApiClient {
+            base_path: url,
+            client,
+            user_agent: Some("Sirius/0.0.1/rust".to_owned()),
+        }
+    }
+
+    fn new_with_client(client: ReqwestClient, url: String) -> Self {
         ApiClient {
             base_path: url,
             client,

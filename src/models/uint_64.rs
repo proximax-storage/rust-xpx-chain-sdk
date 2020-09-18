@@ -40,12 +40,7 @@ impl Uint64 {
             .as_mut()
             .write_u32::<BigEndian>(lower)
             .expect("Unable to write");
-        Self::from_bytes(buf)
-    }
-
-    /// Creates a `Uint64` from a u8 array.
-    pub fn from_bytes(b: [u8; 8]) -> Self {
-        Self(u64::from_be_bytes(b))
+        Self::from(buf)
     }
 
     /// Creates a `Uint64` from a hex &str.
@@ -82,6 +77,25 @@ impl Uint64 {
         let lower = self.0 as u32;
         let higher = (self.0 >> 32) as u32;
         [lower, higher]
+    }
+}
+
+impl From<u64> for Uint64 {
+    fn from(u: u64) -> Self {
+        Uint64(u)
+    }
+}
+
+/// Creates a `Uint64` from a u8 array.
+impl From<[u8; 8]> for Uint64 {
+    fn from(b: [u8; 8]) -> Self {
+        Self(u64::from_be_bytes(b))
+    }
+}
+
+impl From<(u32, u32)> for Uint64 {
+    fn from(lo_hi: (u32, u32)) -> Self {
+        Self::from_u32_array(lo_hi.0, lo_hi.1)
     }
 }
 
@@ -129,17 +143,5 @@ impl Deref for Uint64 {
     type Target = u64;
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl From<u64> for Uint64 {
-    fn from(u: u64) -> Self {
-        Uint64(u)
-    }
-}
-
-impl From<(u32, u32)> for Uint64 {
-    fn from(lo_hi: (u32, u32)) -> Self {
-        Self::from_u32_array(lo_hi.0, lo_hi.1)
     }
 }

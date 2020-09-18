@@ -8,9 +8,22 @@ use ::core::fmt;
 
 use super::{mosaic::MosaicId, namespace::NamespaceId, Uint64};
 
+#[derive(Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub enum AssetIdType {
-    Namespace,
-    Mosaic,
+    #[serde(rename = "NamespaceId")]
+    NamespaceIdType,
+    #[serde(rename = "MosaicId")]
+    MosaicIdType,
+}
+
+impl fmt::Display for AssetIdType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
+    }
 }
 
 /// An `trait` identifier used to define mosaic_id and namespace_id.
@@ -18,14 +31,6 @@ pub trait AssetId: Send + Sync + erased_serde::Serialize
 where
     Self: fmt::Debug,
 {
-    fn as_mosaic_id(&self) -> MosaicId {
-        MosaicId::from(self.to_uint64())
-    }
-
-    fn as_namespace_id(&self) -> NamespaceId {
-        NamespaceId::from(self.to_uint64())
-    }
-
     fn to_uint64(&self) -> Uint64;
 
     fn to_u64(&self) -> u64 {
@@ -33,7 +38,7 @@ where
     }
 
     fn to_bytes(&self) -> [u8; 8] {
-        self.to_uint64().to_bytes()
+        self.to_uint64().to_le_bytes()
     }
 
     fn to_hex(&self) -> String {
@@ -51,6 +56,28 @@ where
     fn box_clone(&self) -> Box<dyn AssetId>;
 
     fn get_type(&self) -> AssetIdType;
+}
+
+impl dyn AssetId {
+    pub fn as_mosaic_id(&self) -> crate::Result<MosaicId> {
+        match self.get_type() {
+            AssetIdType::MosaicIdType => Ok(MosaicId::from(self.to_uint64())),
+            _ => Err(failure::err_msg(format!(
+                "Wrong MosaicId type; original AssetId type: {:?}",
+                self.get_type()
+            ))),
+        }
+    }
+
+    pub fn as_namespace_id(&self) -> crate::Result<NamespaceId> {
+        match self.get_type() {
+            AssetIdType::NamespaceIdType => Ok(NamespaceId::from(self.to_uint64())),
+            _ => Err(failure::err_msg(format!(
+                "Wrong NamespaceId type; original AssetId type: {:?}",
+                self.get_type()
+            ))),
+        }
+    }
 }
 
 // implement Clone manually by forwarding to clone_box.

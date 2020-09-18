@@ -11,7 +11,7 @@ pub use self::uint_64::Uint64;
 pub mod account;
 pub mod alias;
 pub mod blockchain;
-pub(crate) mod error;
+pub mod error;
 pub mod errors_const;
 pub mod exchange;
 pub mod message;

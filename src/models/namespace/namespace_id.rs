@@ -64,7 +64,7 @@ impl AssetId for NamespaceId {
     }
 
     fn get_type(&self) -> AssetIdType {
-        AssetIdType::Namespace
+        AssetIdType::NamespaceIdType
     }
 }
 

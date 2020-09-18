@@ -60,7 +60,7 @@ impl AssetId for MosaicId {
     }
 
     fn get_type(&self) -> AssetIdType {
-        AssetIdType::Mosaic
+        AssetIdType::MosaicIdType
     }
 }
 

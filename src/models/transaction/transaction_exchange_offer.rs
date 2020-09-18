@@ -111,12 +111,16 @@ impl Transaction for ExchangeOfferTransaction {
         self.abs_transaction.set_aggregate(signer)
     }
 
+    fn box_clone(&self) -> Box<dyn Transaction + 'static> {
+        Box::new((*self).clone())
+    }
+
     fn as_any(&self) -> &dyn Any {
         self
     }
 
-    fn box_clone(&self) -> Box<dyn Transaction + 'static> {
-        Box::new((*self).clone())
+    fn into_any(self: Box<Self>) -> Box<dyn Any> {
+        self
     }
 }
 

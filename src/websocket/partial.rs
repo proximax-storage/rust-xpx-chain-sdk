@@ -7,7 +7,7 @@
 use super::{Handler, WsUnconfirmedMetaDto};
 
 pub struct HandlerPartialAdd {
-    pub handler: Box<dyn Fn(crate::transaction::AggregateTransaction) -> bool + Send>,
+    pub handler: Box<dyn Fn(crate::transaction::AggregateTransaction) -> bool + Sync + Send>,
 }
 
 impl Handler for HandlerPartialAdd {}
@@ -25,7 +25,7 @@ impl WsPartialRemoveDto {
 }
 
 pub struct HandlerPartialRemove {
-    pub handler: Box<dyn Fn(crate::transaction::TransactionInfo) -> bool + Send>,
+    pub handler: Box<dyn Fn(crate::transaction::TransactionInfo) -> bool + Sync + Send>,
 }
 
 impl Handler for HandlerPartialRemove {}

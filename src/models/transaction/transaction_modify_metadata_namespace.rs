@@ -111,6 +111,10 @@ impl Transaction for MetadataNamespaceTransaction {
         self
     }
 
+    fn into_any(self: Box<Self>) -> Box<dyn Any> {
+        self
+    }
+
     fn box_clone(&self) -> Box<dyn Transaction + 'static> {
         Box::new((*self).clone())
     }

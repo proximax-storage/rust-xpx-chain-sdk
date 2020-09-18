@@ -11,13 +11,13 @@ use crate::models::transaction::HashValue;
 use super::Handler;
 
 pub struct HandlerUnconfirmedAdd {
-    pub handler: Box<dyn Fn(Box<dyn crate::transaction::Transaction>) -> bool + Send>,
+    pub handler: Box<dyn Fn(Box<dyn crate::transaction::Transaction>) -> bool + Sync + Send>,
 }
 
 impl Handler for HandlerUnconfirmedAdd {}
 
 pub struct HandlerUnconfirmedRemoved {
-    pub handler: Box<dyn Fn(crate::transaction::TransactionInfo) -> bool + Send>,
+    pub handler: Box<dyn Fn(crate::transaction::TransactionInfo) -> bool + Sync + Send>,
 }
 
 impl Handler for HandlerUnconfirmedRemoved {}

@@ -16,4 +16,3 @@ pub struct MerkleProofInfo {
     #[serde(rename = "merklePath", skip_serializing_if = "Option::is_none")]
     pub merkle_path: Option<Vec<MerklePathItem>>,
 }
-

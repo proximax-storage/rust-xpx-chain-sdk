@@ -42,7 +42,7 @@ impl NodeRoutes {
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let node_info = client.node.get_node_info().await;
     ///

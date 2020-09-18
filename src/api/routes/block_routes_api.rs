@@ -47,7 +47,7 @@ impl BlockRoutes {
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let block_by_height = client.block.get_block_by_height(1).await;
     ///
@@ -98,7 +98,7 @@ impl BlockRoutes {
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let blocks_by_height_with_limit = client.block.get_blocks_by_height_with_limit(1, 25).await;
     ///
@@ -169,7 +169,7 @@ impl BlockRoutes {
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new(node_url);
+    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
     ///    let block_transactions = client.block.get_block_transactions(1, None, None).await;
     ///
