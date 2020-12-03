@@ -14,6 +14,7 @@ use crate::{
     helpers::{hex_decode, hex_encode, is_hex},
     models::{
         errors_const,
+        message::{PlainMessage, SecureMessage},
         multisig::CosignatureTransaction,
         network::NetworkType,
         transaction::{
@@ -120,14 +121,22 @@ impl Account {
         Signer::from_slice(self.public_account.to_bytes()).unwrap()
     }
 
-    /// Creates a new encrypted message with this account as a sender.
-    pub fn encrypt_message(&self) {
-        todo!();
+    /// Creates an encrypted message from this account to the [recipientPublicAccount].
+    pub fn encrypt_message(
+        &self,
+        recipient_public_account: &PublicAccount,
+        message: &str,
+    ) -> Result<SecureMessage> {
+        SecureMessage::create(self, &recipient_public_account, message)
     }
 
-    /// Decrypts an encrypted message sent for this account.
-    pub fn decrypt_message(&self) {
-        todo!();
+    /// Decrypts an encrypted message received by this account from [senderPublicAccount].
+    pub fn decrypt_message(
+        &self,
+        sender_public_account: &PublicAccount,
+        secure_message: SecureMessage,
+    ) -> Result<PlainMessage> {
+        secure_message.decrypt(self, sender_public_account)
     }
 
     /// Signs 'Transaction'.
