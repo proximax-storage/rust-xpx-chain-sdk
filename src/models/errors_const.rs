@@ -43,6 +43,7 @@ pub const ERR_INVALID_AGGREGATE_TRANSACTION: &str =
 pub const ERR_UNKNOWN_BLOCKCHAIN_TYPE: &str = "Not supported Blockchain Type. ";
 pub const ERR_INVALID_HASH_LENGTH: &str = "The length of Hash is invalid.";
 pub const ERR_INVALID_HASH_HEX: &str = "Invalid Hash it's not hex.";
+pub const ERR_INVALID_PAYLOAD_HEX: &str = "Invalid payload it's not hex.";
 
 //pub const ERR_EMPTY_HASH: &str = "Hash must not by empty.";
 pub const ERR_EMPTY_NETWORK_TYPE: &str = "NetworkType string is empty.";
