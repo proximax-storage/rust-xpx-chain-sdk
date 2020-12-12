@@ -50,8 +50,14 @@ impl SecureMessage {
         // Encrypts the message
         let mut block_cipher = Ed25519BlockCipher::new(&sender_account.key_pair.secret);
 
+        let payload_vec = if is_hex(&payload) {
+            hex_decode(payload)
+        } else {
+            payload.as_bytes().to_vec()
+        };
+
         let encrypted_payload = block_cipher.encrypt(
-            payload.as_bytes(),
+            &payload_vec,
             &PublicKey::from_bytes(recipient_public_account.to_bytes())?,
         );
 
@@ -89,9 +95,14 @@ impl SecureMessage {
             &PublicKey::from_bytes(sender_public_account.to_bytes())?,
         );
 
-        Ok(PlainMessage::new(&String::from_utf8(
-            encrypted_payload.unwrap(),
-        )?))
+        let encrypted_payload = encrypted_payload.unwrap();
+
+        let payload = match String::from_utf8(encrypted_payload.to_owned()) {
+            Ok(payload) => payload,
+            Err(_) => hex_encode(&encrypted_payload),
+        };
+
+        Ok(PlainMessage::new(&payload))
     }
 }
 
