@@ -93,7 +93,7 @@ impl Mosaic {
     ///
     /// The quantity is always given in smallest units for the mosaic. For example, if it has a
     /// divisibility of 3 the quantity is given in millis.
-    pub fn new(asset_id: impl AssetId + 'static, amount: u64) -> Self {
+    pub fn new<T: AssetId + 'static>(asset_id: T, amount: u64) -> Self {
         Self {
             asset_id: Box::new(asset_id),
             amount: Uint64::new(amount),
