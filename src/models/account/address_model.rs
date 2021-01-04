@@ -76,7 +76,11 @@ impl Address {
     pub fn from_raw(raw_address: &str) -> Result<Self> {
         ensure!(!raw_address.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
 
-        let address = raw_address.trim().replace(REGEX_DASH, EMPTY_STRING);
+        let address = raw_address
+            .trim()
+            .to_uppercase()
+            .replace(REGEX_DASH, EMPTY_STRING);
+
         ensure!(
             address.len() == Self::LENGTH_IN_BASE32,
             errors_const::ERR_INVALID_ADDRESSES_LEN
@@ -84,7 +88,7 @@ impl Address {
 
         let network_type = NetworkType::from(address.chars().next().unwrap());
         if network_type == NOT_SUPPORTED_NET {
-            bail!("Wrong address")
+            bail!(errors_const::ERR_WRONG_NETWORK_TYPE)
         }
 
         let address = Self::decode_from_base32(&address);

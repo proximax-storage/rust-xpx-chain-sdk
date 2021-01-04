@@ -47,6 +47,7 @@ pub const ERR_INVALID_PAYLOAD_HEX: &str = "Invalid payload it's not hex.";
 
 //pub const ERR_EMPTY_HASH: &str = "Hash must not by empty.";
 pub const ERR_EMPTY_NETWORK_TYPE: &str = "NetworkType string is empty.";
+pub const ERR_WRONG_NETWORK_TYPE: &str = "Wrong NetworkType.";
 pub const ERR_INVALID_PRIVATE_KEY_LENGTH: &str = "The private key string is empty.";
 pub const ERR_INVALID_PUBLIC_KEY_LENGTH: &str = "The public key string is empty.";
 pub const ERR_INVALID_KEY_LENGTH: &str = "The length of key is invalid.";
