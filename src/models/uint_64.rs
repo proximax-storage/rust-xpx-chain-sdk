@@ -60,7 +60,7 @@ impl Uint64 {
 
     /// Converts to hex String representation.
     pub fn to_hex(&self) -> String {
-        format!("{:X}", &self.0)
+        format!("{:016X}", &self.0)
     }
 
     pub fn as_u64(&self) -> u64 {

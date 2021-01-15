@@ -70,7 +70,7 @@ impl AssetId for NamespaceId {
 
 impl fmt::Display for NamespaceId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:X}", self.0)
+        write!(f, "{}", self.to_hex())
     }
 }
 

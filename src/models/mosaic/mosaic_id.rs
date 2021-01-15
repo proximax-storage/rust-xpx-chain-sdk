@@ -66,7 +66,7 @@ impl AssetId for MosaicId {
 
 impl fmt::Display for MosaicId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:X}", self.0)
+        write!(f, "{}", self.to_hex())
     }
 }
 
