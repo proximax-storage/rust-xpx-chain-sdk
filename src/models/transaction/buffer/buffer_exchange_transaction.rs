@@ -145,7 +145,7 @@ pub mod exchange {
         pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
         pub offers_count: u8,
         pub offers:
-            Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<AddExchangeOfferBuffer<'a>>>>>,
+        Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<AddExchangeOfferBuffer<'a>>>>>,
     }
 
     impl<'a> Default for AddExchangeOfferTransactionBufferArgs<'a> {
@@ -385,7 +385,7 @@ pub mod exchange {
         pub deadline: Option<fb::WIPOffset<fb::Vector<'a, u32>>>,
         pub offers_count: u8,
         pub offers:
-            Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<ExchangeOfferBuffer<'a>>>>>,
+        Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<ExchangeOfferBuffer<'a>>>>>,
     }
 
     impl<'a> Default for ExchangeOfferTransactionBufferArgs<'a> {

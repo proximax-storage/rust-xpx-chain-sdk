@@ -5,8 +5,8 @@
  */
 
 use super::{
-    schema_common_definition::schema_common_definition, ArrayAttribute, ScalarAttribute, Schema,
-    SchemaAttribute, TableArrayAttribute, SIZEOF_BYTE, SIZEOF_INT,
+    ArrayAttribute, ScalarAttribute, Schema, schema_common_definition::schema_common_definition,
+    SchemaAttribute, SIZEOF_BYTE, SIZEOF_INT, TableArrayAttribute,
 };
 
 pub fn add_exchange_offer_transaction_schema() -> Schema {

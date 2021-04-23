@@ -7,7 +7,7 @@
 use {::std::sync::Arc, reqwest::Method};
 
 use crate::{
-    api::{request as __internal_request, sirius_client::ApiClient, NodeTimeDto},
+    api::{NodeTimeDto, request as __internal_request, sirius_client::ApiClient},
     models::Result,
     node::{NodeInfo, NodeTime},
 };

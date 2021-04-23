@@ -12,9 +12,9 @@ use {
 use crate::{
     account::{AccountInfo, AccountName, AccountProperties, AccountsId, Address, PublicAccount},
     api::{
-        internally::{str_to_account_id, valid_vec_len, AccountTransactionsOption},
-        request as __internal_request, AccountInfoDto, AccountNamesDto, AccountPropertiesInfoDto,
-        ApiClient, MultisigAccountGraphInfoDto, MultisigAccountInfoDto, TransactionDto,
+        AccountInfoDto,
+        AccountNamesDto, AccountPropertiesInfoDto, ApiClient, internally::{AccountTransactionsOption, str_to_account_id, valid_vec_len},
+        MultisigAccountGraphInfoDto, MultisigAccountInfoDto, request as __internal_request, TransactionDto,
     },
     errors_const::ERR_EMPTY_ADDRESSES_IDS,
     models::Result,
@@ -23,8 +23,8 @@ use crate::{
 };
 
 use super::{
-    ACCOUNTS_PROPERTIES_ROUTE, ACCOUNTS_ROUTE, ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE,
-    ACCOUNT_ROUTE, AGGREGATE_TRANSACTIONS_ROUTE, INCOMING_TRANSACTIONS_ROUTE,
+    ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE, ACCOUNT_ROUTE, ACCOUNTS_PROPERTIES_ROUTE,
+    ACCOUNTS_ROUTE, AGGREGATE_TRANSACTIONS_ROUTE, INCOMING_TRANSACTIONS_ROUTE,
     MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE, OUTGOING_TRANSACTIONS_ROUTE,
     TRANSACTIONS_BY_ACCOUNT_ROUTE, UNCONFIRMED_TRANSACTIONS_ROUTE,
 };
@@ -250,7 +250,7 @@ impl AccountRoutes {
             TRANSACTIONS_BY_ACCOUNT_ROUTE,
             transactions_options,
         )
-        .await
+            .await
     }
 
     pub async fn incoming_transactions(
@@ -267,7 +267,7 @@ impl AccountRoutes {
             INCOMING_TRANSACTIONS_ROUTE,
             transactions_options,
         )
-        .await
+            .await
     }
 
     pub async fn outgoing_transactions(
@@ -284,7 +284,7 @@ impl AccountRoutes {
             OUTGOING_TRANSACTIONS_ROUTE,
             transactions_options,
         )
-        .await
+            .await
     }
 
     pub async fn unconfirmed_transactions(
@@ -301,7 +301,7 @@ impl AccountRoutes {
             UNCONFIRMED_TRANSACTIONS_ROUTE,
             transactions_options,
         )
-        .await
+            .await
     }
 
     pub async fn partial_transactions(
@@ -318,7 +318,7 @@ impl AccountRoutes {
             AGGREGATE_TRANSACTIONS_ROUTE,
             transactions_options,
         )
-        .await
+            .await
     }
 
     fn __internal_transactions(
@@ -326,7 +326,7 @@ impl AccountRoutes {
         public_account: PublicAccount,
         route: &str,
         options: AccountTransactionsOption,
-    ) -> impl Future<Output = Result<Transactions>> {
+    ) -> impl Future<Output=Result<Transactions>> {
         let mut req = __internal_request::Request::new(Method::GET, route.to_string());
 
         if let Some(s) = options.page_size {

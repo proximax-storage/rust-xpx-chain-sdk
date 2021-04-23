@@ -5,7 +5,7 @@
  */
 
 use crate::api::BlockDto;
-use crate::websocket::{model::WsSubscribeDto, Handler};
+use crate::websocket::{Handler, model::WsSubscribeDto};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

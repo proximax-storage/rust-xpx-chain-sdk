@@ -4,9 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
+use bytes::Bytes;
+
 use {
     ::std::fmt::{Debug, Write},
-    bytes::Bytes,
     serde_json::Value,
 };
 
@@ -19,8 +20,8 @@ use crate::{
     mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     multisig::CosignatoryModification,
     network::NetworkType,
-    transaction::{HashValue, TransactionType as Entity},
-    Result, Uint64,
+    Result,
+    transaction::{HashValue, TransactionType as Entity}, Uint64,
 };
 
 use super::{
@@ -85,8 +86,8 @@ pub(crate) fn str_to_hash(hash: &str) -> Result<Vec<u8>> {
 }
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
-where
-    T: Debug,
+    where
+        T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())

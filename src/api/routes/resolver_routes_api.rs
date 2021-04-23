@@ -7,13 +7,13 @@
 use ::std::sync::Arc;
 
 use crate::{
-    api::{valid_vec_len, ApiClient},
+    api::{ApiClient, valid_vec_len},
+    AssetId,
+    AssetIdType,
     error::Error,
     errors_const::{ERR_INVALID_ASSET_ID, ERR_INVALID_NAMESPACE_ALIASED},
     models::Result,
-    mosaic::{MosaicId, MosaicInfo},
-    namespace::NamespaceId,
-    AssetId, AssetIdType,
+    mosaic::{MosaicId, MosaicInfo}, namespace::NamespaceId,
 };
 
 use super::{mosaic_routes_api::MosaicRoutes, namespace_routes_api::NamespaceRoutes};

@@ -6,20 +6,20 @@
 
 use std::fmt;
 
-use {num_enum::IntoPrimitive, std::collections::HashMap};
+use {std::collections::HashMap};
 
+use crate::AssetId;
 use crate::models::{
     account::PublicAccount,
     mosaic::{Mosaic, MosaicId},
     transaction::{Amount, Height},
     uint_64::Uint64,
 };
-use crate::AssetId;
 
 pub type OfferInfos = Vec<OfferInfo>;
 pub type OfferIdInfos = Vec<OfferIdInfo>;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Copy, IntoPrimitive, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Serialize, Copy, Eq, Hash)]
 #[repr(u8)]
 pub enum OfferType {
     #[serde(rename = "sell")]
@@ -32,7 +32,7 @@ pub enum OfferType {
 
 impl OfferType {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 
     pub fn counter_offer(self) -> Self {

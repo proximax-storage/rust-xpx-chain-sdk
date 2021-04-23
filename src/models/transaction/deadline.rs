@@ -10,8 +10,8 @@ use {
         time::{Duration, SystemTime, UNIX_EPOCH},
     },
     chrono::{
-        prelude::DateTime,
         {Local, NaiveTime, Timelike},
+        prelude::DateTime,
     },
     serde::{Serialize, Serializer},
 };
@@ -103,8 +103,8 @@ impl Deadline {
         self.to_blockchain_timestamp().to_uint64()
     }
 
-    pub fn to_i32_array(&self) -> [u32; 2] {
-        self.to_uint64().to_i32_array()
+    pub fn to_u32_array(&self) -> [u32; 2] {
+        self.to_uint64().to_u32_array()
     }
 }
 
@@ -122,8 +122,8 @@ impl From<BlockchainTimestamp> for Deadline {
 
 impl Serialize for Timestamp {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_str(&format!("{}", self))
     }

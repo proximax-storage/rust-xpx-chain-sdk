@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-sdk"
-version = "0.4.20"
+version = "0.5.0"
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["ProxymaX Core Development Team","Eleazar Garrido <eleazartovar123@gmail.com>"]
@@ -35,14 +35,15 @@ version = "^0.4"
 [dependencies.ripemd160]
 version = "^0.8"
 
+[dependencies.sha3]
+version = "^0.8"
+default-features = false
+
 [dependencies.flatbuffers]
 version = "^0.6"
 
-[dependencies.num_enum]
-version = "^0.4"
-
 [dependencies.downcast-rs]
-version = "^1.1"
+version = "^1.2"
 
 [dependencies.serde]
 version = "^1.0"
@@ -61,10 +62,6 @@ version = "^0.3"
 version = "0.7"
 default-features = false
 
-[dependencies.sha3]
-version = "^0.8"
-default-features = false
-
 [dependencies.failure]
 version = "0.1"
 
@@ -72,21 +69,21 @@ version = "0.1"
 version = "^0.1"
 
 [dependencies.hex]
-version = "^0.3"
+version = "^0.4"
 
 [dependencies.bytes]
-version = "^0.5"
+version = "^1.0"
 
 [dependencies.reqwest]
-version = "0.10"
+version = "0.11"
 default-features = false
 
 [dependencies.tokio]
-version = "^0.2"
-features = ["macros"]
+version = "^1.5"
+features = ["full"]
 
 [dependencies.tokio-tungstenite]
-version = "^0.10"
+version = "^0.14"
 
 [dependencies.futures-util]
 version = "0.3"
@@ -97,4 +94,4 @@ features = ["async-await", "sink", "std"]
 version = "2.0"
 
 [dev-dependencies]
-tokio = { version = "0.2", features = ["full"] }
+tokio = { version = "1.5", features = ["full"] }

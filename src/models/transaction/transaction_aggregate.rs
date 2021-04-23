@@ -18,13 +18,13 @@ use crate::{
 };
 
 use super::{
-    buffer::aggregate as buffer,
-    internal::{
+    AbstractTransaction,
+    AbsTransaction,
+    AGGREGATE_BONDED_VERSION,
+    AGGREGATE_COMPLETED_VERSION, buffer::aggregate as buffer, Deadline, HashValue, internal::{
         sign_transaction, sign_transaction_with_cosignatures, to_aggregate_transaction_bytes,
-    },
-    schema::aggregate_transaction_schema,
-    AbsTransaction, AbstractTransaction, Deadline, HashValue, SignedTransaction, Transaction,
-    TransactionType, Transactions, AGGREGATE_BONDED_VERSION, AGGREGATE_COMPLETED_VERSION,
+    }, schema::aggregate_transaction_schema,
+    SignedTransaction, Transaction, Transactions, TransactionType,
 };
 
 /// AggregateTransaction:

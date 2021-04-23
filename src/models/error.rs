@@ -22,6 +22,7 @@ pub struct SiriusError {
     pub code: String,
     pub message: String,
 }
+
 #[derive(Debug)]
 pub enum Error {
     Serde(serde_json::Error),

@@ -7,8 +7,8 @@
 use ::std::fmt;
 
 pub trait SchemaAttribute: Sync + erased_serde::Serialize
-where
-    Self: fmt::Debug,
+    where
+        Self: fmt::Debug,
 {
     fn serialize(
         &mut self,

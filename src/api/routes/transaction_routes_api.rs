@@ -13,7 +13,6 @@ use {
     reqwest::Method,
 };
 
-use crate::models::transaction::HashValue;
 use crate::{
     api::{
         internally::{str_to_hash, valid_vec_hash, valid_vec_len},
@@ -25,13 +24,14 @@ use crate::{
     models::Result,
     transaction::{
         CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionHashes,
-        TransactionIds, TransactionStatus, Transactions, TransactionsStatus,
+        TransactionIds, Transactions, TransactionsStatus, TransactionStatus,
     },
 };
+use crate::models::transaction::HashValue;
 
 use super::{
-    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTIONS_ROUTE,
-    TRANSACTIONS_STATUS_ROUTE, TRANSACTION_ROUTE, TRANSACTION_STATUS_ROUTE,
+    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTION_ROUTE,
+    TRANSACTION_STATUS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_STATUS_ROUTE,
 };
 
 /// Transaction ApiClient routes.
@@ -367,9 +367,9 @@ impl TransactionRoutes {
         self,
         tx: T,
         route: &str,
-    ) -> impl Future<Output = Result<AnnounceTransactionInfo>>
-    where
-        for<'de> T: serde::Serialize,
+    ) -> impl Future<Output=Result<AnnounceTransactionInfo>>
+        where
+                for<'de> T: serde::Serialize,
     {
         let mut req = __internal_request::Request::new(Method::PUT, route.to_string());
 

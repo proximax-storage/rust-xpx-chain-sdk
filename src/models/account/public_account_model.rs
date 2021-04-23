@@ -7,8 +7,8 @@
 use std::fmt;
 
 use serde::{
-    ser::SerializeStruct,
     {Serialize, Serializer},
+    ser::SerializeStruct,
 };
 
 use crate::{
@@ -114,8 +114,8 @@ impl fmt::Display for PublicAccount {
 
 impl Serialize for PublicAccount {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         let mut rgb = serializer.serialize_struct("PublicAccount", 2)?;
         rgb.serialize_field("address", &self.address)?;

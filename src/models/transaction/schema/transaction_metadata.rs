@@ -7,7 +7,7 @@
 use crate::models::transaction::schema::TableArrayAttribute;
 
 use super::{
-    schema_common_definition::schema_common_definition, ArrayAttribute, ScalarAttribute, Schema,
+    ArrayAttribute, ScalarAttribute, Schema, schema_common_definition::schema_common_definition,
     SchemaAttribute, SIZEOF_BYTE, SIZEOF_INT,
 };
 

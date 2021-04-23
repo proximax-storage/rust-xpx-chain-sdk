@@ -6,12 +6,12 @@
 
 use crate::{
     account::PublicAccount,
+    AssetId,
     errors_const,
     models::Result,
     namespace::{NamespaceId, NamespaceInfo, NamespaceName, NamespaceType},
     network::NetworkType,
     transaction::{MetadataNamespaceTransaction, RegisterNamespaceTransaction, Transaction},
-    AssetId,
 };
 
 use super::{

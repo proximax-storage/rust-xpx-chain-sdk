@@ -91,8 +91,8 @@ impl Deref for Signer {
 
 impl Serialize for Signer {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_str(&self.to_string())
     }

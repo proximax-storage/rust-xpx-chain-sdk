@@ -11,8 +11,8 @@ use crate::models::{
 };
 
 use super::{
-    buffer::modify_metadata as buffer, internal::metadata_modification_array_to_buffer,
-    schema::modify_metadata_transaction_schema, AbstractTransaction,
+    AbstractTransaction, buffer::modify_metadata as buffer,
+    internal::metadata_modification_array_to_buffer, schema::modify_metadata_transaction_schema,
 };
 
 #[derive(Clone, Debug, Serialize)]

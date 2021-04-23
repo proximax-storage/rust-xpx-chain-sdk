@@ -4,7 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
-use super::{Message, MessageType};
+use std::borrow::Borrow;
+
 use crate::{
     crypto::{Ed25519BlockCipher, PublicKey},
     errors_const,
@@ -16,7 +17,7 @@ use crate::{
     Result,
 };
 
-use std::borrow::Borrow;
+use super::{Message, MessageType};
 
 /// An encrypted message model defines a secure message that has been encrypted using
 /// the Sirius's SDK libraries.

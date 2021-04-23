@@ -7,21 +7,21 @@
 use {::std::fmt, failure::_core::any::Any, serde_json::Value};
 
 use crate::{
+    AssetId,
     models::{
         account::{Account, Address, PublicAccount},
         consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
         errors_const,
         message::Message,
         mosaic::Mosaic,
-        namespace::{new_address_from_namespace, NamespaceId},
+        namespace::{NamespaceId, new_address_from_namespace},
         network::NetworkType,
-    },
-    AssetId, Result,
+    }, Result,
 };
 
 use super::{
-    buffer::transfer as buffer, deadline::Deadline, internal::sign_transaction,
-    schema::transfer_transaction_schema, AbsTransaction, AbstractTransaction, HashValue,
+    AbstractTransaction, AbsTransaction, buffer::transfer as buffer,
+    deadline::Deadline, HashValue, internal::sign_transaction, schema::transfer_transaction_schema,
     SignedTransaction, Transaction, TransactionType, TRANSFER_VERSION,
 };
 
@@ -136,7 +136,7 @@ impl Transaction for TransferTransaction {
 
         for mosaic in self.mosaics.iter() {
             let mosaic_id = _builder.create_vector(&mosaic.asset_id.to_u32_array());
-            let mosaic_amount = _builder.create_vector(&mosaic.amount.to_i32_array());
+            let mosaic_amount = _builder.create_vector(&mosaic.amount.to_u32_array());
 
             let mut mosaic_buffer = buffer::MosaicBufferBuilder::new(&mut _builder);
             mosaic_buffer.add_id(mosaic_id);

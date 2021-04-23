@@ -21,9 +21,9 @@ use crate::{
 };
 
 use super::{
-    internal::sign_transaction, AbsTransaction, AbstractTransaction, Deadline, HashValue,
-    ModifyMetadataTransaction, SignedTransaction, Transaction, TransactionType,
-    METADATA_ADDRESS_VERSION,
+    AbstractTransaction, AbsTransaction, Deadline, HashValue, internal::sign_transaction,
+    METADATA_ADDRESS_VERSION, ModifyMetadataTransaction, SignedTransaction, Transaction,
+    TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]

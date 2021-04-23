@@ -18,14 +18,14 @@ use crate::{
         ACCOUNT_PROPERTIES_ENTITY_MODIFICATION_SIZE, ACCOUNT_PROPERTY_ENTITY_TYPE_HEADER,
     },
     network::NetworkType,
-    transaction::ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION,
     Result,
+    transaction::ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION,
 };
 
 use super::{
-    buffer::account_properties as buffer, internal::sign_transaction,
-    schema::account_property_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    HashValue, SignedTransaction, Transaction, TransactionType,
+    AbstractTransaction, AbsTransaction,
+    buffer::account_properties as buffer, Deadline, HashValue, internal::sign_transaction,
+    schema::account_property_transaction_schema, SignedTransaction, Transaction, TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]

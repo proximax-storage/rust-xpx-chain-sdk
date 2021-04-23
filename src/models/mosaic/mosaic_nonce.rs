@@ -8,8 +8,8 @@ use std::ops::Deref;
 
 use {
     ::hex::FromHex,
-    ::rand::rngs::OsRng,
     ::rand::RngCore,
+    ::rand::rngs::OsRng,
     ::std::fmt,
     serde::{Serialize, Serializer},
 };
@@ -84,8 +84,8 @@ impl fmt::Display for MosaicNonce {
 
 impl Serialize for MosaicNonce {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_u32(self.to_u32())
     }

@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+use tokio_tungstenite::MaybeTlsStream;
+
 use {
     ::std::{borrow::Cow, collections::HashMap},
     bytes::Bytes,
@@ -21,19 +23,19 @@ use crate::{
         blockchain::BlockInfo,
         error::Error,
         multisig::CosignatureInfo,
-        transaction::{AggregateTransaction, Transaction, TransactionInfo, TransactionStatus},
         Result,
+        transaction::{AggregateTransaction, Transaction, TransactionInfo, TransactionStatus},
     },
 };
 
 use super::{
-    model::{
-        RouterPath, SubscribeDto, WsConnectionResponse, WsSubscribeDto, PATH_BLOCK,
-        PATH_CONFIRMED_ADDED, PATH_COSIGNATURE, PATH_PARTIAL_ADDED, PATH_PARTIAL_REMOVED,
-        PATH_STATUS, PATH_UNCONFIRMED_ADDED, PATH_UNCONFIRMED_REMOVED,
-    },
-    HandlerBlock, HandlerConfirmedAdd, HandlerCosignature, HandlerPartialAdd, HandlerPartialRemove,
-    HandlerStatus, HandlerUnconfirmedAdd, HandlerUnconfirmedRemoved, WsBlockInfoDto,
+    HandlerBlock,
+    HandlerConfirmedAdd, HandlerCosignature, HandlerPartialAdd, HandlerPartialRemove, HandlerStatus,
+    HandlerUnconfirmedAdd, HandlerUnconfirmedRemoved, model::{
+        PATH_BLOCK, PATH_CONFIRMED_ADDED, PATH_COSIGNATURE, PATH_PARTIAL_ADDED, PATH_PARTIAL_REMOVED,
+        PATH_STATUS, PATH_UNCONFIRMED_ADDED, PATH_UNCONFIRMED_REMOVED, RouterPath,
+        SubscribeDto, WsConnectionResponse, WsSubscribeDto,
+    }, WsBlockInfoDto,
     WsPartialRemoveDto, WsStatusInfoDto, WsUnconfirmedRemovedDto,
 };
 
@@ -45,14 +47,14 @@ impl_downcast!(Handler);
 
 pub struct SiriusWebsocketClient {
     uid: WsConnectionResponse,
-    conn: WebSocketStream<AutoStream<tokio::net::TcpStream>>,
+    conn: WebSocketStream<AutoStream<MaybeTlsStream<tokio::net::TcpStream>>>,
     handlers: HashMap<String, Box<dyn Handler>>,
 }
 
 impl SiriusWebsocketClient {
     pub async fn add_block_handlers<F>(&mut self, handler_fn: F) -> Result<()>
-    where
-        F: Fn(BlockInfo) -> bool + Send + Sync + 'static,
+        where
+            F: Fn(BlockInfo) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerBlock {
             handler: Box::new(handler_fn),
@@ -65,8 +67,8 @@ impl SiriusWebsocketClient {
     }
 
     pub async fn add_status_handlers<F>(&mut self, address: Address, handler_fn: F) -> Result<()>
-    where
-        F: Fn(TransactionStatus) -> bool + Send + Sync + 'static,
+        where
+            F: Fn(TransactionStatus) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerStatus {
             handler: Box::new(handler_fn),
@@ -84,8 +86,8 @@ impl SiriusWebsocketClient {
         address: Address,
         handler_fn: F,
     ) -> Result<()>
-    where
-        F: Fn(Box<dyn Transaction>) -> bool + Send + Sync + 'static,
+        where
+            F: Fn(Box<dyn Transaction>) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerConfirmedAdd {
             handler: Box::new(handler_fn),
@@ -95,7 +97,7 @@ impl SiriusWebsocketClient {
             PATH_CONFIRMED_ADDED.to_string(),
             address,
         ))
-        .await?;
+            .await?;
         self.handlers
             .insert(PATH_CONFIRMED_ADDED.to_string(), Box::new(handler));
         Ok(())
@@ -106,8 +108,8 @@ impl SiriusWebsocketClient {
         address: Address,
         handler_fn: F,
     ) -> Result<()>
-    where
-        F: Fn(TransactionInfo) -> bool + Send + Sync + 'static,
+        where
+            F: Fn(TransactionInfo) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerUnconfirmedRemoved {
             handler: Box::new(handler_fn),
@@ -117,7 +119,7 @@ impl SiriusWebsocketClient {
             PATH_UNCONFIRMED_REMOVED.to_string(),
             address,
         ))
-        .await?;
+            .await?;
         self.handlers
             .insert(PATH_UNCONFIRMED_REMOVED.to_string(), Box::new(handler));
         Ok(())
@@ -128,8 +130,8 @@ impl SiriusWebsocketClient {
         address: Address,
         handler_fn: F,
     ) -> Result<()>
-    where
-        F: Fn(Box<dyn Transaction>) -> bool + Send + Sync + 'static,
+        where
+            F: Fn(Box<dyn Transaction>) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerUnconfirmedAdd {
             handler: Box::new(handler_fn),
@@ -139,7 +141,7 @@ impl SiriusWebsocketClient {
             PATH_UNCONFIRMED_ADDED.to_string(),
             address,
         ))
-        .await?;
+            .await?;
         self.handlers
             .insert(PATH_UNCONFIRMED_ADDED.to_string(), Box::new(handler));
         Ok(())
@@ -150,8 +152,8 @@ impl SiriusWebsocketClient {
         address: Address,
         handler_fn: F,
     ) -> Result<()>
-    where
-        F: Fn(AggregateTransaction) -> bool + Send + Sync + 'static,
+        where
+            F: Fn(AggregateTransaction) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerPartialAdd {
             handler: Box::new(handler_fn),
@@ -161,7 +163,7 @@ impl SiriusWebsocketClient {
             PATH_PARTIAL_ADDED.to_string(),
             address,
         ))
-        .await?;
+            .await?;
         self.handlers
             .insert(PATH_PARTIAL_ADDED.to_string(), Box::new(handler));
         Ok(())
@@ -172,8 +174,8 @@ impl SiriusWebsocketClient {
         address: Address,
         handler_fn: F,
     ) -> Result<()>
-    where
-        F: Fn(TransactionInfo) -> bool + Send + Sync + 'static,
+        where
+            F: Fn(TransactionInfo) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerUnconfirmedRemoved {
             handler: Box::new(handler_fn),
@@ -183,7 +185,7 @@ impl SiriusWebsocketClient {
             PATH_PARTIAL_REMOVED.to_string(),
             address,
         ))
-        .await?;
+            .await?;
         self.handlers
             .insert(PATH_PARTIAL_REMOVED.to_string(), Box::new(handler));
         Ok(())
@@ -194,8 +196,8 @@ impl SiriusWebsocketClient {
         address: Address,
         handler_fn: F,
     ) -> Result<()>
-    where
-        F: Fn(CosignatureInfo) -> bool + Send + Sync + 'static,
+        where
+            F: Fn(CosignatureInfo) -> bool + Send + Sync + 'static,
     {
         let handler = HandlerCosignature {
             handler: Box::new(handler_fn),
@@ -281,7 +283,7 @@ impl SiriusWebsocketClient {
                             break;
                         }
                     } else if let Some(handler_info) =
-                        base.downcast_ref::<HandlerUnconfirmedRemoved>()
+                    base.downcast_ref::<HandlerUnconfirmedRemoved>()
                     {
                         let channel =
                             get_channel_data::<WsUnconfirmedRemovedDto>(&msg_string, false)?;
@@ -342,8 +344,8 @@ fn path_parse_address(mut path: String, address: Address) -> String {
 }
 
 fn get_channel_data<U>(msg: &str, is_tx: bool) -> Result<U>
-where
-    for<'de> U: serde::Deserialize<'de>,
+    where
+            for<'de> U: serde::Deserialize<'de>,
 {
     if is_tx {
         let map_dto = map_transaction_dto(Bytes::from(msg.to_string()))?;

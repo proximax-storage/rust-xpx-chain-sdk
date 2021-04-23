@@ -28,8 +28,8 @@ impl fmt::Display for AssetIdType {
 
 /// An `trait` identifier used to define mosaic_id and namespace_id.
 pub trait AssetId: Send + Sync + erased_serde::Serialize
-where
-    Self: fmt::Debug,
+    where
+        Self: fmt::Debug,
 {
     fn to_uint64(&self) -> Uint64;
 
@@ -46,7 +46,7 @@ where
     }
 
     fn to_u32_array(&self) -> [u32; 2] {
-        self.to_uint64().to_i32_array()
+        self.to_uint64().to_u32_array()
     }
 
     fn is_empty(&self) -> bool {

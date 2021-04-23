@@ -23,8 +23,8 @@ use crate::{
 };
 
 use super::{
-    internal::sign_transaction, AbsTransaction, AbstractTransaction, AliasTransaction, Deadline,
-    HashValue, SignedTransaction, Transaction, TransactionType, ADDRESS_ALIAS_VERSION,
+    AbstractTransaction, AbsTransaction, ADDRESS_ALIAS_VERSION, AliasTransaction, Deadline,
+    HashValue, internal::sign_transaction, SignedTransaction, Transaction, TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]

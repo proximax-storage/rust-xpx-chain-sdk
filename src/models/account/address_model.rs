@@ -9,8 +9,8 @@ use std::fmt;
 use {
     ::std::ops::Deref,
     base32::Alphabet::RFC4648,
-    serde::ser::SerializeStruct,
     serde::{Serialize, Serializer},
+    serde::ser::SerializeStruct,
 };
 
 use crate::{
@@ -204,8 +204,8 @@ impl fmt::Debug for Address {
 
 impl Serialize for Address {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         let mut rgb = serializer.serialize_struct("Address", 2)?;
         rgb.serialize_field("address", &self.address_string())?;

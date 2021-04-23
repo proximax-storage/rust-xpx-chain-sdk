@@ -9,8 +9,8 @@ use std::fmt;
 use crate::models::message::MessageType;
 
 pub trait Message: Sync + Send + erased_serde::Serialize
-where
-    Self: fmt::Debug,
+    where
+        Self: fmt::Debug,
 {
     fn message_type(&self) -> &MessageType;
 

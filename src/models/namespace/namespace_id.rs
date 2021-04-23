@@ -12,9 +12,9 @@ use {
 };
 
 use crate::{
+    AssetIdType,
     helpers::has_bits,
     models::{asset_id_model::AssetId, errors_const, Uint64},
-    AssetIdType,
 };
 
 use super::{generate_namespace_path, NAMESPACE_BIT};
@@ -28,7 +28,7 @@ impl NamespaceId {
     pub fn new(id: u64) -> NamespaceId {
         assert!(
             id != 0 && has_bits(id, NAMESPACE_BIT),
-            errors_const::ERR_WRONG_BIT_NAMESPACE_ID
+            "{}", errors_const::ERR_WRONG_BIT_NAMESPACE_ID
         );
 
         NamespaceId(Uint64::new(id))
@@ -76,8 +76,8 @@ impl fmt::Display for NamespaceId {
 
 impl Serialize for NamespaceId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_str(&self.to_hex())
     }
