@@ -9,8 +9,8 @@ use std::fmt;
 use {
     ::std::ops::Deref,
     base32::Alphabet::RFC4648,
-    serde::{Serialize, Serializer},
     serde::ser::SerializeStruct,
+    serde::{Serialize, Serializer},
 };
 
 use crate::{
@@ -91,7 +91,7 @@ impl Address {
             bail!(errors_const::ERR_WRONG_NETWORK_TYPE)
         }
 
-        let address = Self::decode_from_base32(&address);
+        let address = Self::decode_from_base32(&address)?;
 
         Ok(Self {
             address,
@@ -138,12 +138,13 @@ impl Address {
     }
 
     #[inline]
-    fn decode_from_base32(data: &str) -> [u8; Self::LENGTH] {
-        let add_decode = base32::decode(RFC4648 { padding: true }, data).unwrap();
+    fn decode_from_base32(data: &str) -> Result<[u8; Self::LENGTH]> {
+        let add_decode = base32::decode(RFC4648 { padding: true }, data);
+        ensure!(add_decode.is_some(), errors_const::ERR_INVALID_ADDRESSES_BASE32);
 
         let mut bts: [u8; 25] = [0u8; 25];
-        bts.copy_from_slice(&add_decode);
-        bts
+        bts.copy_from_slice(&add_decode.unwrap());
+        Ok(bts)
     }
 
     #[inline]
@@ -204,8 +205,8 @@ impl fmt::Debug for Address {
 
 impl Serialize for Address {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         let mut rgb = serializer.serialize_struct("Address", 2)?;
         rgb.serialize_field("address", &self.address_string())?;

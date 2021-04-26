@@ -13,6 +13,7 @@ pub const ERR_INVALID_ACCOUNT_ID: &str = "Invalid account_id";
 pub const ERR_EMPTY_ADDRESSES: &str = "address string must not be empty.";
 pub const ERR_INVALID_ADDRESSES_LEN: &str = "Invalid len address.";
 pub const ERR_INVALID_ADDRESSES_HEX: &str = "Invalid Address it's not hex.";
+pub const ERR_INVALID_ADDRESSES_BASE32: &str = "Invalid Address it's not base32.";
 
 // Namespace errors
 pub const ERR_NAMESPACE_TOO_MANY_PART: &str = "Too many parts";
