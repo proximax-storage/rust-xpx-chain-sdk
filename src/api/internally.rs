@@ -20,8 +20,8 @@ use crate::{
     mosaic::{MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
     multisig::CosignatoryModification,
     network::NetworkType,
-    Result,
-    transaction::{HashValue, TransactionType as Entity}, Uint64,
+    transaction::{HashValue, TransactionType as Entity},
+    Result, Uint64,
 };
 
 use super::{
@@ -86,8 +86,8 @@ pub(crate) fn str_to_hash(hash: &str) -> Result<Vec<u8>> {
 }
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
-    where
-        T: Debug,
+where
+    T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())
@@ -106,10 +106,10 @@ pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
     }
 }
 
-pub(crate) fn valid_vec_hash(vector: &[&str]) -> Result<()> {
+pub(crate) fn valid_vec_hash<T: AsRef<str>>(vector: &[T]) -> Result<()> {
     for hash in vector {
-        if hash.len() != 24 {
-            str_to_hash(hash)?;
+        if hash.as_ref().len() != 24 {
+            str_to_hash(hash.as_ref())?;
         }
     }
     Ok(())

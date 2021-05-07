@@ -131,7 +131,12 @@ impl TransactionRoutes {
     /// Returns a Future `Result` whose okay value is an vector of [TransactionStatus] for a
     /// given vector of transaction hashes or whose error value is an `Error<Value>` describing the
     /// error that occurred.
-    pub async fn get_transactions_statuses(self, hashes: Vec<&str>) -> Result<TransactionsStatus> {
+    pub async fn get_transactions_statuses<T: AsRef<str>>(self, hashes: &[T]) -> Result<TransactionsStatus> {
+        let hashes = hashes
+            .iter()
+            .map(|item| item.as_ref().to_string())
+            .collect::<Vec<String>>();
+
         valid_vec_len(&hashes, ERR_EMPTY_TRANSACTION_HASHES)?;
 
         valid_vec_hash(&hashes)?;

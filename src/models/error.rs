@@ -16,7 +16,7 @@ use {
 /// Result type of all Websocket library calls.
 pub type Result<T> = result::Result<T, Error>;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SiriusError {
     pub code: String,
@@ -92,3 +92,4 @@ impl Display for Error {
         }
     }
 }
+
