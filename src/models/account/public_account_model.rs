@@ -20,7 +20,7 @@ use crate::{
 use super::Address;
 
 /// The [`PublicAccount`] account structure contains account's [`Address`] and public key.
-#[derive(Default, Clone, Deserialize, Copy)]
+#[derive(Default, Clone, Deserialize, PartialEq, Copy)]
 #[serde(rename_all = "camelCase")]
 pub struct PublicAccount {
     /// Retrieves the `Address` of this public account.
