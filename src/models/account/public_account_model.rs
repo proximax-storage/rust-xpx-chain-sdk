@@ -71,7 +71,13 @@ impl PublicAccount {
 
         let signature = crypto::Signature::from_bytes(&sig_byte)?;
 
-        let verify = pk.verify(&data.as_bytes(), &signature);
+        let data_bytes = if is_hex(data) {
+            hex_decode(data)
+        } else {
+            data.as_bytes().to_vec()
+        };
+
+        let verify = pk.verify(&data_bytes, &signature);
 
         if verify.is_ok() {
             Ok(())
