@@ -155,8 +155,15 @@ impl Account {
 
     /// Signs raw data.
     #[inline]
-    pub fn sign_data(&self, data: &[u8]) -> String {
-        let sig = &self.key_pair.sign(data).to_bytes()[..];
+    pub fn sign_data(&self, data: &str) -> String {
+
+        let data_bytes = if is_hex(data) {
+            hex_decode(data)
+        } else {
+            data.as_bytes().to_vec()
+        };
+
+        let sig = &self.key_pair.sign(&data_bytes).to_bytes()[..];
 
         hex_encode(sig)
     }
