@@ -4,10 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use {
-    num_enum::IntoPrimitive,
-    serde::{Serialize, Serializer},
-};
+use serde::{Serialize, Serializer};
 
 pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
 pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
@@ -69,7 +66,7 @@ pub(crate) type EntityVersion = u32;
 /// * 0x4350 (17232 decimal) - Account Properties Entity Type Transaction.
 /// * 0x8043 (32835 decimal) - Nemesis block.
 /// * 0x8143 (33091 decimal) - Regular block.
-#[derive(Debug, Clone, Copy, PartialEq, Deserialize, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
 #[repr(u16)]
 pub enum TransactionType {
     BlockchainUpgrade = 0x4158,
@@ -103,7 +100,7 @@ pub enum TransactionType {
 
 impl TransactionType {
     pub fn value(self) -> u16 {
-        self.into()
+        self as u16
     }
 
     pub fn to_bytes(self) -> [u8; 2] {
@@ -160,8 +157,8 @@ impl core::fmt::Display for TransactionType {
 
 impl Serialize for TransactionType {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_u16(self.value())
     }

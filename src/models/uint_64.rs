@@ -29,8 +29,9 @@ impl Uint64 {
         Self(u)
     }
 
+
     /// Creates a `Uint64` from a pair of u32 integers.
-    fn from_u32_array(lower: u32, higher: u32) -> Self {
+    pub fn from_u32_array(lower: u32, higher: u32) -> Self {
         let mut buf = [0u8; SIZE_U64];
         buf[..4]
             .as_mut()
@@ -73,7 +74,7 @@ impl Uint64 {
     }
 
     /// Converts to a pair of i32 integers ([lower, higher]).
-    pub fn to_i32_array(&self) -> [u32; 2] {
+    pub fn to_u32_array(&self) -> [u32; 2] {
         let lower = self.0 as u32;
         let higher = (self.0 >> 32) as u32;
         [lower, higher]

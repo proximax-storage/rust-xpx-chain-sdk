@@ -7,7 +7,7 @@
 use crate::models::{account::PublicAccount, network::NetworkType, uint_64::Uint64};
 
 use super::{
-    deadline::Deadline, AbsVector, EntityVersion, HashValue, Height, Signature, TransactionType,
+    AbsVector, deadline::Deadline, EntityVersion, HashValue, Height, Signature, TransactionType,
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -18,11 +18,11 @@ use crate::{
 };
 
 use super::{
+    AbstractTransaction,
+    AbsTransaction,
     buffer::modify_multisig_account as buffer,
-    internal::{cosignatory_modification_array_to_buffer, sign_transaction},
-    schema::modify_multisig_account_transaction_schema,
-    AbsTransaction, AbstractTransaction, Deadline, HashValue, SignedTransaction, Transaction,
-    TransactionType, MODIFY_MULTISIG_VERSION,
+    Deadline, HashValue, internal::{cosignatory_modification_array_to_buffer, sign_transaction}, MODIFY_MULTISIG_VERSION, schema::modify_multisig_account_transaction_schema, SignedTransaction,
+    Transaction, TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]

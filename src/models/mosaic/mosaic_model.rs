@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::fmt, num_enum::IntoPrimitive};
+use std::fmt;
 
 use crate::{
     models::{asset_id_model::AssetId, errors_const::ERR_INVALID_MOSAIC_PROPERTY_ID},
@@ -25,7 +25,7 @@ pub const TRANSFERABLE: u8 = 0x02;
 /// * 0 - MosaicFlags
 /// * 1 - Divisibility
 /// * 2 - Duration
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, IntoPrimitive)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum MosaicPropertyId {
     MosaicFlags,
@@ -35,14 +35,14 @@ pub enum MosaicPropertyId {
 
 impl MosaicPropertyId {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 }
 
 impl From<u8> for MosaicPropertyId {
     fn from(id: u8) -> Self {
         use MosaicPropertyId::*;
-        assert!(id <= 2, ERR_INVALID_MOSAIC_PROPERTY_ID);
+        assert!(id <= 2, "{}", ERR_INVALID_MOSAIC_PROPERTY_ID);
         match id {
             1 => Divisibility,
             2 => Duration,
@@ -55,7 +55,7 @@ impl From<u8> for MosaicPropertyId {
 /// The supply modification direction:
 /// * 0  - Decrease.
 /// * 1  - Increase.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, IntoPrimitive)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum MosaicSupplyType {
     Decrease,
@@ -64,7 +64,7 @@ pub enum MosaicSupplyType {
 
 impl MosaicSupplyType {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 }
 

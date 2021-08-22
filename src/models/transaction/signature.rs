@@ -87,8 +87,8 @@ impl fmt::Debug for Signature {
 
 impl Serialize for Signature {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_str(&format!("{}", self))
     }
@@ -96,8 +96,8 @@ impl Serialize for Signature {
 
 impl<'de> de::Deserialize<'de> for Signature {
     fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: de::Deserializer<'de>,
+        where
+            D: de::Deserializer<'de>,
     {
         if deserializer.is_human_readable() {
             let encoded_hash = <String>::deserialize(deserializer)?;

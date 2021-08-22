@@ -16,7 +16,7 @@ use crate::models::{
 };
 
 use super::{
-    deadline::Deadline, AbstractTransaction, HashValue, SignedTransaction, TransactionType,
+    AbstractTransaction, deadline::Deadline, HashValue, SignedTransaction, TransactionType,
 };
 
 pub type Amount = Uint64;
@@ -58,9 +58,9 @@ impl<'b> AbsVector<'b> {
         let version_vec = (network_type << 24) + abs.version as fb::UOffsetT;
         let signature_vec = builder.create_vector_direct(&[0u8; SIGNATURE_SIZE]);
         let signer_vec = builder.create_vector_direct(&[0u8; SIGNER_SIZE]);
-        let deadline_vec = builder.create_vector_direct(&deadline.to_i32_array());
+        let deadline_vec = builder.create_vector_direct(&deadline.to_u32_array());
 
-        let max_fee_vec = builder.create_vector_direct(&max_fee.to_i32_array());
+        let max_fee_vec = builder.create_vector_direct(&max_fee.to_u32_array());
 
         AbsVector {
             signature_vec,
@@ -159,8 +159,8 @@ pub trait AbsTransaction {
 }
 
 pub trait Transaction
-where
-    Self: fmt::Debug + 'static + AbsTransaction + Sync + erased_serde::Serialize,
+    where
+        Self: fmt::Debug + 'static + AbsTransaction + Sync + erased_serde::Serialize,
 {
     fn size(&self) -> usize;
 

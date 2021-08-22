@@ -10,6 +10,7 @@ use {
 };
 
 use crate::{
+    AssetId,
     models::{
         account::{Account, PublicAccount},
         consts::NAMESPACE_SIZE,
@@ -17,14 +18,13 @@ use crate::{
         metadata::{MetadataModification, MetadataType},
         namespace::NamespaceId,
         network::NetworkType,
-    },
-    AssetId, Result,
+    }, Result,
 };
 
 use super::{
-    internal::sign_transaction, AbsTransaction, AbstractTransaction, Deadline, HashValue,
-    ModifyMetadataTransaction, SignedTransaction, Transaction, TransactionType,
-    METADATA_NAMESPACE_VERSION,
+    AbstractTransaction, AbsTransaction, Deadline, HashValue, internal::sign_transaction,
+    METADATA_NAMESPACE_VERSION, ModifyMetadataTransaction, SignedTransaction, Transaction,
+    TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]

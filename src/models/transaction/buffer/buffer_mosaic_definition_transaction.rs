@@ -277,7 +277,7 @@ pub mod mosaic_definition {
         pub flags: u8,
         pub divisibility: u8,
         pub optional_properties:
-            Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<MosaicProperty<'a>>>>>,
+        Option<fb::WIPOffset<fb::Vector<'a, fb::ForwardsUOffset<MosaicProperty<'a>>>>>,
     }
 
     impl<'a> Default for MosaicDefinitionTransactionBufferArgs<'a> {

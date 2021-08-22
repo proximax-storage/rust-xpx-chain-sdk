@@ -6,8 +6,8 @@ use {::std::sync::Arc, reqwest::Method};
 
 use crate::{
     api::{
-        dtos::{BlockInfoDto, TransactionDto},
-        request as __internal_request, ApiClient,
+        ApiClient,
+        dtos::{BlockInfoDto, TransactionDto}, request as __internal_request,
     },
     blockchain::BlockInfo,
     models::Result,

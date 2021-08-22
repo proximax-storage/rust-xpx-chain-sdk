@@ -12,9 +12,9 @@ use {
 };
 
 use crate::{
+    AssetIdType,
     helpers::is_hex,
     models::{account::PublicAccount, asset_id_model::AssetId, Result, Uint64},
-    AssetIdType,
 };
 
 use super::{generate_mosaic_id, MosaicNonce};
@@ -72,8 +72,8 @@ impl fmt::Display for MosaicId {
 
 impl Serialize for MosaicId {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_str(&self.to_hex())
     }

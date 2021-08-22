@@ -13,7 +13,6 @@ use {
     reqwest::Method,
 };
 
-use crate::models::transaction::HashValue;
 use crate::{
     api::{
         internally::{str_to_hash, valid_vec_hash, valid_vec_len},
@@ -25,13 +24,14 @@ use crate::{
     models::Result,
     transaction::{
         CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionHashes,
-        TransactionIds, TransactionStatus, Transactions, TransactionsStatus,
+        TransactionIds, Transactions, TransactionsStatus, TransactionStatus,
     },
 };
+use crate::models::transaction::HashValue;
 
 use super::{
-    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTIONS_ROUTE,
-    TRANSACTIONS_STATUS_ROUTE, TRANSACTION_ROUTE, TRANSACTION_STATUS_ROUTE,
+    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTION_ROUTE,
+    TRANSACTION_STATUS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_STATUS_ROUTE,
 };
 
 /// Transaction ApiClient routes.
@@ -131,7 +131,12 @@ impl TransactionRoutes {
     /// Returns a Future `Result` whose okay value is an vector of [TransactionStatus] for a
     /// given vector of transaction hashes or whose error value is an `Error<Value>` describing the
     /// error that occurred.
-    pub async fn get_transactions_statuses(self, hashes: Vec<&str>) -> Result<TransactionsStatus> {
+    pub async fn get_transactions_statuses<T: AsRef<str>>(self, hashes: &[T]) -> Result<TransactionsStatus> {
+        let hashes = hashes
+            .iter()
+            .map(|item| item.as_ref().to_string())
+            .collect::<Vec<String>>();
+
         valid_vec_len(&hashes, ERR_EMPTY_TRANSACTION_HASHES)?;
 
         valid_vec_hash(&hashes)?;
@@ -367,9 +372,9 @@ impl TransactionRoutes {
         self,
         tx: T,
         route: &str,
-    ) -> impl Future<Output = Result<AnnounceTransactionInfo>>
-    where
-        for<'de> T: serde::Serialize,
+    ) -> impl Future<Output=Result<AnnounceTransactionInfo>>
+        where
+                for<'de> T: serde::Serialize,
     {
         let mut req = __internal_request::Request::new(Method::PUT, route.to_string());
 

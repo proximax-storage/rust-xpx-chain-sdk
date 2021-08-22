@@ -6,7 +6,6 @@
 
 use {::std::fmt, failure::_core::any::Any, fb::FlatBufferBuilder, serde_json::Value};
 
-use crate::transaction::schema::exchange_offer_transaction_schema;
 use crate::{
     models::{
         account::{Account, PublicAccount},
@@ -17,11 +16,12 @@ use crate::{
     },
     Result,
 };
+use crate::transaction::schema::exchange_offer_transaction_schema;
 
 use super::{
-    buffer::exchange as buffer, deadline::Deadline, internal::sign_transaction, AbsTransaction,
-    AbstractTransaction, HashValue, SignedTransaction, Transaction, TransactionType,
-    EXCHANGE_OFFER_VERSION,
+    AbstractTransaction, AbsTransaction, buffer::exchange as buffer, deadline::Deadline,
+    EXCHANGE_OFFER_VERSION, HashValue, internal::sign_transaction, SignedTransaction, Transaction,
+    TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -146,9 +146,9 @@ pub(crate) fn exchange_offer_to_array_to_buffer<'a>(
             builder.create_vector_direct(&item.offer.mosaic.asset_id.to_u32_array());
 
         let mosaic_amount_vector =
-            builder.create_vector_direct(&item.offer.mosaic.amount.to_i32_array());
+            builder.create_vector_direct(&item.offer.mosaic.amount.to_u32_array());
 
-        let cost_vector = builder.create_vector_direct(&item.offer.cost.to_i32_array());
+        let cost_vector = builder.create_vector_direct(&item.offer.cost.to_u32_array());
 
         let account_vector = builder.create_vector_direct(&item.owner.to_bytes());
 

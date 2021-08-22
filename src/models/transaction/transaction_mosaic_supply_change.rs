@@ -19,9 +19,9 @@ use crate::{
 };
 
 use super::{
-    buffer::mosaic_supply_change as buffer, deadline::Deadline, internal::sign_transaction,
-    schema::mosaic_supply_change_transaction_schema, AbsTransaction, AbstractTransaction,
-    HashValue, SignedTransaction, Transaction, TransactionType, MOSAIC_SUPPLY_CHANGE_VERSION,
+    AbstractTransaction, AbsTransaction, buffer::mosaic_supply_change as buffer,
+    deadline::Deadline, HashValue, internal::sign_transaction,
+    MOSAIC_SUPPLY_CHANGE_VERSION, schema::mosaic_supply_change_transaction_schema, SignedTransaction, Transaction, TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -87,7 +87,7 @@ impl Transaction for MosaicSupplyChangeTransaction {
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
         let mosaic_vec = builder.create_vector(&self.asset_id.to_u32_array());
-        let delta_vec = builder.create_vector(&self.delta.to_i32_array());
+        let delta_vec = builder.create_vector(&self.delta.to_u32_array());
 
         let abs_vector = self.abs_transaction.build_vector(&mut builder);
 

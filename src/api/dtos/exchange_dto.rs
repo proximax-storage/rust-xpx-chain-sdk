@@ -10,19 +10,19 @@ use crate::{
     helpers::has_bits,
     models::{
         account::PublicAccount,
+        AssetId,
         exchange::{
             AddOffer, ExchangeConfirmation, Offer, OfferIdInfo, OfferIdInfos, OfferInfo, OfferType,
             OfferType::{BuyOffer, SellOffer},
             RemoveOffer, UserExchangeInfo,
         },
         mosaic::{Mosaic, MosaicId},
-        namespace::{NamespaceId, NAMESPACE_BIT},
+        namespace::{NAMESPACE_BIT, NamespaceId},
         network::NetworkType,
-        transaction::{
+        Result, transaction::{
             AddExchangeOfferTransaction, ExchangeOfferTransaction, RemoveExchangeOfferTransaction,
             Transaction,
         },
-        AssetId, Result,
     },
 };
 
@@ -244,7 +244,7 @@ impl TransactionDto for ExchangeOfferTransactionInfoDto {
                         &offer.owner,
                         abs_transaction.network_type,
                     )
-                    .unwrap(),
+                        .unwrap(),
                 }
             })
             .collect();

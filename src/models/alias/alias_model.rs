@@ -4,13 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
-use num_enum::IntoPrimitive;
-
 /// AccountLinkAction :
 /// The type of the action:
 /// * 0 - Link.
 /// * 1 - Unlink.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
 #[repr(u8)]
 pub enum AccountLinkAction {
     AccountLink,
@@ -19,7 +17,7 @@ pub enum AccountLinkAction {
 
 impl AccountLinkAction {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 }
 
@@ -42,7 +40,7 @@ impl std::fmt::Display for AccountLinkAction {
 /// * 0 -  No alias.
 /// * 1 -  Mosaic id alias.
 /// * 2 -  Addres alias.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
 #[repr(u8)]
 pub enum AliasType {
     NoneAliasType,
@@ -52,7 +50,7 @@ pub enum AliasType {
 
 impl AliasType {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 }
 
@@ -76,7 +74,7 @@ impl std::fmt::Display for AliasType {
 /// The alias action:
 /// * 0 -  Link alias.
 /// * 1 -  Unlink alias.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
 #[repr(u8)]
 pub enum AliasActionType {
     AliasLink,
@@ -85,7 +83,7 @@ pub enum AliasActionType {
 
 impl AliasActionType {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 }
 

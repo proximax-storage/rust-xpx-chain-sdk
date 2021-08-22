@@ -9,11 +9,11 @@ use crate::{
     models::{
         errors_const,
         mosaic::{Mosaic, MosaicId, MosaicInfo, MosaicNames, MosaicNonce, MosaicSupplyType},
+        Result,
         transaction::{
             MetadataMosaicTransaction, MosaicDefinitionTransaction, MosaicSupplyChangeTransaction,
             Transaction,
         },
-        Result,
     },
 };
 

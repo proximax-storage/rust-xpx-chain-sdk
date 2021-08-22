@@ -7,8 +7,8 @@
 use std::fmt;
 
 use serde::{
-    ser::SerializeStruct,
     {Serialize, Serializer},
+    ser::SerializeStruct,
 };
 
 use crate::{
@@ -20,7 +20,7 @@ use crate::{
 use super::Address;
 
 /// The [`PublicAccount`] account structure contains account's [`Address`] and public key.
-#[derive(Default, Clone, Deserialize, Copy)]
+#[derive(Default, Clone, Deserialize, PartialEq, Copy)]
 #[serde(rename_all = "camelCase")]
 pub struct PublicAccount {
     /// Retrieves the `Address` of this public account.
@@ -71,7 +71,13 @@ impl PublicAccount {
 
         let signature = crypto::Signature::from_bytes(&sig_byte)?;
 
-        let verify = pk.verify(&data.as_bytes(), &signature);
+        let data_bytes = if is_hex(data) {
+            hex_decode(data)
+        } else {
+            data.as_bytes().to_vec()
+        };
+
+        let verify = pk.verify(&data_bytes, &signature);
 
         if verify.is_ok() {
             Ok(())
@@ -114,8 +120,8 @@ impl fmt::Display for PublicAccount {
 
 impl Serialize for PublicAccount {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         let mut rgb = serializer.serialize_struct("PublicAccount", 2)?;
         rgb.serialize_field("address", &self.address)?;

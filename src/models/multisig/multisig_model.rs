@@ -5,7 +5,6 @@
  */
 
 use {
-    num_enum::IntoPrimitive,
     std::{collections::HashMap, fmt},
 };
 
@@ -16,7 +15,7 @@ use crate::models::{
 /// The type of the modification:
 /// * 0 - Add cosignatory.
 /// * 1 - Remove cosignatory.
-#[derive(Debug, Clone, Serialize, Deserialize, IntoPrimitive)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum MultisigModificationType {
     Add,
@@ -25,13 +24,13 @@ pub enum MultisigModificationType {
 
 impl MultisigModificationType {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 }
 
 impl From<u8> for MultisigModificationType {
     fn from(t: u8) -> Self {
-        assert!(t <= 1, ERR_UNKNOWN_TYPE);
+        assert!(t <= 1, "{}", ERR_UNKNOWN_TYPE);
         match t {
             0 => MultisigModificationType::Add,
             _ => MultisigModificationType::Remove,

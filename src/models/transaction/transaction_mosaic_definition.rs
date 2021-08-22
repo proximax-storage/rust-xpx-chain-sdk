@@ -18,12 +18,12 @@ use crate::{
 };
 
 use super::{
+    AbstractTransaction,
+    AbsTransaction,
     buffer::mosaic_definition as buffer,
     deadline::Deadline,
-    internal::{mosaic_property_array_to_buffer, sign_transaction},
-    schema::mosaic_definition_transaction_schema,
-    AbsTransaction, AbstractTransaction, HashValue, SignedTransaction, Transaction,
-    TransactionType, MOSAIC_DEFINITION_VERSION,
+    HashValue, internal::{mosaic_property_array_to_buffer, sign_transaction}, MOSAIC_DEFINITION_VERSION, schema::mosaic_definition_transaction_schema, SignedTransaction,
+    Transaction, TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]

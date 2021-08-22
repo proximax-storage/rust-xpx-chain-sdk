@@ -8,7 +8,7 @@ use {::std::sync::Arc, reqwest::Method};
 
 use crate::{
     api::{
-        request as __internal_request, sirius_client::ApiClient, BlockchainScoreDto, HeightInfoDto,
+        BlockchainScoreDto, HeightInfoDto, request as __internal_request, sirius_client::ApiClient,
     },
     blockchain::{BlockchainScore, HeightInfo, StorageInfo},
     models::Result,

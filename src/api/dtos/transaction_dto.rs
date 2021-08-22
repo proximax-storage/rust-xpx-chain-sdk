@@ -6,18 +6,18 @@
 
 use ::std::str::FromStr;
 
-use crate::models::transaction::Signature;
 use crate::{
     account::{Address, PublicAccount},
     models::Result,
     mosaic::{Mosaic, MosaicId},
     network::extract_network_type,
     transaction::{
-        internal::extract_version, AbstractTransaction, BlockchainTimestamp, Deadline, HashValue,
+        AbstractTransaction, BlockchainTimestamp, Deadline, HashValue, internal::extract_version,
         LockFundsTransaction, SignedTransaction, Transaction, TransactionInfo, TransactionStatus,
         TransactionType, TransferTransaction,
     },
 };
+use crate::models::transaction::Signature;
 
 use super::{MessageDto, MosaicDto, Uint64Dto};
 

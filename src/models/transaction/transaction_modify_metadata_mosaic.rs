@@ -10,6 +10,7 @@ use {
 };
 
 use crate::{
+    AssetId,
     models::{
         account::{Account, PublicAccount},
         consts::MOSAIC_ID_SIZE,
@@ -17,14 +18,13 @@ use crate::{
         metadata::{MetadataModification, MetadataType},
         mosaic::MosaicId,
         network::NetworkType,
-    },
-    AssetId, Result,
+    }, Result,
 };
 
 use super::{
-    internal::sign_transaction, AbsTransaction, AbstractTransaction, Deadline, HashValue,
-    ModifyMetadataTransaction, SignedTransaction, Transaction, TransactionType,
-    METADATA_MOSAIC_VERSION,
+    AbstractTransaction, AbsTransaction, Deadline, HashValue, internal::sign_transaction,
+    METADATA_MOSAIC_VERSION, ModifyMetadataTransaction, SignedTransaction, Transaction,
+    TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]

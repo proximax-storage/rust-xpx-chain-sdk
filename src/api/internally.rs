@@ -4,9 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
+use bytes::Bytes;
+
 use {
     ::std::fmt::{Debug, Write},
-    bytes::Bytes,
     serde_json::Value,
 };
 
@@ -105,10 +106,10 @@ pub(crate) fn str_to_account_id(id: &str) -> Result<AccountId> {
     }
 }
 
-pub(crate) fn valid_vec_hash(vector: &[&str]) -> Result<()> {
+pub(crate) fn valid_vec_hash<T: AsRef<str>>(vector: &[T]) -> Result<()> {
     for hash in vector {
-        if hash.len() != 24 {
-            str_to_hash(hash)?;
+        if hash.as_ref().len() != 24 {
+            str_to_hash(hash.as_ref())?;
         }
     }
     Ok(())

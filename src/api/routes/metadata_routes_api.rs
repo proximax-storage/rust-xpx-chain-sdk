@@ -9,21 +9,21 @@ use {::std::sync::Arc, reqwest::Method};
 use crate::{
     account::Address,
     api::{
+        AddressMetadataInfoDto,
         internally::valid_vec_len,
-        request as __internal_request,
-        routes::const_routes::{
+        MetadataDto,
+        MosaicMetadataInfoDto,
+        NamespaceMetadataInfoDto, request as __internal_request, routes::const_routes::{
             METADATA_BY_ACCOUNT_ROUTE, METADATA_BY_MOSAIC_ROUTE, METADATA_BY_NAMESPACE_ROUTE,
             METADATA_INFO_ROUTE,
-        },
-        sirius_client::ApiClient,
-        AddressMetadataInfoDto, MetadataDto, MosaicMetadataInfoDto, NamespaceMetadataInfoDto,
+        }, sirius_client::ApiClient,
     },
+    AssetId,
     errors_const::{ERR_METADATA_EMPTY_ADDRESSES, ERR_METADATA_EMPTY_MOSAIC_IDS},
     metadata::{AddressMetadataInfo, MetadataIds, MosaicMetadataInfo, NamespaceMetadataInfo},
     models::Result,
     mosaic::MosaicId,
     namespace::NamespaceId,
-    AssetId,
 };
 
 /// Namespace ApiClient routes.

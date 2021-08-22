@@ -8,15 +8,15 @@ use {::std::sync::Arc, reqwest::Method};
 
 use crate::{
     api::{
-        internally::valid_vec_len, request as __internal_request, sirius_client::ApiClient,
-        MosaicInfoDto, MosaicNamesDto,
+        internally::valid_vec_len, MosaicInfoDto, MosaicNamesDto,
+        request as __internal_request, sirius_client::ApiClient,
     },
     errors_const::ERR_EMPTY_MOSAIC_IDS,
     models::Result,
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},
 };
 
-use super::{MOSAICS_ROUTE, MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE};
+use super::{MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE, MOSAICS_ROUTE};
 
 /// Mosaic ApiClient routes.
 ///

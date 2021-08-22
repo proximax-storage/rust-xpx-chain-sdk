@@ -24,8 +24,8 @@ use crate::{
 };
 
 use super::{
-    internal::sign_transaction, AbsTransaction, AbstractTransaction, AliasTransaction, Deadline,
-    HashValue, SignedTransaction, Transaction, TransactionType, MOSAIC_ALIAS_VERSION,
+    AbstractTransaction, AbsTransaction, AliasTransaction, Deadline, HashValue,
+    internal::sign_transaction, MOSAIC_ALIAS_VERSION, SignedTransaction, Transaction, TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]

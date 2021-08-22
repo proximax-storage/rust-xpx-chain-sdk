@@ -59,11 +59,11 @@ pub(crate) fn generate_namespace_id(
 
     let id_to_bytes = parent_id.to_bytes();
 
-    result.input(id_to_bytes);
+    result.update(id_to_bytes);
 
-    result.input(name);
+    result.update(name);
 
-    let t_result = result.result();
+    let t_result = result.finalize();
 
     Ok(NamespaceId::new(array_u8_to_u64(&t_result) | NAMESPACE_BIT))
 }

@@ -18,9 +18,9 @@ use crate::{
 };
 
 use super::{
-    buffer::account_properties as buffer, internal::sign_transaction,
-    schema::account_property_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    HashValue, SignedTransaction, Transaction, TransactionType, ACCOUNT_PROPERTY_MOSAIC_VERSION,
+    AbstractTransaction, AbsTransaction,
+    ACCOUNT_PROPERTY_MOSAIC_VERSION, buffer::account_properties as buffer, Deadline, HashValue,
+    internal::sign_transaction, schema::account_property_transaction_schema, SignedTransaction, Transaction, TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]

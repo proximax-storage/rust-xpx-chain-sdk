@@ -11,7 +11,7 @@ use crate::{
     transaction::{BlockchainTimestamp, Deadline, HashValue, TransactionStatus},
 };
 
-use super::{model::WsSubscribeDto, Handler};
+use super::{Handler, model::WsSubscribeDto};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

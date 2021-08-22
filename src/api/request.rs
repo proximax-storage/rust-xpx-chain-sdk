@@ -7,7 +7,7 @@
 use {
     ::std::{collections::HashMap, sync::Arc},
     reqwest::{
-        header::{HeaderMap, CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT},
+        header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT},
         Method, StatusCode, Url,
     },
     serde_json,
@@ -74,8 +74,8 @@ impl Request {
     }
 
     pub async fn execute<U>(self, api: Arc<ApiClient>) -> crate::models::Result<U>
-    where
-        for<'de> U: serde::Deserialize<'de>,
+        where
+                for<'de> U: serde::Deserialize<'de>,
     {
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.

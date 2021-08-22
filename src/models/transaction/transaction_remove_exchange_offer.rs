@@ -19,9 +19,9 @@ use crate::{
 };
 
 use super::{
-    buffer::exchange as buffer, deadline::Deadline, internal::sign_transaction, AbsTransaction,
-    AbstractTransaction, HashValue, SignedTransaction, Transaction, TransactionType,
-    REMOVE_EXCHANGE_OFFER_VERSION,
+    AbstractTransaction, AbsTransaction, buffer::exchange as buffer, deadline::Deadline,
+    HashValue, internal::sign_transaction, REMOVE_EXCHANGE_OFFER_VERSION, SignedTransaction, Transaction,
+    TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]

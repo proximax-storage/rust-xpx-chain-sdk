@@ -6,18 +6,17 @@
 
 use {
     ::std::ops::BitAnd,
-    num_enum::IntoPrimitive,
     serde_repr::{Deserialize_repr, Serialize_repr},
 };
 
-use crate::{mosaic::MosaicId, transaction::TransactionType, AssetId};
+use crate::{AssetId, mosaic::MosaicId, transaction::TransactionType};
 
 use super::Address;
 
 /// The account properties modification type:
 ///* 0 - Add property.
 ///* 1 - Remove property.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr)]
 #[repr(u8)]
 pub enum AccountPropertiesModificationType {
     AddProperty,
@@ -27,7 +26,7 @@ pub enum AccountPropertiesModificationType {
 
 impl AccountPropertiesModificationType {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 }
 
@@ -50,7 +49,7 @@ impl From<u8> for AccountPropertiesModificationType {
 /// * 0x81 (129 decimal) - The property type blocks receiving transactions from an address.
 /// * 0x82 (130 decimal) - The property type blocks receiving transactions containing a mosaic id.
 /// * 0x84 (132 decimal) -  The property type blocks sending transactions with a given transaction type.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr)]
 #[repr(u8)]
 pub enum AccountPropertyType {
     AllowAddress = 0x01,
@@ -64,7 +63,7 @@ pub enum AccountPropertyType {
 
 impl AccountPropertyType {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 }
 

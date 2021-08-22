@@ -9,7 +9,7 @@ use crate::models::{
     consts::ALIAS_TRANSACTION_HEADER, namespace::NamespaceId,
 };
 
-use super::{buffer::alias as buffer, schema::alias_transaction_schema, AbstractTransaction};
+use super::{AbstractTransaction, buffer::alias as buffer, schema::alias_transaction_schema};
 
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]

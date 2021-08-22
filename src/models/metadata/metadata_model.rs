@@ -6,19 +6,18 @@
 
 use {
     downcast_rs::__std::collections::HashMap,
-    num_enum::IntoPrimitive,
     serde::{Serialize, Serializer},
 };
 
 use crate::models::{
-    account::Address, consts::SIZE_SIZE, mosaic::MosaicId, namespace::NamespaceId, AssetId,
+    account::Address, AssetId, consts::SIZE_SIZE, mosaic::MosaicId, namespace::NamespaceId,
 };
 
 ///The type of the metadata:
 ///* 1 - Address metadata.
 ///* 2 - Mosaic metadata.
 ///* 3 - Namespace metadata.
-#[derive(Debug, Clone, Copy, PartialEq, Deserialize, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
 #[repr(u8)]
 pub enum MetadataType {
     MetadataNone,
@@ -29,7 +28,7 @@ pub enum MetadataType {
 
 impl MetadataType {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 
     pub fn to_bytes(&self) -> [u8; 1] {
@@ -57,8 +56,8 @@ impl core::fmt::Display for MetadataType {
 
 impl Serialize for MetadataType {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_u8(self.value())
     }
@@ -67,7 +66,7 @@ impl Serialize for MetadataType {
 /// The type of the metadata modification:
 ///* 0 - Add metadata.
 ///* 1 - Remove metadata.
-#[derive(Debug, Clone, Copy, PartialEq, Deserialize, Serialize, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize, Serialize)]
 #[repr(u8)]
 pub enum MetadataModificationType {
     #[serde(rename = "0")]
@@ -79,7 +78,7 @@ pub enum MetadataModificationType {
 
 impl MetadataModificationType {
     pub fn value(self) -> u8 {
-        self.into()
+        self as u8
     }
 
     pub fn to_bytes(self) -> [u8; 1] {

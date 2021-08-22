@@ -6,17 +6,17 @@
 
 use {::std::sync::Arc, reqwest::Method};
 
-use crate::api::OfferInfoDTOs;
 use crate::{
     account::PublicAccount,
-    api::{request as __internal_request, sirius_client::ApiClient, ExchangeInfoDto},
+    api::{ExchangeInfoDto, request as __internal_request, sirius_client::ApiClient},
+    AssetId,
+    AssetIdType,
     exchange::{OfferInfos, OfferType, UserExchangeInfo},
-    models::Result,
-    network::NetworkType,
-    AssetId, AssetIdType,
+    models::Result, network::NetworkType,
 };
+use crate::api::OfferInfoDTOs;
 
-use super::{resolver_routes_api::ResolverRoutes, EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE};
+use super::{EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE, resolver_routes_api::ResolverRoutes};
 
 /// Node ApiClient routes.
 ///

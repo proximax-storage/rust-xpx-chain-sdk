@@ -20,9 +20,9 @@ use crate::{
 };
 
 use super::{
-    buffer::register_namespace as buffer, internal::sign_transaction,
-    schema::register_namespace_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    HashValue, SignedTransaction, Transaction, TransactionType, REGISTER_NAMESPACE_VERSION,
+    AbstractTransaction, AbsTransaction,
+    buffer::register_namespace as buffer, Deadline, HashValue, internal::sign_transaction,
+    REGISTER_NAMESPACE_VERSION, schema::register_namespace_transaction_schema, SignedTransaction, Transaction, TransactionType,
 };
 
 #[derive(Clone, Debug, Serialize)]
@@ -136,7 +136,7 @@ impl Transaction for RegisterNamespaceTransaction {
         let namespace_id_vec = builder.create_vector(&self.namespace_id.to_u32_array());
 
         let d_vec = match self.namespace_type {
-            NamespaceType::Root => builder.create_vector(&self.duration.unwrap().to_i32_array()),
+            NamespaceType::Root => builder.create_vector(&self.duration.unwrap().to_u32_array()),
             _ => builder.create_vector(&self.parent_id.unwrap().to_u32_array()),
         };
 
