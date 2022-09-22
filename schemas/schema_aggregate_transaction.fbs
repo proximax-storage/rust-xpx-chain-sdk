@@ -1,0 +1,15 @@
+namespace Sirius.Buffers;
+
+table AggregateTransactionBuffer {
+    size: uint;
+    signature: [ubyte];
+    signer: [ubyte];
+    version: uint;
+    type: ushort;
+    max_fee: [uint];
+    deadline:[uint];
+    transactionsSize: uint;
+    transactions:[ubyte];
+}
+
+root_type AggregateTransactionBuffer;

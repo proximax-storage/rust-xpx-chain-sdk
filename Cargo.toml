@@ -1,0 +1,104 @@
+[package]
+name = "xpx-chain-sdk"
+version = "0.5.0"
+readme = "README.md"
+license = "Apache-2.0"
+authors = ["ProxymaX Core Development Team", "Eleazar Garrido <eleazartovar123@gmail.com>"]
+
+homepage = "https://www.proximax.io"
+repository = "https://github.com/proximax-storage/rust-xpx-chain-sdk"
+documentation = "https://github.com/proximax-storage/rust-xpx-chain-sdk/wiki"
+keywords = ["blockchain", "sdk"]
+categories = ["sdk"]
+exclude = [".gitignore"]
+edition = "2021"
+
+[lib]
+name = "xpx_chain_sdk"
+crate-type = ["lib"]
+
+[dependencies]
+xpx-chain-crypto = { git = "https://github.com/proximax-storage/rust-xpx-crypto", features = ["serde"] }
+
+[dependencies.anyhow]
+version = "^1"
+
+[dependencies.fixed-hash]
+version = "^0.7.0"
+
+[dependencies.regex]
+version = "^1"
+
+[dependencies.byteorder]
+version = "^1"
+
+[dependencies.chrono]
+version = "^0.4"
+
+[dependencies.base32]
+version = "^0.4"
+
+[dependencies.flatbuffers]
+version = "^2.1"
+
+[dependencies.num_enum]
+version = "^0.5"
+features = ["default"]
+
+[dependencies.serde]
+version = "^1.0"
+features = ["derive"]
+
+[dependencies.serde_repr]
+version = "^0.1"
+
+[dependencies.serde_json]
+version = "^1.0"
+
+[dependencies.erased-serde]
+version = "^0.3"
+
+[dependencies.rand]
+version = "0.8"
+default-features = false
+
+[dependencies.ripemd]
+version = "^0.1"
+
+[dependencies.sha3]
+version = "^0.10"
+default-features = false
+
+[dependencies.typetag]
+version = "0.2"
+
+[dependencies.hex]
+version = "^0.4"
+
+[dependencies.bytes]
+version = "^1.1"
+
+[dependencies.tokio-tungstenite]
+version = "^0.17"
+
+[dependencies.futures-util]
+version = "0.3"
+default-features = false
+features = ["async-await", "sink", "std"]
+
+[dependencies.url]
+version = "2.0"
+
+[dependencies.reqwest]
+version = "0.11"
+features = ["json"]
+default_features = false
+
+[dependencies.tokio]
+version = "1.19"
+features = ["rt"]
+default_features = false
+
+[dev-dependencies]
+lazy_static = "1.4"
+tokio = { version = "1.19", features = ["full"] }

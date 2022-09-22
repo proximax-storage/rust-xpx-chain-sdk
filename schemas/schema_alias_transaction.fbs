@@ -1,0 +1,17 @@
+namespace Sirius.Buffers;
+
+table AliasTransactionBuffer {
+    size: uint;
+    signature: [ubyte];
+    signer: [ubyte];
+    version: uint;
+    type: ushort;
+    max_fee: [uint];
+    deadline:[uint];
+    action_type: ubyte;
+    namespace_id: [uint];
+    /// In case of address it is 25 bytes array. In case of mosaic it is 8 byte array(or 2 uint32 array)
+    alias_id: [ubyte];
+}
+
+root_type AliasTransactionBuffer;
