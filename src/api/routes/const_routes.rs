@@ -10,11 +10,6 @@ pub const ACCOUNT_PROPERTIES_ROUTE: &str = "/account/{address_id}/properties";
 pub const ACCOUNTS_PROPERTIES_ROUTE: &str = "/account/properties";
 pub const MULTISIG_ACCOUNT_ROUTE: &str = "/account/{address_id}/multisig";
 pub const MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE: &str = "/account/{address_id}/multisig/graph";
-pub const TRANSACTIONS_BY_ACCOUNT_ROUTE: &str = "/account/{publicKey}/transactions";
-pub const INCOMING_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/incoming";
-pub const OUTGOING_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/outgoing";
-pub const UNCONFIRMED_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/unconfirmed";
-pub const AGGREGATE_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/partial";
 
 /// Block routes.
 pub const BLOCK_BY_HEIGHT_ROUTE: &str = "/block/{height}";
@@ -46,11 +41,13 @@ pub const NODE_INFO: &str = "/node/info";
 pub const NODE_TIME: &str = "/node/time";
 
 /// Transaction routes.
-pub const TRANSACTIONS_ROUTE: &str = "/transaction";
+pub const TRANSACTIONS_ROUTE: &str = "/transactions/confirmed";
+pub const TRANSACTIONS_UNCONFIRMED_ROUTE: &str = "/transactions/unconfirmed";
+
 pub const TRANSACTION_ROUTE: &str = "/transaction/{transactionId}";
 pub const TRANSACTION_STATUS_ROUTE: &str = "/transaction/{hash}/status";
 pub const TRANSACTIONS_STATUS_ROUTE: &str = "/transaction/statuses";
-pub const ANNOUNCE_AGGREGATE_ROUTE: &str = "/transaction/partial";
+pub const AGGREGATE_TRANSACTIONS_ROUTE: &str = "/transactions/partial";
 pub const ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE: &str = "/transaction/cosignature";
 
 // routes for MetadataService

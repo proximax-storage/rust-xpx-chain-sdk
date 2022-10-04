@@ -4,16 +4,18 @@
  * license that can be found in the LICENSE file.
  */
 
+use serde_json::Value;
 use {
     ::std::{future::Future, pin::Pin, sync::Arc},
     reqwest::Method,
 };
 
+use crate::api::QueryParam;
 use crate::{
     account::{AccountsId, Address},
     api::{
-        error::Result, internally::valid_vec_len, NamespaceInfoDto,
-        NamespaceNameDto, request as __internal_request, sirius_client::ApiClient,
+        error::Result, internally::valid_vec_len, request as __internal_request,
+        sirius_client::ApiClient, NamespaceInfoDto, NamespaceNameDto,
     },
     errors_const::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
     mosaic::UnresolvedMosaicId,
@@ -22,8 +24,8 @@ use crate::{
 };
 
 use super::{
-    NAMESPACE_NAMES_ROUTE, NAMESPACE_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES,
-    NAMESPACES_FROM_ACCOUNTS_ROUTE,
+    NAMESPACES_FROM_ACCOUNTS_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES, NAMESPACE_NAMES_ROUTE,
+    NAMESPACE_ROUTE,
 };
 
 /// Namespace ApiClient routes.
@@ -49,7 +51,7 @@ impl NamespaceRoutes {
     fn __build_namespace_hierarchy<'b>(
         self,
         ns_info: &'b mut NamespaceInfo,
-    ) -> Pin<Box<dyn Future<Output=()> + 'b>> {
+    ) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
         Box::pin(async move {
             let info_parent = match &ns_info.parent {
                 Some(info) => info,
@@ -82,7 +84,7 @@ impl NamespaceRoutes {
     fn __build_namespaces_hierarchy<'b>(
         self,
         ns_infos: &'b mut Vec<NamespaceInfo>,
-    ) -> Pin<Box<dyn Future<Output=()> + 'b>> {
+    ) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
         Box::pin(async move {
             for ns_info in ns_infos.iter_mut() {
                 self.clone().__build_namespace_hierarchy(ns_info).await
@@ -137,11 +139,17 @@ impl NamespaceRoutes {
             NAMESPACES_FROM_ACCOUNT_ROUTES.to_string(),
         );
 
-        if let Some(ref s) = page_size {
-            req = req.with_query_param("pageSize".to_string(), s.to_string());
+        if let Some(s) = page_size {
+            req = req.with_query_param(QueryParam {
+                name: "page_size".to_string(),
+                value: Value::from(s),
+            });
         }
         if let Some(ref s) = ns_id {
-            req = req.with_query_param("id".to_string(), s.to_hex());
+            req = req.with_query_param(QueryParam {
+                name: "id".to_string(),
+                value: Value::from(s.to_hex()),
+            });
         }
 
         req = req.with_path_param("accountId".to_string(), address.address_str());
@@ -173,11 +181,17 @@ impl NamespaceRoutes {
             NAMESPACES_FROM_ACCOUNTS_ROUTE.to_string(),
         );
 
-        if let Some(ref s) = page_size {
-            req = req.with_query_param("pageSize".to_string(), s.to_string());
+        if let Some(s) = page_size {
+            req = req.with_query_param(QueryParam {
+                name: "page_size".to_string(),
+                value: Value::from(s),
+            });
         }
         if let Some(ref s) = ns_id {
-            req = req.with_query_param("id".to_string(), s.to_hex());
+            req = req.with_query_param(QueryParam {
+                name: "id".to_string(),
+                value: Value::from(s.to_hex()),
+            });
         }
 
         req = req.with_body_param(&accounts);

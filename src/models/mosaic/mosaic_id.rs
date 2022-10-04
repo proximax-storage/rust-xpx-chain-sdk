@@ -5,6 +5,8 @@
  */
 
 use std::any::Any;
+use serde::{Deserialize, Deserializer, Serializer};
+use serde::de::Error;
 
 use {
     ::std::{fmt, ops::Deref},
@@ -20,7 +22,7 @@ use super::{generate_mosaic_id, MosaicNonce};
 
 /// The `MosaicId` structure describes mosaic id.
 ///
-#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq)]
 pub struct MosaicId(pub(crate) u64);
 
 impl MosaicId {
@@ -54,13 +56,29 @@ impl MosaicId {
     }
 }
 
+impl Serialize for MosaicId {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        self.to_hex().serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for MosaicId {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+    {
+        let hex_mosaic_id = <String>::deserialize(deserializer)?;
+        MosaicId::try_from_hex(&hex_mosaic_id).map_err(D::Error::custom)
+    }
+}
+
 #[typetag::serde]
 impl UnresolvedMosaicId for MosaicId {
     fn to_u64(&self) -> u64 {
         self.0
     }
 
-    fn box_clone(&self) -> Box<dyn UnresolvedMosaicId + 'static> {
+    fn box_clone(&self) -> Box<dyn UnresolvedMosaicId> {
         Box::new((*self).clone())
     }
 

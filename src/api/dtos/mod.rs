@@ -5,6 +5,7 @@
  */
 
 pub(crate) use self::account_dto::*;
+pub(crate) use self::aggregate_transaction_dto::*;
 pub(crate) use self::alias_dto::*;
 pub(crate) use self::block_dto::*;
 pub(crate) use self::blockchain_dto::*;

@@ -2,12 +2,15 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
+use serde_json::Value;
 use {::std::sync::Arc, reqwest::Method};
 
+use crate::api::QueryParam;
 use crate::{
-    api::{ApiClient,
-          dtos::{BlockInfoDto, TransactionDto},
-          error::Result, request as __internal_request,
+    api::{
+        dtos::{BlockInfoDto, TransactionDto},
+        error::Result,
+        request as __internal_request, ApiClient,
     },
     blockchain::BlockInfo,
     transaction::Transactions,
@@ -152,7 +155,7 @@ impl BlockRoutes {
     ///
     /// * `height`  =   The height of the block.
     ///
-    /// * `pageSize` =  The number of transactions to return for each request.
+    /// * `page_size` =  The number of transactions to return for each request.
     ///   `Default`: 10.
     ///
     /// * `id`  =   The transaction id up to which transactions are returned.
@@ -193,11 +196,17 @@ impl BlockRoutes {
         let mut req =
             __internal_request::Request::new(Method::GET, BLOCK_GET_TRANSACTION_ROUTE.to_string());
 
-        if let Some(ref s) = page_size {
-            req = req.with_query_param("pageSize".to_string(), s.to_string());
+        if let Some(s) = page_size {
+            req = req.with_query_param(QueryParam {
+                name: "page_size".to_string(),
+                value: Value::from(s),
+            });
         }
-        if let Some(ref s) = id {
-            req = req.with_query_param("id".to_string(), s.to_string());
+        if let Some(s) = id {
+            req = req.with_query_param(QueryParam {
+                name: "id".to_string(),
+                value: Value::from(s),
+            });
         }
         req = req
             .with_path_param("height".to_string(), height.to_string())

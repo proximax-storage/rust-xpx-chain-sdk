@@ -38,18 +38,22 @@ impl SiriusClient {
         Arc::clone(&self.client)
     }
 
+    /// Get Account ApiClient routes.
     pub fn account_api(&self) -> Box<AccountRoutes> {
         Box::new(AccountRoutes::new(self.__client()))
     }
 
+    /// Get Block ApiClient routes.
     pub fn block_api(&self) -> Box<BlockRoutes> {
         Box::new(BlockRoutes::new(self.__client()))
     }
 
+    /// Get Chain ApiClient routes.
     pub fn chain_api(&self) -> Box<ChainRoutes> {
         Box::new(ChainRoutes::new(self.__client()))
     }
 
+    /// Get Exchange ApiClient routes.
     pub fn exchange_api(&self) -> Box<ExchangeRoutes> {
         Box::new(ExchangeRoutes::new(
             self.__client(),
@@ -58,22 +62,27 @@ impl SiriusClient {
         ))
     }
 
+    /// Get Node ApiClient routes.
     pub fn node_api(&self) -> Box<NodeRoutes> {
         Box::new(NodeRoutes::new(self.__client()))
     }
 
+    /// Get Mosaic ApiClient routes.
     pub fn mosaic_api(&self) -> Box<MosaicRoutes> {
         Box::new(MosaicRoutes::new(self.__client()))
     }
 
+    /// Get Namespace ApiClient routes.
     pub fn namespace_api(&self) -> Box<NamespaceRoutes> {
         Box::new(NamespaceRoutes::new(self.__client(), self.network_type()))
     }
 
+    /// Get Transaction ApiClient routes.
     pub fn transaction_api(&self) -> Box<TransactionRoutes> {
         Box::new(TransactionRoutes::new(self.__client()))
     }
 
+    /// Get Resolver ApiClient routes.
     pub fn resolver_api(&self) -> Box<ResolverRoutes> {
         Box::new(ResolverRoutes::new(
             self.__client(),
@@ -82,6 +91,7 @@ impl SiriusClient {
         ))
     }
 
+    // /// Get Metadata ApiClient routes.
     // pub fn metadata_api(&self) -> Box<MetadataRoutes> {
     //     Box::new(MetadataRoutes::new(self.__client()))
     // }

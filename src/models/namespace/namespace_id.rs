@@ -6,6 +6,8 @@
 
 use std::any::Any;
 use std::ops::Deref;
+use serde::{Deserialize, Deserializer};
+use serde::de::Error;
 
 use {
     ::std::fmt,
@@ -23,7 +25,7 @@ use crate::network::NetworkType;
 use super::{generate_namespace_path, NAMESPACE_BIT};
 
 /// The `MosaicId` id structure describes mosaic id.
-#[derive(Default, Debug, Clone, PartialEq, Deserialize, Copy)]
+#[derive(Default, Debug, Clone, PartialEq, Copy)]
 pub struct NamespaceId(u64);
 
 impl NamespaceId {
@@ -85,7 +87,7 @@ impl UnresolvedMosaicId for NamespaceId {
     fn to_u64(&self) -> u64 {
         **self
     }
-    fn box_clone(&self) -> Box<dyn UnresolvedMosaicId + 'static> {
+    fn box_clone(&self) -> Box<dyn UnresolvedMosaicId> {
         Box::new((*self).clone())
     }
     fn as_any(&self) -> &dyn Any {
@@ -129,11 +131,18 @@ impl fmt::Display for NamespaceId {
 }
 
 impl Serialize for NamespaceId {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        self.to_hex().serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for NamespaceId {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            S: Serializer,
+            D: Deserializer<'de>,
     {
-        serializer.serialize_str(&self.to_hex())
+        let hex_mosaic_id = <String>::deserialize(deserializer)?;
+        NamespaceId::try_from_hex(&hex_mosaic_id).map_err(D::Error::custom)
     }
 }
 

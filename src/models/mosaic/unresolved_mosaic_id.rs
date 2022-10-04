@@ -52,8 +52,8 @@ pub trait UnresolvedMosaicId: Send + Sync {
     }
 }
 
-impl Clone for Box<dyn UnresolvedMosaicId + 'static> {
-    fn clone(&self) -> Box<dyn UnresolvedMosaicId + 'static> {
+impl Clone for Box<dyn UnresolvedMosaicId> {
+    fn clone(&self) -> Box<dyn UnresolvedMosaicId> {
         self.box_clone()
     }
 }
@@ -64,7 +64,7 @@ impl<'a> PartialEq for &'a dyn UnresolvedMosaicId {
     }
 }
 
-impl<'a> PartialEq for Box<dyn UnresolvedMosaicId + 'static> {
+impl<'a> PartialEq for Box<dyn UnresolvedMosaicId> {
     fn eq(&self, other: &Self) -> bool {
         self.as_ref() == other.as_ref()
     }

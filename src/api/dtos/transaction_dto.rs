@@ -8,19 +8,19 @@ use ::std::str::FromStr;
 
 use crypto::Signature;
 
+use crate::helpers::TransactionHash;
+use crate::network::NetworkType;
+use crate::transaction::CommonTransaction;
 use crate::{
     account::{Address, PublicAccount},
     api::error::Result,
     mosaic::{Mosaic, MosaicId},
     transaction::{
-        BlockchainTimestamp, Deadline, internal::extract_version, LockFundsTransaction,
+        internal::extract_version, BlockchainTimestamp, Deadline, LockFundsTransaction,
         SignedTransaction, Transaction, TransactionInfo, TransactionStatus, TransactionType,
         TransferTransaction,
     },
 };
-use crate::helpers::TransactionHash;
-use crate::network::NetworkType;
-use crate::transaction::CommonTransaction;
 
 use super::{MessageDto, MosaicDto, Uint64Dto};
 
@@ -263,7 +263,7 @@ impl TransactionDto for TransferTransactionInfoDto {
             common,
             recipient: Box::new(recipient),
             mosaics,
-            message: dto.message.compact(),
+            message: dto.message.map(|item| item.compact()),
         }))
     }
 }
@@ -277,7 +277,8 @@ pub(crate) struct TransferTransactionDto {
     pub recipient: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mosaics: Option<Vec<MosaicDto>>,
-    pub message: MessageDto,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message: Option<MessageDto>,
 }
 
 /// HashLockTransactionDto :

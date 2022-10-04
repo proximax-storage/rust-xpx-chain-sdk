@@ -9,7 +9,7 @@ use anyhow::Result;
 use {::std::fmt, num_enum::IntoPrimitive};
 
 use crate::transaction::Amount;
-
+use serde::Deserialize;
 use super::{
     internally::{
         PRX_XPX_U64, XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE, XPX_MIN_VALUE,
@@ -51,7 +51,7 @@ impl From<u8> for MosaicSupplyType {
 #[serde(rename_all = "camelCase")]
 pub struct Mosaic {
     /// The mosaic id. This can either be of type `MosaicId` or `NamespaceId`.
-    pub asset_id: Box<dyn UnresolvedMosaicId + 'static>,
+    pub asset_id: Box<dyn UnresolvedMosaicId>,
     /// The mosaic amount.
     pub amount: Amount,
 }

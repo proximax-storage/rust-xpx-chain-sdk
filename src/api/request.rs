@@ -4,10 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::collections::HashSet;
 use {
     ::std::{collections::HashMap, sync::Arc},
     reqwest::{
-        header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT},
+        header::{HeaderMap, CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT},
         Method, StatusCode, Url,
     },
     serde_json,
@@ -15,17 +16,15 @@ use {
 
 use crate::api;
 use crate::api::error::{Error, SiriusError};
+use crate::api::QueryParam;
 
-use super::{
-    internally::{map_transaction_dto, map_transaction_dto_vec},
-    sirius_client::ApiClient,
-};
+use super::sirius_client::ApiClient;
 
 #[derive(Clone)]
 pub(crate) struct Request {
     method: Method,
     path: String,
-    query_params: HashMap<String, String>,
+    query_params: Vec<QueryParam>,
     path_params: HashMap<String, String>,
     header_params: HashMap<String, String>,
     // TODO: multiple body params are possible technically, but not supported here.
@@ -39,7 +38,7 @@ impl Request {
         Request {
             method,
             path,
-            query_params: HashMap::new(),
+            query_params: vec![],
             path_params: HashMap::new(),
             header_params: HashMap::new(),
             serialized_body: None,
@@ -53,8 +52,8 @@ impl Request {
         self
     }
 
-    pub fn with_query_param(mut self, basename: String, param: String) -> Self {
-        self.query_params.insert(basename, param);
+    pub fn with_query_param(mut self, param: QueryParam) -> Self {
+        self.query_params.push(param);
         self
     }
 
@@ -75,8 +74,8 @@ impl Request {
     }
 
     pub async fn execute<U>(self, api: Arc<ApiClient>) -> api::error::Result<U>
-        where
-                for<'de> U: serde::Deserialize<'de>,
+    where
+        for<'de> U: serde::Deserialize<'de>,
     {
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.
@@ -107,22 +106,24 @@ impl Request {
                 .collect();
 
             // final pairs
-            let mut pairs: Vec<(&str, &str)> = Vec::new();
+            let mut pairs: Vec<(String, String)> = Vec::new();
 
             // add first existing
             for pair in &existing {
-                pairs.push((&pair.0, &pair.1));
+                pairs.push((pair.0.clone(), pair.1.clone()));
             }
 
             // add given query to the pairs
-            for (key, val) in self.query_params.iter() {
-                pairs.push((key, val));
+            for param in self.query_params.iter() {
+                let (key, val) = param.key_value_to_str();
+
+                pairs.push((key.clone(), val.clone()));
             }
 
             // set new pairs
             url.query_pairs_mut()
                 .clear()
-                .extend_pairs(pairs.iter().map(|&(k, v)| (&k[..], &v[..])));
+                .extend_pairs(pairs.iter().map(|(k, v)| (&k[..], &v[..])));
         };
 
         // create request
@@ -165,18 +166,8 @@ impl Request {
 
         match status {
             StatusCode::OK | StatusCode::ACCEPTED => {
-                if self.is_transaction {
-                    let map_dto = map_transaction_dto(body)?;
-                    let res: U = serde_json::from_str(&map_dto)?;
-                    Ok(res)
-                } else if self.is_transaction_vec {
-                    let map_dto_vec = map_transaction_dto_vec(body)?;
-                    let res: U = serde_json::from_str(&map_dto_vec)?;
-                    Ok(res)
-                } else {
-                    let res: U = serde_json::from_slice(&body)?;
-                    Ok(res)
-                }
+                let res: U = serde_json::from_slice(&body)?;
+                Ok(res)
             }
             _ => {
                 let err: SiriusError = serde_json::from_slice(&body)?;

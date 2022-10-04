@@ -7,10 +7,21 @@
 use {
     num_enum::{FromPrimitive, IntoPrimitive},
     serde::Serialize,
+    serde_repr::*,
 };
 
 /// The entity type:
-#[derive(Debug, Clone, Copy, PartialEq, Deserialize, Serialize, IntoPrimitive, FromPrimitive)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    Eq,
+    PartialEq,
+    Serialize_repr,
+    Deserialize_repr,
+    IntoPrimitive,
+    FromPrimitive,
+)]
 #[repr(u16)]
 pub enum TransactionType {
     /// Reserved entity type.

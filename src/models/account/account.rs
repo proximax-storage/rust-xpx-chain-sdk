@@ -4,17 +4,22 @@
  * license that can be found in the LICENSE file.
  */
 
-use {anyhow::Result,
-     crypto::{Keypair, SecretKey},
-     crypto::Signature,
-     hex::ToHex,
-     rand::{rngs::ThreadRng, thread_rng},
-     std::fmt,
+use {
+    anyhow::Result,
+    crypto::Signature,
+    crypto::{Keypair, SecretKey},
+    hex::ToHex,
+    rand::{rngs::ThreadRng, thread_rng},
+    std::fmt,
 };
 
+use crate::transaction::{SignedTransaction, Transaction};
 use crate::{
-    errors_const, helpers::{hex_decode, hex_encode, is_hex, Signer}, message::{PlainMessage, SecureMessage},
+    errors_const,
+    helpers::{hex_decode, hex_encode, is_hex, Signer},
+    message::{PlainMessage, SecureMessage},
     network::NetworkType,
+    TransactionHash,
 };
 
 use super::{Address, PublicAccount};
@@ -213,19 +218,19 @@ impl Account {
         self.key_pair.sign(data.as_ref())
     }
 
-    // /// Signs 'Transaction'.
-    // pub fn sign(
-    //     &self,
-    //     tx: impl Transaction,
-    //     generation_hash: TransactionHash,
-    // ) -> Result<SignedTransaction> {
-    //     ensure!(
-    //         !generation_hash.is_zero(),
-    //         errors_const::ERR_EMPTY_GENERATION_HASH
-    //     );
-    //
-    //     tx.sign_transaction_with(self.to_owned(), generation_hash)
-    // }
+    /// Signs 'Transaction'.
+    pub fn sign_transaction(
+        &self,
+        tx: impl Transaction,
+        generation_hash: TransactionHash,
+    ) -> Result<SignedTransaction> {
+        ensure!(
+            !generation_hash.is_zero(),
+            errors_const::ERR_EMPTY_GENERATION_HASH
+        );
+
+        tx.sign_with(self.to_owned(), generation_hash)
+    }
 
     // /// Sign transaction with cosignatories creating a new signed_transaction.
     // pub fn sign_with_cosignatories(
@@ -300,6 +305,13 @@ pub struct AccountsId {
 impl From<Vec<&str>> for AccountsId {
     #[inline]
     fn from(ids: Vec<&str>) -> Self {
+        Self::from(ids.into_iter().map(|id| id.to_owned()).collect::<Vec<_>>())
+    }
+}
+
+impl From<Vec<String>> for AccountsId {
+    #[inline]
+    fn from(ids: Vec<String>) -> Self {
         let mut public_keys = vec![];
         let mut addresses = vec![];
 

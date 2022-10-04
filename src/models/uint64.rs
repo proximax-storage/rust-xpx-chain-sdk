@@ -10,10 +10,9 @@ use std::{
     num::ParseIntError,
     ops::Deref,
 };
-use fixed_hash::rustc_hex::ToHex;
 
 use hex::{FromHex, FromHexError};
-use crate::helpers::{hex_encode, utf8_to_hex};
+use crate::helpers::{hex_encode};
 use sha3::{Digest, Sha3_256};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]

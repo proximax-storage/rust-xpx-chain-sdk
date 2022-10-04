@@ -15,6 +15,8 @@ use {
     reqwest::Method,
 };
 
+use crate::api::{value_to_transaction_search, QueryParam};
+use crate::transaction::TransactionSearch;
 use crate::{
     api::{
         error::Result,
@@ -25,14 +27,15 @@ use crate::{
     },
     errors_const::ERR_EMPTY_TRANSACTION_HASHES,
     transaction::{
-        CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionsStatus,
-        TransactionStatus,
+        CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionStatus,
+        TransactionsStatus,
     },
+    TransactionHash,
 };
 
 use super::{
-    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTION_ROUTE,
-    TRANSACTION_STATUS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_STATUS_ROUTE,
+    AGGREGATE_TRANSACTIONS_ROUTE, ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, TRANSACTIONS_ROUTE,
+    TRANSACTIONS_STATUS_ROUTE, TRANSACTION_ROUTE, TRANSACTION_STATUS_ROUTE,
 };
 
 /// Transaction ApiClient routes.
@@ -108,17 +111,19 @@ impl TransactionRoutes {
     ///
     /// ```
     ///
+    ///use ::std::str::FromStr;
     ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::TransactionHash;
     ///
-    ///const HASH_A: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
-    ///const HASH_B: &str = "5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4";
+    ///const HASH_A: TransactionHash = TransactionHash::from_str("130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").unwrap();
+    ///const HASH_B: TransactionHash = TransactionHash::from_str("5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4").unwrap();
     ///
     ///#[tokio::main]
     ///async fn main() {
     /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
     /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
     ///
-    /// let transactions_status = client.transaction_api().get_transactions_statuses( &[HASH_A,HASH_B] ).await;
+    /// let transactions_status = client.transaction_api().get_transactions_statuses( vec![HASH_A,HASH_B] ).await;
     ///
     /// match transactions_status {
     ///     Ok(statuses) => {
@@ -138,11 +143,9 @@ impl TransactionRoutes {
     /// error that occurred.
     pub async fn get_transactions_statuses(
         self,
-        hashes: &[&str],
+        hashes: Vec<TransactionHash>,
     ) -> Result<TransactionsStatus> {
         valid_vec_len(hashes.as_ref(), ERR_EMPTY_TRANSACTION_HASHES)?;
-
-        valid_vec_hash(hashes.as_ref())?;
 
         let mut req = __internal_request::Request::new(
             reqwest::Method::POST,
@@ -357,7 +360,7 @@ impl TransactionRoutes {
         self,
         signed_transaction: &SignedTransaction,
     ) -> Result<AnnounceTransactionInfo> {
-        self.__announce_transaction(signed_transaction, ANNOUNCE_AGGREGATE_ROUTE)
+        self.__announce_transaction(signed_transaction, AGGREGATE_TRANSACTIONS_ROUTE)
             .await
     }
 
@@ -373,9 +376,9 @@ impl TransactionRoutes {
         self,
         tx: T,
         route: &str,
-    ) -> impl Future<Output=Result<AnnounceTransactionInfo>>
-        where
-                for<'de> T: serde::Serialize,
+    ) -> impl Future<Output = Result<AnnounceTransactionInfo>>
+    where
+        for<'de> T: serde::Serialize,
     {
         let mut req = __internal_request::Request::new(Method::PUT, route.to_string());
 

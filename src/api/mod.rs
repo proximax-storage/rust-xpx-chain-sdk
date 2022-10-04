@@ -6,11 +6,17 @@
 
 pub(crate) use self::dtos::*;
 pub(crate) use self::internally::*;
+pub use self::pagination::*;
+pub use self::query_params::*;
 pub use self::sirius_client::*;
+pub use self::transaction_query_params::*;
 
 mod dtos;
+pub mod error;
 mod internally;
+pub mod pagination;
+mod query_params;
 mod request;
 mod routes;
 mod sirius_client;
-pub mod error;
+mod transaction_query_params;

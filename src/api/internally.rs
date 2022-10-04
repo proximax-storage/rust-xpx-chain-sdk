@@ -5,9 +5,11 @@
  */
 
 use std::str::FromStr;
+use std::sync::Arc;
 
 use anyhow::Result;
-use regex::internal::Input;
+use reqwest::Method;
+use serde::de::DeserializeOwned;
 
 use {
     ::std::fmt::{Debug, Write},
@@ -15,8 +17,19 @@ use {
     serde_json::Value,
 };
 
+use crate::api::{
+    request as __internal_request, AccountPropertiesTransactionInfoDto,
+    AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto,
+    AggregateTransactionInfoDto, ApiClient, ExchangeOfferTransactionInfoDto,
+    HashLockTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto,
+    MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto,
+    MosaicSupplyChangeTransactionInfoDto, NamespaceMetadataTransactionInfoDto, Pagination,
+    QueryParam, RemoveExchangeOfferTransactionInfoDto, TransferTransactionDto,
+    TransferTransactionInfoDto,
+};
+use crate::transaction::{TransactionSearch, Transactions};
 use crate::{
-    errors_const,
+    api, errors_const,
     helpers::{is_hex, TransactionHash},
     metadata::MetadataModification,
     mosaic::MosaicProperties,
@@ -90,8 +103,8 @@ pub(crate) fn str_to_hash(hash: &str) -> Result<TransactionHash> {
 }
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
-    where
-        T: Debug,
+where
+    T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())
@@ -128,34 +141,93 @@ pub(crate) fn valid_vec_transaction_ids(vector: Vec<&str>) -> Result<Vec<Transac
     Ok(ids)
 }
 
-pub(crate) fn map_transaction_dto_vec(body: Bytes) -> Result<String> {
-    let value_dto_vec: Value = serde_json::from_slice(&body)?;
+pub(crate) fn value_to_transaction_search(
+    body_value: Value,
+) -> api::error::Result<TransactionSearch> {
+    let mut transactions: Transactions = vec![];
+    let (transactions_dto, pagination) = map_transaction_dto_vec_new(body_value)?;
 
-    let mut value_dto_vec_str: String = "".to_string();
-    value_dto_vec_str.write_char('[')?;
-    for dto in 0..value_dto_vec.as_array().unwrap().len() {
-        let to_array = &value_dto_vec.as_array().unwrap()[dto];
-
-        let to_string = format!("{}", to_array);
-
-        let transaction_dto = map_transaction_dto(Bytes::from(to_string))?;
-
-        value_dto_vec_str.push_str(&serde_json::to_string(&transaction_dto)?);
-
-        if value_dto_vec.as_array().unwrap().len() != dto + 1 {
-            value_dto_vec_str.write_char(',')?;
-        }
+    for transaction_dto in transactions_dto.into_iter() {
+        transactions.push(transaction_dto.compact()?)
     }
 
-    value_dto_vec_str.write_char(']')?;
+    Ok(TransactionSearch {
+        transactions,
+        pagination,
+    })
+}
 
-    let value_dto_vec_str = value_dto_vec_str
-        .replace(&['\\'][..], "")
-        .replace(r#"["{"#, r#"[{"#)
-        .replace(r#"}","{"#, r#"},{"#)
-        .replace(r#"}}}"]"#, r#"}}}]"#);
+pub(crate) fn map_transaction_dto_vec_new(
+    body_value: Value,
+) -> Result<(Vec<Box<dyn TransactionDto>>, Pagination)> {
+    let value_dto_vec = body_value["data"].clone();
+    let mut entity_dto_vec = vec![];
 
-    Ok(value_dto_vec_str)
+    for value_raw in value_dto_vec.as_array().unwrap().clone() {
+        let transaction_dto = map_transaction_dto_new(Bytes::from(format!("{}", value_raw)))?;
+        entity_dto_vec.push(transaction_dto);
+    }
+
+    let pagination: Pagination = serde_json::from_value(body_value["pagination"].clone())?;
+
+    Ok((entity_dto_vec, pagination))
+}
+
+// A function which takes a closure as an argument and calls it.
+// <F> denotes that F is a "Generic type parameter"
+fn ser_callback<T: DeserializeOwned + TransactionDto + 'static>(
+    value_dto: Value,
+) -> Box<dyn TransactionDto> {
+    Box::new(serde_json::from_value::<T>(value_dto).unwrap())
+}
+
+pub(crate) fn map_transaction_dto_new(body: Bytes) -> Result<Box<dyn TransactionDto>> {
+    let mut value_dto: Value = serde_json::from_slice(&body)?;
+
+    let entity_type: Entity = (value_dto["transaction"]["type"].as_u64().unwrap() as u16).into();
+
+    let entity_dto = match entity_type {
+        Entity::Transfer => ser_callback::<TransferTransactionInfoDto>(value_dto),
+        Entity::AggregateBonded | Entity::AggregateComplete => {
+            ser_callback::<AggregateTransactionInfoDto>(value_dto)
+        }
+        Entity::MosaicAlias => ser_callback::<MosaicAliasTransactionInfoDto>(value_dto),
+        Entity::AddressAlias => ser_callback::<AddressAliasTransactionInfoDto>(value_dto),
+        Entity::MosaicDefinition => ser_callback::<MosaicDefinitionTransactionInfoDto>(value_dto),
+        Entity::MosaicSupplyChange => {
+            ser_callback::<MosaicSupplyChangeTransactionInfoDto>(value_dto)
+        }
+        Entity::RegisterNamespace => ser_callback::<NamespaceMetadataTransactionInfoDto>(value_dto),
+        Entity::AddExchangeOffer => ser_callback::<AddExchangeOfferTransactionInfoDto>(value_dto),
+        Entity::ExchangeOffer => ser_callback::<ExchangeOfferTransactionInfoDto>(value_dto),
+        Entity::RemoveExchangeOffer => {
+            ser_callback::<RemoveExchangeOfferTransactionInfoDto>(value_dto)
+        }
+        Entity::MultisigAccountModify => {
+            ser_callback::<ModifyMultisigAccountTransactionInfoDto>(value_dto)
+        }
+
+        Entity::AccountRestrictionAddress
+        | Entity::AccountRestrictionMosaic
+        | Entity::AccountRestrictionOperation => {
+            ser_callback::<AccountPropertiesTransactionInfoDto>(value_dto)
+        }
+        Entity::HashLock => ser_callback::<HashLockTransactionInfoDto>(value_dto),
+
+        // Entity::AccountLink => "AccountLink",
+        // Entity::Block => "Block",
+        // Entity::ModifyMetadataAddress => "AddressMetadata",
+        // Entity::ModifyMetadataMosaic => "MosaicMetadata",
+        // Entity::ModifyMetadataNamespace => "NamespaceMetadata",
+        // Entity::BlockchainUpgrade => "BlockchainUpgrade",
+        // Entity::NemesisBlock => "NemesisBlock:",
+        // Entity::NetworkConfigEntityType => "NetworkConfigEntityType",
+        // Entity::SecretLock => "SecretLock",
+        // Entity::SecretProof => "SecretProof",
+        _ => panic!("{}", errors_const::ERR_UNKNOWN_BLOCKCHAIN_TYPE),
+    };
+
+    Ok(entity_dto)
 }
 
 pub(crate) fn map_transaction_dto(body: Bytes) -> Result<String> {
@@ -298,4 +370,21 @@ pub(crate) fn metadata_dto_vec_to_struct(
         .iter()
         .map(|modification| modification.compact())
         .collect()
+}
+
+pub(crate) async fn __internal_get_transactions(
+    client: Arc<ApiClient>,
+    route: &str,
+    query_params: Vec<QueryParam>,
+) -> api::error::Result<TransactionSearch> {
+    let mut req = __internal_request::Request::new(Method::GET, route.to_string());
+
+    for query_param in query_params {
+        req = req.with_query_param(query_param);
+    }
+
+    req = req.set_transaction_vec();
+
+    let body_value = req.execute(client).await?;
+    value_to_transaction_search(body_value)
 }
