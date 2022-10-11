@@ -7,7 +7,8 @@
 use crate::{
     account::PublicAccount,
     helpers::TransactionHash,
-    network::NetworkType, transaction::{Height, Timestamp, TransactionVersion},
+    network::NetworkType,
+    transaction::{Height, Timestamp, TransactionVersion},
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -36,7 +37,7 @@ pub struct BlockInfo {
     #[serde(rename = "type")]
     pub ver_type: u32,
 
-    /// The height of which this block was confirmed.
+    /// The height of which this block was Confirmed.
     ///
     /// Each block has a unique height. Subsequent blocks differ in height by one.
     pub height: Height,

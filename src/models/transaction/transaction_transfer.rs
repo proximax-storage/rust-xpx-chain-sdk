@@ -10,7 +10,6 @@ use anyhow::Result;
 
 use {::std::fmt, serde_json::Value};
 
-use crate::message::PlainMessage;
 use crate::{
     account::{PublicAccount, UnresolvedAddress},
     message::Message,
@@ -273,7 +272,10 @@ pub mod tests {
             )
             .unwrap();
 
-            assert_eq!(transfer_transaction.message.payload(), "test-message");
+            assert_eq!(
+                transfer_transaction.message.as_ref().unwrap().payload(),
+                "test-message"
+            );
             assert_eq!(transfer_transaction.mosaics.len(), 0);
             assert!(transfer_transaction
                 .recipient
@@ -306,7 +308,7 @@ pub mod tests {
             )
             .unwrap();
 
-            assert_eq!(transfer_transaction.message.payload(), "");
+            assert_eq!(transfer_transaction.message.as_ref().unwrap().payload(), "");
             assert_eq!(transfer_transaction.mosaics.len(), 0);
             assert!(transfer_transaction
                 .recipient

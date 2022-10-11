@@ -4,7 +4,6 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::collections::HashSet;
 use {
     ::std::{collections::HashMap, sync::Arc},
     reqwest::{

@@ -4,18 +4,13 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::str::FromStr;
 use std::sync::Arc;
 
 use anyhow::Result;
 use reqwest::Method;
 use serde::de::DeserializeOwned;
 
-use {
-    ::std::fmt::{Debug, Write},
-    bytes::Bytes,
-    serde_json::Value,
-};
+use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
 
 use crate::api::{
     request as __internal_request, AccountPropertiesTransactionInfoDto,
@@ -24,83 +19,18 @@ use crate::api::{
     HashLockTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto,
     MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto,
     MosaicSupplyChangeTransactionInfoDto, NamespaceMetadataTransactionInfoDto, Pagination,
-    QueryParam, RemoveExchangeOfferTransactionInfoDto, TransferTransactionDto,
-    TransferTransactionInfoDto,
+    QueryParam, RemoveExchangeOfferTransactionInfoDto, TransferTransactionInfoDto,
 };
-use crate::transaction::{TransactionSearch, Transactions};
+use crate::transaction::{Transaction, TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
-    api, errors_const,
-    helpers::{is_hex, TransactionHash},
-    metadata::MetadataModification,
-    mosaic::MosaicProperties,
-    multisig::CosignatoryModification,
-    network::NetworkType,
+    api, errors_const, helpers::is_hex, metadata::MetadataModification, mosaic::MosaicProperties,
+    multisig::CosignatoryModification, network::NetworkType,
     transaction::TransactionType as Entity,
 };
 
 use super::{
     CosignatoryModificationDto, MetadataModificationDto, MosaicPropertyDto, TransactionDto,
 };
-
-const TRANSACTION_ORDER_ASC: &str = "id";
-const TRANSACTION_ORDER_DESC: &str = "-id";
-
-pub(crate) struct AccountTransactionsOption {
-    pub page_size: Option<i32>,
-    pub id: Option<String>,
-    pub ordering: Option<String>,
-}
-
-impl AccountTransactionsOption {
-    pub fn new(page_size: Option<i32>, id: Option<&str>, ordering: Option<&str>) -> Result<Self> {
-        if ordering.is_some() {
-            ensure!(
-                ordering.unwrap() == TRANSACTION_ORDER_ASC
-                    || ordering.unwrap() == TRANSACTION_ORDER_DESC,
-                "Invalid value { } ordering",
-                ordering.unwrap()
-            );
-        }
-
-        Ok(Self {
-            page_size,
-            id: match id {
-                Some(i) => Some(i.to_string()),
-                _ => None,
-            },
-            ordering: match ordering {
-                Some(i) => Some(i.to_string()),
-                _ => None,
-            },
-        })
-    }
-}
-
-pub(crate) fn str_to_hash(hash: &str) -> Result<TransactionHash> {
-    let raw_hash = hash.trim().to_uppercase();
-
-    ensure!(
-        !raw_hash.is_empty(),
-        errors_const::ERR_EMPTY_TRANSACTION_HASHES
-    );
-
-    ensure!(
-        is_hex(&raw_hash),
-        "{} {}.",
-        errors_const::ERR_INVALID_HASH_HEX,
-        raw_hash
-    );
-
-    ensure!(
-        hash.len() == TransactionHash::len_bytes() * 2,
-        "Hash encoding failed due to length mismatch. Hash \
-             length: {}, src length: {}",
-        TransactionHash::len_bytes() * 2,
-        hash.len()
-    );
-
-    Ok(TransactionHash::from_str(hash)?)
-}
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
 where
@@ -123,29 +53,11 @@ pub(crate) fn str_to_account_id(id: &str) -> Result<String> {
     }
 }
 
-pub(crate) fn valid_vec_hash(vector: &[&str]) -> Result<()> {
-    for hash in vector {
-        if hash.len() != 24 {
-            str_to_hash(hash)?;
-        }
-    }
-    Ok(())
-}
-
-pub(crate) fn valid_vec_transaction_ids(vector: Vec<&str>) -> Result<Vec<TransactionHash>> {
-    let mut ids: Vec<TransactionHash> = vec![];
-
-    for hash in vector {
-        ids.push(str_to_hash(hash)?);
-    }
-    Ok(ids)
-}
-
 pub(crate) fn value_to_transaction_search(
     body_value: Value,
 ) -> api::error::Result<TransactionSearch> {
     let mut transactions: Transactions = vec![];
-    let (transactions_dto, pagination) = map_transaction_dto_vec_new(body_value)?;
+    let (transactions_dto, pagination) = map_transaction_dto_with_data(body_value)?;
 
     for transaction_dto in transactions_dto.into_iter() {
         transactions.push(transaction_dto.compact()?)
@@ -157,20 +69,37 @@ pub(crate) fn value_to_transaction_search(
     })
 }
 
-pub(crate) fn map_transaction_dto_vec_new(
+pub(crate) fn value_to_transaction(body_value: Value) -> api::error::Result<Transactions> {
+    let mut transactions: Transactions = vec![];
+    let transactions_dto = map_transaction_vec_dto(body_value)?;
+
+    for transaction_dto in transactions_dto.into_iter() {
+        transactions.push(transaction_dto.compact()?)
+    }
+
+    Ok(transactions)
+}
+
+pub(crate) fn map_transaction_dto_with_data(
     body_value: Value,
 ) -> Result<(Vec<Box<dyn TransactionDto>>, Pagination)> {
-    let value_dto_vec = body_value["data"].clone();
-    let mut entity_dto_vec = vec![];
-
-    for value_raw in value_dto_vec.as_array().unwrap().clone() {
-        let transaction_dto = map_transaction_dto_new(Bytes::from(format!("{}", value_raw)))?;
-        entity_dto_vec.push(transaction_dto);
-    }
+    let value_data_dto_vec = body_value["data"].clone();
+    let entity_dto_vec = map_transaction_vec_dto(value_data_dto_vec)?;
 
     let pagination: Pagination = serde_json::from_value(body_value["pagination"].clone())?;
 
     Ok((entity_dto_vec, pagination))
+}
+
+pub(crate) fn map_transaction_vec_dto(body_value: Value) -> Result<Vec<Box<dyn TransactionDto>>> {
+    let mut entity_dto_vec = vec![];
+
+    for value_raw in body_value.as_array().unwrap().clone() {
+        let transaction_dto = map_transaction_dto_new(Bytes::from(format!("{}", value_raw)))?;
+        entity_dto_vec.push(transaction_dto);
+    }
+
+    Ok(entity_dto_vec)
 }
 
 // A function which takes a closure as an argument and calls it.
@@ -182,7 +111,7 @@ fn ser_callback<T: DeserializeOwned + TransactionDto + 'static>(
 }
 
 pub(crate) fn map_transaction_dto_new(body: Bytes) -> Result<Box<dyn TransactionDto>> {
-    let mut value_dto: Value = serde_json::from_slice(&body)?;
+    let value_dto: Value = serde_json::from_slice(&body)?;
 
     let entity_type: Entity = (value_dto["transaction"]["type"].as_u64().unwrap() as u16).into();
 
@@ -387,4 +316,35 @@ pub(crate) async fn __internal_get_transactions(
 
     let body_value = req.execute(client).await?;
     value_to_transaction_search(body_value)
+}
+
+pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
+    client: Arc<ApiClient>,
+    route: &str,
+    group_type: TransactionGroupType,
+    query_params: Vec<QueryParam>,
+) -> api::error::Result<TransactionSearch> {
+    let mut req = __internal_request::Request::new(Method::GET, route.to_string());
+
+    req = req.with_path_param("group".to_string(), group_type.to_string());
+
+    for query_param in query_params {
+        req = req.with_query_param(query_param);
+    }
+
+    req = req.set_transaction_vec();
+
+    let body_value = req.execute(client).await?;
+    value_to_transaction_search(body_value)
+}
+
+pub(crate) async fn __internal_get_transaction(
+    client: Arc<ApiClient>,
+    req: __internal_request::Request,
+) -> api::error::Result<Box<dyn Transaction>> {
+    let body_value: Value = req.execute(client).await?;
+
+    let transaction_dto = map_transaction_dto_new(Bytes::from(format!("{}", body_value)))?;
+
+    Ok(transaction_dto.compact()?)
 }

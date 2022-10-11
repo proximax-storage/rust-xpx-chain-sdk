@@ -129,3 +129,25 @@ impl TransactionQueryParams {
         query_param
     }
 }
+
+impl Default for TransactionQueryParams {
+    #[inline]
+    fn default() -> Self {
+        TransactionQueryParams {
+            page_size: None,
+            page_number: None,
+            r#type: vec![],
+            embedded: false,
+            order: None,
+            sort_field: None,
+            to_height: None,
+            from_height: None,
+            height: None,
+            signer_public_key: None,
+            recipient_address: None,
+            address: None,
+            public_key: None,
+            first_level: true,
+        }
+    }
+}

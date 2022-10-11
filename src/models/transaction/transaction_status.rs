@@ -7,6 +7,7 @@
 use std::fmt;
 
 use crate::helpers::TransactionHash;
+use crate::transaction::TransactionGroupType;
 
 use super::{Deadline, Height};
 
@@ -49,6 +50,15 @@ impl TransactionStatus {
 
     pub fn is_partial(&self) -> bool {
         self.is_success() && self.group == "partial"
+    }
+
+    pub fn to_group_type(&self) -> TransactionGroupType {
+        match self.group.as_str() {
+            "confirmed" => TransactionGroupType::Confirmed,
+            "partial" => TransactionGroupType::Partial,
+            "unconfirmed" => TransactionGroupType::Unconfirmed,
+            _ => TransactionGroupType::Failed,
+        }
     }
 }
 

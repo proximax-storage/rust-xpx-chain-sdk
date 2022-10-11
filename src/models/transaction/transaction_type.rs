@@ -6,7 +6,6 @@
 
 use {
     num_enum::{FromPrimitive, IntoPrimitive},
-    serde::Serialize,
     serde_repr::*,
 };
 

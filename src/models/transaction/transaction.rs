@@ -144,9 +144,7 @@ where
         let signing_bytes =
             self.get_signing_bytes(transaction_buffer.as_ref(), generation_hash_bytes.as_ref());
 
-        println!("{}", hex_encode(&signing_bytes).to_uppercase());
         let signature = account.key_pair.sign(signing_bytes.as_ref());
-        println!("{}", hex_encode(&signature.to_bytes()).to_uppercase());
 
         let mut signed_transaction_buffer = Vec::with_capacity(transaction_buffer.len());
         signed_transaction_buffer.extend_from_slice(transaction_buffer[..4].as_ref());

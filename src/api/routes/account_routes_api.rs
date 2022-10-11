@@ -4,30 +4,27 @@
  * license that can be found in the LICENSE file.
  */
 
-use serde_json::{json, Value};
+use serde_json::json;
 use {
-    ::std::{collections::HashMap, future::Future, sync::Arc},
+    ::std::{collections::HashMap, sync::Arc},
     reqwest::Method,
 };
 
 use crate::api::routes::const_routes::{
     AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
 };
-use crate::api::{
-    value_to_transaction_search, QueryParam, TransactionQueryParams, __internal_get_transactions,
-};
+use crate::api::{QueryParam, TransactionQueryParams, __internal_get_transactions};
 use crate::transaction::{AggregateTransaction, TransactionSearch};
 use crate::{
     account::{AccountInfo, AccountName, AccountProperties, AccountsId, Address, PublicAccount},
     api::{
         error::Result,
-        internally::{str_to_account_id, valid_vec_len, AccountTransactionsOption},
+        internally::{str_to_account_id, valid_vec_len},
         request as __internal_request, AccountInfoDto, AccountNamesDto, AccountPropertiesInfoDto,
-        ApiClient, MultisigAccountGraphInfoDto, MultisigAccountInfoDto, TransactionDto,
+        ApiClient, MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
     },
     errors_const::ERR_EMPTY_ADDRESSES_IDS,
     multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
-    transaction::Transactions,
 };
 
 use super::{
@@ -415,7 +412,7 @@ impl AccountRoutes {
         Ok(accounts_properties)
     }
 
-    /// Get confirmed transactions
+    /// Get Confirmed transactions
     ///
     /// Gets an List of transactions for which an account is the sender or receiver.
     pub async fn transactions(
@@ -488,7 +485,7 @@ impl AccountRoutes {
         __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params_vec).await
     }
 
-    /// Get unconfirmed transactions
+    /// Get Unconfirmed transactions
     ///
     /// Gets the List of transactions not included in a block where an account
     /// is the sender or receiver.
@@ -544,7 +541,7 @@ impl AccountRoutes {
             query_params_vec,
         )
         .await
-        .map(|mut txns| {
+        .map(|txns| {
             txns.transactions
                 .into_iter()
                 .map(|item| *item.downcast::<AggregateTransaction>())

@@ -42,12 +42,15 @@ pub const NODE_TIME: &str = "/node/time";
 
 /// Transaction routes.
 pub const TRANSACTIONS_ROUTE: &str = "/transactions/confirmed";
-pub const TRANSACTIONS_UNCONFIRMED_ROUTE: &str = "/transactions/unconfirmed";
+pub const TRANSACTIONS_UNCONFIRMED_ROUTE: &str = "/transactions/Unconfirmed";
 
-pub const TRANSACTION_ROUTE: &str = "/transaction/{transactionId}";
-pub const TRANSACTION_STATUS_ROUTE: &str = "/transaction/{hash}/status";
-pub const TRANSACTIONS_STATUS_ROUTE: &str = "/transaction/statuses";
-pub const AGGREGATE_TRANSACTIONS_ROUTE: &str = "/transactions/partial";
+pub const TRANSACTIONS_BY_GROUP_ROUTE: &str = "/transactions/{group}";
+pub const TRANSACTION_ROUTE: &str = "/transactions/{group}/{transactionId}";
+
+pub const TRANSACTION_STATUS_ROUTE: &str = "/transactionStatus/{hash}";
+pub const TRANSACTIONS_STATUS_ROUTE: &str = "/transactionStatus";
+pub const ANNOUNCE_TRANSACTION_ROUTE: &str = "/transactions";
+pub const AGGREGATE_TRANSACTIONS_ROUTE: &str = "/transactions/Partial";
 pub const ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE: &str = "/transaction/cosignature";
 
 // routes for MetadataService
