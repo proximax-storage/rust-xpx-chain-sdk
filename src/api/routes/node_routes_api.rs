@@ -7,11 +7,11 @@
 use {::std::sync::Arc, reqwest::Method};
 
 use crate::{
-    api::{error::Result, NodeTimeDto, request as __internal_request, sirius_client::ApiClient},
+    api::{error::Result, request as __internal_request, sirius_client::ApiClient, NodeTimeDto},
     node::{NodeInfo, NodeTime},
 };
 
-use super::{NODE_INFO, NODE_TIME};
+use super::{NODE_INFO, NODE_PEERS, NODE_TIME};
 
 /// Node ApiClient routes.
 ///
@@ -56,7 +56,7 @@ impl NodeRoutes {
     ///
     /// Returns a Future `Result` whose okay value is an [NodeInfo] or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn get_node_info(self) -> Result<NodeInfo> {
+    pub async fn get_node_info(&self) -> Result<NodeInfo> {
         let req = __internal_request::Request::new(Method::GET, NODE_INFO.to_string());
 
         req.execute(self.__client()).await
@@ -87,11 +87,41 @@ impl NodeRoutes {
     ///
     /// Returns a Future `Result` whose okay value is an [NodeTime] or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn get_node_time(self) -> Result<NodeTime> {
+    pub async fn get_node_time(&self) -> Result<NodeTime> {
         let req = __internal_request::Request::new(Method::GET, NODE_TIME.to_string());
 
         let dto: Result<NodeTimeDto> = req.execute(self.__client()).await;
 
         Ok(dto?.compact())
+    }
+
+    /// Get node peers.
+    ///
+    /// # Example
+    ///
+    /// ```
+    ///use xpx_chain_sdk::api::SiriusClient;
+    ///
+    ///#[tokio::main]
+    ///async fn main() {
+    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
+    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    ///
+    /// let node_peers = client.node_api().get_node_peers();
+    /// match node_peers {
+    ///     Ok(resp_info) => println!("{:?}", resp_info),
+    ///     Err(err) => eprintln!("{:?}", err),
+    /// }
+    ///}
+    /// ```
+    ///
+    /// # Returns
+    ///
+    /// Returns a Future `Result` whose okay value is an vector of `NodeInfo` or whose error
+    /// value is an `Error<Value>` describing the error that occurred.
+    pub async fn get_node_peers(&self) -> Result<Vec<NodeInfo>> {
+        let req = __internal_request::Request::new(Method::GET, NODE_PEERS.to_string());
+
+        req.execute(self.__client()).await
     }
 }

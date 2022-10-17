@@ -4,13 +4,15 @@
  * license that can be found in the LICENSE file.
  */
 
-use serde_json::Value;
+use futures_util::TryStreamExt;
+use serde_json::{json, Value};
 use {
     ::std::{future::Future, pin::Pin, sync::Arc},
     reqwest::Method,
 };
 
-use crate::api::QueryParam;
+use crate::api::error::Error;
+use crate::api::{QueryParam, QueryParams};
 use crate::{
     account::{AccountsId, Address},
     api::{
@@ -48,10 +50,10 @@ impl NamespaceRoutes {
         self.1
     }
 
-    fn __build_namespace_hierarchy<'b>(
-        self,
-        ns_info: &'b mut NamespaceInfo,
-    ) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
+    fn __build_namespace_hierarchy<'a>(
+        &'a self,
+        ns_info: &'a mut NamespaceInfo,
+    ) -> Pin<Box<dyn Future<Output = ()> + '_>> {
         Box::pin(async move {
             let info_parent = match &ns_info.parent {
                 Some(info) => info,
@@ -62,10 +64,7 @@ impl NamespaceRoutes {
                 return;
             }
 
-            let rest_info = self
-                .clone()
-                .get_namespace_info(info_parent.namespace_id)
-                .await;
+            let rest_info = self.get_namespace_info(info_parent.namespace_id).await;
             let mut parent_ns_info = match rest_info {
                 Ok(parent) => Box::new(parent),
                 _ => return,
@@ -82,17 +81,17 @@ impl NamespaceRoutes {
     }
 
     fn __build_namespaces_hierarchy<'b>(
-        self,
+        &'b self,
         ns_infos: &'b mut Vec<NamespaceInfo>,
     ) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
         Box::pin(async move {
             for ns_info in ns_infos.iter_mut() {
-                self.clone().__build_namespace_hierarchy(ns_info).await
+                self.__build_namespace_hierarchy(ns_info).await
             }
         })
     }
 
-    pub async fn get_namespace_info(self, namespace_id: NamespaceId) -> Result<NamespaceInfo> {
+    pub async fn get_namespace_info(&self, namespace_id: NamespaceId) -> Result<NamespaceInfo> {
         let mut req = __internal_request::Request::new(Method::GET, NAMESPACE_ROUTE.to_string());
 
         req = req.with_path_param("namespaceId".to_string(), namespace_id.to_string());
@@ -107,7 +106,7 @@ impl NamespaceRoutes {
     }
 
     pub async fn get_namespaces_names(
-        self,
+        &self,
         namespace_ids: Vec<NamespaceId>,
     ) -> Result<Vec<NamespaceName>> {
         valid_vec_len(&namespace_ids, ERR_EMPTY_NAMESPACE_IDS)?;
@@ -128,28 +127,23 @@ impl NamespaceRoutes {
         Ok(namespace_name)
     }
 
+    /// Get namespaces owned by an account
+    ///
+    /// Gets an vector of `NamespaceInfo` for a given account address.
     pub async fn get_namespaces_from_account(
-        self,
+        &self,
         address: Address,
-        ns_id: Option<NamespaceId>,
-        page_size: Option<i32>,
+        query_params: Option<QueryParams>,
     ) -> Result<Vec<NamespaceInfo>> {
         let mut req = __internal_request::Request::new(
             Method::GET,
             NAMESPACES_FROM_ACCOUNT_ROUTES.to_string(),
         );
 
-        if let Some(s) = page_size {
-            req = req.with_query_param(QueryParam {
-                name: "page_size".to_string(),
-                value: Value::from(s),
-            });
-        }
-        if let Some(ref s) = ns_id {
-            req = req.with_query_param(QueryParam {
-                name: "id".to_string(),
-                value: Value::from(s.to_hex()),
-            });
+        let mut query_params_vec: Vec<QueryParam> = vec![];
+
+        if let Some(query_params) = query_params {
+            query_params_vec.append(&mut query_params.to_query_params());
         }
 
         req = req.with_path_param("accountId".to_string(), address.address_str());
@@ -161,37 +155,38 @@ impl NamespaceRoutes {
             namespace_info.push(namespace_dto.compact(self.__network_type())?);
         }
 
-        self.__build_namespaces_hierarchy(&mut namespace_info).await;
+        self.clone()
+            .__build_namespaces_hierarchy(&mut namespace_info)
+            .await;
 
         Ok(namespace_info)
     }
 
     pub async fn get_namespaces_from_accounts(
-        self,
-        accounts_id: Vec<&str>,
-        ns_id: Option<NamespaceId>,
-        page_size: Option<i32>,
+        &self,
+        accounts_id: Vec<Address>,
+        query_params: Option<QueryParams>,
     ) -> Result<Vec<NamespaceInfo>> {
-        valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
+        if accounts_id.is_empty() {
+            return Err(Error::from(ERR_EMPTY_ADDRESSES_IDS));
+        }
 
-        let accounts = AccountsId::from(accounts_id);
+        let accounts = AccountsId::from(
+            accounts_id
+                .into_iter()
+                .map(|item| item.address_str())
+                .collect::<Vec<_>>(),
+        );
 
         let mut req = __internal_request::Request::new(
             Method::POST,
             NAMESPACES_FROM_ACCOUNTS_ROUTE.to_string(),
         );
 
-        if let Some(s) = page_size {
-            req = req.with_query_param(QueryParam {
-                name: "page_size".to_string(),
-                value: Value::from(s),
-            });
-        }
-        if let Some(ref s) = ns_id {
-            req = req.with_query_param(QueryParam {
-                name: "id".to_string(),
-                value: Value::from(s.to_hex()),
-            });
+        let mut query_params_vec: Vec<QueryParam> = vec![];
+
+        if let Some(query_params) = query_params {
+            query_params_vec.append(&mut query_params.to_query_params());
         }
 
         req = req.with_body_param(&accounts);

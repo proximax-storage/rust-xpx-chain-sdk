@@ -8,19 +8,20 @@ use std::{convert::TryFrom, fmt};
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, Copy, Eq, PartialEq, Serialize, Deserialize, Hash)]
+#[serde(rename_all = "camelCase")]
 #[repr(u8)]
 pub enum NetworkType {
     /// The Public test net network identifier.
     /// Decimal value = 168
     /// Hex value = 0xa8
     ///
-    PublicTestNet = 0xa8,
+    PublicTest = 0xa8,
 
     /// The public main net network identifier.
     /// Decimal value = 184
     /// Hex value = 0xb8
     ///
-    PublicNet = 0xb8,
+    Public = 0xb8,
 
     /// The Private net network identifier.
     /// Decimal value = 200
@@ -64,8 +65,8 @@ impl NetworkType {
     pub fn prefix(&self) -> char {
         use NetworkType::*;
         match *self {
-            PublicTestNet => Self::PREFIX_PUBLIC_TEST_NET,
-            PublicNet => Self::PREFIX_PUBLIC_NET,
+            PublicTest => Self::PREFIX_PUBLIC_TEST_NET,
+            Public => Self::PREFIX_PUBLIC_NET,
             PrivateTest => Self::PREFIX_PRIVATE_TEST,
             Private => Self::PREFIX_PRIVATE,
             MijinTest => Self::PREFIX_MIJIN_TEST,
@@ -80,11 +81,6 @@ impl NetworkType {
     pub fn from_transaction_version(version: u32) -> anyhow::Result<NetworkType> {
         NetworkType::try_from((version >> 24) as u8)
     }
-
-    // /// Create Builder object
-    // pub fn to_builder(&self) -> buffer::network_type_dto::NetworkTypeDto {
-    //     buffer::network_type_dto::NetworkTypeDto::from_binary(&self.to_bytes())
-    // }
 }
 
 impl fmt::Display for NetworkType {
@@ -108,8 +104,8 @@ impl TryFrom<u8> for NetworkType {
     fn try_from(v: u8) -> Result<Self, Self::Error> {
         use NetworkType::*;
         match v {
-            x if x == PublicNet as u8 => Ok(PublicNet),
-            x if x == PublicTestNet as u8 => Ok(PublicTestNet),
+            x if x == Public as u8 => Ok(Public),
+            x if x == PublicTest as u8 => Ok(PublicTest),
             x if x == Private as u8 => Ok(Private),
             x if x == PrivateTest as u8 => Ok(PrivateTest),
             x if x == Mijin as u8 => Ok(Mijin),
@@ -128,8 +124,8 @@ impl TryFrom<char> for NetworkType {
     fn try_from(ch: char) -> Result<Self, Self::Error> {
         use NetworkType::*;
         match ch {
-            Self::PREFIX_PUBLIC_TEST_NET => Ok(PublicTestNet),
-            Self::PREFIX_PUBLIC_NET => Ok(PublicNet),
+            Self::PREFIX_PUBLIC_TEST_NET => Ok(PublicTest),
+            Self::PREFIX_PUBLIC_NET => Ok(Public),
             Self::PREFIX_PRIVATE_TEST => Ok(PrivateTest),
             Self::PREFIX_PRIVATE => Ok(Private),
             Self::PREFIX_MIJIN_TEST => Ok(MijinTest),
@@ -143,7 +139,7 @@ impl TryFrom<char> for NetworkType {
 ///
 impl Default for NetworkType {
     fn default() -> Self {
-        NetworkType::PublicTestNet
+        NetworkType::PublicTest
     }
 }
 
@@ -159,14 +155,14 @@ mod tests {
 
     #[test]
     fn test_main_net_is_0xb8() {
-        assert_eq!(NetworkType::PublicNet as u8, 0xb8);
-        assert_eq!(NetworkType::PublicNet as u8, 184);
+        assert_eq!(NetworkType::Public as u8, 0xb8);
+        assert_eq!(NetworkType::Public as u8, 184);
     }
 
     #[test]
     fn test_test_net_is_0xa8() {
-        assert_eq!(NetworkType::PublicTestNet as u8, 0xa8);
-        assert_eq!(NetworkType::PublicTestNet as u8, 168);
+        assert_eq!(NetworkType::PublicTest as u8, 0xa8);
+        assert_eq!(NetworkType::PublicTest as u8, 168);
     }
 
     #[test]

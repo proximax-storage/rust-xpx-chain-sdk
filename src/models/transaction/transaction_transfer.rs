@@ -218,7 +218,7 @@ pub mod tests {
         use crate::network::NetworkType;
         use crate::transaction::{Deadline, Transaction, TransferTransaction};
 
-        const NETWORK_TYPE: NetworkType = NetworkType::PublicTestNet;
+        const NETWORK_TYPE: NetworkType = NetworkType::PublicTest;
 
         lazy_static! {
             static ref GENERATION_HASH: GenerationHash = GenerationHash::from_str(
@@ -339,7 +339,7 @@ pub mod tests {
                 Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap(),
                 vec![],
                 PlainMessage::create("XPX"),
-                NetworkType::PublicTestNet,
+                NetworkType::PublicTest,
                 None,
             )
             .unwrap();

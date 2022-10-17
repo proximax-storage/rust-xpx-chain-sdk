@@ -5,17 +5,21 @@
  */
 
 use {
-    ::std::{any::Any, fmt, str::FromStr}, anyhow::Result,
+    ::std::{any::Any, fmt, str::FromStr},
+    anyhow::Result,
     hex::ToHex,
     serde::Serialize,
 };
 
 use crate::{
-    helpers::{H200, H256, hex_decode, is_hex},
+    helpers::{hex_decode, is_hex, H200, H256},
     models::network::*,
 };
 
-use super::{decode_base32, encode_base32, is_valid_address, public_key_to_address, raw_prettify, UnresolvedAddress};
+use super::{
+    decode_base32, encode_base32, is_valid_address, public_key_to_address, raw_prettify,
+    UnresolvedAddress,
+};
 
 /// The `Address` struct describes an Sirius address with its network.
 ///
@@ -78,7 +82,7 @@ impl Address {
     /// # fn main() {
     /// #
     /// let public_key: &str = "2E834140FD66CF87B254A693A2C7862C819217B676D3943267156625E816EC6F";
-    /// let address = Address::from_public_key(public_key, NetworkType::PublicTestNet).unwrap();
+    /// let address = Address::from_public_key(public_key, NetworkType::PublicTest).unwrap();
     /// # println!("{}", address);
     /// # }
     /// ```
@@ -313,22 +317,22 @@ mod tests {
 
     #[test]
     fn test_should_create_given_public_key_with_network_type_public_net() {
-        let address = Address::from_public_key(PUBLIC_KEY, NetworkType::PublicNet).unwrap();
+        let address = Address::from_public_key(PUBLIC_KEY, NetworkType::Public).unwrap();
         assert_eq!(
             address.address_str(),
             "XCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXA5KTMLO"
         );
-        assert_eq!(address.network_type, NetworkType::PublicNet);
+        assert_eq!(address.network_type, NetworkType::Public);
     }
 
     #[test]
     fn test_should_create_given_public_key_with_network_type_public_test_net() {
-        let address = Address::from_public_key(PUBLIC_KEY, NetworkType::PublicTestNet).unwrap();
+        let address = Address::from_public_key(PUBLIC_KEY, NetworkType::PublicTest).unwrap();
         assert_eq!(
             address.address_str(),
             "VCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXBNBWFCJ"
         );
-        assert_eq!(address.network_type, NetworkType::PublicTestNet);
+        assert_eq!(address.network_type, NetworkType::PublicTest);
     }
 
     #[test]
@@ -346,13 +350,13 @@ mod tests {
     #[test]
     fn test_should_create_given_xcve6ec5epqo7pwxgzsny4v2sihunhdkxa5ktmlo() {
         let address = Address::from_raw("XCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXA5KTMLO").unwrap();
-        assert_eq!(address.network_type, NetworkType::PublicNet);
+        assert_eq!(address.network_type, NetworkType::Public);
     }
 
     #[test]
     fn test_should_create_given_vcve6ec5epqo7pwxgzsny4v2sihunhdkxbnbwfcj() {
         let address = Address::from_raw("VCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXBNBWFCJ").unwrap();
-        assert_eq!(address.network_type, NetworkType::PublicTestNet);
+        assert_eq!(address.network_type, NetworkType::PublicTest);
     }
 
     #[test]
@@ -373,7 +377,7 @@ mod tests {
 
     #[test]
     #[should_panic(
-    expected = "Address ZCTVW234AQ4TZIDZENGNOZXPRPSDRSFRF has to be 40 characters long"
+        expected = "Address ZCTVW234AQ4TZIDZENGNOZXPRPSDRSFRF has to be 40 characters long"
     )]
     fn test_should_panic_when_the_address_is_not_valid_in_length() {
         Address::from_raw("ZCTVW234AQ4TZIDZENGNOZXPRPSDRSFRF").unwrap();
@@ -425,13 +429,13 @@ mod tests {
                 &Account::random(NetworkType::PrivateTest).address_str()
             ));
             assert!(Address::is_valid_raw_address(
-                &Account::random(NetworkType::PublicNet).address_str()
+                &Account::random(NetworkType::Public).address_str()
             ));
             assert!(Address::is_valid_raw_address(
                 &Account::random(NetworkType::Private).address_str()
             ));
             assert!(Address::is_valid_raw_address(
-                &Account::random(NetworkType::PublicTestNet).address_str()
+                &Account::random(NetworkType::PublicTest).address_str()
             ));
         }
 
@@ -478,7 +482,7 @@ mod tests {
     mod tests_valid_encoded_address {
         use super::*;
 
-// #[test]
+        // #[test]
         // fn test_returns_true_for_valid_address_when_generated() {
         //     assert!(Address::is_valid_encoded_address(
         //         Account::random(NetworkType::PrivateTest)

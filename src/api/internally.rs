@@ -312,8 +312,6 @@ pub(crate) async fn __internal_get_transactions(
         req = req.with_query_param(query_param);
     }
 
-    req = req.set_transaction_vec();
-
     let body_value = req.execute(client).await?;
     value_to_transaction_search(body_value)
 }
@@ -331,8 +329,6 @@ pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
     for query_param in query_params {
         req = req.with_query_param(query_param);
     }
-
-    req = req.set_transaction_vec();
 
     let body_value = req.execute(client).await?;
     value_to_transaction_search(body_value)

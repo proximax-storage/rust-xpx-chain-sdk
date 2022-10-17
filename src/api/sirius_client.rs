@@ -13,15 +13,15 @@ use super::{
     error::Result,
     routes::{
         account_routes_api::AccountRoutes,
-        block_routes_api::BlockRoutes,
         chain_routes_api::ChainRoutes,
         exchange_routes_api::ExchangeRoutes,
         mosaic_routes_api::MosaicRoutes,
         namespace_routes_api::NamespaceRoutes,
+        network_routes_api::NetworkRoutes,
+        // metadata_routes_api::MetadataRoutes,
         node_routes_api::NodeRoutes,
         resolver_routes_api::ResolverRoutes,
         transaction_routes_api::TransactionRoutes,
-        // metadata_routes_api::MetadataRoutes,
     },
 };
 
@@ -43,11 +43,6 @@ impl SiriusClient {
         Box::new(AccountRoutes::new(self.__client()))
     }
 
-    /// Get Block ApiClient routes.
-    pub fn block_api(&self) -> Box<BlockRoutes> {
-        Box::new(BlockRoutes::new(self.__client()))
-    }
-
     /// Get Chain ApiClient routes.
     pub fn chain_api(&self) -> Box<ChainRoutes> {
         Box::new(ChainRoutes::new(self.__client()))
@@ -65,6 +60,11 @@ impl SiriusClient {
     /// Get Node ApiClient routes.
     pub fn node_api(&self) -> Box<NodeRoutes> {
         Box::new(NodeRoutes::new(self.__client()))
+    }
+
+    /// Get Network ApiClient routes.
+    pub fn network_api(&self) -> Box<NetworkRoutes> {
+        Box::new(NetworkRoutes::new(self.__client()))
     }
 
     /// Get Mosaic ApiClient routes.
@@ -115,7 +115,7 @@ impl SiriusClient {
     }
 
     async fn __generation_info(&mut self) -> Result<()> {
-        let block_info = self.block_api().get_block_by_height(1).await;
+        let block_info = self.chain_api().get_block_by_height(1).await;
         match block_info {
             Ok(info) => {
                 self.generation_hash = info.generation_hash;

@@ -49,7 +49,7 @@ impl Account {
     /// #
     /// # fn main() {
     /// #
-    /// let account = Account::random(NetworkType::PublicTestNet);
+    /// let account = Account::random(NetworkType::PublicTest);
     /// # println!("{}", account);
     /// # }
     /// ```
@@ -92,7 +92,7 @@ impl Account {
     /// # fn main() {
     /// #
     /// let private_key: &str = "75027D85CE92E2C469297F4C91E4E88AE03868A91B23C835AEF7C5EFDAD0DBDB";
-    /// let account = Account::from_hex_private_key(private_key, NetworkType::PublicTestNet).unwrap();
+    /// let account = Account::from_hex_private_key(private_key, NetworkType::PublicTest).unwrap();
     /// # println!("{}", account);
     /// # }
     /// ```
@@ -409,8 +409,8 @@ pub mod tests {
 
         #[test]
         fn test_should_return_network_type() {
-            let account = Account::random(NetworkType::PublicTestNet);
-            assert_eq!(account.network_type(), NetworkType::PublicTestNet);
+            let account = Account::random(NetworkType::PublicTest);
+            assert_eq!(account.network_type(), NetworkType::PublicTest);
         }
     }
 

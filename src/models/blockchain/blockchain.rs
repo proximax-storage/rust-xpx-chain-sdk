@@ -5,6 +5,7 @@
  */
 
 use crate::transaction::Height;
+use std::ops::Deref;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct HeightInfo {
@@ -12,12 +13,19 @@ pub struct HeightInfo {
     pub height: Height,
 }
 
+impl Deref for HeightInfo {
+    type Target = u64;
+    fn deref(&self) -> &Self::Target {
+        &self.height
+    }
+}
+
 impl<'a> core::fmt::Display for HeightInfo {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f,
             "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
+            serde_json::to_string_pretty(&self.height).unwrap_or_default()
         )
     }
 }

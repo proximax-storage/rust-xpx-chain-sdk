@@ -28,8 +28,6 @@ pub(crate) struct Request {
     header_params: HashMap<String, String>,
     // TODO: multiple body params are possible technically, but not supported here.
     serialized_body: Option<String>,
-    is_transaction: bool,
-    is_transaction_vec: bool,
 }
 
 impl Request {
@@ -41,8 +39,6 @@ impl Request {
             path_params: HashMap::new(),
             header_params: HashMap::new(),
             serialized_body: None,
-            is_transaction: false,
-            is_transaction_vec: false,
         }
     }
 
@@ -59,16 +55,6 @@ impl Request {
     pub fn with_path_param(mut self, basename: String, param: String) -> Self {
         let param = param.replace('"', "");
         self.path_params.insert(basename, param);
-        self
-    }
-
-    pub fn set_transaction(mut self) -> Self {
-        self.is_transaction = true;
-        self
-    }
-
-    pub fn set_transaction_vec(mut self) -> Self {
-        self.is_transaction_vec = true;
         self
     }
 

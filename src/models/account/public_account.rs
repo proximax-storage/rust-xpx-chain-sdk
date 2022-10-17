@@ -7,14 +7,12 @@
 use std::fmt;
 
 use anyhow::Result;
-use crypto::{PUBLIC_KEY_LENGTH, PublicKey};
+use crypto::{PublicKey, PUBLIC_KEY_LENGTH};
 use hex::ToHex;
 
-use crate::{
-    network::*,
-};
+use crate::network::*;
 
-use super::{Address, verify_signature};
+use super::{verify_signature, Address};
 
 /// The `PublicAccount` struct contains account's Sirius `Address` and public key.
 ///
@@ -64,7 +62,7 @@ impl PublicAccount {
     /// # fn main() {
     /// #
     /// let public_key: &str = "2E834140FD66CF87B254A693A2C7862C819217B676D3943267156625E816EC6F";
-    /// let public_account = PublicAccount::from_public_key(public_key, NetworkType::PublicTestNet).unwrap();
+    /// let public_account = PublicAccount::from_public_key(public_key, NetworkType::PublicTest).unwrap();
     /// # println!("{}", public_account);
     /// # }
     /// ```
@@ -155,7 +153,7 @@ mod tests {
             "12816F825B4CACEA334723D51297D8582332D8B875A5829908AAE85831ABB509",
             NetworkType::PrivateTest,
         )
-            .unwrap();
+        .unwrap();
 
         let data = "I am so so so awesome as always";
         let signature = Signature::from_bytes(&hex::decode("B01DCA6484026C2ECDF3C822E64DEAAFC15EBCCE337EEE209C28513CB5351CDED8863A8E7B855CD471B55C91FAE611C548625C9A5916A555A24F72F3526FA508").unwrap()).unwrap();
@@ -170,7 +168,7 @@ mod tests {
             "22816F825B4CACEA334723D51297D8582332D8B875A5829908AAE85831ABB508",
             NetworkType::PrivateTest,
         )
-            .unwrap();
+        .unwrap();
 
         let data = "I am awesome as always";
         let signature = Signature::from_bytes(&hex::decode("B01DCA6484026C2ECDF3C822E64DEAAFC15EBCCE337EEE209C28513CB5351CDED8863A8E7B855CD471B55C91FAE611C548625C9A5916A555A24F72F3526FA508").unwrap()).unwrap();
@@ -185,7 +183,7 @@ mod tests {
             "22816F825B4CACEA334723D51297D8582332D8B875A5829908AAE85831ABB508",
             NetworkType::PrivateTest,
         )
-            .unwrap();
+        .unwrap();
 
         let data = "I am so so so awesome as always";
         let signature = Signature::from_bytes(&hex::decode("A01DCA6484026C2ECDF3C822E64DEAAFC15EBCCE337EEE209C28513CB5351CDED8863A8E7B855CD471B55C91FAE611C548625C9A5916A555A24F72F3526FA509").unwrap()).unwrap();

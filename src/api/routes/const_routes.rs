@@ -11,15 +11,13 @@ pub const ACCOUNTS_PROPERTIES_ROUTE: &str = "/account/properties";
 pub const MULTISIG_ACCOUNT_ROUTE: &str = "/account/{address_id}/multisig";
 pub const MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE: &str = "/account/{address_id}/multisig/graph";
 
-/// Block routes.
-pub const BLOCK_BY_HEIGHT_ROUTE: &str = "/block/{height}";
-pub const BLOCK_GET_TRANSACTION_ROUTE: &str = "/block/{height}/transactions";
-pub const BLOCK_INFO_ROUTE: &str = "/blocks/{height}/limit/{limit}";
-
 /// Chain routes.
 pub const CHAIN_STORAGE_ROUTE: &str = "/diagnostic/storage";
 pub const CHAIN_SCORE_ROUTE: &str = "/chain/score";
 pub const CHAIN_HEIGHT_ROUTE: &str = "/chain/height";
+pub const BLOCK_BY_HEIGHT_ROUTE: &str = "/block/{height}";
+pub const BLOCK_GET_TRANSACTION_ROUTE: &str = "/block/{height}/transactions";
+pub const BLOCK_INFO_ROUTE: &str = "/blocks/{height}/limit/{limit}";
 
 ///  Exchange routes
 pub const EXCHANGE_ROUTE: &str = "/account/{account_id}/exchange";
@@ -39,6 +37,10 @@ pub const NAMESPACES_FROM_ACCOUNT_ROUTES: &str = "/account/{accountId}/namespace
 /// Node routes.
 pub const NODE_INFO: &str = "/node/info";
 pub const NODE_TIME: &str = "/node/time";
+pub const NODE_PEERS: &str = "/node/peers";
+
+/// Network routes.
+pub const NETWORK_INFO: &str = "/network";
 
 /// Transaction routes.
 pub const TRANSACTIONS_ROUTE: &str = "/transactions/confirmed";

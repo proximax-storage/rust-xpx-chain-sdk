@@ -25,8 +25,7 @@ use crate::api::{
 use crate::transaction::{TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
     api::{
-        error::Result, internally::valid_vec_len, request as __internal_request,
-        sirius_client::ApiClient, TransactionStatusDto,
+        error::Result, internally::valid_vec_len, sirius_client::ApiClient, TransactionStatusDto,
     },
     errors_const::ERR_EMPTY_TRANSACTION_HASHES,
     transaction::{
@@ -115,9 +114,9 @@ impl TransactionRoutes {
 
         req = req.with_path_param("hash".to_string(), transaction_hash.encode_hex::<String>());
 
-        let dto: Result<TransactionStatusDto> = req.execute(self.__client()).await;
+        let dto: TransactionStatusDto = req.execute(self.__client()).await?;
 
-        Ok(dto?.compact()?)
+        Ok(dto.compact()?)
     }
 
     /// Get transactions status.
@@ -228,8 +227,7 @@ impl TransactionRoutes {
                 "transactionId".to_string(),
                 transaction_hash.encode_hex::<String>(),
             )
-            .with_path_param("group".to_string(), group.to_string())
-            .set_transaction();
+            .with_path_param("group".to_string(), group.to_string());
 
         __internal_get_transaction(self.__client(), req).await
     }
@@ -305,7 +303,6 @@ impl TransactionRoutes {
 
         req = req
             .with_body_param(body_param)
-            .set_transaction_vec()
             .with_path_param("group".to_string(), group.to_string());
 
         let body_value = req.execute(self.__client()).await?;
@@ -316,7 +313,7 @@ impl TransactionRoutes {
     ///
     /// # Inputs
     ///
-    /// * `transaction_signed` =    An [signed_transaction].
+    /// * `transaction_signed` =  An [signed_transaction].
     ///
     /// # Example
     ///
@@ -385,7 +382,7 @@ impl TransactionRoutes {
     ///
     /// # Returns
     ///
-    /// Returns a Future `Result` whose okay value is an [AnnounceTransactionInfo] or whose error
+    /// Returns a Future `Result` whose okay value is an `AnnounceTransactionInfo` or whose error
     /// value is an `Error<Value>` describing the error that occurred.
     pub async fn announce(
         self,
@@ -415,7 +412,7 @@ impl TransactionRoutes {
     where
         for<'de> T: serde::Serialize,
     {
-        let mut req = __internal_request::Request::new(Method::PUT, route.to_string());
+        let mut req = Request::new(Method::PUT, route.to_string());
 
         req = req.with_body_param(tx);
 
