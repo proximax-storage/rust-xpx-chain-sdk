@@ -4,8 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::transaction::Height;
 use std::ops::Deref;
+
+use crate::transaction::Height;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct HeightInfo {

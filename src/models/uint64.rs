@@ -4,16 +4,12 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::{
-    convert::TryFrom,
-    io::Write,
-    num::ParseIntError,
-    ops::Deref,
-};
+use std::{convert::TryFrom, io::Write, num::ParseIntError, ops::Deref};
 
 use hex::{FromHex, FromHexError};
-use crate::helpers::{hex_encode};
 use sha3::{Digest, Sha3_256};
+
+use crate::helpers::hex_encode;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Uint64(u64);
@@ -396,7 +392,6 @@ mod tests {
 
         assert_ne!(value, other);
     }
-
 
     #[test]
     fn test_should_be_created_from_utf8() {

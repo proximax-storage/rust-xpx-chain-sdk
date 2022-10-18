@@ -8,7 +8,6 @@
 /// page_number : 1
 /// page_size : 20
 /// total_pages : 1
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Pagination {

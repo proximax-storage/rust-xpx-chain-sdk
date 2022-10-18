@@ -6,16 +6,19 @@
 
 use {::std::sync::Arc, reqwest::Method};
 
+use crate::api::routes::const_routes::{MOSAIC_LEVY_ROUTE, MOSAIC_RICH_LIST_ROUTE};
+use crate::api::{MosaicLevyDTO, MosaicRichListDTO, PageQueryParams};
+use crate::mosaic::{MosaicLevy, MosaicRichList, UnresolvedMosaicId};
 use crate::{
-    api::{error::Result,
-          internally::valid_vec_len, MosaicInfoDto, MosaicNamesDto,
-          request as __internal_request, sirius_client::ApiClient,
+    api::{
+        error::Result, internally::valid_vec_len, request as __internal_request,
+        sirius_client::ApiClient, MosaicInfoDto, MosaicNamesDto,
     },
     errors_const::ERR_EMPTY_MOSAIC_IDS,
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},
 };
 
-use super::{MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE, MOSAICS_ROUTE};
+use super::{MOSAICS_ROUTE, MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE};
 
 /// Mosaic ApiClient routes.
 ///
@@ -67,7 +70,7 @@ impl MosaicRoutes {
     ///
     /// Returns a Future `Result` whose okay value is an [MosaicInfo] or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn get_mosaic_info(self, mosaic_id: MosaicId) -> Result<MosaicInfo> {
+    pub async fn get_mosaic_info(&self, mosaic_id: MosaicId) -> Result<MosaicInfo> {
         let mut req = __internal_request::Request::new(Method::GET, MOSAIC_ROUTE.to_string());
 
         req = req.with_path_param("mosaic_id".to_string(), mosaic_id.to_string());
@@ -116,7 +119,7 @@ impl MosaicRoutes {
     ///
     /// Returns a Future `Result` whose okay value is an verctor of [MosaicInfo] or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn get_mosaics_info(self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicInfo>> {
+    pub async fn get_mosaics_info(&self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicInfo>> {
         valid_vec_len(&mosaic_ids, ERR_EMPTY_MOSAIC_IDS)?;
 
         let mosaics_ids = MosaicIds::from(mosaic_ids);
@@ -171,7 +174,7 @@ impl MosaicRoutes {
     ///
     /// Returns a Future `Result` whose okay value is an friendly names for mosaics or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn get_mosaics_names(self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicNames>> {
+    pub async fn get_mosaics_names(&self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicNames>> {
         valid_vec_len(&mosaic_ids, ERR_EMPTY_MOSAIC_IDS)?;
 
         let mosaics_ids = MosaicIds::from(mosaic_ids);
@@ -189,5 +192,41 @@ impl MosaicRoutes {
             .collect();
 
         Ok(mosaics_names)
+    }
+
+    pub async fn get_mosaic_rich_list(
+        &self,
+        mosaic_id: MosaicId,
+        query_params: Option<PageQueryParams>,
+    ) -> Result<Vec<MosaicRichList>> {
+        let mut req =
+            __internal_request::Request::new(Method::GET, MOSAIC_RICH_LIST_ROUTE.to_string());
+
+        req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_hex());
+
+        if let Some(query_params) = query_params {
+            for query_param in query_params.to_query_params() {
+                req = req.with_query_param(query_param);
+            }
+        }
+
+        let dto: Vec<MosaicRichListDTO> = req.execute(self.__client()).await?;
+
+        let mosaics_names = dto
+            .into_iter()
+            .map(move |name_dto| name_dto.compact())
+            .collect();
+
+        Ok(mosaics_names)
+    }
+
+    pub async fn get_mosaic_levy(&self, mosaic_id: MosaicId) -> Result<MosaicLevy> {
+        let mut req = __internal_request::Request::new(Method::GET, MOSAIC_LEVY_ROUTE.to_string());
+
+        req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_hex());
+
+        let dto: MosaicLevyDTO = req.execute(self.__client()).await?;
+
+        Ok(dto.compact()?)
     }
 }

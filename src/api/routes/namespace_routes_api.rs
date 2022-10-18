@@ -6,6 +6,7 @@
 
 use futures_util::TryStreamExt;
 use serde_json::{json, Value};
+
 use {
     ::std::{future::Future, pin::Pin, sync::Arc},
     reqwest::Method,
@@ -162,6 +163,8 @@ impl NamespaceRoutes {
         Ok(namespace_info)
     }
 
+    /// Gets namespaces for a given List of addresses.
+    ///
     pub async fn get_namespaces_from_accounts(
         &self,
         accounts_id: Vec<Address>,

@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 use std::str::FromStr;
+
 use crate::TransactionHash;
 
 #[derive(Debug, Default, PartialEq, Serialize, Deserialize)]

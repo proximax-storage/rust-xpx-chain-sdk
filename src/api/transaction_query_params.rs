@@ -4,9 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
+use serde_json::Value;
+
 use crate::api::{OrderV2, QueryParam};
 use crate::transaction::{Height, TransactionType};
-use serde_json::Value;
 
 // class TransactionSearchMosaic {
 //   TransactionSearchMosaic(this.transferMosaicId);

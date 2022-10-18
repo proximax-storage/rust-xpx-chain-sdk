@@ -5,17 +5,17 @@
  */
 
 use anyhow::Result;
+use serde::Deserialize;
 
 use {::std::fmt, num_enum::IntoPrimitive};
 
 use crate::transaction::Amount;
-use serde::Deserialize;
+
 use super::{
     internally::{
         PRX_XPX_U64, XPX_DIVISIBILITY, XPX_MAX_RELATIVE_VALUE, XPX_MAX_VALUE, XPX_MIN_VALUE,
     },
-    MosaicId,
-    UnresolvedMosaicId,
+    MosaicId, UnresolvedMosaicId,
 };
 
 /// mosaic_supply_type :
@@ -208,7 +208,7 @@ mod tests {
 
     #[test]
     #[should_panic(
-    expected = "Invalid divisibility 8, the divisibility must be in the range of 0 and 6."
+        expected = "Invalid divisibility 8, the divisibility must be in the range of 0 and 6."
     )]
     fn test_try_create_with_relative_should_return_panic() {
         let id = MosaicId::from(LO_HI);

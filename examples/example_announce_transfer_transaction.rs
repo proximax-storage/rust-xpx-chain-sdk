@@ -1,4 +1,5 @@
 use std::time::Instant;
+
 use xpx_chain_sdk::account::{Account, Address};
 use xpx_chain_sdk::api::SiriusClient;
 use xpx_chain_sdk::message::PlainMessage;

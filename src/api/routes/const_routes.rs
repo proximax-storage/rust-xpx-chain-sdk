@@ -27,6 +27,8 @@ pub const OFFERS_BY_MOSAIC_ROUTE: &str = "/exchange/{offer_type}/{mosaic_id}";
 pub const MOSAICS_ROUTE: &str = "/mosaic";
 pub const MOSAIC_ROUTE: &str = "/mosaic/{mosaic_id}";
 pub const MOSAIC_NAMES_ROUTE: &str = "/mosaic/names";
+pub const MOSAIC_RICH_LIST_ROUTE: &str = "/mosaic/{mosaicId}/richlist";
+pub const MOSAIC_LEVY_ROUTE: &str = "/mosaic/{mosaicId}/levy";
 
 /// Namespace routes.
 pub const NAMESPACE_ROUTE: &str = "/namespace/{namespaceId}";
