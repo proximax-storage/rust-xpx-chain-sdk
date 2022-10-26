@@ -1,6 +1,9 @@
 use xpx_chain_sdk::account::{Address, PublicAccount};
 use xpx_chain_sdk::api::{OrderV2, SiriusClient, TransactionQueryParams};
 use xpx_chain_sdk::transaction::TransactionType;
+use reqwest_middleware::ClientBuilder;
+use reqwest_retry::{RetryTransientMiddleware, policies::ExponentialBackoff};
+use reqwest::Client;
 
 #[tokio::main]
 async fn main() {

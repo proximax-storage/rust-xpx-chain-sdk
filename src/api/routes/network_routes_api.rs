@@ -6,12 +6,12 @@
 
 use {::std::sync::Arc, reqwest::Method};
 
-use crate::api::routes::const_routes::NETWORK_INFO;
-use crate::network::NetworkInfo;
 use crate::{
     api::{error::Result, request as __internal_request, sirius_client::ApiClient},
     node::{NodeInfo, NodeTime},
 };
+use crate::api::routes::const_routes::NETWORK_INFO;
+use crate::network::NetworkInfo;
 
 /// Network ApiClient routes.
 ///

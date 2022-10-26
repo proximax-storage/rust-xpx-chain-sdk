@@ -10,7 +10,7 @@ use xpx_chain_sdk::transaction::{Deadline, TransferTransaction};
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let start = Instant::now();
 
-    let node_url = "https://api-2.testnet2.xpxsirius.io";
+    let node_url = "http://demo-api-3.edlx.io:3000";
 
     let client = SiriusClient::new(node_url).await?;
 
@@ -22,10 +22,11 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let private_key: &str = "26b64cb10f005e5988a36744ca19e20d835ccc7c105aaa5f3b212da593180930";
 
     let account = Account::from_hex_private_key(private_key, network_type).unwrap();
+    let recipient = Account::random(network_type).to_address();
 
     let transaction = TransferTransaction::create(
         Deadline::default(),
-        Address::from_raw("VDI5IS-5YXT5G-LRT5RS-S3EZIB-4QOAI2-6GLWR2-TDK7").unwrap(),
+        recipient,
         vec![],
         PlainMessage::create("Sirius chain Rust sdk"),
         network_type,

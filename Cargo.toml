@@ -102,3 +102,5 @@ default_features = false
 [dev-dependencies]
 lazy_static = "1.4"
 tokio = { version = "1.19", features = ["full"] }
+tower = { version = "0.4", features = ["full"] }
+futures = "0.3"

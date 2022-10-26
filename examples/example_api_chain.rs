@@ -8,7 +8,7 @@ use xpx_chain_sdk::api::SiriusClient;
 
 #[tokio::main]
 async fn main() {
-    let node_url = vec!["https://api-2.testnet2.xpxsirius.io:443"];
+    let node_url = vec!["http://demo-api-3.edlx.io:3000"];
 
     let sirius_client = SiriusClient::new_from_urls(&node_url).await;
     let client = match sirius_client {
@@ -18,18 +18,18 @@ async fn main() {
 
     let chain_api = client.chain_api();
 
-    // Get the current `Height` of the chain.
-    let block_height = chain_api.get_block_height().await;
-    match block_height {
-        Ok(resp) => println!("{}", *resp),
-        Err(err) => eprintln!(
-            "Exception when calling chain_api->get_block_height: {}\n",
-            err
-        ),
-    }
+    // // Get the current `Height` of the chain.
+    // let block_height = chain_api.get_block_height().await;
+    // match block_height {
+    //     Ok(resp) => println!("{}", *resp),
+    //     Err(err) => eprintln!(
+    //         "Exception when calling chain_api->get_block_height: {}\n",
+    //         err
+    //     ),
+    // }
 
     // Gets a block from the chain that has the given height.
-    let block_by_height = chain_api.get_block_by_height(1).await;
+    let block_by_height = chain_api.get_block_by_height(3593817).await;
     match block_by_height {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!(
@@ -37,34 +37,34 @@ async fn main() {
             err
         ),
     }
-
-    // Get the current score of the chain.
-    let block_score = chain_api.get_block_score().await;
-    match block_score {
-        Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling chain_api->get_block_score: {}\n",
-            err
-        ),
-    }
-
-    // Get the storage information of the node.
-    let block_storage = chain_api.get_block_storage().await;
-    match block_storage {
-        Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling chain_api->get_block_storage: {}\n",
-            err
-        ),
-    }
-
-    // Gets up to limit number of blocks after given block height.
-    let block = chain_api.get_blocks_by_height_with_limit(1, 25).await;
-    match block {
-        Ok(resp) => println!("{:#?}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling chain_api->get_blocks_by_height_with_limit: {}\n",
-            err
-        ),
-    }
+    //
+    // // Get the current score of the chain.
+    // let block_score = chain_api.get_block_score().await;
+    // match block_score {
+    //     Ok(resp) => println!("{}", resp),
+    //     Err(err) => eprintln!(
+    //         "Exception when calling chain_api->get_block_score: {}\n",
+    //         err
+    //     ),
+    // }
+    //
+    // // Get the storage information of the node.
+    // let block_storage = chain_api.get_block_storage().await;
+    // match block_storage {
+    //     Ok(resp) => println!("{}", resp),
+    //     Err(err) => eprintln!(
+    //         "Exception when calling chain_api->get_block_storage: {}\n",
+    //         err
+    //     ),
+    // }
+    //
+    // // Gets up to limit number of blocks after given block height.
+    // let block = chain_api.get_blocks_by_height_with_limit(1, 25).await;
+    // match block {
+    //     Ok(resp) => println!("{:#?}", resp),
+    //     Err(err) => eprintln!(
+    //         "Exception when calling chain_api->get_blocks_by_height_with_limit: {}\n",
+    //         err
+    //     ),
+    // }
 }

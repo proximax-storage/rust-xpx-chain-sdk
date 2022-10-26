@@ -15,29 +15,29 @@ use {
     reqwest::Method,
 };
 
-use crate::api::error::{Error, SiriusError};
-use crate::api::request::Request;
-use crate::api::routes::const_routes::{ANNOUNCE_TRANSACTION_ROUTE, TRANSACTIONS_BY_GROUP_ROUTE};
-use crate::api::{
-    __internal_get_transaction, __internal_get_transactions_by_group_with_pagination,
-    value_to_transaction, QueryParam, TransactionQueryParams,
-};
-use crate::transaction::{TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
     api::{
         error::Result, internally::valid_vec_len, sirius_client::ApiClient, TransactionStatusDto,
     },
     errors_const::ERR_EMPTY_TRANSACTION_HASHES,
     transaction::{
-        CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionStatus,
-        TransactionsStatus,
+        CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionsStatus,
+        TransactionStatus,
     },
     TransactionHash,
 };
+use crate::api::{
+    __internal_get_transaction, __internal_get_transactions_by_group_with_pagination,
+    QueryParam, TransactionQueryParams, value_to_transaction,
+};
+use crate::api::error::{Error, SiriusError};
+use crate::api::request::Request;
+use crate::api::routes::const_routes::{ANNOUNCE_TRANSACTION_ROUTE, TRANSACTIONS_BY_GROUP_ROUTE};
+use crate::transaction::{TransactionGroupType, Transactions, TransactionSearch};
 
 use super::{
-    AGGREGATE_TRANSACTIONS_ROUTE, ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, TRANSACTIONS_ROUTE,
-    TRANSACTIONS_STATUS_ROUTE, TRANSACTION_ROUTE, TRANSACTION_STATUS_ROUTE,
+    AGGREGATE_TRANSACTIONS_ROUTE, ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, TRANSACTION_ROUTE,
+    TRANSACTION_STATUS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_STATUS_ROUTE,
 };
 
 /// Transaction ApiClient routes.
@@ -250,7 +250,7 @@ impl TransactionRoutes {
             group_type,
             query_params_vec,
         )
-        .await
+            .await
     }
 
     /// Get `Transactions` information.
@@ -409,8 +409,8 @@ impl TransactionRoutes {
     }
 
     async fn __announce_transaction<T>(self, tx: T, route: &str) -> Result<AnnounceTransactionInfo>
-    where
-        for<'de> T: serde::Serialize,
+        where
+                for<'de> T: serde::Serialize,
     {
         let mut req = Request::new(Method::PUT, route.to_string());
 
