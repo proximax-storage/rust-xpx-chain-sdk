@@ -5,25 +5,22 @@
  */
 
 use http::Request;
-use serde_json::Value;
 use tower::buffer::Buffer;
 
-use {::std::sync::Arc, reqwest::Method};
+use reqwest::Method;
 
 use crate::{
     api::{
         BlockchainScoreDto, error::Result, HeightInfoDto, request as __internal_request,
-        sirius_client::ApiClient,
     },
     blockchain::{BlockchainScore, HeightInfo, StorageInfo},
 };
-use crate::api::{BlockInfoDto, Client, QueryParam, Svc, TransactionDto};
+use crate::api::{BlockInfoDto, Svc};
 use crate::api::body::BoxBody;
 use crate::api::routes::const_routes::{
     BLOCK_BY_HEIGHT_ROUTE, BLOCK_GET_TRANSACTION_ROUTE, BLOCK_INFO_ROUTE,
 };
 use crate::blockchain::BlockInfo;
-use crate::transaction::Transactions;
 
 use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
 

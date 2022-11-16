@@ -1,21 +1,19 @@
 use xpx_chain_sdk::account::{Address, PublicAccount};
-use xpx_chain_sdk::api::{OrderV2, SiriusClient, TransactionQueryParams};
+use xpx_chain_sdk::api::{Client, Endpoint, OrderV2, TransactionQueryParams};
+use xpx_chain_sdk::network::NetworkType;
 use xpx_chain_sdk::transaction::TransactionType;
-use reqwest_middleware::ClientBuilder;
-use reqwest_retry::{RetryTransientMiddleware, policies::ExponentialBackoff};
-use reqwest::Client;
 
 #[tokio::main]
 async fn main() {
-    let node_url = vec!["https://api-2.testnet2.xpxsirius.io:443"];
+    let ep1 = Endpoint::from_shared("http://api-2.testnet2.xpxsirius.io:3000").unwrap();
+    let ep2 = Endpoint::from_shared("http://api-3.testnet2.xpxsirius.io:3000").unwrap();
 
-    let sirius_client = SiriusClient::new_from_urls(&node_url).await;
-    let client = match sirius_client {
-        Ok(resp) => resp,
-        Err(err) => panic!("{}", err),
-    };
+    let endpoints = [ep1, ep2];
 
-    let network_type = client.network_type();
+    let client = Client::balance_list(endpoints.into_iter());
+
+    // let network_type = client.network_info().await.unwrap().network_type;
+    let network_type = NetworkType::PublicTest;
 
     let account_api = client.account_api();
 

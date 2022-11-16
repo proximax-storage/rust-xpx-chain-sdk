@@ -4,11 +4,12 @@
  * license that can be found in the LICENSE file.
  */
 
+use http::Request;
 use serde_json::json;
 use tower::buffer::Buffer;
 
 use {
-    ::std::{collections::HashMap, sync::Arc},
+    ::std::collections::HashMap,
     reqwest::Method,
 };
 
@@ -17,7 +18,7 @@ use crate::{
     api::{
         AccountInfoDto,
         AccountNamesDto,
-        AccountPropertiesInfoDto, ApiClient, error::Result, internally::{str_to_account_id, valid_vec_len},
+        AccountPropertiesInfoDto, error::Result, internally::{str_to_account_id, valid_vec_len},
         MultisigAccountGraphInfoDto, MultisigAccountInfoDto, request as __internal_request,
     },
     errors_const::ERR_EMPTY_ADDRESSES_IDS,
@@ -34,7 +35,6 @@ use super::{
     ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE, ACCOUNT_ROUTE, ACCOUNTS_PROPERTIES_ROUTE,
     ACCOUNTS_ROUTE, MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE,
 };
-use http::Request;
 
 /// Account ApiClient routes.
 ///

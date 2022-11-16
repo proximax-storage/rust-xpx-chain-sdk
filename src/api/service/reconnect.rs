@@ -1,13 +1,15 @@
-use pin_project::pin_project;
-use std::fmt;
 use std::{
     future::Future,
     pin::Pin,
     task::{Context, Poll},
 };
+use std::fmt;
+
+use pin_project::pin_project;
 use tower::make::MakeService;
 use tower::Service;
 use tracing::trace;
+
 use super::connection::Error;
 
 #[derive(Clone)]
@@ -50,7 +52,7 @@ impl<M, Target> Reconnect<M, Target>
 
 impl<M, Target, S, Request> Service<Request> for Reconnect<M, Target>
     where
-        M: Service<Target, Response = S>,
+        M: Service<Target, Response=S>,
         S: Service<Request>,
         M::Future: Unpin,
         Error: From<M::Error> + From<S::Error>,
@@ -204,7 +206,7 @@ impl<F> ResponseFuture<F> {
 
 impl<F, T, E> Future for ResponseFuture<F>
     where
-        F: Future<Output = Result<T, E>>,
+        F: Future<Output=Result<T, E>>,
         E: Into<Error>,
 {
     type Output = Result<T, Error>;

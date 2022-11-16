@@ -5,18 +5,17 @@
  */
 
 use xpx_chain_sdk::account::{Address, PublicAccount};
-use xpx_chain_sdk::api::SiriusClient;
+use xpx_chain_sdk::api::{Client, Endpoint};
 use xpx_chain_sdk::namespace::NamespaceId;
 
 #[tokio::main]
 async fn main() {
-    let node_url = vec!["https://api-2.testnet2.xpxsirius.io:443"];
+    let ep1 = Endpoint::from_shared("http://api-2.testnet2.xpxsirius.io:3000").unwrap();
+    let ep2 = Endpoint::from_shared("http://api-3.testnet2.xpxsirius.io:3000").unwrap();
 
-    let sirius_client = SiriusClient::new_from_urls(&node_url).await;
-    let client = match sirius_client {
-        Ok(resp) => resp,
-        Err(err) => panic!("{}", err),
-    };
+    let endpoints = [ep1, ep2];
+
+    let client = Client::balance_list(endpoints.into_iter());
 
     let namespace_api = client.namespace_api();
 

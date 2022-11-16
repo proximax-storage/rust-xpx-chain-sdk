@@ -6,7 +6,7 @@
 
 use std::fmt;
 
-use crate::account::{Address, PublicAccount};
+use crate::account::PublicAccount;
 
 /// `MosaicRichList` structure describes mosaic properties.
 ///

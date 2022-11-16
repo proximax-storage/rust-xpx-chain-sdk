@@ -1,23 +1,24 @@
-use super::node::Endpoint;
-use tokio::io::{AsyncRead, AsyncWrite};
+use std::{fmt, io};
+use std::task::{Context, Poll};
+
 use http::Uri;
 use hyper::client::conn::Builder;
 use hyper::client::connect::Connection as HyperConnection;
 use hyper::client::service::Connect as HyperConnect;
-use std::{fmt, io};
-use std::task::{Context, Poll};
-use anyhow::anyhow;
+use tokio::io::{AsyncRead, AsyncWrite};
+use tower::{Layer, Service, ServiceBuilder, ServiceExt};
 use tower::limit::{ConcurrencyLimitLayer, RateLimitLayer};
 use tower::load::Load;
-use tower::util::{BoxCloneService, BoxService};
-use tower::{Layer, Service, ServiceBuilder, ServiceExt};
-use tower::timeout::{Timeout, TimeoutLayer};
+use tower::timeout::TimeoutLayer;
+use tower::util::BoxService;
+
 use super::body::BoxBody;
+use super::node::Endpoint;
 // use crate::body::BoxBody;
 use super::reconnect::Reconnect;
 
 pub(crate) type BoxFuture<T, E> =
-    std::pin::Pin<Box<dyn std::future::Future<Output = Result<T, E>> + Send + 'static>>;
+std::pin::Pin<Box<dyn std::future::Future<Output=Result<T, E>> + Send + 'static>>;
 
 pub(crate) type Request = http::Request<BoxBody>;
 pub(crate) type Response = http::Response<hyper::Body>;
@@ -38,13 +39,13 @@ pub struct Connection {
 
 impl Connection {
     fn new<C>(connector: C, endpoint: Endpoint, is_lazy: bool) -> Self
-    where
-        C: Service<Uri> + Send + 'static,
-        C::Error: Into<Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+        where
+            C: Service<Uri> + Send + 'static,
+            C::Error: Into<Error> + Send,
+            C::Future: Unpin + Send,
+            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
-        let mut settings = Builder::new()
+        let settings = Builder::new()
             .http2_only(false)
             .executor(endpoint.executor.clone())
             .clone();
@@ -68,21 +69,21 @@ impl Connection {
     }
 
     pub(crate) async fn connect<C>(connector: C, endpoint: Endpoint) -> Result<Self, Error>
-    where
-        C: Service<Uri> + Send + 'static,
-        C::Error: Into<Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+        where
+            C: Service<Uri> + Send + 'static,
+            C::Error: Into<Error> + Send,
+            C::Future: Unpin + Send,
+            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
         Self::new(connector, endpoint, false).ready_oneshot().await
     }
 
     pub(crate) fn lazy<C>(connector: C, endpoint: Endpoint) -> Self
-    where
-        C: Service<Uri> + Send + 'static,
-        C::Error: Into<Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+        where
+            C: Service<Uri> + Send + 'static,
+            C::Error: Into<Error> + Send,
+            C::Future: Unpin + Send,
+            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
         Self::new(connector, endpoint, true)
     }

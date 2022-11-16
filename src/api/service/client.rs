@@ -1,52 +1,49 @@
-use std::fmt;
-use super::body::BoxBody;
-use super::connection::{Connection, Error};
-use bytes::Bytes;
-use futures_util::future::BoxFuture;
-use futures_util::{future, stream, Stream};
-use http::uri::InvalidUri;
-use http::{Request, Response, Uri};
-use hyper::client::connect::Connection as HyperConnection;
-use hyper::rt::Executor;
 use std::future::Future;
 use std::hash::Hash;
 use std::pin::Pin;
-use std::rc::Rc;
 use std::sync::Arc;
 use std::task::{Context, Poll};
 use std::time::Duration;
+
+use bytes::Bytes;
+use futures_util::future::BoxFuture;
+use http::{Request, Response, Uri};
+use http::uri::InvalidUri;
+use hyper::client::connect::Connection as HyperConnection;
+use hyper::rt::Executor;
 use tokio::io::{AsyncRead, AsyncWrite};
 use tokio::sync::mpsc::{channel, Sender};
-
-use super::discover::DynamicServiceStream;
-use super::executor::SharedExec;
-use super::node::Endpoint;
-use crate::api::connection;
-use crate::api::routes::{chain_routes_api::ChainRoutes};
+use tower::{
+    BoxError,
+    buffer::Buffer,
+    discover::{Change, Discover},
+    Service, util::{BoxService, Either},
+};
 use tower::balance::p2c::Balance;
 use tower::buffer::future::ResponseFuture;
 use tower::limit::ConcurrencyLimit;
 use tower::load::{CompleteOnResponse, PeakEwmaDiscover};
-use tower::util::{CallAll, Oneshot};
-use tower::{
-    buffer::{self, Buffer},
-    discover::{Change, Discover},
-    util::{BoxService, Either},
-    BoxError, Service, ServiceExt,
-};
+
+use crate::api::connection;
 use crate::api::routes::account_routes_api::AccountRoutes;
-use crate::api::routes::exchange_routes_api::ExchangeRoutes;
+use crate::api::routes::chain_routes_api::ChainRoutes;
+// use crate::api::routes::exchange_routes_api::ExchangeRoutes;
 use crate::api::routes::mosaic_routes_api::MosaicRoutes;
-use crate::api::routes::namespace_routes_api::NamespaceRoutes;
+// use crate::api::routes::namespace_routes_api::NamespaceRoutes;
 use crate::api::routes::network_routes_api::NetworkRoutes;
 use crate::api::routes::node_routes_api::NodeRoutes;
-use crate::api::routes::resolver_routes_api::ResolverRoutes;
+// use crate::api::routes::resolver_routes_api::ResolverRoutes;
 use crate::api::routes::transaction_routes_api::TransactionRoutes;
 use crate::blockchain::BlockInfo;
 
-use crate::network::NetworkType;
-use crate::TransactionHash;
+use super::body::BoxBody;
+use super::connection::{Connection, Error};
+use super::discover::DynamicServiceStream;
+use super::executor::SharedExec;
+use super::node::Endpoint;
 
+// use crate::network::NetworkType;
+// use crate::TransactionHash;
 
 type Svc = Either<Connection, BoxService<Request<BoxBody>, Response<hyper::Body>, Error>>;
 // type Svc = BoxService<Request<BoxBody>, Response<hyper::Body>, Error>;
@@ -123,7 +120,7 @@ impl Client {
     ///
     /// This creates a [`Channel`] that will load balance across all the
     /// provided endpoints.
-    pub fn balance_list(list: impl Iterator<Item = Endpoint>) -> Self {
+    pub fn balance_list(list: impl Iterator<Item=Endpoint>) -> Self {
         let (channel, tx) = Self::balance_channel(DEFAULT_BUFFER_SIZE);
         list.for_each(|endpoint| {
             tx.try_send(Change::Insert(endpoint.uri.clone(), endpoint))
@@ -137,8 +134,8 @@ impl Client {
     ///
     /// This creates a [`Channel`] that will listen to a stream of change events and will add or remove provided endpoints.
     pub fn balance_channel<K>(capacity: usize) -> (Self, Sender<Change<K, Endpoint>>)
-    where
-        K: Hash + Eq + Send + Clone + 'static,
+        where
+            K: Hash + Eq + Send + Clone + 'static,
     {
         Self::balance_channel_with_executor(capacity, SharedExec::tokio())
     }
@@ -152,20 +149,20 @@ impl Client {
         capacity: usize,
         executor: E,
     ) -> (Self, Sender<Change<K, Endpoint>>)
-    where
-        K: Hash + Eq + Send + Clone + 'static,
-        E: Executor<Pin<Box<dyn Future<Output = ()> + Send>>> + Send + Sync + 'static,
+        where
+            K: Hash + Eq + Send + Clone + 'static,
+            E: Executor<Pin<Box<dyn Future<Output=()> + Send>>> + Send + Sync + 'static,
     {
         let (tx, rx) = channel(capacity);
         let list = DynamicServiceStream::new(rx);
         (Self::balance(list, DEFAULT_BUFFER_SIZE, executor), tx)
     }
     pub(crate) fn balance<D, E>(discover: D, buffer_size: usize, executor: E) -> Self
-    where
-        D: Discover<Service = Connection> + Unpin + Send + 'static,
-        D::Error: Into<Error>,
-        D::Key: Hash + Send + Clone,
-        E: Executor<BoxFuture<'static, ()>> + Send + Sync + 'static,
+        where
+            D: Discover<Service=Connection> + Unpin + Send + 'static,
+            D::Error: Into<Error>,
+            D::Key: Hash + Send + Clone,
+            E: Executor<BoxFuture<'static, ()>> + Send + Sync + 'static,
     {
         let discover = PeakEwmaDiscover::new(
             discover,
@@ -203,11 +200,11 @@ impl Client {
     // }
 
     pub(crate) async fn connect<C>(connector: C, endpoint: Endpoint) -> Result<Self, Error>
-    where
-        C: Service<Uri> + Send + 'static,
-        C::Error: Into<Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+        where
+            C: Service<Uri> + Send + 'static,
+            C::Error: Into<Error> + Send,
+            C::Future: Unpin + Send,
+            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
         let buffer_size = endpoint.buffer_size.unwrap_or(DEFAULT_BUFFER_SIZE);
         let executor = endpoint.executor.clone();

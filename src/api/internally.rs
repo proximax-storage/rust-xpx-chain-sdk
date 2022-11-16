@@ -17,7 +17,7 @@ use crate::{
     multisig::CosignatoryModification, network::NetworkType,
     transaction::TransactionType as Entity,
 };
-use crate::api::{AccountPropertiesTransactionInfoDto, AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto, AggregateTransactionInfoDto, ApiClient, ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto, NamespaceMetadataTransactionInfoDto, Pagination, QueryParam, RegisterNamespaceTransactionInfoDto, RemoveExchangeOfferTransactionInfoDto, request as __internal_request, Svc, TransferTransactionInfoDto};
+use crate::api::{AccountPropertiesTransactionInfoDto, AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto, AggregateTransactionInfoDto, ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto, Pagination, QueryParam, RegisterNamespaceTransactionInfoDto, RemoveExchangeOfferTransactionInfoDto, request as __internal_request, Svc, TransferTransactionInfoDto};
 use crate::api::body::BoxBody;
 use crate::transaction::{Transaction, TransactionGroupType, Transactions, TransactionSearch};
 
@@ -60,7 +60,6 @@ pub(crate) fn value_to_transaction_search(
         transactions,
         pagination,
     })
-
 }
 
 pub(crate) fn value_to_transaction(body_value: Value) -> api::error::Result<Transactions> {
@@ -108,6 +107,7 @@ pub(crate) fn map_transaction_dto_new(body: Bytes) -> Result<Box<dyn Transaction
     let value_dto: Value = serde_json::from_slice(&body)?;
 
     let entity_type: Entity = (value_dto["transaction"]["type"].as_u64().unwrap() as u16).into();
+    println!("{entity_type}");
 
     let entity_dto = match entity_type {
         Entity::Transfer => ser_callback::<TransferTransactionInfoDto>(value_dto),
@@ -296,7 +296,7 @@ pub(crate) fn metadata_dto_vec_to_struct(
 }
 
 pub(crate) async fn __internal_get_transactions(
-    client:Buffer<Svc, Request<BoxBody>>,
+    client: Buffer<Svc, Request<BoxBody>>,
     route: &str,
     query_params: Vec<QueryParam>,
 ) -> api::error::Result<TransactionSearch> {

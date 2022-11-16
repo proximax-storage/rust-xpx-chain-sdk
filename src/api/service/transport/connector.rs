@@ -1,13 +1,16 @@
-use http::Uri;
 use std::fmt;
 use std::task::{Context, Poll};
+
+use http::Uri;
 use tower::make::MakeConnection;
 use tower::Service;
+
 use crate::api::connection::Error;
+
 use super::io::BoxedIo;
 
 type BoxFuture<T, E> =
-    std::pin::Pin<Box<dyn std::future::Future<Output = Result<T, E>> + Send + 'static>>;
+std::pin::Pin<Box<dyn std::future::Future<Output=Result<T, E>> + Send + 'static>>;
 
 #[cfg(not(feature = "tls"))]
 pub(crate) fn connector<C>(inner: C) -> Connector<C> {
@@ -57,11 +60,11 @@ impl<C> Connector<C> {
 }
 
 impl<C> Service<Uri> for Connector<C>
-where
-    C: MakeConnection<Uri>,
-    C::Connection: Unpin + Send + 'static,
-    C::Future: Send + 'static,
-    Error: From<C::Error> + Send + 'static,
+    where
+        C: MakeConnection<Uri>,
+        C::Connection: Unpin + Send + 'static,
+        C::Future: Send + 'static,
+        Error: From<C::Error> + Send + 'static,
 {
     type Response = BoxedIo;
     type Error = Error;
@@ -73,13 +76,13 @@ where
 
     fn call(&mut self, uri: Uri) -> Self::Future {
         #[cfg(all(feature = "tls", not(feature = "tls-roots-common")))]
-        let tls = self.tls.clone();
+            let tls = self.tls.clone();
 
         #[cfg(feature = "tls-roots-common")]
-        let tls = self.tls_or_default(uri.scheme_str(), uri.host());
+            let tls = self.tls_or_default(uri.scheme_str(), uri.host());
 
         #[cfg(feature = "tls")]
-        let is_https = uri.scheme_str() == Some("https");
+            let is_https = uri.scheme_str() == Some("https");
         let connect = self.inner.make_connection(uri);
 
         Box::pin(async move {

@@ -25,17 +25,17 @@ async fn main() {
         Err(err) => eprintln!("Exception when calling node_api->get_node_info: {}\n", err),
     }
 
-    // Get the node time.
-    let node_time = node_api.get_node_time().await;
-    match node_time {
-        Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("Exception when calling node_api->get_node_time: {}\n", err),
-    }
-
-    // Get the node time.
-    let node_peers = node_api.get_node_peers().await;
-    match node_peers {
-        Ok(resp) => println!("{:?}", resp),
-        Err(err) => eprintln!("Exception when calling node_api->get_node_peers: {}\n", err),
-    }
+    // // Get the node time.
+    // let node_time = node_api.get_node_time().await;
+    // match node_time {
+    //     Ok(resp) => println!("{}", resp),
+    //     Err(err) => eprintln!("Exception when calling node_api->get_node_time: {}\n", err),
+    // }
+    //
+    // // Get the node time.
+    // let node_peers = node_api.get_node_peers().await;
+    // match node_peers {
+    //     Ok(resp) => println!("{:?}", resp),
+    //     Err(err) => eprintln!("Exception when calling node_api->get_node_peers: {}\n", err),
+    // }
 }

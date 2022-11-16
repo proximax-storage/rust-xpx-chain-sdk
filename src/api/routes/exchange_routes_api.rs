@@ -6,11 +6,12 @@
 
 use http::Request;
 use tower::buffer::Buffer;
-use {::std::sync::Arc, reqwest::Method};
+
+use reqwest::Method;
 
 use crate::{
     account::PublicAccount,
-    api::{ExchangeInfoDto, OfferInfoDTOs, request as __internal_request, sirius_client::ApiClient},
+    api::{ExchangeInfoDto, OfferInfoDTOs, request as __internal_request},
     api::error::Result,
     exchange::{OfferInfos, OfferType, UserExchangeInfo},
     mosaic::{AssetIdType, UnresolvedMosaicId}, network::NetworkType,

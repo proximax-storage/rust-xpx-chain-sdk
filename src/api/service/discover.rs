@@ -3,13 +3,15 @@ use std::{
     pin::Pin,
     task::{Context, Poll},
 };
+
 use tokio::sync::mpsc::Receiver;
+use tokio_stream::Stream;
+use tower::discover::Change;
+
+use crate::api::transport;
 
 use super::connection::{Connection, Error};
 use super::node::Endpoint;
-use tokio_stream::Stream;
-use tower::discover::Change;
-use crate::api::transport;
 
 type DiscoverResult<K, S, E> = Result<Change<K, S>, E>;
 
@@ -37,10 +39,10 @@ impl<K: Hash + Eq + Clone> Stream for DynamicServiceStream<K> {
                     http.set_keepalive(endpoint.tcp_keepalive);
                     http.enforce_http(false);
                     #[cfg(feature = "tls")]
-                    let connector = service::connector(http, endpoint.tls.clone());
+                        let connector = service::connector(http, endpoint.tls.clone());
 
                     #[cfg(not(feature = "tls"))]
-                    let connector = transport::connector(http);
+                        let connector = transport::connector(http);
                     let connection = Connection::lazy(connector, endpoint);
                     let change = Ok(Change::Insert(k, connection));
                     Poll::Ready(Some(change))

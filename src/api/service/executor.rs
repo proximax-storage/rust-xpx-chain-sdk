@@ -1,6 +1,6 @@
 use std::{future::Future, sync::Arc};
-use futures_util::future::BoxFuture;
 
+use futures_util::future::BoxFuture;
 pub(crate) use hyper::rt::Executor;
 
 #[derive(Copy, Clone)]

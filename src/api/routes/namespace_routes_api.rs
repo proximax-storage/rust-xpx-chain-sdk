@@ -4,13 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
-use futures_util::TryStreamExt;
 use http::Request;
-use serde_json::{json, Value};
 use tower::buffer::Buffer;
 
 use {
-    ::std::{future::Future, pin::Pin, sync::Arc},
+    ::std::{future::Future, pin::Pin},
     reqwest::Method,
 };
 
@@ -18,7 +16,7 @@ use crate::{
     account::{AccountsId, Address},
     api::{
         error::Result, internally::valid_vec_len, NamespaceInfoDto,
-        NamespaceNameDto, request as __internal_request, sirius_client::ApiClient,
+        NamespaceNameDto, request as __internal_request,
     },
     errors_const::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
     mosaic::UnresolvedMosaicId,

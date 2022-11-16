@@ -6,10 +6,11 @@
 
 use http::Request;
 use tower::buffer::Buffer;
-use {::std::sync::Arc, reqwest::Method};
+
+use reqwest::Method;
 
 use crate::{
-    api::{error::Result, NodeTimeDto, request as __internal_request, sirius_client::ApiClient},
+    api::{error::Result, NodeTimeDto, request as __internal_request},
     node::{NodeInfo, NodeTime},
 };
 use crate::api::body::BoxBody;

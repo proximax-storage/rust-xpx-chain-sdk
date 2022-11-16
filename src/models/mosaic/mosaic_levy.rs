@@ -7,7 +7,6 @@
 use std::fmt;
 
 use crate::account::Address;
-use crate::mosaic::MosaicRichList;
 
 use super::{MosaicId, MosaicLevyType};
 

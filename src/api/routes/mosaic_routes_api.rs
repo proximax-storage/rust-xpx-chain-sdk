@@ -6,12 +6,13 @@
 
 use http::Request;
 use tower::buffer::Buffer;
-use {::std::sync::Arc, reqwest::Method};
+
+use reqwest::Method;
 
 use crate::{
     api::{
         error::Result, internally::valid_vec_len, MosaicInfoDto,
-        MosaicNamesDto, request as __internal_request, sirius_client::ApiClient,
+        MosaicNamesDto, request as __internal_request,
     },
     errors_const::ERR_EMPTY_MOSAIC_IDS,
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},

@@ -5,7 +5,6 @@
  */
 
 use crate::network::NetworkType;
-use crate::node::NodeTime;
 
 #[derive(Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct NetworkInfo {

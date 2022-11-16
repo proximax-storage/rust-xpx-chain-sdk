@@ -4,26 +4,23 @@
  * license that can be found in the LICENSE file.
  */
 
-use bytes::Bytes;
 use http::Request;
-use http_body::Body;
+use tower::ServiceExt;
 use tower::buffer::Buffer;
-use tower::{Service, ServiceExt};
+
 use {
-    ::std::{collections::HashMap, sync::Arc},
+    ::std::collections::HashMap,
     reqwest::{
-        header::{HeaderMap, CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT},
-        Method, StatusCode, Url,
+        header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT},
+        Method, StatusCode,
     },
     serde_json,
 };
 
 use crate::api;
-use crate::api::body::{boxed_body, empty_body, BoxBody};
-use crate::api::error::{Error, SiriusError};
 use crate::api::{QueryParam, Svc};
-
-use super::sirius_client::ApiClient;
+use crate::api::body::{BoxBody, boxed_body};
+use crate::api::error::{Error, SiriusError};
 
 #[derive(Clone)]
 pub(crate) struct ApiRequest {
@@ -65,13 +62,12 @@ impl ApiRequest {
     }
 
     pub async fn execute<U>(self, api: Buffer<Svc, Request<BoxBody>>) -> api::error::Result<U>
-    where
-        for<'de> U: serde::Deserialize<'de>,
+        where
+                for<'de> U: serde::Deserialize<'de>,
     {
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.
         let mut raw_headers = HashMap::new();
-        let headers: HeaderMap = HeaderMap::new();
 
         let mut path = self.path;
 
@@ -85,8 +81,6 @@ impl ApiRequest {
         });
 
         let uri_str = format!("{}", path);
-        println!("{uri_str}");
-        // let uri_str = format!("{}{}", api.base_path, path);
 
         // let mut url = Url::parse(&uri_str)
         //     .map_err(|e| format!("could not parse url: {:?}", e))
@@ -131,7 +125,7 @@ impl ApiRequest {
 
         let mut req = if let Some(body) = self.serialized_body {
             let mut req = Request::builder().uri(uri_str.as_str()).method(self.method.clone())
-            .body(boxed_body(body.clone())).unwrap();
+                .body(boxed_body(body.clone())).unwrap();
             req.headers_mut().insert(
                 CONTENT_TYPE,
                 "application/json"

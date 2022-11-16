@@ -12,14 +12,13 @@ use tower::buffer::Buffer;
 use {
     ::std::{
         fmt::{Debug, Display},
-        sync::Arc,
     },
     reqwest::Method,
 };
 
 use crate::{
     api::{
-        error::Result, internally::valid_vec_len, sirius_client::ApiClient, TransactionStatusDto,
+        error::Result, internally::valid_vec_len, TransactionStatusDto,
     },
     errors_const::ERR_EMPTY_TRANSACTION_HASHES,
     transaction::{
@@ -160,7 +159,7 @@ impl TransactionRoutes {
     /// given vector of transaction hashes or whose error value is an `Error<Value>` describing the
     /// error that occurred.
     pub async fn get_transactions_statuses(
-        self,
+        &self,
         hashes: Vec<TransactionHash>,
     ) -> Result<TransactionsStatus> {
         valid_vec_len(hashes.as_ref(), ERR_EMPTY_TRANSACTION_HASHES)?;

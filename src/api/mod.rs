@@ -9,8 +9,8 @@ pub(crate) use self::internally::*;
 pub use self::page_query_params::*;
 pub use self::pagination::*;
 pub use self::query_params::*;
-pub use self::transaction_query_params::*;
 pub use self::service::*;
+pub use self::transaction_query_params::*;
 
 mod dtos;
 pub mod error;

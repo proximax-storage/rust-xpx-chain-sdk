@@ -4,13 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
-use ::std::sync::Arc;
 use http::Request;
 use tower::buffer::Buffer;
 
 use crate::{
     api::{
-        ApiClient,
         error::{Error, Result}, valid_vec_len,
     },
     errors_const::{ERR_INVALID_ASSET_ID, ERR_INVALID_NAMESPACE_ALIASED},

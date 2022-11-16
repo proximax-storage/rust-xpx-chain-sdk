@@ -1,13 +1,15 @@
-use super::client::Client;
-use super::connection::Error;
-use super::executor::SharedExec;
+use std::fmt;
+use std::time::Duration;
+
 use anyhow::anyhow;
 use bytes::Bytes;
 use http::{HeaderValue, Uri};
-use std::fmt;
-use std::str::FromStr;
-use std::time::Duration;
+
 use crate::api::transport;
+
+use super::client::Client;
+use super::connection::Error;
+use super::executor::SharedExec;
 
 /// Channel builder.
 ///
@@ -157,10 +159,10 @@ impl Endpoint {
         http.set_keepalive(self.tcp_keepalive);
 
         #[cfg(feature = "tls")]
-        let connector = service::connector(http, self.tls.clone());
+            let connector = service::connector(http, self.tls.clone());
 
         #[cfg(not(feature = "tls"))]
-        let connector = transport::connector(http);
+            let connector = transport::connector(http);
 
         if let Some(connect_timeout) = self.connect_timeout {
             let mut connector = hyper_timeout::TimeoutConnector::new(connector);
