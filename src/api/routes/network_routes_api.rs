@@ -4,29 +4,33 @@
  * license that can be found in the LICENSE file.
  */
 
+use http::Request;
+use tower::buffer::Buffer;
 use {::std::sync::Arc, reqwest::Method};
 
 use crate::{
     api::{error::Result, request as __internal_request, sirius_client::ApiClient},
     node::{NodeInfo, NodeTime},
 };
+use crate::api::body::BoxBody;
 use crate::api::routes::const_routes::NETWORK_INFO;
+use crate::api::Svc;
 use crate::network::NetworkInfo;
 
 /// Network ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NetworkRoutes(Arc<ApiClient>);
+pub struct NetworkRoutes(Buffer<Svc, Request<BoxBody>>);
 
 /// Network related endpoints.
 ///
 impl NetworkRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
+    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
         NetworkRoutes(client)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+        self.0.clone()
     }
 
     /// Get the current network type of the chain.
@@ -56,7 +60,7 @@ impl NetworkRoutes {
     /// Returns a Future `Result` whose okay value is an `NetworkInfo` or
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_network_type(&self) -> Result<NetworkInfo> {
-        let req = __internal_request::Request::new(Method::GET, NETWORK_INFO.to_string());
+        let req = __internal_request::ApiRequest::new(Method::GET, NETWORK_INFO.to_string());
 
         req.execute(self.__client()).await
     }

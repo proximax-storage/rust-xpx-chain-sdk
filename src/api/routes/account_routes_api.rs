@@ -5,6 +5,7 @@
  */
 
 use serde_json::json;
+use tower::buffer::Buffer;
 
 use {
     ::std::{collections::HashMap, sync::Arc},
@@ -22,7 +23,8 @@ use crate::{
     errors_const::ERR_EMPTY_ADDRESSES_IDS,
     multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
 };
-use crate::api::{__internal_get_transactions, QueryParam, TransactionQueryParams};
+use crate::api::{__internal_get_transactions, QueryParam, Svc, TransactionQueryParams};
+use crate::api::body::BoxBody;
 use crate::api::routes::const_routes::{
     AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
 };
@@ -32,22 +34,24 @@ use super::{
     ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE, ACCOUNT_ROUTE, ACCOUNTS_PROPERTIES_ROUTE,
     ACCOUNTS_ROUTE, MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE,
 };
+use http::Request;
 
 /// Account ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct AccountRoutes(Arc<ApiClient>);
+pub struct AccountRoutes(Buffer<Svc, Request<BoxBody>>);
 
 /// Account related endpoints.
 ///
 impl AccountRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
+    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
         AccountRoutes(client)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+        self.0.clone()
     }
+
 
     /// Get `Account` information
     ///
@@ -83,7 +87,7 @@ impl AccountRoutes {
     pub async fn account_info(&self, account_id: &str) -> Result<AccountInfo> {
         let id = str_to_account_id(account_id)?;
 
-        let mut req = __internal_request::Request::new(Method::GET, ACCOUNT_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::GET, ACCOUNT_ROUTE.to_string());
 
         req = req.with_path_param("address_id".to_string(), id);
 
@@ -133,7 +137,7 @@ impl AccountRoutes {
 
         let accounts = AccountsId::from(accounts_id);
 
-        let mut req = __internal_request::Request::new(Method::POST, ACCOUNTS_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::POST, ACCOUNTS_ROUTE.to_string());
 
         req = req.with_body_param(&accounts);
 
@@ -189,7 +193,7 @@ impl AccountRoutes {
         let accounts = AccountsId::from(accounts_id);
 
         let mut req =
-            __internal_request::Request::new(Method::POST, ACCOUNT_NAMES_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::POST, ACCOUNT_NAMES_ROUTE.to_string());
 
         req = req.with_body_param(&accounts);
 
@@ -238,7 +242,7 @@ impl AccountRoutes {
         let id = str_to_account_id(account_id)?;
 
         let mut req =
-            __internal_request::Request::new(Method::GET, MULTISIG_ACCOUNT_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::GET, MULTISIG_ACCOUNT_ROUTE.to_string());
 
         req = req.with_path_param("address_id".to_string(), id);
 
@@ -284,7 +288,7 @@ impl AccountRoutes {
     ) -> Result<MultisigAccountGraphInfo> {
         let id = str_to_account_id(account_id)?;
 
-        let mut req = __internal_request::Request::new(
+        let mut req = __internal_request::ApiRequest::new(
             Method::GET,
             MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE.to_string(),
         );
@@ -337,7 +341,7 @@ impl AccountRoutes {
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn account_properties(&self, address: Address) -> Result<AccountProperties> {
         let mut req =
-            __internal_request::Request::new(Method::GET, ACCOUNT_PROPERTIES_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::GET, ACCOUNT_PROPERTIES_ROUTE.to_string());
 
         req = req.with_path_param("address_id".to_string(), address.address_str());
 
@@ -399,7 +403,7 @@ impl AccountRoutes {
         );
 
         let mut req =
-            __internal_request::Request::new(Method::POST, ACCOUNTS_PROPERTIES_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::POST, ACCOUNTS_PROPERTIES_ROUTE.to_string());
 
         req = req.with_body_param(&accounts);
 

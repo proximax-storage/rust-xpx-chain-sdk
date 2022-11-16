@@ -5,7 +5,9 @@
  */
 
 use futures_util::TryStreamExt;
+use http::Request;
 use serde_json::{json, Value};
+use tower::buffer::Buffer;
 
 use {
     ::std::{future::Future, pin::Pin, sync::Arc},
@@ -23,7 +25,8 @@ use crate::{
     namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
     network::NetworkType,
 };
-use crate::api::{QueryParam, QueryParams};
+use crate::api::{QueryParam, QueryParams, Svc};
+use crate::api::body::BoxBody;
 use crate::api::error::Error;
 
 use super::{
@@ -34,17 +37,17 @@ use super::{
 /// Namespace ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NamespaceRoutes(Arc<ApiClient>, NetworkType);
+pub struct NamespaceRoutes(Buffer<Svc, Request<BoxBody>>, NetworkType);
 
 /// Namespace related endpoints.
 ///
 impl NamespaceRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>, network_time: NetworkType) -> Self {
+    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>, network_time: NetworkType) -> Self {
         NamespaceRoutes(client, network_time)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+        self.0.clone()
     }
 
     fn __network_type(&self) -> NetworkType {
@@ -93,7 +96,7 @@ impl NamespaceRoutes {
     }
 
     pub async fn get_namespace_info(&self, namespace_id: NamespaceId) -> Result<NamespaceInfo> {
-        let mut req = __internal_request::Request::new(Method::GET, NAMESPACE_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::GET, NAMESPACE_ROUTE.to_string());
 
         req = req.with_path_param("namespaceId".to_string(), namespace_id.to_string());
 
@@ -114,7 +117,7 @@ impl NamespaceRoutes {
 
         let namespace_ids_ = NamespaceIds::from(namespace_ids);
         let mut req =
-            __internal_request::Request::new(Method::POST, NAMESPACE_NAMES_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::POST, NAMESPACE_NAMES_ROUTE.to_string());
 
         req = req.with_body_param(namespace_ids_);
 
@@ -136,7 +139,7 @@ impl NamespaceRoutes {
         address: Address,
         query_params: Option<QueryParams>,
     ) -> Result<Vec<NamespaceInfo>> {
-        let mut req = __internal_request::Request::new(
+        let mut req = __internal_request::ApiRequest::new(
             Method::GET,
             NAMESPACES_FROM_ACCOUNT_ROUTES.to_string(),
         );
@@ -181,7 +184,7 @@ impl NamespaceRoutes {
                 .collect::<Vec<_>>(),
         );
 
-        let mut req = __internal_request::Request::new(
+        let mut req = __internal_request::ApiRequest::new(
             Method::POST,
             NAMESPACES_FROM_ACCOUNTS_ROUTE.to_string(),
         );

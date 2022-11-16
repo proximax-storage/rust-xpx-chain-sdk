@@ -5,8 +5,8 @@
  */
 
 use crate::account::{Address, PublicAccount};
-use crate::api::{MosaicDto, Uint64Dto};
-use crate::mosaic::{Mosaic, MosaicId, MosaicRichList};
+use crate::api::{Uint64Dto};
+use crate::mosaic::{ MosaicRichList};
 
 #[derive(Clone, Serialize, Deserialize)]
 pub(crate) struct MosaicRichListDTO {

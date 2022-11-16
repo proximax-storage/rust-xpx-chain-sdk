@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+use http::Request;
+use tower::buffer::Buffer;
 use {::std::sync::Arc, reqwest::Method};
 
 use crate::{
@@ -14,7 +16,8 @@ use crate::{
     errors_const::ERR_EMPTY_MOSAIC_IDS,
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},
 };
-use crate::api::{MosaicLevyDTO, MosaicRichListDTO, PageQueryParams};
+use crate::api::{MosaicLevyDTO, MosaicRichListDTO, PageQueryParams, Svc};
+use crate::api::body::BoxBody;
 use crate::api::routes::const_routes::{MOSAIC_LEVY_ROUTE, MOSAIC_RICH_LIST_ROUTE};
 use crate::mosaic::{MosaicLevy, MosaicRichList, UnresolvedMosaicId};
 
@@ -23,17 +26,17 @@ use super::{MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE, MOSAICS_ROUTE};
 /// Mosaic ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct MosaicRoutes(Arc<ApiClient>);
+pub struct MosaicRoutes(Buffer<Svc, Request<BoxBody>>);
 
 /// Mosaic related endpoints.
 ///
 impl MosaicRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
+    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
         MosaicRoutes(client)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+        self.0.clone()
     }
 
     /// Get [Mosaic] information.
@@ -71,7 +74,7 @@ impl MosaicRoutes {
     /// Returns a Future `Result` whose okay value is an [MosaicInfo] or
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_mosaic_info(&self, mosaic_id: MosaicId) -> Result<MosaicInfo> {
-        let mut req = __internal_request::Request::new(Method::GET, MOSAIC_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::GET, MOSAIC_ROUTE.to_string());
 
         req = req.with_path_param("mosaic_id".to_string(), mosaic_id.to_string());
 
@@ -123,7 +126,7 @@ impl MosaicRoutes {
         valid_vec_len(&mosaic_ids, ERR_EMPTY_MOSAIC_IDS)?;
 
         let mosaics_ids = MosaicIds::from(mosaic_ids);
-        let mut req = __internal_request::Request::new(Method::POST, MOSAICS_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::POST, MOSAICS_ROUTE.to_string());
 
         req = req.with_body_param(mosaics_ids);
 
@@ -180,7 +183,7 @@ impl MosaicRoutes {
         let mosaics_ids = MosaicIds::from(mosaic_ids);
 
         let mut req =
-            __internal_request::Request::new(Method::POST, MOSAIC_NAMES_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::POST, MOSAIC_NAMES_ROUTE.to_string());
 
         req = req.with_body_param(mosaics_ids);
 
@@ -200,7 +203,7 @@ impl MosaicRoutes {
         query_params: Option<PageQueryParams>,
     ) -> Result<Vec<MosaicRichList>> {
         let mut req =
-            __internal_request::Request::new(Method::GET, MOSAIC_RICH_LIST_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::GET, MOSAIC_RICH_LIST_ROUTE.to_string());
 
         req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_hex());
 
@@ -221,7 +224,7 @@ impl MosaicRoutes {
     }
 
     pub async fn get_mosaic_levy(&self, mosaic_id: MosaicId) -> Result<MosaicLevy> {
-        let mut req = __internal_request::Request::new(Method::GET, MOSAIC_LEVY_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::GET, MOSAIC_LEVY_ROUTE.to_string());
 
         req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_hex());
 

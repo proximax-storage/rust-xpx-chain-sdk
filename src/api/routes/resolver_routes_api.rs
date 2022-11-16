@@ -5,6 +5,8 @@
  */
 
 use ::std::sync::Arc;
+use http::Request;
+use tower::buffer::Buffer;
 
 use crate::{
     api::{
@@ -14,27 +16,29 @@ use crate::{
     errors_const::{ERR_INVALID_ASSET_ID, ERR_INVALID_NAMESPACE_ALIASED},
     mosaic::{AssetIdType, MosaicInfo, UnresolvedMosaicId},
 };
+use crate::api::body::BoxBody;
+use crate::api::Svc;
 
 use super::{mosaic_routes_api::MosaicRoutes, namespace_routes_api::NamespaceRoutes};
 
 /// Node ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct ResolverRoutes(Arc<ApiClient>, NamespaceRoutes, MosaicRoutes);
+pub struct ResolverRoutes(Buffer<Svc, Request<BoxBody>>, NamespaceRoutes, MosaicRoutes);
 
 /// Resolver related endpoints.
 ///
 impl ResolverRoutes {
     pub(crate) fn new(
-        client: Arc<ApiClient>,
+        client: Buffer<Svc, Request<BoxBody>>,
         namespace_routes: NamespaceRoutes,
         mosaic_routes: MosaicRoutes,
     ) -> Self {
         ResolverRoutes(client, namespace_routes, mosaic_routes)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+        self.0.clone()
     }
 
     fn __namespace_routes(self) -> NamespaceRoutes {

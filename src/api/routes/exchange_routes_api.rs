@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+use http::Request;
+use tower::buffer::Buffer;
 use {::std::sync::Arc, reqwest::Method};
 
 use crate::{
@@ -13,27 +15,29 @@ use crate::{
     exchange::{OfferInfos, OfferType, UserExchangeInfo},
     mosaic::{AssetIdType, UnresolvedMosaicId}, network::NetworkType,
 };
+use crate::api::body::BoxBody;
+use crate::api::Svc;
 
 use super::{EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE, resolver_routes_api::ResolverRoutes};
 
 /// Node ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct ExchangeRoutes(Arc<ApiClient>, NetworkType, ResolverRoutes);
+pub struct ExchangeRoutes(Buffer<Svc, Request<BoxBody>>, NetworkType, ResolverRoutes);
 
 /// Exchange related endpoints.
 ///
 impl ExchangeRoutes {
     pub(crate) fn new(
-        client: Arc<ApiClient>,
+        client: Buffer<Svc, Request<BoxBody>>,
         network_type: NetworkType,
         resolver_routes: ResolverRoutes,
     ) -> Self {
         ExchangeRoutes(client, network_type, resolver_routes)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+        self.0.clone()
     }
 
     fn __network_type(&self) -> NetworkType {
@@ -48,7 +52,7 @@ impl ExchangeRoutes {
         self,
         public_account: PublicAccount,
     ) -> Result<UserExchangeInfo> {
-        let mut req = __internal_request::Request::new(Method::GET, EXCHANGE_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::GET, EXCHANGE_ROUTE.to_string());
 
         req = req.with_path_param("account_id".to_string(), public_account.public_key_to_hex());
 
@@ -63,7 +67,7 @@ impl ExchangeRoutes {
         offer_type: OfferType,
     ) -> Result<OfferInfos> {
         let mut req =
-            __internal_request::Request::new(Method::GET, OFFERS_BY_MOSAIC_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::GET, OFFERS_BY_MOSAIC_ROUTE.to_string());
 
         let asset_id = match asset_id.get_type() {
             AssetIdType::NamespaceIdType => {

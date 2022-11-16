@@ -5,7 +5,9 @@
  */
 
 use hex::ToHex;
+use http::Request;
 use serde_json::json;
+use tower::buffer::Buffer;
 
 use {
     ::std::{
@@ -26,12 +28,10 @@ use crate::{
     },
     TransactionHash,
 };
-use crate::api::{
-    __internal_get_transaction, __internal_get_transactions_by_group_with_pagination,
-    QueryParam, TransactionQueryParams, value_to_transaction,
-};
+use crate::api::{__internal_get_transaction, __internal_get_transactions_by_group_with_pagination, QueryParam, Svc, TransactionQueryParams, value_to_transaction};
+use crate::api::body::BoxBody;
 use crate::api::error::{Error, SiriusError};
-use crate::api::request::Request;
+use crate::api::request::ApiRequest;
 use crate::api::routes::const_routes::{ANNOUNCE_TRANSACTION_ROUTE, TRANSACTIONS_BY_GROUP_ROUTE};
 use crate::transaction::{TransactionGroupType, Transactions, TransactionSearch};
 
@@ -43,17 +43,17 @@ use super::{
 /// Transaction ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct TransactionRoutes(Arc<ApiClient>);
+pub struct TransactionRoutes(Buffer<Svc, Request<BoxBody>>);
 
 /// Transaction related endpoints.
 ///
 impl TransactionRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
+    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
         TransactionRoutes(client)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+        self.0.clone()
     }
 
     /// GetAnyTransaction returns Transaction for passed transaction id or hash.
@@ -110,7 +110,7 @@ impl TransactionRoutes {
         &self,
         transaction_hash: TransactionHash,
     ) -> Result<TransactionStatus> {
-        let mut req = Request::new(Method::GET, TRANSACTION_STATUS_ROUTE.to_string());
+        let mut req = ApiRequest::new(Method::GET, TRANSACTION_STATUS_ROUTE.to_string());
 
         req = req.with_path_param("hash".to_string(), transaction_hash.encode_hex::<String>());
 
@@ -165,7 +165,7 @@ impl TransactionRoutes {
     ) -> Result<TransactionsStatus> {
         valid_vec_len(hashes.as_ref(), ERR_EMPTY_TRANSACTION_HASHES)?;
 
-        let mut req = Request::new(Method::POST, TRANSACTIONS_STATUS_ROUTE.to_string());
+        let mut req = ApiRequest::new(Method::POST, TRANSACTIONS_STATUS_ROUTE.to_string());
 
         let body_param = json!({
             "hashes": hashes,
@@ -220,7 +220,7 @@ impl TransactionRoutes {
         transaction_hash: TransactionHash,
         group: TransactionGroupType,
     ) -> Result<Box<dyn Transaction>> {
-        let mut req = Request::new(Method::GET, TRANSACTION_ROUTE.to_string());
+        let mut req = ApiRequest::new(Method::GET, TRANSACTION_ROUTE.to_string());
 
         req = req
             .with_path_param(
@@ -299,7 +299,7 @@ impl TransactionRoutes {
             "transactionIds": hashes,
         });
 
-        let mut req = Request::new(Method::POST, TRANSACTIONS_ROUTE.to_string());
+        let mut req = ApiRequest::new(Method::POST, TRANSACTIONS_ROUTE.to_string());
 
         req = req
             .with_body_param(body_param)
@@ -412,7 +412,7 @@ impl TransactionRoutes {
         where
                 for<'de> T: serde::Serialize,
     {
-        let mut req = Request::new(Method::PUT, route.to_string());
+        let mut req = ApiRequest::new(Method::PUT, route.to_string());
 
         req = req.with_body_param(tx);
 

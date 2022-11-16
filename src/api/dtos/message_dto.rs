@@ -22,7 +22,11 @@ impl MessageDto {
         if self._type == 0 {
             let plain = if !self.payload.is_empty() {
                 let b = hex_decode(&self.payload);
-                PlainMessage::create(&String::from_utf8(b).unwrap())
+                let mut raw_string = String::new();
+                for d in b.clone() {
+                    raw_string.push(char::from(d));
+                }
+                PlainMessage::create(&raw_string)
             } else {
                 PlainMessage::default()
             };

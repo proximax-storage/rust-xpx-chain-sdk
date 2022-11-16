@@ -9,8 +9,8 @@ pub(crate) use self::internally::*;
 pub use self::page_query_params::*;
 pub use self::pagination::*;
 pub use self::query_params::*;
-pub use self::sirius_client::*;
 pub use self::transaction_query_params::*;
+pub use self::service::*;
 
 mod dtos;
 pub mod error;
@@ -20,5 +20,5 @@ pub mod pagination;
 mod query_params;
 mod request;
 mod routes;
-mod sirius_client;
 mod transaction_query_params;
+mod service;

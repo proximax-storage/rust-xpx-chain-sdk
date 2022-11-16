@@ -4,11 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::sync::Arc;
-
 use anyhow::Result;
+use http::Request;
 use reqwest::Method;
 use serde::de::DeserializeOwned;
+use tower::buffer::Buffer;
 
 use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
 
@@ -17,15 +17,8 @@ use crate::{
     multisig::CosignatoryModification, network::NetworkType,
     transaction::TransactionType as Entity,
 };
-use crate::api::{
-    AccountPropertiesTransactionInfoDto, AddExchangeOfferTransactionInfoDto,
-    AddressAliasTransactionInfoDto, AggregateTransactionInfoDto,
-    ApiClient, ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto,
-    ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto,
-    MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto,
-    NamespaceMetadataTransactionInfoDto, Pagination, QueryParam,
-    RemoveExchangeOfferTransactionInfoDto, request as __internal_request, TransferTransactionInfoDto,
-};
+use crate::api::{AccountPropertiesTransactionInfoDto, AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto, AggregateTransactionInfoDto, ApiClient, ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto, NamespaceMetadataTransactionInfoDto, Pagination, QueryParam, RegisterNamespaceTransactionInfoDto, RemoveExchangeOfferTransactionInfoDto, request as __internal_request, Svc, TransferTransactionInfoDto};
+use crate::api::body::BoxBody;
 use crate::transaction::{Transaction, TransactionGroupType, Transactions, TransactionSearch};
 
 use super::{
@@ -67,6 +60,7 @@ pub(crate) fn value_to_transaction_search(
         transactions,
         pagination,
     })
+
 }
 
 pub(crate) fn value_to_transaction(body_value: Value) -> api::error::Result<Transactions> {
@@ -126,7 +120,7 @@ pub(crate) fn map_transaction_dto_new(body: Bytes) -> Result<Box<dyn Transaction
         Entity::MosaicSupplyChange => {
             ser_callback::<MosaicSupplyChangeTransactionInfoDto>(value_dto)
         }
-        Entity::RegisterNamespace => ser_callback::<NamespaceMetadataTransactionInfoDto>(value_dto),
+        Entity::RegisterNamespace => ser_callback::<RegisterNamespaceTransactionInfoDto>(value_dto),
         Entity::AddExchangeOffer => ser_callback::<AddExchangeOfferTransactionInfoDto>(value_dto),
         Entity::ExchangeOffer => ser_callback::<ExchangeOfferTransactionInfoDto>(value_dto),
         Entity::RemoveExchangeOffer => {
@@ -302,11 +296,11 @@ pub(crate) fn metadata_dto_vec_to_struct(
 }
 
 pub(crate) async fn __internal_get_transactions(
-    client: Arc<ApiClient>,
+    client:Buffer<Svc, Request<BoxBody>>,
     route: &str,
     query_params: Vec<QueryParam>,
 ) -> api::error::Result<TransactionSearch> {
-    let mut req = __internal_request::Request::new(Method::GET, route.to_string());
+    let mut req = __internal_request::ApiRequest::new(Method::GET, route.to_string());
 
     for query_param in query_params {
         req = req.with_query_param(query_param);
@@ -317,12 +311,12 @@ pub(crate) async fn __internal_get_transactions(
 }
 
 pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
-    client: Arc<ApiClient>,
+    client: Buffer<Svc, Request<BoxBody>>,
     route: &str,
     group_type: TransactionGroupType,
     query_params: Vec<QueryParam>,
 ) -> api::error::Result<TransactionSearch> {
-    let mut req = __internal_request::Request::new(Method::GET, route.to_string());
+    let mut req = __internal_request::ApiRequest::new(Method::GET, route.to_string());
 
     req = req.with_path_param("group".to_string(), group_type.to_string());
 
@@ -335,8 +329,8 @@ pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
 }
 
 pub(crate) async fn __internal_get_transaction(
-    client: Arc<ApiClient>,
-    req: __internal_request::Request,
+    client: Buffer<Svc, Request<BoxBody>>,
+    req: __internal_request::ApiRequest,
 ) -> api::error::Result<Box<dyn Transaction>> {
     let body_value: Value = req.execute(client).await?;
 

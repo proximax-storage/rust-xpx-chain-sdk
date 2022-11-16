@@ -4,7 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
+use http::Request;
 use serde_json::Value;
+use tower::buffer::Buffer;
 
 use {::std::sync::Arc, reqwest::Method};
 
@@ -15,7 +17,8 @@ use crate::{
     },
     blockchain::{BlockchainScore, HeightInfo, StorageInfo},
 };
-use crate::api::{BlockInfoDto, QueryParam, TransactionDto};
+use crate::api::{BlockInfoDto, Client, QueryParam, Svc, TransactionDto};
+use crate::api::body::BoxBody;
 use crate::api::routes::const_routes::{
     BLOCK_BY_HEIGHT_ROUTE, BLOCK_GET_TRANSACTION_ROUTE, BLOCK_INFO_ROUTE,
 };
@@ -27,17 +30,17 @@ use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
 /// Chain ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct ChainRoutes(Arc<ApiClient>);
+pub struct ChainRoutes(Buffer<Svc, Request<BoxBody>>);
 
 /// Chain related endpoints.
 ///
 impl ChainRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
+    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
         ChainRoutes(client)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+        self.0.clone()
     }
 
     /// Get the current `Height` of the chain
@@ -67,7 +70,7 @@ impl ChainRoutes {
     /// Returns a Future `Result` whose okay value is the current `Height` of the blockchain or
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_block_height(&self) -> Result<HeightInfo> {
-        let req = __internal_request::Request::new(Method::GET, CHAIN_HEIGHT_ROUTE.to_string());
+        let req = __internal_request::ApiRequest::new(Method::GET, CHAIN_HEIGHT_ROUTE.to_string());
         let dto: Result<HeightInfoDto> = req.execute(self.__client()).await;
 
         Ok(dto?.compact())
@@ -105,7 +108,7 @@ impl ChainRoutes {
     /// Returns a Future `Result` whose okay value is `BlockchainScore` or
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_block_score(&self) -> Result<BlockchainScore> {
-        let req = __internal_request::Request::new(Method::GET, CHAIN_SCORE_ROUTE.to_string());
+        let req = __internal_request::ApiRequest::new(Method::GET, CHAIN_SCORE_ROUTE.to_string());
 
         let dto: Result<BlockchainScoreDto> = req.execute(self.__client()).await;
 
@@ -139,7 +142,7 @@ impl ChainRoutes {
     /// Returns a Future `Result` whose okay value is `StorageInfo` or
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_block_storage(&self) -> Result<StorageInfo> {
-        let req = __internal_request::Request::new(Method::GET, CHAIN_STORAGE_ROUTE.to_string());
+        let req = __internal_request::ApiRequest::new(Method::GET, CHAIN_STORAGE_ROUTE.to_string());
 
         req.execute(self.__client()).await
     }
@@ -178,7 +181,7 @@ impl ChainRoutes {
         assert_ne!(height, 0, "Block height should not be zero.");
 
         let mut req =
-            __internal_request::Request::new(Method::GET, BLOCK_BY_HEIGHT_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::GET, BLOCK_BY_HEIGHT_ROUTE.to_string());
 
         req = req.with_path_param("height".to_string(), height.to_string());
 
@@ -241,7 +244,7 @@ impl ChainRoutes {
             100
         };
 
-        let mut req = __internal_request::Request::new(Method::GET, BLOCK_INFO_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::GET, BLOCK_INFO_ROUTE.to_string());
 
         req = req.with_path_param("height".to_string(), height.to_string());
 

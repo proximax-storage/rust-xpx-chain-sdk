@@ -86,6 +86,9 @@ version = "0.3"
 default-features = false
 features = ["async-await", "sink", "std"]
 
+[dependencies.pin-project]
+version = "1.0"
+
 [dependencies.url]
 version = "2.0"
 
@@ -95,12 +98,42 @@ features = ["json", 'native-tls']
 default_features = false
 
 [dependencies.tokio]
-version = "1.19"
+version = "1.21"
 features = ["rt"]
 default_features = false
 
+[dependencies.tokio-stream]
+version = "0.1"
+
+[dependencies.tower]
+version = "0.4"
+features = ["retry", "balance", "limit", "util", "timeout", "buffer"]
+
+[dependencies.http-body]
+version = "0.4"
+
+[dependencies.tracing]
+version = "0.1"
+
+[dependencies.hyper]
+version = "0.14"
+features = ["full"]
+
+[dependencies.hyper-timeout]
+version = "0.4"
+
+[dependencies.http]
+version = "0.2"
+
 [dev-dependencies]
 lazy_static = "1.4"
+tokio-test ="0.4.2"
 tokio = { version = "1.19", features = ["full"] }
 tower = { version = "0.4", features = ["full"] }
 futures = "0.3"
+
+tower-http = { version ="0.3.4", features = ["full"] }
+http = { version ="0.2.8"}
+hyper = "0.14.20"
+tracing = "0.1"
+tracing-subscriber = "0.3.16"
