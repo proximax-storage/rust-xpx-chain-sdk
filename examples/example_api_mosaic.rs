@@ -10,12 +10,16 @@ use xpx_chain_sdk::mosaic::MosaicId;
 
 #[tokio::main]
 async fn main() {
-    let ep1 = Endpoint::from_shared("http://api-2.testnet2.xpxsirius.io:3000").unwrap();
-    let ep2 = Endpoint::from_shared("http://api-3.testnet2.xpxsirius.io:3000").unwrap();
-
-    let endpoints = [ep1, ep2];
-
-    let client = Client::balance_list(endpoints.into_iter());
+    let client = match Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000")
+        .connect()
+        .await
+    {
+        Ok(client) => client,
+        Err(err) => panic!(
+            "Exception when calling endpoint connect{}\n",
+            err
+        ),
+    };
 
     let mosaic_api = client.mosaic_api();
 

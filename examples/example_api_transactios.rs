@@ -6,8 +6,8 @@ use xpx_chain_sdk::TransactionHash;
 
 #[tokio::main]
 async fn main() {
-    let ep1 = Endpoint::from_shared("http://api-2.testnet2.xpxsirius.io:3000").unwrap();
-    let ep2 = Endpoint::from_shared("http://api-3.testnet2.xpxsirius.io:3000").unwrap();
+    let ep1 = Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000");
+    let ep2 = Endpoint::from_static("http://api-2.testnet2.xpxsirius.io:3000");
 
     let endpoints = [ep1, ep2];
 

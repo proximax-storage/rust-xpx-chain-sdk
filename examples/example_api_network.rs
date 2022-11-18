@@ -9,12 +9,15 @@ use xpx_chain_sdk::api::{Client, Endpoint};
 
 #[tokio::main]
 async fn main() {
-    let ep1 = Endpoint::from_shared("http://api-2.testnet2.xpxsirius.io:3000").unwrap();
-
-    let client = ep1.connect().await;
-    let client = match client {
-        Ok(resp) => resp,
-        Err(err) => panic!("{}", err),
+    let client = match Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000")
+        .connect()
+        .await
+    {
+        Ok(client) => client,
+        Err(err) => panic!(
+            "Exception when calling endpoint connect{}\n",
+            err
+        ),
     };
 
     let network_api = client.network_api();

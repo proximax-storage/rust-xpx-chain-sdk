@@ -12,22 +12,32 @@ use tower::buffer::Buffer;
 
 use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
 
+use crate::api::body::BoxBody;
+use crate::api::channel::Svc;
+use crate::api::{
+    request as __internal_request, AccountPropertiesTransactionInfoDto,
+    AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto,
+    AggregateTransactionInfoDto, Client, ExchangeOfferTransactionInfoDto,
+    HashLockTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto,
+    MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto,
+    MosaicSupplyChangeTransactionInfoDto, Pagination, QueryParam,
+    RegisterNamespaceTransactionInfoDto, RemoveExchangeOfferTransactionInfoDto,
+    TransferTransactionInfoDto,
+};
+use crate::transaction::{Transaction, TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
     api, errors_const, helpers::is_hex, metadata::MetadataModification, mosaic::MosaicProperties,
     multisig::CosignatoryModification, network::NetworkType,
     transaction::TransactionType as Entity,
 };
-use crate::api::{AccountPropertiesTransactionInfoDto, AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto, AggregateTransactionInfoDto, ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto, Pagination, QueryParam, RegisterNamespaceTransactionInfoDto, RemoveExchangeOfferTransactionInfoDto, request as __internal_request, Svc, TransferTransactionInfoDto};
-use crate::api::body::BoxBody;
-use crate::transaction::{Transaction, TransactionGroupType, Transactions, TransactionSearch};
 
 use super::{
     CosignatoryModificationDto, MetadataModificationDto, MosaicPropertyDto, TransactionDto,
 };
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
-    where
-        T: Debug,
+where
+    T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())
@@ -296,7 +306,7 @@ pub(crate) fn metadata_dto_vec_to_struct(
 }
 
 pub(crate) async fn __internal_get_transactions(
-    client: Buffer<Svc, Request<BoxBody>>,
+    client: Client,
     route: &str,
     query_params: Vec<QueryParam>,
 ) -> api::error::Result<TransactionSearch> {
@@ -311,7 +321,7 @@ pub(crate) async fn __internal_get_transactions(
 }
 
 pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
-    client: Buffer<Svc, Request<BoxBody>>,
+    client: Client,
     route: &str,
     group_type: TransactionGroupType,
     query_params: Vec<QueryParam>,
@@ -329,7 +339,7 @@ pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
 }
 
 pub(crate) async fn __internal_get_transaction(
-    client: Buffer<Svc, Request<BoxBody>>,
+    client: Client,
     req: __internal_request::ApiRequest,
 ) -> api::error::Result<Box<dyn Transaction>> {
     let body_value: Value = req.execute(client).await?;

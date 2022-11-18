@@ -4,7 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::Request;
+use http::{Request, Response};
+use hyper::Body;
+use hyper::service::Service;
 use tower::ServiceExt;
 use tower::buffer::Buffer;
 
@@ -18,7 +20,9 @@ use {
 };
 
 use crate::api;
-use crate::api::{QueryParam, Svc};
+use crate::api::{Client, QueryParam};
+use crate::api::channel::Svc;
+
 use crate::api::body::{BoxBody, boxed_body};
 use crate::api::error::{Error, SiriusError};
 
@@ -61,7 +65,7 @@ impl ApiRequest {
         self
     }
 
-    pub async fn execute<U>(self, api: Buffer<Svc, Request<BoxBody>>) -> api::error::Result<U>
+    pub async fn execute<U>(self, mut api: Client) -> api::error::Result<U>
         where
                 for<'de> U: serde::Deserialize<'de>,
     {
@@ -149,14 +153,15 @@ impl ApiRequest {
 
         // req_headers.extend(headers);
 
-        let resp = api.clone().oneshot(req).await.unwrap();
+
+        let resp = api.oneshot(req).await?;
         // let resp = api.client.execute(req).await?;
 
         let status = resp.status();
 
         let body = resp.into_body();
 
-        let bytes = hyper::body::to_bytes(body).await.unwrap();
+        let bytes = hyper::body::to_bytes(body).await?;
 
         match status {
             StatusCode::OK | StatusCode::ACCEPTED => {

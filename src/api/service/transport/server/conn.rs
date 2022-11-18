@@ -1,15 +1,13 @@
-use std::net::SocketAddr;
-#[cfg(feature = "tls")]
-use std::sync::Arc;
-
 use hyper::server::conn::AddrStream;
+use std::net::SocketAddr;
 use tokio::net::TcpStream;
 
 #[cfg(feature = "tls")]
-use tokio_rustls::server::TlsStream;
-
-#[cfg(feature = "tls")]
 use crate::transport::Certificate;
+#[cfg(feature = "tls")]
+use std::sync::Arc;
+#[cfg(feature = "tls")]
+use tokio_rustls::server::TlsStream;
 
 /// Trait that connected IO resources implement and use to produce info about the connection.
 ///
@@ -22,7 +20,6 @@ use crate::transport::Certificate;
 /// The `ConnectInfo` returned will be accessible through [request extensions][ext]:
 ///
 /// ```
-/// use http::Request;
 /// use tonic::{Request, transport::server::Connected};
 ///
 /// // A `Stream` that yields connections
@@ -109,8 +106,8 @@ impl Connected for tokio::io::DuplexStream {
 
 #[cfg(feature = "tls")]
 impl<T> Connected for TlsStream<T>
-    where
-        T: Connected,
+where
+    T: Connected,
 {
     type ConnectInfo = TlsConnectInfo<T::ConnectInfo>;
 

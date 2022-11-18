@@ -5,7 +5,6 @@
  */
 
 use http::Request;
-use tower::buffer::Buffer;
 
 use reqwest::Method;
 
@@ -15,8 +14,7 @@ use crate::{
     },
     blockchain::{BlockchainScore, HeightInfo, StorageInfo},
 };
-use crate::api::{BlockInfoDto, Svc};
-use crate::api::body::BoxBody;
+use crate::api::{BlockInfoDto, Client};
 use crate::api::routes::const_routes::{
     BLOCK_BY_HEIGHT_ROUTE, BLOCK_GET_TRANSACTION_ROUTE, BLOCK_INFO_ROUTE,
 };
@@ -27,16 +25,16 @@ use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
 /// Chain ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct ChainRoutes(Buffer<Svc, Request<BoxBody>>);
+pub struct ChainRoutes(Client);
 
 /// Chain related endpoints.
 ///
 impl ChainRoutes {
-    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
+    pub(crate) fn new(client: Client) -> Self {
         ChainRoutes(client)
     }
 
-    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+    fn __client(&self) -> Client {
         self.0.clone()
     }
 

@@ -14,22 +14,22 @@ use crate::{
 };
 use crate::api::body::BoxBody;
 use crate::api::routes::const_routes::NETWORK_INFO;
-use crate::api::Svc;
+use crate::api::{Client};
 use crate::network::NetworkInfo;
 
 /// Network ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NetworkRoutes(Buffer<Svc, Request<BoxBody>>);
+pub struct NetworkRoutes(Client);
 
 /// Network related endpoints.
 ///
 impl NetworkRoutes {
-    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
+    pub(crate) fn new(client: Client) -> Self {
         NetworkRoutes(client)
     }
 
-    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+    fn __client(&self) -> Client {
         self.0.clone()
     }
 

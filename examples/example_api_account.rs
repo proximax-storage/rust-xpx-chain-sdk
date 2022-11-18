@@ -1,24 +1,39 @@
+use std::thread::sleep;
+use std::time::Duration;
+use http::{Method, Request};
+use tower::ServiceExt;
 use xpx_chain_sdk::account::{Address, PublicAccount};
 use xpx_chain_sdk::api::{Client, Endpoint, OrderV2, TransactionQueryParams};
+use xpx_chain_sdk::api::body::BoxBody;
+use xpx_chain_sdk::api::routes::account_routes_api::AccountRoutes;
 use xpx_chain_sdk::network::NetworkType;
 use xpx_chain_sdk::transaction::TransactionType;
 
 #[tokio::main]
 async fn main() {
-    let ep1 = Endpoint::from_shared("http://api-2.testnet2.xpxsirius.io:3000").unwrap();
-    let ep2 = Endpoint::from_shared("http://api-3.testnet2.xpxsirius.io:3000").unwrap();
+    let endpoints = [
+        "http://142.44.246.241:3000",
+        "http://167.114.169.166:3000",
+        "http://192.99.55.111:3000",
+    ]
+        .into_iter()
+        .map(|a| {
+            Client::from_shared(a)
+                .unwrap()
+            // .rate_limit(10, Duration::from_millis(500))
+            // .concurrency_limit(6)
+            // .timeout(Duration::from_secs(15))
+        });
 
-    let endpoints = [ep1, ep2];
-
-    let client = Client::balance_list(endpoints.into_iter());
+    let channel = Client::balance_list(endpoints.into_iter());
 
     // let network_type = client.network_info().await.unwrap().network_type;
     let network_type = NetworkType::PublicTest;
 
-    let account_api = client.account_api();
+    // let account_api = client.account_api();
 
     // let account_id_one: &str = "VCTVW23D2MN5VE4AQ4TZIDZENGNOZXPRPR3HTEHT";
-    let account_id_one: &str = "C2F93346E27CE6AD1A9F8F5E3066F8326593A406BDF357ACB041E2F9AB402EFE";
+    let account_id_one: &str = "50906aea8e57fe26fa6c0ca2e677f5e2572d81135aca50d0c339f7da88e915bc";
 
     // let account_id_two: &str = "VCWN77662VNLFGQBQ6RIFTC7LFWO5BSA3U622CSK";
     let account_id_two: &str = "F6A9951DDB2B9EF2C7EB5132654562FC6D2308B42AEAAFD11097B232F429AF70";
@@ -29,11 +44,17 @@ async fn main() {
     // Create an Address from a given public key.
     let account_two = Address::from_public_key(account_id_two, network_type).unwrap();
 
-    // Returns the account information.
-    let account_info = account_api.account_info(account_id_one).await;
-    match account_info {
-        Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("Exception when calling AccountApi->AccountInfo: {}\n", err),
+    let account_api = channel.account_api();
+
+    for i in 0..3 {
+        let account_api = account_api.clone();
+
+        tokio::spawn(async move {
+            let req = account_api.account_info(account_id_one).await;
+
+            println!("ALGODON {:?}", req);
+        });
+
     }
 
     // Returns the account information for an vector of accounts.
@@ -111,4 +132,6 @@ async fn main() {
             err
         ),
     }
+    sleep(Duration::from_secs(100));
+
 }

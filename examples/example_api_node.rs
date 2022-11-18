@@ -4,16 +4,19 @@
  * license that can be found in the LICENSE file.
  */
 
-use xpx_chain_sdk::api::SiriusClient;
+use xpx_chain_sdk::api::{Endpoint};
 
 #[tokio::main]
 async fn main() {
-    let node_url = vec!["https://api-2.testnet2.xpxsirius.io:443"];
-
-    let sirius_client = SiriusClient::new_from_urls(&node_url).await;
-    let client = match sirius_client {
-        Ok(resp) => resp,
-        Err(err) => panic!("{}", err),
+    let client = match Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000")
+        .connect()
+        .await
+    {
+        Ok(client) => client,
+        Err(err) => panic!(
+            "Exception when calling endpoint connect{}\n",
+            err
+        ),
     };
 
     let node_api = client.node_api();

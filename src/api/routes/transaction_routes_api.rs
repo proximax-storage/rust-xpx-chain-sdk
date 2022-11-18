@@ -7,7 +7,6 @@
 use hex::ToHex;
 use http::Request;
 use serde_json::json;
-use tower::buffer::Buffer;
 
 use {
     ::std::{
@@ -27,7 +26,7 @@ use crate::{
     },
     TransactionHash,
 };
-use crate::api::{__internal_get_transaction, __internal_get_transactions_by_group_with_pagination, QueryParam, Svc, TransactionQueryParams, value_to_transaction};
+use crate::api::{__internal_get_transaction, __internal_get_transactions_by_group_with_pagination, Client, QueryParam, TransactionQueryParams, value_to_transaction};
 use crate::api::body::BoxBody;
 use crate::api::error::{Error, SiriusError};
 use crate::api::request::ApiRequest;
@@ -42,16 +41,16 @@ use super::{
 /// Transaction ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct TransactionRoutes(Buffer<Svc, Request<BoxBody>>);
+pub struct TransactionRoutes(Client);
 
 /// Transaction related endpoints.
 ///
 impl TransactionRoutes {
-    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
+    pub(crate) fn new(client: Client) -> Self {
         TransactionRoutes(client)
     }
 
-    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+    fn __client(&self) -> Client {
         self.0.clone()
     }
 
@@ -384,7 +383,7 @@ impl TransactionRoutes {
     /// Returns a Future `Result` whose okay value is an `AnnounceTransactionInfo` or whose error
     /// value is an `Error<Value>` describing the error that occurred.
     pub async fn announce(
-        self,
+        &self,
         transaction_signed: &SignedTransaction,
     ) -> Result<AnnounceTransactionInfo> {
         self.__announce_transaction(transaction_signed, ANNOUNCE_TRANSACTION_ROUTE)
@@ -392,7 +391,7 @@ impl TransactionRoutes {
     }
 
     pub async fn announce_aggregate_bonded(
-        self,
+        &self,
         signed_transaction: &SignedTransaction,
     ) -> Result<AnnounceTransactionInfo> {
         self.__announce_transaction(signed_transaction, AGGREGATE_TRANSACTIONS_ROUTE)
@@ -400,14 +399,14 @@ impl TransactionRoutes {
     }
 
     pub async fn announce_aggregate_bonded_cosignature(
-        self,
+        &self,
         cosignature: &CosignatureSignedTransaction,
     ) -> Result<AnnounceTransactionInfo> {
         self.__announce_transaction(cosignature, ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE)
             .await
     }
 
-    async fn __announce_transaction<T>(self, tx: T, route: &str) -> Result<AnnounceTransactionInfo>
+    async fn __announce_transaction<T>(&self, tx: T, route: &str) -> Result<AnnounceTransactionInfo>
         where
                 for<'de> T: serde::Serialize,
     {

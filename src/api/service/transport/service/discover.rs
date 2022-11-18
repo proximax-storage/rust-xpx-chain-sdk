@@ -1,17 +1,16 @@
+use super::super::service;
+use super::connection::Connection;
+use crate::api::transport::Endpoint;
+
 use std::{
     hash::Hash,
     pin::Pin,
     task::{Context, Poll},
 };
-
 use tokio::sync::mpsc::Receiver;
+
 use tokio_stream::Stream;
 use tower::discover::Change;
-
-use crate::api::transport;
-
-use super::connection::{Connection, Error};
-use super::node::Endpoint;
 
 type DiscoverResult<K, S, E> = Result<Change<K, S>, E>;
 
@@ -26,7 +25,7 @@ impl<K: Hash + Eq + Clone> DynamicServiceStream<K> {
 }
 
 impl<K: Hash + Eq + Clone> Stream for DynamicServiceStream<K> {
-    type Item = DiscoverResult<K, Connection, Error>;
+    type Item = DiscoverResult<K, Connection, crate::api::Error>;
 
     fn poll_next(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
         let c = &mut self.changes;
@@ -39,10 +38,10 @@ impl<K: Hash + Eq + Clone> Stream for DynamicServiceStream<K> {
                     http.set_keepalive(endpoint.tcp_keepalive);
                     http.enforce_http(false);
                     #[cfg(feature = "tls")]
-                        let connector = service::connector(http, endpoint.tls.clone());
+                    let connector = service::connector(http, endpoint.tls.clone());
 
                     #[cfg(not(feature = "tls"))]
-                        let connector = transport::connector(http);
+                    let connector = service::connector(http);
                     let connection = Connection::lazy(connector, endpoint);
                     let change = Ok(Change::Insert(k, connection));
                     Poll::Ready(Some(change))

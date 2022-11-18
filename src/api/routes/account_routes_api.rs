@@ -24,8 +24,9 @@ use crate::{
     errors_const::ERR_EMPTY_ADDRESSES_IDS,
     multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
 };
-use crate::api::{__internal_get_transactions, QueryParam, Svc, TransactionQueryParams};
+use crate::api::{__internal_get_transactions, Client, QueryParam, TransactionQueryParams};
 use crate::api::body::BoxBody;
+use crate::api::channel::Svc;
 use crate::api::routes::const_routes::{
     AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
 };
@@ -39,16 +40,16 @@ use super::{
 /// Account ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct AccountRoutes(Buffer<Svc, Request<BoxBody>>);
+pub struct AccountRoutes(Client);
 
 /// Account related endpoints.
 ///
 impl AccountRoutes {
-    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
+    pub fn new(client: Client) -> Self {
         AccountRoutes(client)
     }
 
-    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+    fn __client(&self) -> Client {
         self.0.clone()
     }
 
@@ -187,7 +188,7 @@ impl AccountRoutes {
     ///
     /// Returns a Future `Result` whose okay value is an vector of `AccountName` or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn accounts_names(self, accounts_id: Vec<&str>) -> Result<Vec<AccountName>> {
+    pub async fn accounts_names(&self, accounts_id: Vec<&str>) -> Result<Vec<AccountName>> {
         valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
 
         let accounts = AccountsId::from(accounts_id);

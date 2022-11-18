@@ -1,17 +1,22 @@
-use tower::util::{BoxService, Either};
+pub use self::transport::*;
+pub use self::status::*;
 
-use crate::api::connection::{Connection, Error, Request, Response};
-
-pub use self::client::Client;
-pub use self::node::*;
-
+pub mod transport;
 pub mod body;
-mod client;
-pub(crate) mod connection;
-mod discover;
-mod executor;
-mod node;
-mod reconnect;
-pub(crate) mod transport;
+pub mod util;
+pub mod status;
 
-pub type Svc = Either<Connection, BoxService<Request, Response, Error>>;
+pub(crate) type Error = Box<dyn std::error::Error + Send + Sync>;
+
+/// `Result` is a type that represents either success ([`Ok`]) or failure ([`Err`]).
+/// By default, the Err value is of type [`Status`] but this can be overridden if desired.
+pub type Result<T, E = Error> = std::result::Result<T, E>;
+
+pub fn trace_init() -> tracing::subscriber::DefaultGuard {
+    let subscriber = tracing_subscriber::fmt()
+        .with_test_writer()
+        .with_max_level(tracing::Level::TRACE)
+        .with_thread_names(true)
+        .finish();
+    tracing::subscriber::set_default(subscriber)
+}

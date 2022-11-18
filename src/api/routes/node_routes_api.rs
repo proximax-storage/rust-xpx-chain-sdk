@@ -5,7 +5,6 @@
  */
 
 use http::Request;
-use tower::buffer::Buffer;
 
 use reqwest::Method;
 
@@ -13,24 +12,23 @@ use crate::{
     api::{error::Result, NodeTimeDto, request as __internal_request},
     node::{NodeInfo, NodeTime},
 };
-use crate::api::body::BoxBody;
-use crate::api::Svc;
+use crate::api::{Client};
 
 use super::{NODE_INFO, NODE_PEERS, NODE_TIME};
 
 /// Node ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NodeRoutes(Buffer<Svc, Request<BoxBody>>);
+pub struct NodeRoutes(Client);
 
 /// Node related endpoints.
 ///
 impl NodeRoutes {
-    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
+    pub(crate) fn new(client: Client) -> Self {
         NodeRoutes(client)
     }
 
-    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+    fn __client(&self) -> Client {
         self.0.clone()
     }
 

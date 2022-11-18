@@ -12,6 +12,7 @@ use {
     },
     tokio_tungstenite::tungstenite::Error as WsError,
 };
+use crate::api;
 
 /// Result type of all Websocket library calls.
 pub type Result<T> = result::Result<T, Error>;
@@ -27,40 +28,47 @@ pub struct SiriusError {
 pub enum Error {
     Serde(serde_json::Error),
     SiriusError(SiriusError),
-    Reqwest(reqwest::Error),
+    Hyper(hyper::Error),
+    Transport(api::transport::Error),
     Tungsten(WsError),
     Failure(anyhow::Error),
     Url(Cow<'static, str>),
     Parse(num::ParseIntError),
 }
 
-impl From<reqwest::Error> for Error {
-    fn from(reqwest: reqwest::Error) -> Self {
-        Error::Reqwest(reqwest)
+impl From<api::transport::Error> for Error {
+    fn from(err: api::transport::Error) -> Self {
+        Error::Transport(err)
     }
 }
 
 impl From<SiriusError> for Error {
-    fn from(sirius: SiriusError) -> Self {
-        Error::SiriusError(sirius)
+    fn from(err: SiriusError) -> Self {
+        Error::SiriusError(err)
+    }
+}
+
+impl From<hyper::Error> for Error {
+    fn from(err: hyper::Error) -> Self {
+        Error::Hyper(err)
     }
 }
 
 impl From<WsError> for Error {
-    fn from(ws: WsError) -> Self {
-        Error::Tungsten(ws)
+    fn from(err: WsError) -> Self {
+        Error::Tungsten(err)
     }
 }
 
 impl From<serde_json::Error> for Error {
-    fn from(serde: serde_json::Error) -> Self {
-        Error::Serde(serde)
+    fn from(err: serde_json::Error) -> Self {
+        Error::Serde(err)
     }
 }
 
 impl From<anyhow::Error> for Error {
-    fn from(failure: anyhow::Error) -> Self {
-        Error::Failure(failure)
+    fn from(err: anyhow::Error) -> Self {
+        Error::Failure(err)
     }
 }
 
@@ -71,17 +79,20 @@ impl From<&'static str> for Error {
 }
 
 impl From<num::ParseIntError> for Error {
-    fn from(parse: num::ParseIntError) -> Self {
-        Error::Parse(parse)
+    fn from(err: num::ParseIntError) -> Self {
+        Error::Parse(err)
     }
 }
+
+impl std::error::Error for Error {}
 
 impl Display for Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> ::std::fmt::Result {
         use Error::*;
         match self.to_owned() {
             SiriusError(e) => write!(f, "{{ code: \"{}\", message: \"{}\" }}", e.code, e.message),
-            Reqwest(e) => write!(f, "{}", e),
+            Transport(e) => write!(f, "{}", e),
+            Hyper(e)=> write!(f, "{}", e),
             Serde(e) => write!(f, "{}", e),
             Tungsten(e) => write!(f, "{:?}", e),
             Failure(e) => write!(f, "{}", e),

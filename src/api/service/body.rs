@@ -2,18 +2,16 @@
 
 use http_body::Body;
 
-use super::connection::Error;
-
 /// A type erased HTTP body used for tonic services.
-pub type BoxBody = http_body::combinators::UnsyncBoxBody<bytes::Bytes, Error>;
+pub type BoxBody = http_body::combinators::UnsyncBoxBody<bytes::Bytes, crate::api::Status>;
 
 /// Convert a [`http_body::Body`] into a [`BoxBody`].
-pub fn boxed_body<B>(body: B) -> BoxBody
-    where
-        B: Body<Data=bytes::Bytes> + Send + 'static,
-        B::Error: Into<Error>,
+pub(crate) fn boxed_body<B>(body: B) -> BoxBody
+where
+    B: http_body::Body<Data = bytes::Bytes> + Send + 'static,
+    B::Error: Into<crate::api::Error>,
 {
-    body.map_err(Into::into).boxed_unsync()
+    body.map_err(crate::api::Status::map_error).boxed_unsync()
 }
 
 // this also exists in `crate::codegen` but we need it here since `codegen` has

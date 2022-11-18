@@ -1,32 +1,29 @@
+use crate::api::Error;
+use pin_project::pin_project;
+use std::fmt;
 use std::{
     future::Future,
     pin::Pin,
     task::{Context, Poll},
 };
-use std::fmt;
-
-use pin_project::pin_project;
 use tower::make::MakeService;
-use tower::Service;
+use tower_service::Service;
 use tracing::trace;
 
-use super::connection::Error;
-
-#[derive(Clone)]
 pub(crate) struct Reconnect<M, Target>
-    where
-        M: Service<Target>,
-        M::Error: Into<Error>,
+where
+    M: Service<Target>,
+    M::Error: Into<Error>,
 {
     mk_service: M,
     state: State<M::Future, M::Response>,
     target: Target,
-    // error: Option<Error>,
+    error: Option<crate::api::Error>,
     has_been_connected: bool,
     is_lazy: bool,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 enum State<F, S> {
     Idle,
     Connecting(F),
@@ -34,16 +31,16 @@ enum State<F, S> {
 }
 
 impl<M, Target> Reconnect<M, Target>
-    where
-        M: Service<Target>,
-        M::Error: Into<Error>,
+where
+    M: Service<Target>,
+    M::Error: Into<Error>,
 {
     pub(crate) fn new(mk_service: M, target: Target, is_lazy: bool) -> Self {
         Reconnect {
             mk_service,
             state: State::Idle,
             target,
-            // error: None,
+            error: None,
             has_been_connected: false,
             is_lazy,
         }
@@ -51,13 +48,13 @@ impl<M, Target> Reconnect<M, Target>
 }
 
 impl<M, Target, S, Request> Service<Request> for Reconnect<M, Target>
-    where
-        M: Service<Target, Response=S>,
-        S: Service<Request>,
-        M::Future: Unpin,
-        Error: From<M::Error> + From<S::Error>,
-        Target: Clone,
-        <M as Service<Target>>::Error: Into<Error>,
+where
+    M: Service<Target, Response = S>,
+    S: Service<Request>,
+    M::Future: Unpin,
+    Error: From<M::Error> + From<S::Error>,
+    Target: Clone,
+    <M as tower_service::Service<Target>>::Error: Into<crate::api::Error>,
 {
     type Response = S::Response;
     type Error = Error;
@@ -66,9 +63,9 @@ impl<M, Target, S, Request> Service<Request> for Reconnect<M, Target>
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         let mut state;
 
-        // if self.error.is_some() {
-        //     return Poll::Ready(Ok(()));
-        // }
+        if self.error.is_some() {
+            return Poll::Ready(Ok(()));
+        }
 
         loop {
             match self.state {
@@ -106,7 +103,7 @@ impl<M, Target, S, Request> Service<Request> for Reconnect<M, Target>
                             } else {
                                 let error = e.into();
                                 tracing::debug!("reconnect::poll_ready: {:?}", error);
-                                // self.error = Some(error);
+                                self.error = Some(error);
                                 break;
                             }
                         }
@@ -143,10 +140,10 @@ impl<M, Target, S, Request> Service<Request> for Reconnect<M, Target>
 
     fn call(&mut self, request: Request) -> Self::Future {
         trace!("Reconnect::call");
-        // if let Some(error) = self.error.take() {
-        //     tracing::debug!("error: {}", error);
-        //     return ResponseFuture::error(error);
-        // }
+        if let Some(error) = self.error.take() {
+            tracing::debug!("error: {}", error);
+            return ResponseFuture::error(error);
+        }
 
         let service = match self.state {
             State::Connected(ref mut service) => service,
@@ -159,12 +156,12 @@ impl<M, Target, S, Request> Service<Request> for Reconnect<M, Target>
 }
 
 impl<M, Target> fmt::Debug for Reconnect<M, Target>
-    where
-        M: Service<Target> + fmt::Debug,
-        M::Future: fmt::Debug,
-        M::Response: fmt::Debug,
-        Target: fmt::Debug,
-        <M as Service<Target>>::Error: Into<Error>,
+where
+    M: Service<Target> + fmt::Debug,
+    M::Future: fmt::Debug,
+    M::Response: fmt::Debug,
+    Target: fmt::Debug,
+    <M as tower_service::Service<Target>>::Error: Into<Error>,
 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct("Reconnect")
@@ -187,7 +184,7 @@ pub(crate) struct ResponseFuture<F> {
 #[derive(Debug)]
 enum Inner<F> {
     Future(#[pin] F),
-    Error(Option<Error>),
+    Error(Option<crate::api::Error>),
 }
 
 impl<F> ResponseFuture<F> {
@@ -197,7 +194,7 @@ impl<F> ResponseFuture<F> {
         }
     }
 
-    pub(crate) fn error(error: Error) -> Self {
+    pub(crate) fn error(error: crate::api::Error) -> Self {
         ResponseFuture {
             inner: Inner::Error(Some(error)),
         }
@@ -205,9 +202,9 @@ impl<F> ResponseFuture<F> {
 }
 
 impl<F, T, E> Future for ResponseFuture<F>
-    where
-        F: Future<Output=Result<T, E>>,
-        E: Into<Error>,
+where
+    F: Future<Output = Result<T, E>>,
+    E: Into<Error>,
 {
     type Output = Result<T, Error>;
 

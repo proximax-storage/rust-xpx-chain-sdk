@@ -5,7 +5,6 @@
  */
 
 use http::Request;
-use tower::buffer::Buffer;
 
 use reqwest::Method;
 
@@ -17,7 +16,7 @@ use crate::{
     errors_const::ERR_EMPTY_MOSAIC_IDS,
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},
 };
-use crate::api::{MosaicLevyDTO, MosaicRichListDTO, PageQueryParams, Svc};
+use crate::api::{Client, MosaicLevyDTO, MosaicRichListDTO, PageQueryParams};
 use crate::api::body::BoxBody;
 use crate::api::routes::const_routes::{MOSAIC_LEVY_ROUTE, MOSAIC_RICH_LIST_ROUTE};
 use crate::mosaic::{MosaicLevy, MosaicRichList, UnresolvedMosaicId};
@@ -27,16 +26,16 @@ use super::{MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE, MOSAICS_ROUTE};
 /// Mosaic ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct MosaicRoutes(Buffer<Svc, Request<BoxBody>>);
+pub struct MosaicRoutes(Client);
 
 /// Mosaic related endpoints.
 ///
 impl MosaicRoutes {
-    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>) -> Self {
+    pub(crate) fn new(client: Client) -> Self {
         MosaicRoutes(client)
     }
 
-    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+    fn __client(&self) -> Client {
         self.0.clone()
     }
 
