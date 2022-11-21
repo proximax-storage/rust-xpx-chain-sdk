@@ -8,11 +8,11 @@ use http::Request;
 
 use reqwest::Method;
 
+use crate::api::Client;
 use crate::{
-    api::{error::Result, NodeTimeDto, request as __internal_request},
+    api::{error::Result, request as __internal_request, NodeTimeDto},
     node::{NodeInfo, NodeTime},
 };
-use crate::api::{Client};
 
 use super::{NODE_INFO, NODE_PEERS, NODE_TIME};
 

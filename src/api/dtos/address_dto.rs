@@ -9,9 +9,7 @@ use crate::{
     transaction::{MetadataAddressTransaction, Transaction},
 };
 
-use super::{ModifyMetadataTransactionDto, TransactionDto,
-            TransactionMetaDto,
-};
+use super::{ModifyMetadataTransactionDto, TransactionDto, TransactionMetaDto};
 
 /// AddressMetadataTransactionDto :
 ///Transaction that addes metadata to account.

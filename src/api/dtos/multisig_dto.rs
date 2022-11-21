@@ -108,8 +108,7 @@ impl TransactionDto for ModifyMultisigAccountTransactionInfoDto {
 
         let common = dto.r#abstract.compact(info)?;
 
-        let modifications =
-            cosignatory_dto_vec_to_struct(dto.modifications, common.network_type);
+        let modifications = cosignatory_dto_vec_to_struct(dto.modifications, common.network_type);
 
         Ok(Box::new(ModifyMultisigAccountTransaction {
             common,

@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use xpx_chain_sdk::api::{Endpoint};
+use xpx_chain_sdk::api::Endpoint;
 
 #[tokio::main]
 async fn main() {
@@ -13,10 +13,7 @@ async fn main() {
         .await
     {
         Ok(client) => client,
-        Err(err) => panic!(
-            "Exception when calling endpoint connect{}\n",
-            err
-        ),
+        Err(err) => panic!("Exception when calling endpoint connect{}\n", err),
     };
 
     let node_api = client.node_api();

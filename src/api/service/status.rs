@@ -429,7 +429,6 @@ impl Status {
     }
 
     pub(crate) fn add_header(&self, header_map: &mut HeaderMap) -> Result<(), Self> {
-
         header_map.insert(GRPC_STATUS_HEADER_CODE, self.code.to_header_value());
 
         if !self.message.is_empty() {

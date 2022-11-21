@@ -11,15 +11,15 @@ use {
 
 /// The entity type:
 #[derive(
-Debug,
-Clone,
-Copy,
-Eq,
-PartialEq,
-Serialize_repr,
-Deserialize_repr,
-IntoPrimitive,
-FromPrimitive,
+    Debug,
+    Clone,
+    Copy,
+    Eq,
+    PartialEq,
+    Serialize_repr,
+    Deserialize_repr,
+    IntoPrimitive,
+    FromPrimitive,
 )]
 #[repr(u16)]
 #[serde(rename_all = "lowerCase")]

@@ -8,17 +8,15 @@ use http::Request;
 
 use reqwest::Method;
 
-use crate::{
-    api::{
-        BlockchainScoreDto, error::Result, HeightInfoDto, request as __internal_request,
-    },
-    blockchain::{BlockchainScore, HeightInfo, StorageInfo},
-};
-use crate::api::{BlockInfoDto, Client};
 use crate::api::routes::const_routes::{
     BLOCK_BY_HEIGHT_ROUTE, BLOCK_GET_TRANSACTION_ROUTE, BLOCK_INFO_ROUTE,
 };
+use crate::api::{BlockInfoDto, Client};
 use crate::blockchain::BlockInfo;
+use crate::{
+    api::{error::Result, request as __internal_request, BlockchainScoreDto, HeightInfoDto},
+    blockchain::{BlockchainScore, HeightInfo, StorageInfo},
+};
 
 use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
 
@@ -239,7 +237,8 @@ impl ChainRoutes {
             100
         };
 
-        let mut req = __internal_request::ApiRequest::new(Method::GET, BLOCK_INFO_ROUTE.to_string());
+        let mut req =
+            __internal_request::ApiRequest::new(Method::GET, BLOCK_INFO_ROUTE.to_string());
 
         req = req.with_path_param("height".to_string(), height.to_string());
 

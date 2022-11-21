@@ -13,8 +13,8 @@ pub use self::internally::*;
 pub use self::public_account::*;
 pub use self::unresolved_address::*;
 
-mod account_info;
 mod account;
+mod account_info;
 mod account_properties;
 mod account_type;
 mod address;

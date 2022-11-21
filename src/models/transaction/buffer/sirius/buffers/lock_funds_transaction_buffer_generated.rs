@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for LockFundsTransactionBuffer<'a> {
     type Inner = LockFundsTransactionBuffer<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -44,85 +46,174 @@ impl<'a> LockFundsTransactionBuffer<'a> {
         args: &'args LockFundsTransactionBufferArgs<'args>,
     ) -> flatbuffers::WIPOffset<LockFundsTransactionBuffer<'bldr>> {
         let mut builder = LockFundsTransactionBufferBuilder::new(_fbb);
-        if let Some(x) = args.hash { builder.add_hash(x); }
-        if let Some(x) = args.duration { builder.add_duration(x); }
-        if let Some(x) = args.mosaic_amount { builder.add_mosaic_amount(x); }
-        if let Some(x) = args.mosaic_id { builder.add_mosaic_id(x); }
-        if let Some(x) = args.deadline { builder.add_deadline(x); }
-        if let Some(x) = args.max_fee { builder.add_max_fee(x); }
+        if let Some(x) = args.hash {
+            builder.add_hash(x);
+        }
+        if let Some(x) = args.duration {
+            builder.add_duration(x);
+        }
+        if let Some(x) = args.mosaic_amount {
+            builder.add_mosaic_amount(x);
+        }
+        if let Some(x) = args.mosaic_id {
+            builder.add_mosaic_id(x);
+        }
+        if let Some(x) = args.deadline {
+            builder.add_deadline(x);
+        }
+        if let Some(x) = args.max_fee {
+            builder.add_max_fee(x);
+        }
         builder.add_version(args.version);
-        if let Some(x) = args.signer { builder.add_signer(x); }
-        if let Some(x) = args.signature { builder.add_signature(x); }
+        if let Some(x) = args.signer {
+            builder.add_signer(x);
+        }
+        if let Some(x) = args.signature {
+            builder.add_signature(x);
+        }
         builder.add_size_(args.size_);
         builder.add_type_(args.type_);
         builder.finish()
     }
 
-
     #[inline]
     pub fn size_(&self) -> u32 {
-        self._tab.get::<u32>(LockFundsTransactionBuffer::VT_SIZE_, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(LockFundsTransactionBuffer::VT_SIZE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn signature(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(LockFundsTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                LockFundsTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn signer(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(LockFundsTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                LockFundsTransactionBuffer::VT_SIGNER,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn version(&self) -> u32 {
-        self._tab.get::<u32>(LockFundsTransactionBuffer::VT_VERSION, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(LockFundsTransactionBuffer::VT_VERSION, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn type_(&self) -> u16 {
-        self._tab.get::<u16>(LockFundsTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
+        self._tab
+            .get::<u16>(LockFundsTransactionBuffer::VT_TYPE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(LockFundsTransactionBuffer::VT_MAX_FEE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                LockFundsTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
     }
     #[inline]
     pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(LockFundsTransactionBuffer::VT_DEADLINE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                LockFundsTransactionBuffer::VT_DEADLINE,
+                None,
+            )
     }
     #[inline]
     pub fn mosaic_id(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(LockFundsTransactionBuffer::VT_MOSAIC_ID, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                LockFundsTransactionBuffer::VT_MOSAIC_ID,
+                None,
+            )
     }
     #[inline]
     pub fn mosaic_amount(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(LockFundsTransactionBuffer::VT_MOSAIC_AMOUNT, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                LockFundsTransactionBuffer::VT_MOSAIC_AMOUNT,
+                None,
+            )
     }
     #[inline]
     pub fn duration(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(LockFundsTransactionBuffer::VT_DURATION, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                LockFundsTransactionBuffer::VT_DURATION,
+                None,
+            )
     }
     #[inline]
     pub fn hash(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(LockFundsTransactionBuffer::VT_HASH, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                LockFundsTransactionBuffer::VT_HASH,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
 }
 
 impl flatbuffers::Verifiable for LockFundsTransactionBuffer<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signature", Self::VT_SIGNATURE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signer", Self::VT_SIGNER, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signature",
+                Self::VT_SIGNATURE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signer",
+                Self::VT_SIGNER,
+                false,
+            )?
             .visit_field::<u32>("version", Self::VT_VERSION, false)?
             .visit_field::<u16>("type_", Self::VT_TYPE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("max_fee", Self::VT_MAX_FEE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("deadline", Self::VT_DEADLINE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("mosaic_id", Self::VT_MOSAIC_ID, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("mosaic_amount", Self::VT_MOSAIC_AMOUNT, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("duration", Self::VT_DURATION, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("hash", Self::VT_HASH, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "max_fee",
+                Self::VT_MAX_FEE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "deadline",
+                Self::VT_DEADLINE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "mosaic_id",
+                Self::VT_MOSAIC_ID,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "mosaic_amount",
+                Self::VT_MOSAIC_AMOUNT,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "duration",
+                Self::VT_DURATION,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "hash",
+                Self::VT_HASH,
+                false,
+            )?
             .finish();
         Ok(())
     }
@@ -169,50 +260,88 @@ pub struct LockFundsTransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> LockFundsTransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_.push_slot::<u32>(LockFundsTransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_
+            .push_slot::<u32>(LockFundsTransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
-    pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(LockFundsTransactionBuffer::VT_SIGNATURE, signature);
+    pub fn add_signature(
+        &mut self,
+        signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            LockFundsTransactionBuffer::VT_SIGNATURE,
+            signature,
+        );
     }
     #[inline]
     pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(LockFundsTransactionBuffer::VT_SIGNER, signer);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            LockFundsTransactionBuffer::VT_SIGNER,
+            signer,
+        );
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_.push_slot::<u32>(LockFundsTransactionBuffer::VT_VERSION, version, 0);
+        self.fbb_
+            .push_slot::<u32>(LockFundsTransactionBuffer::VT_VERSION, version, 0);
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_.push_slot::<u16>(LockFundsTransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_
+            .push_slot::<u16>(LockFundsTransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(LockFundsTransactionBuffer::VT_MAX_FEE, max_fee);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            LockFundsTransactionBuffer::VT_MAX_FEE,
+            max_fee,
+        );
     }
     #[inline]
     pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(LockFundsTransactionBuffer::VT_DEADLINE, deadline);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            LockFundsTransactionBuffer::VT_DEADLINE,
+            deadline,
+        );
     }
     #[inline]
-    pub fn add_mosaic_id(&mut self, mosaic_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(LockFundsTransactionBuffer::VT_MOSAIC_ID, mosaic_id);
+    pub fn add_mosaic_id(
+        &mut self,
+        mosaic_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            LockFundsTransactionBuffer::VT_MOSAIC_ID,
+            mosaic_id,
+        );
     }
     #[inline]
-    pub fn add_mosaic_amount(&mut self, mosaic_amount: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(LockFundsTransactionBuffer::VT_MOSAIC_AMOUNT, mosaic_amount);
+    pub fn add_mosaic_amount(
+        &mut self,
+        mosaic_amount: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            LockFundsTransactionBuffer::VT_MOSAIC_AMOUNT,
+            mosaic_amount,
+        );
     }
     #[inline]
     pub fn add_duration(&mut self, duration: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(LockFundsTransactionBuffer::VT_DURATION, duration);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            LockFundsTransactionBuffer::VT_DURATION,
+            duration,
+        );
     }
     #[inline]
     pub fn add_hash(&mut self, hash: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(LockFundsTransactionBuffer::VT_HASH, hash);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            LockFundsTransactionBuffer::VT_HASH,
+            hash,
+        );
     }
     #[inline]
-    pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> LockFundsTransactionBufferBuilder<'a, 'b> {
+    pub fn new(
+        _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    ) -> LockFundsTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
         LockFundsTransactionBufferBuilder {
             fbb_: _fbb,
@@ -246,13 +375,17 @@ impl core::fmt::Debug for LockFundsTransactionBuffer<'_> {
 
 #[inline]
 #[deprecated(since = "2.0.0", note = "Deprecated in favor of `root_as...` methods.")]
-pub fn get_root_as_lock_funds_transaction_buffer<'a>(buf: &'a [u8]) -> LockFundsTransactionBuffer<'a> {
+pub fn get_root_as_lock_funds_transaction_buffer<'a>(
+    buf: &'a [u8],
+) -> LockFundsTransactionBuffer<'a> {
     unsafe { flatbuffers::root_unchecked::<LockFundsTransactionBuffer<'a>>(buf) }
 }
 
 #[inline]
 #[deprecated(since = "2.0.0", note = "Deprecated in favor of `root_as...` methods.")]
-pub fn get_size_prefixed_root_as_lock_funds_transaction_buffer<'a>(buf: &'a [u8]) -> LockFundsTransactionBuffer<'a> {
+pub fn get_size_prefixed_root_as_lock_funds_transaction_buffer<'a>(
+    buf: &'a [u8],
+) -> LockFundsTransactionBuffer<'a> {
     unsafe { flatbuffers::size_prefixed_root_unchecked::<LockFundsTransactionBuffer<'a>>(buf) }
 }
 
@@ -263,7 +396,9 @@ pub fn get_size_prefixed_root_as_lock_funds_transaction_buffer<'a>(buf: &'a [u8]
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `root_as_lock_funds_transaction_buffer_unchecked`.
-pub fn root_as_lock_funds_transaction_buffer(buf: &[u8]) -> Result<LockFundsTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn root_as_lock_funds_transaction_buffer(
+    buf: &[u8],
+) -> Result<LockFundsTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::root::<LockFundsTransactionBuffer>(buf)
 }
 
@@ -274,7 +409,9 @@ pub fn root_as_lock_funds_transaction_buffer(buf: &[u8]) -> Result<LockFundsTran
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `size_prefixed_root_as_lock_funds_transaction_buffer_unchecked`.
-pub fn size_prefixed_root_as_lock_funds_transaction_buffer(buf: &[u8]) -> Result<LockFundsTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn size_prefixed_root_as_lock_funds_transaction_buffer(
+    buf: &[u8],
+) -> Result<LockFundsTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::size_prefixed_root::<LockFundsTransactionBuffer>(buf)
 }
 
@@ -310,7 +447,9 @@ pub fn size_prefixed_root_as_lock_funds_transaction_buffer_with_opts<'b, 'o>(
 /// Assumes, without verification, that a buffer of bytes contains a LockFundsTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid `LockFundsTransactionBuffer`.
-pub unsafe fn root_as_lock_funds_transaction_buffer_unchecked(buf: &[u8]) -> LockFundsTransactionBuffer {
+pub unsafe fn root_as_lock_funds_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> LockFundsTransactionBuffer {
     flatbuffers::root_unchecked::<LockFundsTransactionBuffer>(buf)
 }
 
@@ -318,18 +457,24 @@ pub unsafe fn root_as_lock_funds_transaction_buffer_unchecked(buf: &[u8]) -> Loc
 /// Assumes, without verification, that a buffer of bytes contains a size prefixed LockFundsTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid size prefixed `LockFundsTransactionBuffer`.
-pub unsafe fn size_prefixed_root_as_lock_funds_transaction_buffer_unchecked(buf: &[u8]) -> LockFundsTransactionBuffer {
+pub unsafe fn size_prefixed_root_as_lock_funds_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> LockFundsTransactionBuffer {
     flatbuffers::size_prefixed_root_unchecked::<LockFundsTransactionBuffer>(buf)
 }
 
 #[inline]
 pub fn finish_lock_funds_transaction_buffer_buffer<'a, 'b>(
     fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<LockFundsTransactionBuffer<'a>>) {
+    root: flatbuffers::WIPOffset<LockFundsTransactionBuffer<'a>>,
+) {
     fbb.finish(root, None);
 }
 
 #[inline]
-pub fn finish_size_prefixed_lock_funds_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<LockFundsTransactionBuffer<'a>>) {
+pub fn finish_size_prefixed_lock_funds_transaction_buffer_buffer<'a, 'b>(
+    fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    root: flatbuffers::WIPOffset<LockFundsTransactionBuffer<'a>>,
+) {
     fbb.finish_size_prefixed(root, None);
 }

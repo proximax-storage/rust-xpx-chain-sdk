@@ -17,7 +17,7 @@ use crate::{
             RemoveOffer, UserExchangeInfo,
         },
         mosaic::{Mosaic, MosaicId, UnresolvedMosaicId},
-        namespace::{NAMESPACE_BIT, NamespaceId},
+        namespace::{NamespaceId, NAMESPACE_BIT},
         network::NetworkType,
         transaction::{
             AddExchangeOfferTransaction, ExchangeOfferTransaction, RemoveExchangeOfferTransaction,
@@ -202,10 +202,7 @@ impl TransactionDto for AddExchangeOfferTransactionInfoDto {
             })
             .collect();
 
-        Ok(Box::new(AddExchangeOfferTransaction {
-            common,
-            offers,
-        }))
+        Ok(Box::new(AddExchangeOfferTransaction { common, offers }))
     }
 }
 
@@ -240,10 +237,7 @@ impl TransactionDto for ExchangeOfferTransactionInfoDto {
                 let _offer = offer.offer_dto.compact();
                 ExchangeConfirmation {
                     offer: _offer,
-                    owner: PublicAccount::from_public_key(
-                        &offer.owner,
-                        common.network_type,
-                    )
+                    owner: PublicAccount::from_public_key(&offer.owner, common.network_type)
                         .unwrap(),
                 }
             })
@@ -299,9 +293,6 @@ impl TransactionDto for RemoveExchangeOfferTransactionInfoDto {
             })
             .collect();
 
-        Ok(Box::new(RemoveExchangeOfferTransaction {
-            common,
-            offers,
-        }))
+        Ok(Box::new(RemoveExchangeOfferTransaction { common, offers }))
     }
 }

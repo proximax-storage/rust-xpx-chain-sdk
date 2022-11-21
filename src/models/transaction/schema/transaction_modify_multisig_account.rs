@@ -5,8 +5,8 @@
  */
 
 use super::{
-    ArrayAttribute, ScalarAttribute, Schema, schema_common_definition::schema_common_definition,
-    SchemaAttribute, SIZEOF_BYTE, TableArrayAttribute,
+    schema_common_definition::schema_common_definition, ArrayAttribute, ScalarAttribute, Schema,
+    SchemaAttribute, TableArrayAttribute, SIZEOF_BYTE,
 };
 
 pub fn modify_multisig_account_transaction_schema() -> Schema {

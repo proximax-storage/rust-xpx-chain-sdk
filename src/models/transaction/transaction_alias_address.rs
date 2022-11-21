@@ -13,10 +13,13 @@ use crate::{
     account::{Address, PublicAccount},
     alias::AliasActionType,
     models::consts::ADDRESS_SIZE,
-    namespace::NamespaceId, network::NetworkType,
+    namespace::NamespaceId,
+    network::NetworkType,
 };
 
-use super::{AliasTransaction, CommonTransaction, Deadline, Transaction, TransactionType, TransactionVersion};
+use super::{
+    AliasTransaction, CommonTransaction, Deadline, Transaction, TransactionType, TransactionVersion,
+};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

@@ -15,10 +15,7 @@ async fn main() {
         .await
     {
         Ok(client) => client,
-        Err(err) => panic!(
-            "Exception when calling endpoint connect{}\n",
-            err
-        ),
+        Err(err) => panic!("Exception when calling endpoint connect{}\n", err),
     };
 
     let mosaic_api = client.mosaic_api();

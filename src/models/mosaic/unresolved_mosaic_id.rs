@@ -8,9 +8,9 @@ use std::{any::Any, fmt};
 
 use anyhow::{anyhow, Result};
 
-use crate::AsUint64;
 use crate::helpers::{hex_decode, is_hex};
 use crate::namespace::NamespaceId;
+use crate::AsUint64;
 
 use super::MosaicId;
 
@@ -87,9 +87,9 @@ impl dyn UnresolvedMosaicId {
     ///
     pub fn from_hex(hex: &str) -> Result<Box<dyn UnresolvedMosaicId>> {
         ensure!(
-        is_hex(hex),
-        "Input string is not in valid hexadecimal notation."
-    );
+            is_hex(hex),
+            "Input string is not in valid hexadecimal notation."
+        );
         let bytes = hex_decode(hex);
         let byte0 = &bytes[0];
 
@@ -186,7 +186,8 @@ mod tests {
 
     #[test]
     fn test_can_map_hex_string_to_namespace_id() {
-        let unresolved = <dyn UnresolvedMosaicId>::from_hex(NAMESPACE_ID.to_hex().as_str()).unwrap();
+        let unresolved =
+            <dyn UnresolvedMosaicId>::from_hex(NAMESPACE_ID.to_hex().as_str()).unwrap();
         assert!(unresolved.clone().try_downcast::<NamespaceId>().is_ok());
         assert_eq!(unresolved.try_downcast::<MosaicId>().is_ok(), false);
     }

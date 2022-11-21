@@ -72,8 +72,8 @@ pub(crate) enum ServerIo<IO> {
     TlsIo(TlsStream<IO>),
 }
 
-use tower::util::Either;
 use crate::api::server::Connected;
+use tower::util::Either;
 
 #[cfg(feature = "tls")]
 type ServerIoConnectInfo<IO> =

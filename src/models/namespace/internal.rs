@@ -11,10 +11,7 @@ use {
     sha3::{Digest, Sha3_256},
 };
 
-use crate::{
-    errors_const,
-    helpers::array_u8_to_u64, mosaic::UnresolvedMosaicId,
-};
+use crate::{errors_const, helpers::array_u8_to_u64, mosaic::UnresolvedMosaicId};
 
 use super::NamespaceId;
 
@@ -51,10 +48,7 @@ pub(crate) fn generate_namespace_path(name: &str) -> Result<Vec<NamespaceId>> {
     Ok(path)
 }
 
-pub(crate) fn generate_namespace_id(
-    name: &str,
-    parent_id: NamespaceId,
-) -> Result<NamespaceId> {
+pub(crate) fn generate_namespace_id(name: &str, parent_id: NamespaceId) -> Result<NamespaceId> {
     let mut result = Sha3_256::default();
 
     let id_to_bytes = parent_id.to_builder();
@@ -65,5 +59,7 @@ pub(crate) fn generate_namespace_id(
 
     let t_result = result.finalize();
 
-    Ok(NamespaceId::create(array_u8_to_u64(&t_result) | NAMESPACE_BIT))
+    Ok(NamespaceId::create(
+        array_u8_to_u64(&t_result) | NAMESPACE_BIT,
+    ))
 }

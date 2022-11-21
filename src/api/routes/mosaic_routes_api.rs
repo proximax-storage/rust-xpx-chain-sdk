@@ -8,20 +8,20 @@ use http::Request;
 
 use reqwest::Method;
 
+use crate::api::body::BoxBody;
+use crate::api::routes::const_routes::{MOSAIC_LEVY_ROUTE, MOSAIC_RICH_LIST_ROUTE};
+use crate::api::{Client, MosaicLevyDTO, MosaicRichListDTO, PageQueryParams};
+use crate::mosaic::{MosaicLevy, MosaicRichList, UnresolvedMosaicId};
 use crate::{
     api::{
-        error::Result, internally::valid_vec_len, MosaicInfoDto,
-        MosaicNamesDto, request as __internal_request,
+        error::Result, internally::valid_vec_len, request as __internal_request, MosaicInfoDto,
+        MosaicNamesDto,
     },
     errors_const::ERR_EMPTY_MOSAIC_IDS,
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},
 };
-use crate::api::{Client, MosaicLevyDTO, MosaicRichListDTO, PageQueryParams};
-use crate::api::body::BoxBody;
-use crate::api::routes::const_routes::{MOSAIC_LEVY_ROUTE, MOSAIC_RICH_LIST_ROUTE};
-use crate::mosaic::{MosaicLevy, MosaicRichList, UnresolvedMosaicId};
 
-use super::{MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE, MOSAICS_ROUTE};
+use super::{MOSAICS_ROUTE, MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE};
 
 /// Mosaic ApiClient routes.
 ///
@@ -224,7 +224,8 @@ impl MosaicRoutes {
     }
 
     pub async fn get_mosaic_levy(&self, mosaic_id: MosaicId) -> Result<MosaicLevy> {
-        let mut req = __internal_request::ApiRequest::new(Method::GET, MOSAIC_LEVY_ROUTE.to_string());
+        let mut req =
+            __internal_request::ApiRequest::new(Method::GET, MOSAIC_LEVY_ROUTE.to_string());
 
         req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_hex());
 

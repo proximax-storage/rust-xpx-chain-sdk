@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for PropertyModificationBuffer<'a> {
     type Inner = PropertyModificationBuffer<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -35,33 +37,46 @@ impl<'a> PropertyModificationBuffer<'a> {
         args: &'args PropertyModificationBufferArgs<'args>,
     ) -> flatbuffers::WIPOffset<PropertyModificationBuffer<'bldr>> {
         let mut builder = PropertyModificationBufferBuilder::new(_fbb);
-        if let Some(x) = args.value { builder.add_value(x); }
+        if let Some(x) = args.value {
+            builder.add_value(x);
+        }
         builder.add_modificationType(args.modificationType);
         builder.finish()
     }
 
-
     #[inline]
     pub fn modificationType(&self) -> u8 {
-        self._tab.get::<u8>(PropertyModificationBuffer::VT_MODIFICATIONTYPE, Some(0)).unwrap()
+        self._tab
+            .get::<u8>(PropertyModificationBuffer::VT_MODIFICATIONTYPE, Some(0))
+            .unwrap()
     }
     /// In case of address it is 25 bytes array. In case of mosaic it is 8 byte array(or 2 uint32 array).
     /// In case of transaction it is 2 byte array(ushort)
     #[inline]
     pub fn value(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(PropertyModificationBuffer::VT_VALUE, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                PropertyModificationBuffer::VT_VALUE,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
 }
 
 impl flatbuffers::Verifiable for PropertyModificationBuffer<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u8>("modificationType", Self::VT_MODIFICATIONTYPE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("value", Self::VT_VALUE, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "value",
+                Self::VT_VALUE,
+                false,
+            )?
             .finish();
         Ok(())
     }
@@ -90,14 +105,23 @@ pub struct PropertyModificationBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> PropertyModificationBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_modificationType(&mut self, modificationType: u8) {
-        self.fbb_.push_slot::<u8>(PropertyModificationBuffer::VT_MODIFICATIONTYPE, modificationType, 0);
+        self.fbb_.push_slot::<u8>(
+            PropertyModificationBuffer::VT_MODIFICATIONTYPE,
+            modificationType,
+            0,
+        );
     }
     #[inline]
     pub fn add_value(&mut self, value: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(PropertyModificationBuffer::VT_VALUE, value);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            PropertyModificationBuffer::VT_VALUE,
+            value,
+        );
     }
     #[inline]
-    pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> PropertyModificationBufferBuilder<'a, 'b> {
+    pub fn new(
+        _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    ) -> PropertyModificationBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
         PropertyModificationBufferBuilder {
             fbb_: _fbb,

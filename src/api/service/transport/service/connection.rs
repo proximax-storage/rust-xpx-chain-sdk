@@ -1,5 +1,5 @@
 use super::super::BoxFuture;
-use super::{ reconnect::Reconnect, AddOrigin, UserAgent};
+use super::{reconnect::Reconnect, AddOrigin, UserAgent};
 use crate::api::{body::BoxBody, transport::Endpoint};
 use http::Uri;
 use hyper::client::conn::Builder;
@@ -60,7 +60,10 @@ impl Connection {
         }
     }
 
-    pub(crate) async fn connect<C>(connector: C, endpoint: Endpoint) -> Result<Self, crate::api::Error>
+    pub(crate) async fn connect<C>(
+        connector: C,
+        endpoint: Endpoint,
+    ) -> Result<Self, crate::api::Error>
     where
         C: Service<Uri> + Send + 'static,
         C::Error: Into<crate::api::Error> + Send,

@@ -1,10 +1,10 @@
-pub use self::transport::*;
 pub use self::status::*;
+pub use self::transport::*;
 
-pub mod transport;
 pub mod body;
-pub mod util;
 pub mod status;
+pub mod transport;
+pub mod util;
 
 pub(crate) type Error = Box<dyn std::error::Error + Send + Sync>;
 

@@ -9,8 +9,8 @@ pub(crate) use self::internally::*;
 pub use self::page_query_params::*;
 pub use self::pagination::*;
 pub use self::query_params::*;
-pub use self::service::*;
 pub use self::routes::transaction_routes_api::AnnounceTransactionInfo;
+pub use self::service::*;
 pub use self::transaction_query_params::*;
 
 mod dtos;
@@ -21,5 +21,5 @@ pub mod pagination;
 mod query_params;
 mod request;
 pub mod routes;
-mod transaction_query_params;
 pub(crate) mod service;
+mod transaction_query_params;

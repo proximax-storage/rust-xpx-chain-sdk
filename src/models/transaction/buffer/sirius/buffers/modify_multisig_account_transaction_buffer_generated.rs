@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for ModifyMultisigAccountTransactionBuffer<'a> 
     type Inner = ModifyMultisigAccountTransactionBuffer<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -44,12 +46,22 @@ impl<'a> ModifyMultisigAccountTransactionBuffer<'a> {
         args: &'args ModifyMultisigAccountTransactionBufferArgs<'args>,
     ) -> flatbuffers::WIPOffset<ModifyMultisigAccountTransactionBuffer<'bldr>> {
         let mut builder = ModifyMultisigAccountTransactionBufferBuilder::new(_fbb);
-        if let Some(x) = args.modifications { builder.add_modifications(x); }
-        if let Some(x) = args.deadline { builder.add_deadline(x); }
-        if let Some(x) = args.max_fee { builder.add_max_fee(x); }
+        if let Some(x) = args.modifications {
+            builder.add_modifications(x);
+        }
+        if let Some(x) = args.deadline {
+            builder.add_deadline(x);
+        }
+        if let Some(x) = args.max_fee {
+            builder.add_max_fee(x);
+        }
         builder.add_version(args.version);
-        if let Some(x) = args.signer { builder.add_signer(x); }
-        if let Some(x) = args.signature { builder.add_signature(x); }
+        if let Some(x) = args.signer {
+            builder.add_signer(x);
+        }
+        if let Some(x) = args.signature {
+            builder.add_signature(x);
+        }
         builder.add_size_(args.size_);
         builder.add_type_(args.type_);
         builder.add_num_modifications(args.num_modifications);
@@ -58,71 +70,140 @@ impl<'a> ModifyMultisigAccountTransactionBuffer<'a> {
         builder.finish()
     }
 
-
     #[inline]
     pub fn size_(&self) -> u32 {
-        self._tab.get::<u32>(ModifyMultisigAccountTransactionBuffer::VT_SIZE_, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(ModifyMultisigAccountTransactionBuffer::VT_SIZE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn signature(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(ModifyMultisigAccountTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                ModifyMultisigAccountTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn signer(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(ModifyMultisigAccountTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                ModifyMultisigAccountTransactionBuffer::VT_SIGNER,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn version(&self) -> u32 {
-        self._tab.get::<u32>(ModifyMultisigAccountTransactionBuffer::VT_VERSION, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(ModifyMultisigAccountTransactionBuffer::VT_VERSION, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn type_(&self) -> u16 {
-        self._tab.get::<u16>(ModifyMultisigAccountTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
+        self._tab
+            .get::<u16>(ModifyMultisigAccountTransactionBuffer::VT_TYPE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(ModifyMultisigAccountTransactionBuffer::VT_MAX_FEE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                ModifyMultisigAccountTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
     }
     #[inline]
     pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(ModifyMultisigAccountTransactionBuffer::VT_DEADLINE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                ModifyMultisigAccountTransactionBuffer::VT_DEADLINE,
+                None,
+            )
     }
     #[inline]
     pub fn min_removal_delta(&self) -> i8 {
-        self._tab.get::<i8>(ModifyMultisigAccountTransactionBuffer::VT_MIN_REMOVAL_DELTA, Some(0)).unwrap()
+        self._tab
+            .get::<i8>(
+                ModifyMultisigAccountTransactionBuffer::VT_MIN_REMOVAL_DELTA,
+                Some(0),
+            )
+            .unwrap()
     }
     #[inline]
     pub fn _minApprovalDelta(&self) -> i8 {
-        self._tab.get::<i8>(ModifyMultisigAccountTransactionBuffer::VT__MINAPPROVALDELTA, Some(0)).unwrap()
+        self._tab
+            .get::<i8>(
+                ModifyMultisigAccountTransactionBuffer::VT__MINAPPROVALDELTA,
+                Some(0),
+            )
+            .unwrap()
     }
     #[inline]
     pub fn num_modifications(&self) -> u8 {
-        self._tab.get::<u8>(ModifyMultisigAccountTransactionBuffer::VT_NUM_MODIFICATIONS, Some(0)).unwrap()
+        self._tab
+            .get::<u8>(
+                ModifyMultisigAccountTransactionBuffer::VT_NUM_MODIFICATIONS,
+                Some(0),
+            )
+            .unwrap()
     }
     #[inline]
-    pub fn modifications(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer<'a>>>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer>>>>(ModifyMultisigAccountTransactionBuffer::VT_MODIFICATIONS, None)
+    pub fn modifications(
+        &self,
+    ) -> Option<
+        flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer<'a>>>,
+    > {
+        self._tab.get::<flatbuffers::ForwardsUOffset<
+            flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer>>,
+        >>(
+            ModifyMultisigAccountTransactionBuffer::VT_MODIFICATIONS,
+            None,
+        )
     }
 }
 
 impl flatbuffers::Verifiable for ModifyMultisigAccountTransactionBuffer<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signature", Self::VT_SIGNATURE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signer", Self::VT_SIGNER, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signature",
+                Self::VT_SIGNATURE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signer",
+                Self::VT_SIGNER,
+                false,
+            )?
             .visit_field::<u32>("version", Self::VT_VERSION, false)?
             .visit_field::<u16>("type_", Self::VT_TYPE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("max_fee", Self::VT_MAX_FEE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("deadline", Self::VT_DEADLINE, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "max_fee",
+                Self::VT_MAX_FEE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "deadline",
+                Self::VT_DEADLINE,
+                false,
+            )?
             .visit_field::<i8>("min_removal_delta", Self::VT_MIN_REMOVAL_DELTA, false)?
             .visit_field::<i8>("_minApprovalDelta", Self::VT__MINAPPROVALDELTA, false)?
             .visit_field::<u8>("num_modifications", Self::VT_NUM_MODIFICATIONS, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer>>>>("modifications", Self::VT_MODIFICATIONS, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<
+                flatbuffers::Vector<
+                    '_,
+                    flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer>,
+                >,
+            >>("modifications", Self::VT_MODIFICATIONS, false)?
             .finish();
         Ok(())
     }
@@ -139,7 +220,14 @@ pub struct ModifyMultisigAccountTransactionBufferArgs<'a> {
     pub min_removal_delta: i8,
     pub _minApprovalDelta: i8,
     pub num_modifications: u8,
-    pub modifications: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer<'a>>>>>,
+    pub modifications: Option<
+        flatbuffers::WIPOffset<
+            flatbuffers::Vector<
+                'a,
+                flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer<'a>>,
+            >,
+        >,
+    >,
 }
 
 impl<'a> Default for ModifyMultisigAccountTransactionBufferArgs<'a> {
@@ -169,50 +257,96 @@ pub struct ModifyMultisigAccountTransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> ModifyMultisigAccountTransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_.push_slot::<u32>(ModifyMultisigAccountTransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_
+            .push_slot::<u32>(ModifyMultisigAccountTransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
-    pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMultisigAccountTransactionBuffer::VT_SIGNATURE, signature);
+    pub fn add_signature(
+        &mut self,
+        signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            ModifyMultisigAccountTransactionBuffer::VT_SIGNATURE,
+            signature,
+        );
     }
     #[inline]
     pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMultisigAccountTransactionBuffer::VT_SIGNER, signer);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            ModifyMultisigAccountTransactionBuffer::VT_SIGNER,
+            signer,
+        );
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_.push_slot::<u32>(ModifyMultisigAccountTransactionBuffer::VT_VERSION, version, 0);
+        self.fbb_.push_slot::<u32>(
+            ModifyMultisigAccountTransactionBuffer::VT_VERSION,
+            version,
+            0,
+        );
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_.push_slot::<u16>(ModifyMultisigAccountTransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_
+            .push_slot::<u16>(ModifyMultisigAccountTransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMultisigAccountTransactionBuffer::VT_MAX_FEE, max_fee);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            ModifyMultisigAccountTransactionBuffer::VT_MAX_FEE,
+            max_fee,
+        );
     }
     #[inline]
     pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMultisigAccountTransactionBuffer::VT_DEADLINE, deadline);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            ModifyMultisigAccountTransactionBuffer::VT_DEADLINE,
+            deadline,
+        );
     }
     #[inline]
     pub fn add_min_removal_delta(&mut self, min_removal_delta: i8) {
-        self.fbb_.push_slot::<i8>(ModifyMultisigAccountTransactionBuffer::VT_MIN_REMOVAL_DELTA, min_removal_delta, 0);
+        self.fbb_.push_slot::<i8>(
+            ModifyMultisigAccountTransactionBuffer::VT_MIN_REMOVAL_DELTA,
+            min_removal_delta,
+            0,
+        );
     }
     #[inline]
     pub fn add__minApprovalDelta(&mut self, _minApprovalDelta: i8) {
-        self.fbb_.push_slot::<i8>(ModifyMultisigAccountTransactionBuffer::VT__MINAPPROVALDELTA, _minApprovalDelta, 0);
+        self.fbb_.push_slot::<i8>(
+            ModifyMultisigAccountTransactionBuffer::VT__MINAPPROVALDELTA,
+            _minApprovalDelta,
+            0,
+        );
     }
     #[inline]
     pub fn add_num_modifications(&mut self, num_modifications: u8) {
-        self.fbb_.push_slot::<u8>(ModifyMultisigAccountTransactionBuffer::VT_NUM_MODIFICATIONS, num_modifications, 0);
+        self.fbb_.push_slot::<u8>(
+            ModifyMultisigAccountTransactionBuffer::VT_NUM_MODIFICATIONS,
+            num_modifications,
+            0,
+        );
     }
     #[inline]
-    pub fn add_modifications(&mut self, modifications: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer<'b>>>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(ModifyMultisigAccountTransactionBuffer::VT_MODIFICATIONS, modifications);
+    pub fn add_modifications(
+        &mut self,
+        modifications: flatbuffers::WIPOffset<
+            flatbuffers::Vector<
+                'b,
+                flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer<'b>>,
+            >,
+        >,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            ModifyMultisigAccountTransactionBuffer::VT_MODIFICATIONS,
+            modifications,
+        );
     }
     #[inline]
-    pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> ModifyMultisigAccountTransactionBufferBuilder<'a, 'b> {
+    pub fn new(
+        _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    ) -> ModifyMultisigAccountTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
         ModifyMultisigAccountTransactionBufferBuilder {
             fbb_: _fbb,
@@ -246,14 +380,20 @@ impl core::fmt::Debug for ModifyMultisigAccountTransactionBuffer<'_> {
 
 #[inline]
 #[deprecated(since = "2.0.0", note = "Deprecated in favor of `root_as...` methods.")]
-pub fn get_root_as_modify_multisig_account_transaction_buffer<'a>(buf: &'a [u8]) -> ModifyMultisigAccountTransactionBuffer<'a> {
+pub fn get_root_as_modify_multisig_account_transaction_buffer<'a>(
+    buf: &'a [u8],
+) -> ModifyMultisigAccountTransactionBuffer<'a> {
     unsafe { flatbuffers::root_unchecked::<ModifyMultisigAccountTransactionBuffer<'a>>(buf) }
 }
 
 #[inline]
 #[deprecated(since = "2.0.0", note = "Deprecated in favor of `root_as...` methods.")]
-pub fn get_size_prefixed_root_as_modify_multisig_account_transaction_buffer<'a>(buf: &'a [u8]) -> ModifyMultisigAccountTransactionBuffer<'a> {
-    unsafe { flatbuffers::size_prefixed_root_unchecked::<ModifyMultisigAccountTransactionBuffer<'a>>(buf) }
+pub fn get_size_prefixed_root_as_modify_multisig_account_transaction_buffer<'a>(
+    buf: &'a [u8],
+) -> ModifyMultisigAccountTransactionBuffer<'a> {
+    unsafe {
+        flatbuffers::size_prefixed_root_unchecked::<ModifyMultisigAccountTransactionBuffer<'a>>(buf)
+    }
 }
 
 #[inline]
@@ -263,7 +403,9 @@ pub fn get_size_prefixed_root_as_modify_multisig_account_transaction_buffer<'a>(
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `root_as_modify_multisig_account_transaction_buffer_unchecked`.
-pub fn root_as_modify_multisig_account_transaction_buffer(buf: &[u8]) -> Result<ModifyMultisigAccountTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn root_as_modify_multisig_account_transaction_buffer(
+    buf: &[u8],
+) -> Result<ModifyMultisigAccountTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::root::<ModifyMultisigAccountTransactionBuffer>(buf)
 }
 
@@ -274,7 +416,9 @@ pub fn root_as_modify_multisig_account_transaction_buffer(buf: &[u8]) -> Result<
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `size_prefixed_root_as_modify_multisig_account_transaction_buffer_unchecked`.
-pub fn size_prefixed_root_as_modify_multisig_account_transaction_buffer(buf: &[u8]) -> Result<ModifyMultisigAccountTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn size_prefixed_root_as_modify_multisig_account_transaction_buffer(
+    buf: &[u8],
+) -> Result<ModifyMultisigAccountTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::size_prefixed_root::<ModifyMultisigAccountTransactionBuffer>(buf)
 }
 
@@ -303,14 +447,18 @@ pub fn size_prefixed_root_as_modify_multisig_account_transaction_buffer_with_opt
     opts: &'o flatbuffers::VerifierOptions,
     buf: &'b [u8],
 ) -> Result<ModifyMultisigAccountTransactionBuffer<'b>, flatbuffers::InvalidFlatbuffer> {
-    flatbuffers::size_prefixed_root_with_opts::<ModifyMultisigAccountTransactionBuffer<'b>>(opts, buf)
+    flatbuffers::size_prefixed_root_with_opts::<ModifyMultisigAccountTransactionBuffer<'b>>(
+        opts, buf,
+    )
 }
 
 #[inline]
 /// Assumes, without verification, that a buffer of bytes contains a ModifyMultisigAccountTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid `ModifyMultisigAccountTransactionBuffer`.
-pub unsafe fn root_as_modify_multisig_account_transaction_buffer_unchecked(buf: &[u8]) -> ModifyMultisigAccountTransactionBuffer {
+pub unsafe fn root_as_modify_multisig_account_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> ModifyMultisigAccountTransactionBuffer {
     flatbuffers::root_unchecked::<ModifyMultisigAccountTransactionBuffer>(buf)
 }
 
@@ -318,18 +466,24 @@ pub unsafe fn root_as_modify_multisig_account_transaction_buffer_unchecked(buf: 
 /// Assumes, without verification, that a buffer of bytes contains a size prefixed ModifyMultisigAccountTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid size prefixed `ModifyMultisigAccountTransactionBuffer`.
-pub unsafe fn size_prefixed_root_as_modify_multisig_account_transaction_buffer_unchecked(buf: &[u8]) -> ModifyMultisigAccountTransactionBuffer {
+pub unsafe fn size_prefixed_root_as_modify_multisig_account_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> ModifyMultisigAccountTransactionBuffer {
     flatbuffers::size_prefixed_root_unchecked::<ModifyMultisigAccountTransactionBuffer>(buf)
 }
 
 #[inline]
 pub fn finish_modify_multisig_account_transaction_buffer_buffer<'a, 'b>(
     fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<ModifyMultisigAccountTransactionBuffer<'a>>) {
+    root: flatbuffers::WIPOffset<ModifyMultisigAccountTransactionBuffer<'a>>,
+) {
     fbb.finish(root, None);
 }
 
 #[inline]
-pub fn finish_size_prefixed_modify_multisig_account_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<ModifyMultisigAccountTransactionBuffer<'a>>) {
+pub fn finish_size_prefixed_modify_multisig_account_transaction_buffer_buffer<'a, 'b>(
+    fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    root: flatbuffers::WIPOffset<ModifyMultisigAccountTransactionBuffer<'a>>,
+) {
     fbb.finish_size_prefixed(root, None);
 }

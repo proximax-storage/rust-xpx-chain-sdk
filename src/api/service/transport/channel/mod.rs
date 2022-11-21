@@ -16,6 +16,7 @@ use http::{
     Request, Response,
 };
 use hyper::client::connect::Connection as HyperConnection;
+use hyper::rt::Executor;
 use std::{
     fmt,
     future::Future,
@@ -23,19 +24,11 @@ use std::{
     pin::Pin,
     task::{Context, Poll},
 };
-use hyper::rt::Executor;
 use tokio::{
     io::{AsyncRead, AsyncWrite},
     sync::mpsc::{channel, Sender},
 };
 
-use tower::balance::p2c::Balance;
-use tower::{
-    buffer::{self, Buffer},
-    discover::{Change, Discover},
-    util::{BoxService, Either},
-    Service,
-};
 use crate::api::body::BoxBody;
 use crate::api::routes::account_routes_api::AccountRoutes;
 use crate::api::routes::chain_routes_api::ChainRoutes;
@@ -43,8 +36,16 @@ use crate::api::routes::mosaic_routes_api::MosaicRoutes;
 use crate::api::routes::network_routes_api::NetworkRoutes;
 use crate::api::routes::node_routes_api::NodeRoutes;
 use crate::api::routes::transaction_routes_api::TransactionRoutes;
+use tower::balance::p2c::Balance;
+use tower::{
+    buffer::{self, Buffer},
+    discover::{Change, Discover},
+    util::{BoxService, Either},
+    Service,
+};
 
-pub type Svc = Either<Connection, BoxService<Request<BoxBody>, Response<hyper::Body>, crate::api::Error>>;
+pub type Svc =
+    Either<Connection, BoxService<Request<BoxBody>, Response<hyper::Body>, crate::api::Error>>;
 
 const DEFAULT_BUFFER_SIZE: usize = 1024;
 

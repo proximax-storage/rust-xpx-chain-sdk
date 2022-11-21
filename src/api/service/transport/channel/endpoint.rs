@@ -2,6 +2,7 @@ use super::super::service;
 use super::Client;
 #[cfg(feature = "tls")]
 use super::ClientTlsConfig;
+use crate::api;
 #[cfg(feature = "tls")]
 use crate::transport::service::TlsConnector;
 use api::transport::{service::SharedExec, Error, Executor};
@@ -16,7 +17,6 @@ use std::{
     time::Duration,
 };
 use tower::make::MakeConnection;
-use crate::api;
 
 /// Channel builder.
 ///

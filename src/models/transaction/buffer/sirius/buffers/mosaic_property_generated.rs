@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for MosaicProperty<'a> {
     type Inner = MosaicProperty<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -35,31 +37,43 @@ impl<'a> MosaicProperty<'a> {
         args: &'args MosaicPropertyArgs<'args>,
     ) -> flatbuffers::WIPOffset<MosaicProperty<'bldr>> {
         let mut builder = MosaicPropertyBuilder::new(_fbb);
-        if let Some(x) = args.value { builder.add_value(x); }
+        if let Some(x) = args.value {
+            builder.add_value(x);
+        }
         builder.add_mosaic_property_id(args.mosaic_property_id);
         builder.finish()
     }
 
-
     #[inline]
     pub fn mosaic_property_id(&self) -> u8 {
-        self._tab.get::<u8>(MosaicProperty::VT_MOSAIC_PROPERTY_ID, Some(0)).unwrap()
+        self._tab
+            .get::<u8>(MosaicProperty::VT_MOSAIC_PROPERTY_ID, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn value(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(MosaicProperty::VT_VALUE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicProperty::VT_VALUE,
+                None,
+            )
     }
 }
 
 impl flatbuffers::Verifiable for MosaicProperty<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u8>("mosaic_property_id", Self::VT_MOSAIC_PROPERTY_ID, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("value", Self::VT_VALUE, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "value",
+                Self::VT_VALUE,
+                false,
+            )?
             .finish();
         Ok(())
     }
@@ -88,11 +102,13 @@ pub struct MosaicPropertyBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> MosaicPropertyBuilder<'a, 'b> {
     #[inline]
     pub fn add_mosaic_property_id(&mut self, mosaic_property_id: u8) {
-        self.fbb_.push_slot::<u8>(MosaicProperty::VT_MOSAIC_PROPERTY_ID, mosaic_property_id, 0);
+        self.fbb_
+            .push_slot::<u8>(MosaicProperty::VT_MOSAIC_PROPERTY_ID, mosaic_property_id, 0);
     }
     #[inline]
     pub fn add_value(&mut self, value: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicProperty::VT_VALUE, value);
+        self.fbb_
+            .push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicProperty::VT_VALUE, value);
     }
     #[inline]
     pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> MosaicPropertyBuilder<'a, 'b> {

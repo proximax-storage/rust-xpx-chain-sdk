@@ -11,15 +11,13 @@ use anyhow::Result;
 use {serde_json::Value, std::fmt};
 
 use crate::{
-    account::PublicAccount,
+    account::PublicAccount, models::consts::LOCK_SIZE, mosaic::Mosaic, network::NetworkType,
     AsUint64,
-    models::consts::LOCK_SIZE,
-    mosaic::Mosaic, network::NetworkType,
 };
 
 use super::{
-    buffers, CommonTransaction, Deadline, schema::lock_funds_transaction_schema, SignedTransaction, Transaction, TransactionType,
-    TransactionVersion,
+    buffers, schema::lock_funds_transaction_schema, CommonTransaction, Deadline, SignedTransaction,
+    Transaction, TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

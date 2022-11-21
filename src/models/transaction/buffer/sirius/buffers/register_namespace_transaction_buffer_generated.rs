@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for RegisterNamespaceTransactionBuffer<'a> {
     type Inner = RegisterNamespaceTransactionBuffer<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -45,14 +47,28 @@ impl<'a> RegisterNamespaceTransactionBuffer<'a> {
         args: &'args RegisterNamespaceTransactionBufferArgs<'args>,
     ) -> flatbuffers::WIPOffset<RegisterNamespaceTransactionBuffer<'bldr>> {
         let mut builder = RegisterNamespaceTransactionBufferBuilder::new(_fbb);
-        if let Some(x) = args.namespace_name { builder.add_namespace_name(x); }
-        if let Some(x) = args.namespace_id { builder.add_namespace_id(x); }
-        if let Some(x) = args.duration_parent_id { builder.add_duration_parent_id(x); }
-        if let Some(x) = args.deadline { builder.add_deadline(x); }
-        if let Some(x) = args.max_fee { builder.add_max_fee(x); }
+        if let Some(x) = args.namespace_name {
+            builder.add_namespace_name(x);
+        }
+        if let Some(x) = args.namespace_id {
+            builder.add_namespace_id(x);
+        }
+        if let Some(x) = args.duration_parent_id {
+            builder.add_duration_parent_id(x);
+        }
+        if let Some(x) = args.deadline {
+            builder.add_deadline(x);
+        }
+        if let Some(x) = args.max_fee {
+            builder.add_max_fee(x);
+        }
         builder.add_version(args.version);
-        if let Some(x) = args.signer { builder.add_signer(x); }
-        if let Some(x) = args.signature { builder.add_signature(x); }
+        if let Some(x) = args.signer {
+            builder.add_signer(x);
+        }
+        if let Some(x) = args.signature {
+            builder.add_signature(x);
+        }
         builder.add_size_(args.size_);
         builder.add_type_(args.type_);
         builder.add_namespace_name_size(args.namespace_name_size);
@@ -60,76 +76,149 @@ impl<'a> RegisterNamespaceTransactionBuffer<'a> {
         builder.finish()
     }
 
-
     #[inline]
     pub fn size_(&self) -> u32 {
-        self._tab.get::<u32>(RegisterNamespaceTransactionBuffer::VT_SIZE_, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(RegisterNamespaceTransactionBuffer::VT_SIZE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn signature(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(RegisterNamespaceTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                RegisterNamespaceTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn signer(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(RegisterNamespaceTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                RegisterNamespaceTransactionBuffer::VT_SIGNER,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn version(&self) -> u32 {
-        self._tab.get::<u32>(RegisterNamespaceTransactionBuffer::VT_VERSION, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(RegisterNamespaceTransactionBuffer::VT_VERSION, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn type_(&self) -> u16 {
-        self._tab.get::<u16>(RegisterNamespaceTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
+        self._tab
+            .get::<u16>(RegisterNamespaceTransactionBuffer::VT_TYPE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(RegisterNamespaceTransactionBuffer::VT_MAX_FEE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RegisterNamespaceTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
     }
     #[inline]
     pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(RegisterNamespaceTransactionBuffer::VT_DEADLINE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RegisterNamespaceTransactionBuffer::VT_DEADLINE,
+                None,
+            )
     }
     #[inline]
     pub fn namespace_type(&self) -> u8 {
-        self._tab.get::<u8>(RegisterNamespaceTransactionBuffer::VT_NAMESPACE_TYPE, Some(0)).unwrap()
+        self._tab
+            .get::<u8>(
+                RegisterNamespaceTransactionBuffer::VT_NAMESPACE_TYPE,
+                Some(0),
+            )
+            .unwrap()
     }
     #[inline]
     pub fn duration_parent_id(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(RegisterNamespaceTransactionBuffer::VT_DURATION_PARENT_ID, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RegisterNamespaceTransactionBuffer::VT_DURATION_PARENT_ID,
+                None,
+            )
     }
     #[inline]
     pub fn namespace_id(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(RegisterNamespaceTransactionBuffer::VT_NAMESPACE_ID, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RegisterNamespaceTransactionBuffer::VT_NAMESPACE_ID,
+                None,
+            )
     }
     #[inline]
     pub fn namespace_name_size(&self) -> u8 {
-        self._tab.get::<u8>(RegisterNamespaceTransactionBuffer::VT_NAMESPACE_NAME_SIZE, Some(0)).unwrap()
+        self._tab
+            .get::<u8>(
+                RegisterNamespaceTransactionBuffer::VT_NAMESPACE_NAME_SIZE,
+                Some(0),
+            )
+            .unwrap()
     }
     #[inline]
     pub fn namespace_name(&self) -> Option<&'a str> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(RegisterNamespaceTransactionBuffer::VT_NAMESPACE_NAME, None)
+        self._tab.get::<flatbuffers::ForwardsUOffset<&str>>(
+            RegisterNamespaceTransactionBuffer::VT_NAMESPACE_NAME,
+            None,
+        )
     }
 }
 
 impl flatbuffers::Verifiable for RegisterNamespaceTransactionBuffer<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signature", Self::VT_SIGNATURE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signer", Self::VT_SIGNER, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signature",
+                Self::VT_SIGNATURE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signer",
+                Self::VT_SIGNER,
+                false,
+            )?
             .visit_field::<u32>("version", Self::VT_VERSION, false)?
             .visit_field::<u16>("type_", Self::VT_TYPE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("max_fee", Self::VT_MAX_FEE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("deadline", Self::VT_DEADLINE, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "max_fee",
+                Self::VT_MAX_FEE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "deadline",
+                Self::VT_DEADLINE,
+                false,
+            )?
             .visit_field::<u8>("namespace_type", Self::VT_NAMESPACE_TYPE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("duration_parent_id", Self::VT_DURATION_PARENT_ID, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("namespace_id", Self::VT_NAMESPACE_ID, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "duration_parent_id",
+                Self::VT_DURATION_PARENT_ID,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "namespace_id",
+                Self::VT_NAMESPACE_ID,
+                false,
+            )?
             .visit_field::<u8>("namespace_name_size", Self::VT_NAMESPACE_NAME_SIZE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<&str>>("namespace_name", Self::VT_NAMESPACE_NAME, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<&str>>(
+                "namespace_name",
+                Self::VT_NAMESPACE_NAME,
+                false,
+            )?
             .finish();
         Ok(())
     }
@@ -178,54 +267,97 @@ pub struct RegisterNamespaceTransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> RegisterNamespaceTransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_.push_slot::<u32>(RegisterNamespaceTransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_
+            .push_slot::<u32>(RegisterNamespaceTransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
-    pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RegisterNamespaceTransactionBuffer::VT_SIGNATURE, signature);
+    pub fn add_signature(
+        &mut self,
+        signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RegisterNamespaceTransactionBuffer::VT_SIGNATURE,
+            signature,
+        );
     }
     #[inline]
     pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RegisterNamespaceTransactionBuffer::VT_SIGNER, signer);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RegisterNamespaceTransactionBuffer::VT_SIGNER,
+            signer,
+        );
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_.push_slot::<u32>(RegisterNamespaceTransactionBuffer::VT_VERSION, version, 0);
+        self.fbb_
+            .push_slot::<u32>(RegisterNamespaceTransactionBuffer::VT_VERSION, version, 0);
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_.push_slot::<u16>(RegisterNamespaceTransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_
+            .push_slot::<u16>(RegisterNamespaceTransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RegisterNamespaceTransactionBuffer::VT_MAX_FEE, max_fee);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RegisterNamespaceTransactionBuffer::VT_MAX_FEE,
+            max_fee,
+        );
     }
     #[inline]
     pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RegisterNamespaceTransactionBuffer::VT_DEADLINE, deadline);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RegisterNamespaceTransactionBuffer::VT_DEADLINE,
+            deadline,
+        );
     }
     #[inline]
     pub fn add_namespace_type(&mut self, namespace_type: u8) {
-        self.fbb_.push_slot::<u8>(RegisterNamespaceTransactionBuffer::VT_NAMESPACE_TYPE, namespace_type, 0);
+        self.fbb_.push_slot::<u8>(
+            RegisterNamespaceTransactionBuffer::VT_NAMESPACE_TYPE,
+            namespace_type,
+            0,
+        );
     }
     #[inline]
-    pub fn add_duration_parent_id(&mut self, duration_parent_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RegisterNamespaceTransactionBuffer::VT_DURATION_PARENT_ID, duration_parent_id);
+    pub fn add_duration_parent_id(
+        &mut self,
+        duration_parent_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RegisterNamespaceTransactionBuffer::VT_DURATION_PARENT_ID,
+            duration_parent_id,
+        );
     }
     #[inline]
-    pub fn add_namespace_id(&mut self, namespace_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RegisterNamespaceTransactionBuffer::VT_NAMESPACE_ID, namespace_id);
+    pub fn add_namespace_id(
+        &mut self,
+        namespace_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RegisterNamespaceTransactionBuffer::VT_NAMESPACE_ID,
+            namespace_id,
+        );
     }
     #[inline]
     pub fn add_namespace_name_size(&mut self, namespace_name_size: u8) {
-        self.fbb_.push_slot::<u8>(RegisterNamespaceTransactionBuffer::VT_NAMESPACE_NAME_SIZE, namespace_name_size, 0);
+        self.fbb_.push_slot::<u8>(
+            RegisterNamespaceTransactionBuffer::VT_NAMESPACE_NAME_SIZE,
+            namespace_name_size,
+            0,
+        );
     }
     #[inline]
     pub fn add_namespace_name(&mut self, namespace_name: flatbuffers::WIPOffset<&'b str>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RegisterNamespaceTransactionBuffer::VT_NAMESPACE_NAME, namespace_name);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RegisterNamespaceTransactionBuffer::VT_NAMESPACE_NAME,
+            namespace_name,
+        );
     }
     #[inline]
-    pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> RegisterNamespaceTransactionBufferBuilder<'a, 'b> {
+    pub fn new(
+        _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    ) -> RegisterNamespaceTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
         RegisterNamespaceTransactionBufferBuilder {
             fbb_: _fbb,
@@ -260,14 +392,20 @@ impl core::fmt::Debug for RegisterNamespaceTransactionBuffer<'_> {
 
 #[inline]
 #[deprecated(since = "2.0.0", note = "Deprecated in favor of `root_as...` methods.")]
-pub fn get_root_as_register_namespace_transaction_buffer<'a>(buf: &'a [u8]) -> RegisterNamespaceTransactionBuffer<'a> {
+pub fn get_root_as_register_namespace_transaction_buffer<'a>(
+    buf: &'a [u8],
+) -> RegisterNamespaceTransactionBuffer<'a> {
     unsafe { flatbuffers::root_unchecked::<RegisterNamespaceTransactionBuffer<'a>>(buf) }
 }
 
 #[inline]
 #[deprecated(since = "2.0.0", note = "Deprecated in favor of `root_as...` methods.")]
-pub fn get_size_prefixed_root_as_register_namespace_transaction_buffer<'a>(buf: &'a [u8]) -> RegisterNamespaceTransactionBuffer<'a> {
-    unsafe { flatbuffers::size_prefixed_root_unchecked::<RegisterNamespaceTransactionBuffer<'a>>(buf) }
+pub fn get_size_prefixed_root_as_register_namespace_transaction_buffer<'a>(
+    buf: &'a [u8],
+) -> RegisterNamespaceTransactionBuffer<'a> {
+    unsafe {
+        flatbuffers::size_prefixed_root_unchecked::<RegisterNamespaceTransactionBuffer<'a>>(buf)
+    }
 }
 
 #[inline]
@@ -277,7 +415,9 @@ pub fn get_size_prefixed_root_as_register_namespace_transaction_buffer<'a>(buf: 
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `root_as_register_namespace_transaction_buffer_unchecked`.
-pub fn root_as_register_namespace_transaction_buffer(buf: &[u8]) -> Result<RegisterNamespaceTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn root_as_register_namespace_transaction_buffer(
+    buf: &[u8],
+) -> Result<RegisterNamespaceTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::root::<RegisterNamespaceTransactionBuffer>(buf)
 }
 
@@ -288,7 +428,9 @@ pub fn root_as_register_namespace_transaction_buffer(buf: &[u8]) -> Result<Regis
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `size_prefixed_root_as_register_namespace_transaction_buffer_unchecked`.
-pub fn size_prefixed_root_as_register_namespace_transaction_buffer(buf: &[u8]) -> Result<RegisterNamespaceTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn size_prefixed_root_as_register_namespace_transaction_buffer(
+    buf: &[u8],
+) -> Result<RegisterNamespaceTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::size_prefixed_root::<RegisterNamespaceTransactionBuffer>(buf)
 }
 
@@ -324,7 +466,9 @@ pub fn size_prefixed_root_as_register_namespace_transaction_buffer_with_opts<'b,
 /// Assumes, without verification, that a buffer of bytes contains a RegisterNamespaceTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid `RegisterNamespaceTransactionBuffer`.
-pub unsafe fn root_as_register_namespace_transaction_buffer_unchecked(buf: &[u8]) -> RegisterNamespaceTransactionBuffer {
+pub unsafe fn root_as_register_namespace_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> RegisterNamespaceTransactionBuffer {
     flatbuffers::root_unchecked::<RegisterNamespaceTransactionBuffer>(buf)
 }
 
@@ -332,18 +476,24 @@ pub unsafe fn root_as_register_namespace_transaction_buffer_unchecked(buf: &[u8]
 /// Assumes, without verification, that a buffer of bytes contains a size prefixed RegisterNamespaceTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid size prefixed `RegisterNamespaceTransactionBuffer`.
-pub unsafe fn size_prefixed_root_as_register_namespace_transaction_buffer_unchecked(buf: &[u8]) -> RegisterNamespaceTransactionBuffer {
+pub unsafe fn size_prefixed_root_as_register_namespace_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> RegisterNamespaceTransactionBuffer {
     flatbuffers::size_prefixed_root_unchecked::<RegisterNamespaceTransactionBuffer>(buf)
 }
 
 #[inline]
 pub fn finish_register_namespace_transaction_buffer_buffer<'a, 'b>(
     fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<RegisterNamespaceTransactionBuffer<'a>>) {
+    root: flatbuffers::WIPOffset<RegisterNamespaceTransactionBuffer<'a>>,
+) {
     fbb.finish(root, None);
 }
 
 #[inline]
-pub fn finish_size_prefixed_register_namespace_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<RegisterNamespaceTransactionBuffer<'a>>) {
+pub fn finish_size_prefixed_register_namespace_transaction_buffer_buffer<'a, 'b>(
+    fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    root: flatbuffers::WIPOffset<RegisterNamespaceTransactionBuffer<'a>>,
+) {
     fbb.finish_size_prefixed(root, None);
 }

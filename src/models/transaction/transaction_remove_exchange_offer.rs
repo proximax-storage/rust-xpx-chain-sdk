@@ -10,20 +10,17 @@ use anyhow::Result;
 
 use {::std::fmt, fb::FlatBufferBuilder, serde_json::Value};
 
-use crate::{
-    models::{
-        account::PublicAccount,
-        consts::{REMOVE_EXCHANGE_OFFER_HEADER_SIZE, REMOVE_EXCHANGE_OFFER_SIZE},
-        errors_const,
-        exchange::RemoveOffer,
-        network::NetworkType,
-    },
+use crate::models::{
+    account::PublicAccount,
+    consts::{REMOVE_EXCHANGE_OFFER_HEADER_SIZE, REMOVE_EXCHANGE_OFFER_SIZE},
+    errors_const,
+    exchange::RemoveOffer,
+    network::NetworkType,
 };
 
-use super::{buffers,
-            CommonTransaction, deadline::Deadline,
-            schema::remove_exchange_offer_transaction_schema,
-            Transaction, TransactionType, TransactionVersion,
+use super::{
+    buffers, deadline::Deadline, schema::remove_exchange_offer_transaction_schema,
+    CommonTransaction, Transaction, TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -50,10 +47,7 @@ impl RemoveExchangeOfferTransaction {
             max_fee,
         );
 
-        Ok(Self {
-            common,
-            offers,
-        })
+        Ok(Self { common, offers })
     }
 }
 

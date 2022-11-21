@@ -4,13 +4,17 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::ops::BitAnd,
-     num_enum::IntoPrimitive,
-     serde_repr::{Deserialize_repr, Serialize_repr},
-     std::fmt,
+use {
+    ::std::ops::BitAnd,
+    num_enum::IntoPrimitive,
+    serde_repr::{Deserialize_repr, Serialize_repr},
+    std::fmt,
 };
 
-use crate::{mosaic::{MosaicId, UnresolvedMosaicId}, transaction::TransactionType};
+use crate::{
+    mosaic::{MosaicId, UnresolvedMosaicId},
+    transaction::TransactionType,
+};
 
 use super::Address;
 

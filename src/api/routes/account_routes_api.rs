@@ -8,33 +8,30 @@ use http::Request;
 use serde_json::json;
 use tower::buffer::Buffer;
 
-use {
-    ::std::collections::HashMap,
-    reqwest::Method,
-};
+use {::std::collections::HashMap, reqwest::Method};
 
-use crate::{
-    account::{AccountInfo, AccountName, AccountProperties, AccountsId, Address, PublicAccount},
-    api::{
-        AccountInfoDto,
-        AccountNamesDto,
-        AccountPropertiesInfoDto, error::Result, internally::{str_to_account_id, valid_vec_len},
-        MultisigAccountGraphInfoDto, MultisigAccountInfoDto, request as __internal_request,
-    },
-    errors_const::ERR_EMPTY_ADDRESSES_IDS,
-    multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
-};
-use crate::api::{__internal_get_transactions, Client, QueryParam, TransactionQueryParams};
 use crate::api::body::BoxBody;
 use crate::api::channel::Svc;
 use crate::api::routes::const_routes::{
     AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
 };
+use crate::api::{Client, QueryParam, TransactionQueryParams, __internal_get_transactions};
 use crate::transaction::{AggregateTransaction, TransactionSearch};
+use crate::{
+    account::{AccountInfo, AccountName, AccountProperties, AccountsId, Address, PublicAccount},
+    api::{
+        error::Result,
+        internally::{str_to_account_id, valid_vec_len},
+        request as __internal_request, AccountInfoDto, AccountNamesDto, AccountPropertiesInfoDto,
+        MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
+    },
+    errors_const::ERR_EMPTY_ADDRESSES_IDS,
+    multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
+};
 
 use super::{
-    ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE, ACCOUNT_ROUTE, ACCOUNTS_PROPERTIES_ROUTE,
-    ACCOUNTS_ROUTE, MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE,
+    ACCOUNTS_PROPERTIES_ROUTE, ACCOUNTS_ROUTE, ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE,
+    ACCOUNT_ROUTE, MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE,
 };
 
 /// Account ApiClient routes.
@@ -52,7 +49,6 @@ impl AccountRoutes {
     fn __client(&self) -> Client {
         self.0.clone()
     }
-
 
     /// Get `Account` information
     ///
@@ -403,8 +399,10 @@ impl AccountRoutes {
                 .collect::<Vec<_>>(),
         );
 
-        let mut req =
-            __internal_request::ApiRequest::new(Method::POST, ACCOUNTS_PROPERTIES_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(
+            Method::POST,
+            ACCOUNTS_PROPERTIES_ROUTE.to_string(),
+        );
 
         req = req.with_body_param(&accounts);
 
@@ -517,7 +515,7 @@ impl AccountRoutes {
             TRANSACTIONS_UNCONFIRMED_ROUTE,
             query_params_vec,
         )
-            .await
+        .await
     }
 
     /// Get aggregate bonded transactions information
@@ -546,12 +544,12 @@ impl AccountRoutes {
             AGGREGATE_TRANSACTIONS_ROUTE,
             query_params_vec,
         )
-            .await
-            .map(|txns| {
-                txns.transactions
-                    .into_iter()
-                    .map(|item| *item.downcast::<AggregateTransaction>())
-                    .collect::<Vec<_>>()
-            })
+        .await
+        .map(|txns| {
+            txns.transactions
+                .into_iter()
+                .map(|item| *item.downcast::<AggregateTransaction>())
+                .collect::<Vec<_>>()
+        })
     }
 }

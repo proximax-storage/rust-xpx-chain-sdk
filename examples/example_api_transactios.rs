@@ -17,12 +17,12 @@ async fn main() {
     let hash_one = TransactionHash::from_str(
         "B27577726AD8F7CB848891F9AC585FE89252DF40327EDF29DE6C3CA9295AE074",
     )
-        .unwrap();
+    .unwrap();
 
     let hash_two = TransactionHash::from_str(
         "47dec094a3379d9cfb1ed100c843da5f5578af7ad16bb2ef3d5d0ab0f6493c8d",
     )
-        .unwrap();
+    .unwrap();
 
     // Returns a [Transaction] information given a transactionId or hash.
     let account_info = transaction_api.get_any_transaction(hash_one).await;
@@ -93,7 +93,9 @@ async fn main() {
     }
 
     // Returns a [Transaction] information given a transactionId or hash.
-    let account_info = transaction_api.get_transactions_statuses(vec![hash_one, hash_two]).await;
+    let account_info = transaction_api
+        .get_transactions_statuses(vec![hash_one, hash_two])
+        .await;
     match account_info {
         Ok(resp) => println!("{:#?}", resp),
         Err(err) => eprintln!(

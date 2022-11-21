@@ -22,10 +22,7 @@ async fn main() {
         .await
     {
         Ok(client) => client,
-        Err(err) => panic!(
-            "Exception when calling endpoint connect{}\n",
-            err
-        ),
+        Err(err) => panic!("Exception when calling endpoint connect{}\n", err),
     };
 
     let chain_api = client.chain_api();

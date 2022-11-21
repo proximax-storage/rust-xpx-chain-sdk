@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for RemoveExchangeOfferBuffer<'a> {
     type Inner = RemoveExchangeOfferBuffer<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -35,30 +37,42 @@ impl<'a> RemoveExchangeOfferBuffer<'a> {
         args: &'args RemoveExchangeOfferBufferArgs<'args>,
     ) -> flatbuffers::WIPOffset<RemoveExchangeOfferBuffer<'bldr>> {
         let mut builder = RemoveExchangeOfferBufferBuilder::new(_fbb);
-        if let Some(x) = args.mosaic_id { builder.add_mosaic_id(x); }
+        if let Some(x) = args.mosaic_id {
+            builder.add_mosaic_id(x);
+        }
         builder.add_type_(args.type_);
         builder.finish()
     }
 
-
     #[inline]
     pub fn mosaic_id(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(RemoveExchangeOfferBuffer::VT_MOSAIC_ID, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RemoveExchangeOfferBuffer::VT_MOSAIC_ID,
+                None,
+            )
     }
     #[inline]
     pub fn type_(&self) -> u8 {
-        self._tab.get::<u8>(RemoveExchangeOfferBuffer::VT_TYPE_, Some(0)).unwrap()
+        self._tab
+            .get::<u8>(RemoveExchangeOfferBuffer::VT_TYPE_, Some(0))
+            .unwrap()
     }
 }
 
 impl flatbuffers::Verifiable for RemoveExchangeOfferBuffer<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("mosaic_id", Self::VT_MOSAIC_ID, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "mosaic_id",
+                Self::VT_MOSAIC_ID,
+                false,
+            )?
             .visit_field::<u8>("type_", Self::VT_TYPE_, false)?
             .finish();
         Ok(())
@@ -87,15 +101,24 @@ pub struct RemoveExchangeOfferBufferBuilder<'a: 'b, 'b> {
 
 impl<'a: 'b, 'b> RemoveExchangeOfferBufferBuilder<'a, 'b> {
     #[inline]
-    pub fn add_mosaic_id(&mut self, mosaic_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RemoveExchangeOfferBuffer::VT_MOSAIC_ID, mosaic_id);
+    pub fn add_mosaic_id(
+        &mut self,
+        mosaic_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RemoveExchangeOfferBuffer::VT_MOSAIC_ID,
+            mosaic_id,
+        );
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u8) {
-        self.fbb_.push_slot::<u8>(RemoveExchangeOfferBuffer::VT_TYPE_, type_, 0);
+        self.fbb_
+            .push_slot::<u8>(RemoveExchangeOfferBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
-    pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> RemoveExchangeOfferBufferBuilder<'a, 'b> {
+    pub fn new(
+        _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    ) -> RemoveExchangeOfferBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
         RemoveExchangeOfferBufferBuilder {
             fbb_: _fbb,

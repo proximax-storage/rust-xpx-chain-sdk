@@ -9,12 +9,10 @@ use tower::buffer::Buffer;
 
 use reqwest::Method;
 
-use crate::{
-    api::{error::Result, request as __internal_request},
-};
 use crate::api::body::BoxBody;
 use crate::api::routes::const_routes::NETWORK_INFO;
-use crate::api::{Client};
+use crate::api::Client;
+use crate::api::{error::Result, request as __internal_request};
 use crate::network::NetworkInfo;
 
 /// Network ApiClient routes.

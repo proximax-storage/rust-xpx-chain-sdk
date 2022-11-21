@@ -5,11 +5,11 @@
  */
 
 use crate::{
-    account::PublicAccount, alias::AliasActionType,
-    models::consts::ALIAS_TRANSACTION_HEADER, mosaic::UnresolvedMosaicId, namespace::NamespaceId,
+    account::PublicAccount, alias::AliasActionType, models::consts::ALIAS_TRANSACTION_HEADER,
+    mosaic::UnresolvedMosaicId, namespace::NamespaceId,
 };
 
-use super::{buffers, CommonTransaction, schema::alias_transaction_schema};
+use super::{buffers, schema::alias_transaction_schema, CommonTransaction};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

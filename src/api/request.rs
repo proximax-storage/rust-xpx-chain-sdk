@@ -5,25 +5,25 @@
  */
 
 use http::{Request, Response};
-use hyper::Body;
 use hyper::service::Service;
-use tower::ServiceExt;
+use hyper::Body;
 use tower::buffer::Buffer;
+use tower::ServiceExt;
 
 use {
     ::std::collections::HashMap,
     reqwest::{
-        header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, USER_AGENT},
+        header::{HeaderMap, CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT},
         Method, StatusCode,
     },
     serde_json,
 };
 
 use crate::api;
-use crate::api::{Client, QueryParam};
 use crate::api::channel::Svc;
+use crate::api::{Client, QueryParam};
 
-use crate::api::body::{BoxBody, boxed_body};
+use crate::api::body::{boxed_body, BoxBody};
 use crate::api::error::{Error, SiriusError};
 
 #[derive(Clone)]
@@ -66,8 +66,8 @@ impl ApiRequest {
     }
 
     pub async fn execute<U>(self, mut api: Client) -> api::error::Result<U>
-        where
-                for<'de> U: serde::Deserialize<'de>,
+    where
+        for<'de> U: serde::Deserialize<'de>,
     {
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.
@@ -128,8 +128,11 @@ impl ApiRequest {
         // let mut req = builder.build()?;
 
         let mut req = if let Some(body) = self.serialized_body {
-            let mut req = Request::builder().uri(uri_str.as_str()).method(self.method.clone())
-                .body(boxed_body(body.clone())).unwrap();
+            let mut req = Request::builder()
+                .uri(uri_str.as_str())
+                .method(self.method.clone())
+                .body(boxed_body(body.clone()))
+                .unwrap();
             req.headers_mut().insert(
                 CONTENT_TYPE,
                 "application/json"
@@ -140,7 +143,11 @@ impl ApiRequest {
             req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
             req
         } else {
-            Request::builder().uri(uri_str.as_str()).method(self.method.clone()).body(BoxBody::default()).unwrap()
+            Request::builder()
+                .uri(uri_str.as_str())
+                .method(self.method.clone())
+                .body(BoxBody::default())
+                .unwrap()
         };
 
         let req_headers = req.headers_mut();
@@ -152,7 +159,6 @@ impl ApiRequest {
         );
 
         // req_headers.extend(headers);
-
 
         let resp = api.oneshot(req).await?;
         // let resp = api.client.execute(req).await?;
