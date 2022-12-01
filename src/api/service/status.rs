@@ -689,7 +689,7 @@ impl From<Code> for i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Error;
+    use crate::api::Error;
 
     #[derive(Debug)]
     struct Nested(Error);

@@ -46,7 +46,7 @@ impl Uint64 {
     ///
     #[inline]
     pub fn to_fixed_bytes(self) -> [u8; Self::BYTES] {
-        self.to_be_bytes()
+        self.to_le_bytes()
     }
 
     /// Returns a constant raw pointer to the value.
@@ -86,7 +86,7 @@ impl From<[u8; 8]> for Uint64 {
     /// The given bytes are interpreted in big endian order.
     #[inline]
     fn from(bytes: [u8; Self::BYTES]) -> Self {
-        u64::from_be_bytes(bytes).into()
+        u64::from_le_bytes(bytes).into()
     }
 }
 
@@ -196,7 +196,7 @@ impl std::fmt::LowerHex for Uint64 {
         if f.alternate() {
             std::write!(f, "0x")?;
         }
-        for i in &self.to_fixed_bytes() {
+        for i in &self.to_be_bytes() {
             std::write!(f, "{:02x}", i)?;
         }
         Ok(())
@@ -210,7 +210,7 @@ impl std::fmt::UpperHex for Uint64 {
         if f.alternate() {
             std::write!(f, "0X")?;
         }
-        for i in &self.to_fixed_bytes() {
+        for i in &self.to_be_bytes() {
             std::write!(f, "{:02X}", i)?;
         }
         Ok(())
@@ -233,27 +233,20 @@ pub trait AsUint64 {
     fn as_uint64(&self) -> Uint64;
 
     /// Generate `u64` from a utf8 string.
-    /// Deterministic uint64 value for the given utf8 string.
+    /// Deterministic u64 value for the given utf8 string.
     #[inline]
-    fn from_utf8_str(source: &str) -> Result<u64, ParseIntError> {
-        let source_hash = Sha3_256::digest(source.as_bytes());
-        u64::from_hex(&hex_encode(&source_hash[..8]))
+    fn from_utf8_str(source: &str) -> u64 {
+        let hash = Sha3_256::digest(source.as_bytes());
+        let mut source_hash = [0_u8; 8];
+        source_hash.copy_from_slice(&hash[..8]);
+
+        u64::from_le_bytes(source_hash)
     }
 
     /// Creates a `u64` from a hex string.
     #[inline]
     fn from_hex(hex: &str) -> Result<u64, ParseIntError> {
         u64::from_str_radix(hex, 16)
-    }
-
-    /// Constructs a `u64` from the given bytes array of fixed length.
-    ///
-    /// # Note
-    ///
-    /// The given bytes are interpreted in big endian order.
-    #[inline]
-    fn from_bytes(bytes: [u8; 8]) -> u64 {
-        u64::from_be_bytes(bytes)
     }
 
     /// Get DTO representation with format: `[lower, higher]`
