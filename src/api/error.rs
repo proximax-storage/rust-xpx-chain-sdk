@@ -4,7 +4,6 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::api;
 use {
     ::std::{
         borrow::Cow,
@@ -13,6 +12,8 @@ use {
     },
     tokio_tungstenite::tungstenite::Error as WsError,
 };
+
+use crate::api;
 
 /// Result type of all Websocket library calls.
 pub type Result<T> = result::Result<T, Error>;

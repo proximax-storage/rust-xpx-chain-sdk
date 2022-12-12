@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+#![allow(dead_code)]
+
 pub use self::buffer::sirius::*;
 pub use self::common_transaction::*;
 pub use self::cosignature_signed_transaction::*;

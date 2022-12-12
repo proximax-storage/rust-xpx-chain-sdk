@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+#![allow(dead_code)]
+
 pub(crate) use self::dtos::*;
 pub(crate) use self::internally::*;
 pub use self::page_query_params::*;

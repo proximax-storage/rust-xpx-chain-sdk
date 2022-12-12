@@ -1,3 +1,12 @@
+pub(crate) use self::add_origin::AddOrigin;
+pub(crate) use self::connection::Connection;
+pub(crate) use self::connector::connector;
+pub(crate) use self::discover::DynamicServiceStream;
+pub(crate) use self::executor::SharedExec;
+#[cfg(feature = "tls")]
+pub(crate) use self::tls::{TlsAcceptor, TlsConnector};
+pub(crate) use self::user_agent::UserAgent;
+
 mod add_origin;
 mod connection;
 mod connector;
@@ -10,16 +19,5 @@ mod reconnect;
 #[cfg(feature = "tls")]
 mod tls;
 mod user_agent;
-
-pub(crate) use self::add_origin::AddOrigin;
-pub(crate) use self::connection::Connection;
-pub(crate) use self::connector::connector;
-pub(crate) use self::discover::DynamicServiceStream;
-pub(crate) use self::executor::SharedExec;
-// pub(crate) use self::grpc_timeout::GrpcTimeout;
-pub(crate) use self::io::ServerIo;
-#[cfg(feature = "tls")]
-pub(crate) use self::tls::{TlsAcceptor, TlsConnector};
-pub(crate) use self::user_agent::UserAgent;
 
 // pub use self::router::Routes;

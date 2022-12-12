@@ -1,7 +1,3 @@
-// use crate::metadata::GRPC_TIMEOUT_HEADER;
-// use crate::util::{OptionPin, OptionPinProj};
-use http::{HeaderMap, HeaderValue, Request};
-use pin_project::pin_project;
 use std::{
     fmt,
     future::Future,
@@ -9,6 +5,11 @@ use std::{
     task::{Context, Poll},
     time::Duration,
 };
+
+// use crate::metadata::GRPC_TIMEOUT_HEADER;
+// use crate::util::{OptionPin, OptionPinProj};
+use http::{HeaderMap, HeaderValue, Request};
+use pin_project::pin_project;
 use tokio::time::Sleep;
 use tower_service::Service;
 
@@ -28,9 +29,9 @@ impl<S> GrpcTimeout<S> {
 }
 
 impl<S, ReqBody> Service<Request<ReqBody>> for GrpcTimeout<S>
-where
-    S: Service<Request<ReqBody>>,
-    S::Error: Into<crate::Error>,
+    where
+        S: Service<Request<ReqBody>>,
+        S::Error: Into<crate::Error>,
 {
     type Response = S::Response;
     type Error = crate::Error;
@@ -76,9 +77,9 @@ pub(crate) struct ResponseFuture<F> {
 }
 
 impl<F, Res, E> Future for ResponseFuture<F>
-where
-    F: Future<Output = Result<Res, E>>,
-    E: Into<crate::Error>,
+    where
+        F: Future<Output=Result<Res, E>>,
+        E: Into<crate::Error>,
 {
     type Output = Result<Res, crate::Error>;
 
@@ -173,9 +174,10 @@ impl std::error::Error for TimeoutExpired {}
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use quickcheck::{Arbitrary, Gen};
     use quickcheck_macros::quickcheck;
+
+    use super::*;
 
     // Helper function to reduce the boiler plate of our test cases
     fn setup_map_try_parse(val: Option<&str>) -> Result<Option<Duration>, HeaderValue> {

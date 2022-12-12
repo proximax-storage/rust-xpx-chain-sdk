@@ -1,42 +1,45 @@
-use super::{Connected, Server};
-use crate::transport::service::ServerIo;
-use futures_core::Stream;
-use futures_util::stream::TryStreamExt;
-use hyper::server::{
-    accept::Accept,
-    conn::{AddrIncoming, AddrStream},
-};
 use std::{
     net::SocketAddr,
     pin::Pin,
     task::{Context, Poll},
     time::Duration,
 };
+
+use futures_core::Stream;
+use futures_util::stream::TryStreamExt;
+use hyper::server::{
+    accept::Accept,
+    conn::{AddrIncoming, AddrStream},
+};
 use tokio::{
     io::{AsyncRead, AsyncWrite},
     net::TcpListener,
 };
 
+use crate::transport::service::ServerIo;
+
+use super::{Connected, Server};
+
 #[cfg(not(feature = "tls"))]
 pub(crate) fn tcp_incoming<IO, IE, L>(
-    incoming: impl Stream<Item = Result<IO, IE>>,
+    incoming: impl Stream<Item=Result<IO, IE>>,
     _server: Server<L>,
-) -> impl Stream<Item = Result<ServerIo<IO>, crate::Error>>
-where
-    IO: AsyncRead + AsyncWrite + Connected + Unpin + Send + 'static,
-    IE: Into<crate::Error>,
+) -> impl Stream<Item=Result<ServerIo<IO>, crate::Error>>
+    where
+        IO: AsyncRead + AsyncWrite + Connected + Unpin + Send + 'static,
+        IE: Into<crate::Error>,
 {
     incoming.err_into().map_ok(ServerIo::new_io)
 }
 
 #[cfg(feature = "tls")]
 pub(crate) fn tcp_incoming<IO, IE, L>(
-    incoming: impl Stream<Item = Result<IO, IE>>,
+    incoming: impl Stream<Item=Result<IO, IE>>,
     server: Server<L>,
-) -> impl Stream<Item = Result<ServerIo<IO>, crate::Error>>
-where
-    IO: AsyncRead + AsyncWrite + Connected + Unpin + Send + 'static,
-    IE: Into<crate::Error>,
+) -> impl Stream<Item=Result<ServerIo<IO>, crate::Error>>
+    where
+        IO: AsyncRead + AsyncWrite + Connected + Unpin + Send + 'static,
+        IE: Into<crate::Error>,
 {
     async_stream::try_stream! {
         futures_util::pin_mut!(incoming);
@@ -79,13 +82,13 @@ where
 
 #[cfg(feature = "tls")]
 async fn select<IO, IE>(
-    incoming: &mut (impl Stream<Item = Result<IO, IE>> + Unpin),
+    incoming: &mut (impl Stream<Item=Result<IO, IE>> + Unpin),
     tasks: &mut futures_util::stream::futures_unordered::FuturesUnordered<
         tokio::task::JoinHandle<Result<ServerIo<IO>, crate::Error>>,
     >,
 ) -> SelectOutput<IO>
-where
-    IE: Into<crate::Error>,
+    where
+        IE: Into<crate::Error>,
 {
     use futures_util::StreamExt;
 
@@ -200,6 +203,7 @@ impl Stream for TcpIncoming {
 #[cfg(test)]
 mod tests {
     use crate::transport::server::TcpIncoming;
+
     #[tokio::test]
     async fn one_tcpincoming_at_a_time() {
         let addr = "127.0.0.1:1322".parse().unwrap();

@@ -1,10 +1,12 @@
+use std::fmt;
+
+use http::Uri;
+
 use crate::transport::{
+    Error,
     service::TlsConnector,
     tls::{Certificate, Identity},
-    Error,
 };
-use http::Uri;
-use std::fmt;
 
 /// Configures TLS settings for endpoints.
 #[cfg(feature = "tls")]

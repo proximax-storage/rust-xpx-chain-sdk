@@ -1,5 +1,6 @@
-use super::Connected;
 use std::sync::Arc;
+
+use super::Connected;
 
 /// Connection info for Unix domain socket streams.
 ///

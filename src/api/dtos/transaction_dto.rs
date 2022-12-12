@@ -8,19 +8,19 @@ use ::std::str::FromStr;
 
 use crypto::Signature;
 
-use crate::helpers::TransactionHash;
-use crate::network::NetworkType;
-use crate::transaction::CommonTransaction;
 use crate::{
     account::{Address, PublicAccount},
     api::error::Result,
     mosaic::{Mosaic, MosaicId},
     transaction::{
-        internal::extract_version, BlockchainTimestamp, Deadline, LockFundsTransaction,
+        BlockchainTimestamp, Deadline, internal::extract_version, LockFundsTransaction,
         SignedTransaction, Transaction, TransactionInfo, TransactionStatus, TransactionType,
         TransferTransaction,
     },
 };
+use crate::helpers::TransactionHash;
+use crate::network::NetworkType;
+use crate::transaction::CommonTransaction;
 
 use super::{MessageDto, MosaicDto, Uint64Dto};
 

@@ -86,6 +86,27 @@
 //!
 //! [rustls]: https://docs.rs/rustls/0.16.0/rustls/
 
+pub use hyper::{Body, Uri};
+
+#[doc(inline)]
+// #[cfg(feature = "channel")]
+#[cfg_attr(docsrs, doc(cfg(feature = "channel")))]
+pub use self::channel::{Client, Endpoint};
+#[cfg(feature = "tls")]
+#[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
+pub use self::channel::ClientTlsConfig;
+pub use self::error::Error;
+#[cfg(feature = "tls")]
+#[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
+pub use self::server::ServerTlsConfig;
+pub(crate) use self::service::executor::Executor;
+#[doc(inline)]
+// pub use self::service::grpc_timeout::TimeoutExpired;
+pub use self::tls::Certificate;
+#[cfg(feature = "tls")]
+#[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
+pub use self::tls::Identity;
+
 pub mod channel;
 pub mod server;
 
@@ -93,28 +114,5 @@ mod error;
 mod service;
 mod tls;
 
-#[doc(inline)]
-// #[cfg(feature = "channel")]
-#[cfg_attr(docsrs, doc(cfg(feature = "channel")))]
-pub use self::channel::{Client, Endpoint};
-pub use self::error::Error;
-
-#[doc(inline)]
-// pub use self::service::grpc_timeout::TimeoutExpired;
-pub use self::tls::Certificate;
-pub use hyper::{Body, Uri};
-
-pub(crate) use self::service::executor::Executor;
-
-#[cfg(feature = "tls")]
-#[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
-pub use self::channel::ClientTlsConfig;
-#[cfg(feature = "tls")]
-#[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
-pub use self::server::ServerTlsConfig;
-#[cfg(feature = "tls")]
-#[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
-pub use self::tls::Identity;
-
 type BoxFuture<T, E> =
-    std::pin::Pin<Box<dyn std::future::Future<Output = Result<T, E>> + Send + 'static>>;
+std::pin::Pin<Box<dyn std::future::Future<Output=Result<T, E>> + Send + 'static>>;

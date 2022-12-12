@@ -1,11 +1,8 @@
-use http::{Method, Request};
 use std::thread::sleep;
 use std::time::Duration;
-use tower::ServiceExt;
+
 use xpx_chain_sdk::account::{Address, PublicAccount};
-use xpx_chain_sdk::api::body::BoxBody;
-use xpx_chain_sdk::api::routes::account_routes_api::AccountRoutes;
-use xpx_chain_sdk::api::{Client, Endpoint, OrderV2, TransactionQueryParams};
+use xpx_chain_sdk::api::{Client, OrderV2, TransactionQueryParams};
 use xpx_chain_sdk::network::NetworkType;
 use xpx_chain_sdk::transaction::TransactionType;
 
@@ -16,13 +13,13 @@ async fn main() {
         "http://167.114.169.166:3000",
         "http://192.99.55.111:3000",
     ]
-    .into_iter()
-    .map(|a| {
-        Client::from_shared(a).unwrap()
-        // .rate_limit(10, Duration::from_millis(500))
-        // .concurrency_limit(6)
-        // .timeout(Duration::from_secs(15))
-    });
+        .into_iter()
+        .map(|a| {
+            Client::from_shared(a).unwrap()
+            // .rate_limit(10, Duration::from_millis(500))
+            // .concurrency_limit(6)
+            // .timeout(Duration::from_secs(15))
+        });
 
     let channel = Client::balance_list(endpoints.into_iter());
 
@@ -45,7 +42,7 @@ async fn main() {
 
     let account_api = channel.account_api();
 
-    for i in 0..3 {
+    for _i in 0..3 {
         let account_api = account_api.clone();
 
         tokio::spawn(async move {

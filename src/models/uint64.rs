@@ -9,8 +9,6 @@ use std::{convert::TryFrom, io::Write, num::ParseIntError, ops::Deref};
 use hex::{FromHex, FromHexError};
 use sha3::{Digest, Sha3_256};
 
-use crate::helpers::hex_encode;
-
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Uint64(u64);
 

@@ -1,15 +1,17 @@
-use crate::{
-    util::{OptionPin, OptionPinProj},
-};
-use futures_util::ready;
-use http::Response;
-use pin_project::pin_project;
 use std::{
     future::Future,
     pin::Pin,
     task::{Context, Poll},
 };
+
+use futures_util::ready;
+use http::Response;
+use pin_project::pin_project;
 use tower::Service;
+
+use crate::{
+    util::{OptionPin, OptionPinProj},
+};
 
 /// Middleware that attempts to recover from service errors by turning them into a response built
 /// from the `Status`.
@@ -25,9 +27,9 @@ impl<S> RecoverError<S> {
 }
 
 impl<S, R, ResBody> Service<R> for RecoverError<S>
-where
-    S: Service<R, Response = Response<ResBody>>,
-    S::Error: Into<crate::Error>,
+    where
+        S: Service<R, Response=Response<ResBody>>,
+        S::Error: Into<crate::Error>,
 {
     type Response = Response<MaybeEmptyBody<ResBody>>;
     type Error = crate::Error;
@@ -51,9 +53,9 @@ pub(crate) struct ResponseFuture<F> {
 }
 
 impl<F, E, ResBody> Future for ResponseFuture<F>
-where
-    F: Future<Output = Result<Response<ResBody>, E>>,
-    E: Into<crate::Error>,
+    where
+        F: Future<Output=Result<Response<ResBody>, E>>,
+        E: Into<crate::Error>,
 {
     type Output = Result<Response<MaybeEmptyBody<ResBody>>, crate::Error>;
 
@@ -99,8 +101,8 @@ impl<B> MaybeEmptyBody<B> {
 }
 
 impl<B> http_body::Body for MaybeEmptyBody<B>
-where
-    B: http_body::Body + Send,
+    where
+        B: http_body::Body + Send,
 {
     type Data = B::Data;
     type Error = B::Error;

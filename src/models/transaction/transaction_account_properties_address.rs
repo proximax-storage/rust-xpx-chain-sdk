@@ -26,8 +26,8 @@ use super::{
         AccountPropertiesTransactionBufferBuilder, PropertyModificationBuffer,
         PropertyModificationBufferBuilder,
     },
-    schema::account_property_transaction_schema,
-    CommonTransaction, Deadline, Transaction, TransactionType, TransactionVersion,
+    CommonTransaction,
+    Deadline, schema::account_property_transaction_schema, Transaction, TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

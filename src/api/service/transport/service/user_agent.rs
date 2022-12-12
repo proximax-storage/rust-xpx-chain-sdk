@@ -1,5 +1,6 @@
-use http::{header::USER_AGENT, HeaderValue, Request};
 use std::task::{Context, Poll};
+
+use http::{header::USER_AGENT, HeaderValue, Request};
 use tower_service::Service;
 
 const TONIC_USER_AGENT: &str = concat!("tonic/", env!("CARGO_PKG_VERSION"));
@@ -27,8 +28,8 @@ impl<T> UserAgent<T> {
 }
 
 impl<T, ReqBody> Service<Request<ReqBody>> for UserAgent<T>
-where
-    T: Service<Request<ReqBody>>,
+    where
+        T: Service<Request<ReqBody>>,
 {
     type Response = T::Response;
     type Error = T::Error;

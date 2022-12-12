@@ -5,9 +5,8 @@
  */
 
 use http::Request;
-use tower::buffer::Buffer;
-
 use reqwest::Method;
+use tower::buffer::Buffer;
 
 use crate::{
     account::PublicAccount,

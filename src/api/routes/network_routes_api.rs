@@ -4,15 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::Request;
-use tower::buffer::Buffer;
-
 use reqwest::Method;
 
-use crate::api::body::BoxBody;
-use crate::api::routes::const_routes::NETWORK_INFO;
-use crate::api::Client;
 use crate::api::{error::Result, request as __internal_request};
+use crate::api::Client;
+use crate::api::routes::const_routes::NETWORK_INFO;
 use crate::network::NetworkInfo;
 
 /// Network ApiClient routes.

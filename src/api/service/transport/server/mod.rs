@@ -1,5 +1,18 @@
 //! Server implementation and builder.
 
+// pub use super::service::Routes;
+// pub use crate::server::NamedService;
+pub use conn::{Connected, TcpConnectInfo};
+#[cfg(feature = "tls")]
+pub use conn::TlsConnectInfo;
+#[cfg(feature = "tls")]
+pub use tls::ServerTlsConfig;
+#[cfg(unix)]
+pub use unix::UdsConnectInfo;
+
+#[cfg(feature = "tls")]
+use super::service::TlsAcceptor;
+
 mod conn;
 // mod incoming;
 // mod recover_error;
@@ -8,21 +21,6 @@ mod conn;
 mod tls;
 #[cfg(unix)]
 mod unix;
-
-// pub use super::service::Routes;
-// pub use crate::server::NamedService;
-pub use conn::{Connected, TcpConnectInfo};
-#[cfg(feature = "tls")]
-pub use tls::ServerTlsConfig;
-
-#[cfg(feature = "tls")]
-pub use conn::TlsConnectInfo;
-
-#[cfg(feature = "tls")]
-use super::service::TlsAcceptor;
-
-#[cfg(unix)]
-pub use unix::UdsConnectInfo;
 
 // pub use incoming::TcpIncoming;
 

@@ -1,13 +1,3 @@
-use super::super::service;
-use super::Client;
-#[cfg(feature = "tls")]
-use super::ClientTlsConfig;
-use crate::api;
-#[cfg(feature = "tls")]
-use crate::transport::service::TlsConnector;
-use api::transport::{service::SharedExec, Error, Executor};
-use bytes::Bytes;
-use http::{uri::Uri, HeaderValue};
 use std::{
     convert::{TryFrom, TryInto},
     fmt,
@@ -16,7 +6,21 @@ use std::{
     str::FromStr,
     time::Duration,
 };
+
+use bytes::Bytes;
+use http::{HeaderValue, uri::Uri};
 use tower::make::MakeConnection;
+
+use api::transport::{Error, Executor, service::SharedExec};
+
+use crate::api;
+#[cfg(feature = "tls")]
+use crate::transport::service::TlsConnector;
+
+use super::Client;
+#[cfg(feature = "tls")]
+use super::ClientTlsConfig;
+use super::super::service;
 
 /// Channel builder.
 ///
@@ -43,9 +47,9 @@ impl Endpoint {
     // just used in codegen for a shortcut.
     #[doc(hidden)]
     pub fn new<D>(dst: D) -> Result<Self, Error>
-    where
-        D: TryInto<Self>,
-        D::Error: Into<crate::api::Error>,
+        where
+            D: TryInto<Self>,
+            D::Error: Into<crate::api::Error>,
     {
         let me = dst.try_into().map_err(|e| Error::from_source(e.into()))?;
         Ok(me)
@@ -88,8 +92,8 @@ impl Endpoint {
     /// builder.user_agent("Greeter").expect("Greeter should be a valid header value");
     /// ```
     pub fn user_agent<T>(self, user_agent: T) -> Result<Self, Error>
-    where
-        T: TryInto<HeaderValue>,
+        where
+            T: TryInto<HeaderValue>,
     {
         user_agent
             .try_into()
@@ -236,8 +240,8 @@ impl Endpoint {
     ///
     /// Uses `tokio::spawn` by default.
     pub fn executor<E>(mut self, executor: E) -> Self
-    where
-        E: Executor<Pin<Box<dyn Future<Output = ()> + Send>>> + Send + Sync + 'static,
+        where
+            E: Executor<Pin<Box<dyn Future<Output=()> + Send>>> + Send + Sync + 'static,
     {
         self.executor = SharedExec::new(executor);
         self
@@ -251,10 +255,10 @@ impl Endpoint {
         http.set_keepalive(self.tcp_keepalive);
 
         #[cfg(feature = "tls")]
-        let connector = service::connector(http, self.tls.clone());
+            let connector = service::connector(http, self.tls.clone());
 
         #[cfg(not(feature = "tls"))]
-        let connector = service::connector(http);
+            let connector = service::connector(http);
 
         if let Some(connect_timeout) = self.connect_timeout {
             let mut connector = hyper_timeout::TimeoutConnector::new(connector);
@@ -276,10 +280,10 @@ impl Endpoint {
         http.set_keepalive(self.tcp_keepalive);
 
         #[cfg(feature = "tls")]
-        let connector = service::connector(http, self.tls.clone());
+            let connector = service::connector(http, self.tls.clone());
 
         #[cfg(not(feature = "tls"))]
-        let connector = service::connector(http);
+            let connector = service::connector(http);
 
         if let Some(connect_timeout) = self.connect_timeout {
             let mut connector = hyper_timeout::TimeoutConnector::new(connector);
@@ -298,17 +302,17 @@ impl Endpoint {
     ///
     /// The [`connect_timeout`](Endpoint::connect_timeout) will still be applied.
     pub async fn connect_with_connector<C>(&self, connector: C) -> Result<Client, Error>
-    where
-        C: MakeConnection<Uri> + Send + 'static,
-        C::Connection: Unpin + Send + 'static,
-        C::Future: Send + 'static,
-        crate::api::Error: From<C::Error> + Send + 'static,
+        where
+            C: MakeConnection<Uri> + Send + 'static,
+            C::Connection: Unpin + Send + 'static,
+            C::Future: Send + 'static,
+            crate::api::Error: From<C::Error> + Send + 'static,
     {
         #[cfg(feature = "tls")]
-        let connector = service::connector(connector, self.tls.clone());
+            let connector = service::connector(connector, self.tls.clone());
 
         #[cfg(not(feature = "tls"))]
-        let connector = service::connector(connector);
+            let connector = service::connector(connector);
 
         if let Some(connect_timeout) = self.connect_timeout {
             let mut connector = hyper_timeout::TimeoutConnector::new(connector);
@@ -327,17 +331,17 @@ impl Endpoint {
     /// See the `uds` example for an example on how to use this function to build channel that
     /// uses a Unix socket transport.
     pub fn connect_with_connector_lazy<C>(&self, connector: C) -> Client
-    where
-        C: MakeConnection<Uri> + Send + 'static,
-        C::Connection: Unpin + Send + 'static,
-        C::Future: Send + 'static,
-        crate::api::Error: From<C::Error> + Send + 'static,
+        where
+            C: MakeConnection<Uri> + Send + 'static,
+            C::Connection: Unpin + Send + 'static,
+            C::Future: Send + 'static,
+            crate::api::Error: From<C::Error> + Send + 'static,
     {
         #[cfg(feature = "tls")]
-        let connector = service::connector(connector, self.tls.clone());
+            let connector = service::connector(connector, self.tls.clone());
 
         #[cfg(not(feature = "tls"))]
-        let connector = service::connector(connector);
+            let connector = service::connector(connector);
 
         Client::new(connector, self.clone())
     }

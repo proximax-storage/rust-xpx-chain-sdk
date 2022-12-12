@@ -4,13 +4,12 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::Request;
-use tower::buffer::Buffer;
-
 use {
     ::std::{future::Future, pin::Pin},
     reqwest::Method,
 };
+use http::Request;
+use tower::buffer::Buffer;
 
 use crate::{
     account::{AccountsId, Address},

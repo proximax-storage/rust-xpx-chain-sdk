@@ -1,9 +1,11 @@
-use crate::api::body::BoxBody;
+use std::{borrow::Cow, error::Error, fmt, sync::Arc};
+
 use bytes::Bytes;
 use http::header::{HeaderMap, HeaderValue};
-use percent_encoding::{percent_decode, percent_encode, AsciiSet, CONTROLS};
-use std::{borrow::Cow, error::Error, fmt, sync::Arc};
-use tracing::{debug, trace, warn};
+use percent_encoding::{AsciiSet, CONTROLS, percent_encode};
+use tracing::{debug, trace};
+
+use crate::api::body::BoxBody;
 
 const ENCODING_SET: &AsciiSet = &CONTROLS
     .add(b' ')
@@ -329,7 +331,7 @@ impl Status {
         };
 
         #[cfg(feature = "transport")]
-        let err = match err.downcast::<h2::Error>() {
+            let err = match err.downcast::<h2::Error>() {
             Ok(h2) => {
                 return Ok(Status::from_h2_error(h2));
             }
@@ -406,8 +408,8 @@ impl Status {
     }
 
     pub(crate) fn map_error<E>(err: E) -> Status
-    where
-        E: Into<Box<dyn Error + Send + Sync>>,
+        where
+            E: Into<Box<dyn Error + Send + Sync>>,
     {
         let err: Box<dyn Error + Send + Sync> = err.into();
         Status::from_error(err)
@@ -688,8 +690,9 @@ impl From<Code> for i32 {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::api::Error;
+
+    use super::*;
 
     #[derive(Debug)]
     struct Nested(Error);

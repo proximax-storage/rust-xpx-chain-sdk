@@ -18,8 +18,8 @@ use crate::{
 };
 
 use super::{
-    buffers, deadline::Deadline, internal::mosaic_property_array_to_buffer,
-    schema::mosaic_definition_transaction_schema, CommonTransaction, Transaction, TransactionType,
+    buffers, CommonTransaction, deadline::Deadline,
+    internal::mosaic_property_array_to_buffer, schema::mosaic_definition_transaction_schema, Transaction, TransactionType,
     TransactionVersion,
 };
 
