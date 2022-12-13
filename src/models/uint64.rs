@@ -230,6 +230,13 @@ impl std::fmt::Display for Uint64 {
 pub trait AsUint64 {
     fn as_uint64(&self) -> Uint64;
 
+    /// Returns a u64 to the value.
+    ///
+    #[inline]
+    fn to_hex(&self) -> String {
+        format!("{:X}", self.as_uint64())
+    }
+
     /// Generate `u64` from a utf8 string.
     /// Deterministic u64 value for the given utf8 string.
     #[inline]
