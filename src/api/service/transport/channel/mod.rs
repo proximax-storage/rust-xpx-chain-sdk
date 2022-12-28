@@ -10,8 +10,8 @@ use std::{
 
 use bytes::Bytes;
 use http::{
-    Request,
-    Response, uri::{InvalidUri, Uri},
+    uri::{InvalidUri, Uri},
+    Request, Response,
 };
 use hyper::client::connect::Connection as HyperConnection;
 use hyper::rt::Executor;
@@ -19,13 +19,13 @@ use tokio::{
     io::{AsyncRead, AsyncWrite},
     sync::mpsc::{channel, Sender},
 };
+use tower::balance::p2c::Balance;
 use tower::{
     buffer::{self, Buffer},
     discover::{Change, Discover},
-    Service,
     util::{BoxService, Either},
+    Service,
 };
-use tower::balance::p2c::Balance;
 
 pub use endpoint::Endpoint;
 #[cfg(feature = "tls")]
@@ -47,7 +47,7 @@ mod endpoint;
 mod tls;
 
 pub type Svc =
-Either<Connection, BoxService<Request<BoxBody>, Response<hyper::Body>, crate::api::Error>>;
+    Either<Connection, BoxService<Request<BoxBody>, Response<hyper::Body>, crate::api::Error>>;
 
 const DEFAULT_BUFFER_SIZE: usize = 1024;
 
@@ -118,7 +118,7 @@ impl Client {
     ///
     /// This creates a [`Channel`] that will load balance across all the
     /// provided endpoints.
-    pub fn balance_list(list: impl Iterator<Item=Endpoint>) -> Self {
+    pub fn balance_list(list: impl Iterator<Item = Endpoint>) -> Self {
         let (client, tx) = Self::balance_channel(DEFAULT_BUFFER_SIZE);
         list.for_each(|endpoint| {
             tx.try_send(Change::Insert(endpoint.uri.clone(), endpoint))
@@ -132,8 +132,8 @@ impl Client {
     ///
     /// This creates a [`Channel`] that will listen to a stream of change events and will add or remove provided endpoints.
     pub fn balance_channel<K>(capacity: usize) -> (Self, Sender<Change<K, Endpoint>>)
-        where
-            K: Hash + Eq + Send + Clone + 'static,
+    where
+        K: Hash + Eq + Send + Clone + 'static,
     {
         Self::balance_channel_with_executor(capacity, SharedExec::tokio())
     }
@@ -147,9 +147,9 @@ impl Client {
         capacity: usize,
         executor: E,
     ) -> (Self, Sender<Change<K, Endpoint>>)
-        where
-            K: Hash + Eq + Send + Clone + 'static,
-            E: Executor<Pin<Box<dyn Future<Output=()> + Send>>> + Send + Sync + 'static,
+    where
+        K: Hash + Eq + Send + Clone + 'static,
+        E: Executor<Pin<Box<dyn Future<Output = ()> + Send>>> + Send + Sync + 'static,
     {
         let (tx, rx) = channel(capacity);
         let list = DynamicServiceStream::new(rx);
@@ -157,11 +157,11 @@ impl Client {
     }
 
     pub(crate) fn new<C>(connector: C, endpoint: Endpoint) -> Self
-        where
-            C: Service<Uri> + Send + 'static,
-            C::Error: Into<crate::api::Error> + Send,
-            C::Future: Unpin + Send,
-            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+    where
+        C: Service<Uri> + Send + 'static,
+        C::Error: Into<crate::api::Error> + Send,
+        C::Future: Unpin + Send,
+        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
         let buffer_size = endpoint.buffer_size.unwrap_or(DEFAULT_BUFFER_SIZE);
         let executor = endpoint.executor.clone();
@@ -174,11 +174,11 @@ impl Client {
     }
 
     pub(crate) async fn connect<C>(connector: C, endpoint: Endpoint) -> Result<Self, super::Error>
-        where
-            C: Service<Uri> + Send + 'static,
-            C::Error: Into<crate::api::Error> + Send,
-            C::Future: Unpin + Send,
-            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+    where
+        C: Service<Uri> + Send + 'static,
+        C::Error: Into<crate::api::Error> + Send,
+        C::Future: Unpin + Send,
+        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
         let buffer_size = endpoint.buffer_size.unwrap_or(DEFAULT_BUFFER_SIZE);
         let executor = endpoint.executor.clone();
@@ -193,11 +193,11 @@ impl Client {
     }
 
     pub(crate) fn balance<D, E>(discover: D, buffer_size: usize, executor: E) -> Self
-        where
-            D: Discover<Service=Connection> + Unpin + Send + 'static,
-            D::Error: Into<crate::api::Error>,
-            D::Key: Hash + Send + Clone,
-            E: Executor<futures_core::future::BoxFuture<'static, ()>> + Send + Sync + 'static,
+    where
+        D: Discover<Service = Connection> + Unpin + Send + 'static,
+        D::Error: Into<crate::api::Error>,
+        D::Key: Hash + Send + Clone,
+        E: Executor<futures_core::future::BoxFuture<'static, ()>> + Send + Sync + 'static,
     {
         let svc = Balance::new(discover);
 

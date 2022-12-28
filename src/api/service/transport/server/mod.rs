@@ -2,9 +2,9 @@
 
 // pub use super::service::Routes;
 // pub use crate::server::NamedService;
-pub use conn::{Connected, TcpConnectInfo};
 #[cfg(feature = "tls")]
 pub use conn::TlsConnectInfo;
+pub use conn::{Connected, TcpConnectInfo};
 #[cfg(feature = "tls")]
 pub use tls::ServerTlsConfig;
 #[cfg(unix)]

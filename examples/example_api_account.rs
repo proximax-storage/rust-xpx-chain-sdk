@@ -13,13 +13,13 @@ async fn main() {
         "http://167.114.169.166:3000",
         "http://192.99.55.111:3000",
     ]
-        .into_iter()
-        .map(|a| {
-            Client::from_shared(a).unwrap()
-            // .rate_limit(10, Duration::from_millis(500))
-            // .concurrency_limit(6)
-            // .timeout(Duration::from_secs(15))
-        });
+    .into_iter()
+    .map(|a| {
+        Client::from_shared(a).unwrap()
+        // .rate_limit(10, Duration::from_millis(500))
+        // .concurrency_limit(6)
+        // .timeout(Duration::from_secs(15))
+    });
 
     let channel = Client::balance_list(endpoints.into_iter());
 

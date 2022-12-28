@@ -7,8 +7,8 @@
 use std::any::Any;
 use std::ops::Deref;
 
-use serde::{Deserialize, Deserializer};
 use serde::de::Error;
+use serde::{Deserialize, Deserializer};
 
 use {
     ::std::fmt,
@@ -17,11 +17,11 @@ use {
 };
 
 use crate::account::{alias_to_recipient, UnresolvedAddress};
-use crate::AsUint64;
 use crate::errors_const;
 use crate::helpers::{has_bits, is_hex};
 use crate::mosaic::{AssetIdType, UnresolvedMosaicId};
 use crate::network::NetworkType;
+use crate::AsUint64;
 
 use super::{generate_namespace_path, NAMESPACE_BIT};
 
@@ -139,8 +139,8 @@ impl Serialize for NamespaceId {
 
 impl<'de> Deserialize<'de> for NamespaceId {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: Deserializer<'de>,
+    where
+        D: Deserializer<'de>,
     {
         let hex_mosaic_id = <String>::deserialize(deserializer)?;
         NamespaceId::try_from_hex(&hex_mosaic_id).map_err(D::Error::custom)

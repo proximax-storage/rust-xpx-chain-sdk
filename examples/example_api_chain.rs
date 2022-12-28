@@ -12,8 +12,8 @@ use tokio::task;
 use tower::ServiceExt;
 use typetag::private::inventory::Node;
 
-use xpx_chain_sdk::api::{Client, Endpoint};
 use xpx_chain_sdk::api::body::BoxBody;
+use xpx_chain_sdk::api::{Client, Endpoint};
 
 #[tokio::main]
 async fn main() {

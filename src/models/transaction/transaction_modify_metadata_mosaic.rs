@@ -11,6 +11,8 @@ use {
     std::{any::Any, fmt},
 };
 
+use crate::models::consts::MOSAIC_ID_SIZE;
+use crate::mosaic::UnresolvedMosaicId;
 use crate::{
     account::PublicAccount,
     errors_const,
@@ -18,8 +20,6 @@ use crate::{
     mosaic::MosaicId,
     network::NetworkType,
 };
-use crate::models::consts::MOSAIC_ID_SIZE;
-use crate::mosaic::UnresolvedMosaicId;
 
 use super::{
     CommonTransaction, Deadline, ModifyMetadataTransaction, Transaction, TransactionType,

@@ -8,26 +8,26 @@ use serde_json::json;
 
 use {::std::collections::HashMap, reqwest::Method};
 
+use crate::api::routes::const_routes::{
+    AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
+};
+use crate::api::{Client, QueryParam, TransactionQueryParams, __internal_get_transactions};
+use crate::transaction::{AggregateTransaction, TransactionSearch};
 use crate::{
     account::{AccountInfo, AccountName, AccountProperties, AccountsId, Address, PublicAccount},
     api::{
-        AccountInfoDto,
-        AccountNamesDto,
-        AccountPropertiesInfoDto, error::Result, internally::{str_to_account_id, valid_vec_len}, MultisigAccountGraphInfoDto,
-        MultisigAccountInfoDto, request as __internal_request,
+        error::Result,
+        internally::{str_to_account_id, valid_vec_len},
+        request as __internal_request, AccountInfoDto, AccountNamesDto, AccountPropertiesInfoDto,
+        MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
     },
     errors_const::ERR_EMPTY_ADDRESSES_IDS,
     multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
 };
-use crate::api::{__internal_get_transactions, Client, QueryParam, TransactionQueryParams};
-use crate::api::routes::const_routes::{
-    AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
-};
-use crate::transaction::{AggregateTransaction, TransactionSearch};
 
 use super::{
-    ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE, ACCOUNT_ROUTE, ACCOUNTS_PROPERTIES_ROUTE,
-    ACCOUNTS_ROUTE, MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE,
+    ACCOUNTS_PROPERTIES_ROUTE, ACCOUNTS_ROUTE, ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE,
+    ACCOUNT_ROUTE, MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE,
 };
 
 /// Account ApiClient routes.
@@ -511,7 +511,7 @@ impl AccountRoutes {
             TRANSACTIONS_UNCONFIRMED_ROUTE,
             query_params_vec,
         )
-            .await
+        .await
     }
 
     /// Get aggregate bonded transactions information
@@ -540,12 +540,12 @@ impl AccountRoutes {
             AGGREGATE_TRANSACTIONS_ROUTE,
             query_params_vec,
         )
-            .await
-            .map(|txns| {
-                txns.transactions
-                    .into_iter()
-                    .map(|item| *item.downcast::<AggregateTransaction>())
-                    .collect::<Vec<_>>()
-            })
+        .await
+        .map(|txns| {
+            txns.transactions
+                .into_iter()
+                .map(|item| *item.downcast::<AggregateTransaction>())
+                .collect::<Vec<_>>()
+        })
     }
 }

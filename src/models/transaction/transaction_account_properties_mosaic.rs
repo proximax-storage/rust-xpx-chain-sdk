@@ -6,8 +6,8 @@
 
 use std::any::Any;
 
-use anyhow::{bail, ensure};
 use anyhow::Result;
+use anyhow::{bail, ensure};
 
 use {
     ::std::fmt::{self, Display, Formatter},
@@ -21,7 +21,7 @@ use crate::{
 };
 
 use super::{
-    buffers, CommonTransaction, Deadline, schema::account_property_transaction_schema, Transaction,
+    buffers, schema::account_property_transaction_schema, CommonTransaction, Deadline, Transaction,
     TransactionType, TransactionVersion,
 };
 

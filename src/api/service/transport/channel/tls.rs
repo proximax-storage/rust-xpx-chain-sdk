@@ -3,9 +3,9 @@ use std::fmt;
 use http::Uri;
 
 use crate::transport::{
-    Error,
     service::TlsConnector,
     tls::{Certificate, Identity},
+    Error,
 };
 
 /// Configures TLS settings for endpoints.

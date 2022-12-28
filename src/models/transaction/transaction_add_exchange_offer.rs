@@ -11,7 +11,6 @@ use anyhow::Result;
 
 use {::std::fmt, fb::FlatBufferBuilder, serde_json::Value};
 
-use crate::AsUint64;
 use crate::models::{
     account::PublicAccount,
     consts::{ADD_EXCHANGE_OFFER_HEADER_SIZE, ADD_EXCHANGE_OFFER_SIZE},
@@ -19,9 +18,10 @@ use crate::models::{
     exchange::AddOffer,
     network::NetworkType,
 };
+use crate::AsUint64;
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline, schema::add_exchange_offer_transaction_schema,
+    buffers, deadline::Deadline, schema::add_exchange_offer_transaction_schema, CommonTransaction,
     Transaction, TransactionType, TransactionVersion,
 };
 

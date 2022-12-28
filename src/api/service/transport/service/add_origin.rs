@@ -1,9 +1,9 @@
 use std::task::{Context, Poll};
 
 use futures_core::future::BoxFuture;
-use http::{Request, Uri};
 use http::uri::Authority;
 use http::uri::Scheme;
+use http::{Request, Uri};
 use tower_service::Service;
 
 #[derive(Debug)]
@@ -28,10 +28,10 @@ impl<T> AddOrigin<T> {
 }
 
 impl<T, ReqBody> Service<Request<ReqBody>> for AddOrigin<T>
-    where
-        T: Service<Request<ReqBody>>,
-        T::Future: Send + 'static,
-        T::Error: Into<crate::api::Error>,
+where
+    T: Service<Request<ReqBody>>,
+    T::Future: Send + 'static,
+    T::Error: Into<crate::api::Error>,
 {
     type Response = T::Response;
     type Error = crate::api::Error;

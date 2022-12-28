@@ -8,9 +8,9 @@ use std::{any::Any, fmt};
 
 use anyhow::{anyhow, Result};
 
-use crate::AsUint64;
 use crate::helpers::{hex_decode, is_hex};
 use crate::namespace::NamespaceId;
+use crate::AsUint64;
 
 use super::MosaicId;
 
