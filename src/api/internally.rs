@@ -248,7 +248,7 @@ pub(crate) fn map_aggregate_transactions_dto(
 ) -> Result<Vec<Box<dyn TransactionDto>>> {
     let mut txs_dto: Vec<Box<dyn TransactionDto>> = vec![];
     for item in transactions.into_iter() {
-        let body: Bytes = Bytes::from(item["AggregateTransactionInfoDto"].to_string());
+        let body: Bytes = Bytes::from(item.to_string());
         let map_dto = map_transaction_dto(body)?;
         txs_dto.push(serde_json::from_str(&map_dto)?);
     }

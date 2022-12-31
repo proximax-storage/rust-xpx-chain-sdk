@@ -26,7 +26,7 @@ use super::ClientTlsConfig;
 ///
 /// This struct is used to build and configure HTTP clients.
 #[derive(Clone)]
-pub struct Endpoint {
+pub struct ApiNode {
     pub(crate) uri: Uri,
     pub(crate) origin: Option<Uri>,
     pub(crate) user_agent: Option<HeaderValue>,
@@ -42,7 +42,7 @@ pub struct Endpoint {
     pub(crate) executor: SharedExec,
 }
 
-impl Endpoint {
+impl ApiNode {
     // FIXME: determine if we want to expose this or not. This is really
     // just used in codegen for a shortcut.
     #[doc(hidden)]
@@ -55,26 +55,26 @@ impl Endpoint {
         Ok(me)
     }
 
-    /// Convert an `Endpoint` from a static string.
+    /// Convert an `ApiNode` from a static string.
     ///
     /// # Panics
     ///
     /// This function panics if the argument is an invalid URI.
     ///
     /// ```
-    /// # use xpx_chain_sdk::api::Endpoint;
-    /// Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000");
+    /// # use xpx_chain_sdk::api::ApiNode;
+    /// ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     /// ```
     pub fn from_static(s: &'static str) -> Self {
         let uri = Uri::from_static(s);
         Self::from(uri)
     }
 
-    /// Convert an `Endpoint` from shared bytes.
+    /// Convert an `ApiNode` from shared bytes.
     ///
     /// ```
-    /// # use xpx_chain_sdk::api::Endpoint;
-    /// Endpoint::from_shared("http://api-1.testnet2.xpxsirius.io:3000".to_string());
+    /// # use xpx_chain_sdk::api::ApiNode;
+    /// ApiNode::from_shared("http://api-1.testnet2.xpxsirius.io:3000".to_string());
     /// ```
     pub fn from_shared(s: impl Into<Bytes>) -> Result<Self, Error> {
         let uri = Uri::from_maybe_shared(s.into()).map_err(|e| Error::new_invalid_uri().with(e))?;
@@ -85,10 +85,10 @@ impl Endpoint {
     ///
     /// `user_agent` will be prepended to Sirius default user-agent string (`sirius/x.x.x`).
     /// It must be a value that can be converted into a valid  `http::HeaderValue` or building
-    /// the endpoint will fail.
+    /// the ApiNode will fail.
     /// ```
-    /// # use xpx_chain_sdk::api::Endpoint;
-    /// # let mut builder = Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000");
+    /// # use xpx_chain_sdk::api::ApiNode;
+    /// # let mut builder = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     /// builder.user_agent("Greeter").expect("Greeter should be a valid header value");
     /// ```
     pub fn user_agent<T>(self, user_agent: T) -> Result<Self, Error>
@@ -97,7 +97,7 @@ impl Endpoint {
     {
         user_agent
             .try_into()
-            .map(|ua| Endpoint {
+            .map(|ua| ApiNode {
                 user_agent: Some(ua),
                 ..self
             })
@@ -111,13 +111,13 @@ impl Endpoint {
     /// It will play the role of SNI (Server Name Indication).
     ///
     /// ```
-    /// # use xpx_chain_sdk::api::Endpoint;
-    /// # let mut builder = Endpoint::from_static("https://proxy.com");
+    /// # use xpx_chain_sdk::api::ApiNode;
+    /// # let mut builder = ApiNode::from_static("https://proxy.com");
     /// builder.origin("http://api-1.testnet2.xpxsirius.io:3000".parse().expect("http://example.com must be a valid URI"));
     /// // origin: "http://api-1.testnet2.xpxsirius.io:3000"
     /// ```
     pub fn origin(self, origin: Uri) -> Self {
-        Endpoint {
+        ApiNode {
             origin: Some(origin),
             ..self
         }
@@ -126,9 +126,9 @@ impl Endpoint {
     /// Apply a timeout to each request.
     ///
     /// ```
-    /// # use xpx_chain_sdk::api::Endpoint;
+    /// # use xpx_chain_sdk::api::ApiNode;
     /// # use std::time::Duration;
-    /// # let mut builder = Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000");
+    /// # let mut builder = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     /// builder.timeout(Duration::from_secs(5));
     /// ```
     ///
@@ -140,7 +140,7 @@ impl Endpoint {
     ///
     /// [`Request::set_timeout`]: crate::Request::set_timeout
     pub fn timeout(self, dur: Duration) -> Self {
-        Endpoint {
+        ApiNode {
             timeout: Some(dur),
             ..self
         }
@@ -151,13 +151,13 @@ impl Endpoint {
     /// Defaults to no timeout.
     ///
     /// ```
-    /// # use xpx_chain_sdk::api::Endpoint;
+    /// # use xpx_chain_sdk::api::ApiNode;
     /// # use std::time::Duration;
-    /// # let mut builder = Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000");
+    /// # let mut builder = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     /// builder.connect_timeout(Duration::from_secs(5));
     /// ```
     pub fn connect_timeout(self, dur: Duration) -> Self {
-        Endpoint {
+        ApiNode {
             connect_timeout: Some(dur),
             ..self
         }
@@ -172,7 +172,7 @@ impl Endpoint {
     /// Default is no keepalive (`None`)
     ///
     pub fn tcp_keepalive(self, tcp_keepalive: Option<Duration>) -> Self {
-        Endpoint {
+        ApiNode {
             tcp_keepalive,
             ..self
         }
@@ -181,12 +181,12 @@ impl Endpoint {
     /// Apply a concurrency limit to each request.
     ///
     /// ```
-    /// # use xpx_chain_sdk::api::Endpoint;
-    /// # let mut builder = Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000");
+    /// # use xpx_chain_sdk::api::ApiNode;
+    /// # let mut builder = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     /// builder.concurrency_limit(256);
     /// ```
     pub fn concurrency_limit(self, limit: usize) -> Self {
-        Endpoint {
+        ApiNode {
             concurrency_limit: Some(limit),
             ..self
         }
@@ -195,23 +195,23 @@ impl Endpoint {
     /// Apply a rate limit to each request.
     ///
     /// ```
-    /// # use xpx_chain_sdk::api::Endpoint;
+    /// # use xpx_chain_sdk::api::ApiNode;
     /// # use std::time::Duration;
-    /// # let mut builder = Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000");
+    /// # let mut builder = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     /// builder.rate_limit(32, Duration::from_secs(1));
     /// ```
     pub fn rate_limit(self, limit: u64, duration: Duration) -> Self {
-        Endpoint {
+        ApiNode {
             rate_limit: Some((limit, duration)),
             ..self
         }
     }
 
-    /// Configures TLS for the endpoint.
+    /// Configures TLS for the ApiNode.
     #[cfg(feature = "tls")]
     #[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
     pub fn tls_config(self, tls_config: ClientTlsConfig) -> Result<Self, Error> {
-        Ok(Endpoint {
+        Ok(ApiNode {
             tls: Some(
                 tls_config
                     .tls_connector(self.uri.clone())
@@ -223,14 +223,14 @@ impl Endpoint {
 
     /// Set the value of `TCP_NODELAY` option for accepted connections. Enabled by default.
     pub fn tcp_nodelay(self, enabled: bool) -> Self {
-        Endpoint {
+        ApiNode {
             tcp_nodelay: enabled,
             ..self
         }
     }
 
     pub fn buffer_size(self, size: usize) -> Self {
-        Endpoint {
+        ApiNode {
             buffer_size: Some(size),
             ..self
         }
@@ -271,7 +271,7 @@ impl Endpoint {
 
     /// Create a channel from this config.
     ///
-    /// The channel returned by this method does not attempt to connect to the endpoint until first
+    /// The channel returned by this method does not attempt to connect to the ApiNode until first
     /// use.
     pub fn connect_lazy(&self) -> Client {
         let mut http = hyper::client::connect::HttpConnector::new();
@@ -300,7 +300,7 @@ impl Endpoint {
     /// See the `uds` example for an example on how to use this function to build channel that
     /// uses a Unix socket transport.
     ///
-    /// The [`connect_timeout`](Endpoint::connect_timeout) will still be applied.
+    /// The [`connect_timeout`](ApiNode::connect_timeout) will still be applied.
     pub async fn connect_with_connector<C>(&self, connector: C) -> Result<Client, Error>
     where
         C: MakeConnection<Uri> + Send + 'static,
@@ -346,21 +346,21 @@ impl Endpoint {
         Client::new(connector, self.clone())
     }
 
-    /// Get the endpoint uri.
+    /// Get the ApiNode uri.
     ///
     /// ```
-    /// # use xpx_chain_sdk::api::Endpoint;
+    /// # use xpx_chain_sdk::api::ApiNode;
     /// # use http::Uri;
-    /// let endpoint = Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000");
+    /// let ApiNode = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     ///
-    /// assert_eq!(endpoint.uri(), &Uri::from_static("http://api-1.testnet2.xpxsirius.io:3000"));
+    /// assert_eq!(ApiNode.uri(), &Uri::from_static("http://api-1.testnet2.xpxsirius.io:3000"));
     /// ```
     pub fn uri(&self) -> &Uri {
         &self.uri
     }
 }
 
-impl From<Uri> for Endpoint {
+impl From<Uri> for ApiNode {
     fn from(uri: Uri) -> Self {
         Self {
             uri,
@@ -380,7 +380,7 @@ impl From<Uri> for Endpoint {
     }
 }
 
-impl TryFrom<Bytes> for Endpoint {
+impl TryFrom<Bytes> for ApiNode {
     type Error = Error;
 
     fn try_from(t: Bytes) -> Result<Self, Self::Error> {
@@ -388,7 +388,7 @@ impl TryFrom<Bytes> for Endpoint {
     }
 }
 
-impl TryFrom<String> for Endpoint {
+impl TryFrom<String> for ApiNode {
     type Error = Error;
 
     fn try_from(t: String) -> Result<Self, Self::Error> {
@@ -396,7 +396,7 @@ impl TryFrom<String> for Endpoint {
     }
 }
 
-impl TryFrom<&'static str> for Endpoint {
+impl TryFrom<&'static str> for ApiNode {
     type Error = Error;
 
     fn try_from(t: &'static str) -> Result<Self, Self::Error> {
@@ -404,13 +404,13 @@ impl TryFrom<&'static str> for Endpoint {
     }
 }
 
-impl fmt::Debug for Endpoint {
+impl fmt::Debug for ApiNode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Endpoint").finish()
+        f.debug_struct("ApiNode").finish()
     }
 }
 
-impl FromStr for Endpoint {
+impl FromStr for ApiNode {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {

@@ -94,7 +94,7 @@ pub use self::channel::ClientTlsConfig;
 #[doc(inline)]
 // #[cfg(feature = "channel")]
 #[cfg_attr(docsrs, doc(cfg(feature = "channel")))]
-pub use self::channel::{Client, Endpoint};
+pub use self::channel::{Client, ApiNode};
 pub use self::error::Error;
 #[cfg(feature = "tls")]
 #[cfg_attr(docsrs, doc(cfg(feature = "tls")))]

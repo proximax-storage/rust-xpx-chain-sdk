@@ -27,7 +27,7 @@ use tower::{
     Service,
 };
 
-pub use endpoint::Endpoint;
+pub use api_node::ApiNode;
 #[cfg(feature = "tls")]
 pub use tls::ClientTlsConfig;
 
@@ -41,7 +41,7 @@ use crate::api::routes::transaction_routes_api::TransactionRoutes;
 
 use super::service::{Connection, DynamicServiceStream, SharedExec};
 
-mod endpoint;
+mod api_node;
 #[cfg(feature = "tls")]
 #[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
 mod tls;
@@ -87,9 +87,9 @@ pub struct ResponseFuture {
 }
 
 impl Client {
-    /// Create an [`Endpoint`] builder that can create [`Channel`]s.
-    pub fn builder(uri: Uri) -> Endpoint {
-        Endpoint::from(uri)
+    /// Create an [`ApiNode`] builder that can create [`Channel`]s.
+    pub fn builder(uri: Uri) -> ApiNode {
+        ApiNode::from(uri)
     }
 
     /// Create an `Endpoint` from a static string.
@@ -98,7 +98,7 @@ impl Client {
     /// # use xpx_chain_sdk::api::Client;
     /// Client::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     /// ```
-    pub fn from_static(s: &'static str) -> Endpoint {
+    pub fn from_static(s: &'static str) -> ApiNode {
         let uri = Uri::from_static(s);
         Self::builder(uri)
     }
@@ -109,16 +109,16 @@ impl Client {
     /// # use xpx_chain_sdk::api::Client;
     /// Client::from_shared("http://api-1.testnet2.xpxsirius.io:3000");
     /// ```
-    pub fn from_shared(s: impl Into<Bytes>) -> Result<Endpoint, InvalidUri> {
+    pub fn from_shared(s: impl Into<Bytes>) -> Result<ApiNode, InvalidUri> {
         let uri = Uri::from_maybe_shared(s.into())?;
         Ok(Self::builder(uri))
     }
 
-    /// Balance a list of [`Endpoint`]'s.
+    /// Balance a list of [`ApiNode`]'s.
     ///
     /// This creates a [`Channel`] that will load balance across all the
     /// provided endpoints.
-    pub fn balance_list(list: impl Iterator<Item = Endpoint>) -> Self {
+    pub fn balance_list(list: impl Iterator<Item =ApiNode>) -> Self {
         let (client, tx) = Self::balance_channel(DEFAULT_BUFFER_SIZE);
         list.for_each(|endpoint| {
             tx.try_send(Change::Insert(endpoint.uri.clone(), endpoint))
@@ -128,17 +128,17 @@ impl Client {
         client
     }
 
-    /// Balance a list of [`Endpoint`]'s.
+    /// Balance a list of [`ApiNode`]'s.
     ///
     /// This creates a [`Channel`] that will listen to a stream of change events and will add or remove provided endpoints.
-    pub fn balance_channel<K>(capacity: usize) -> (Self, Sender<Change<K, Endpoint>>)
+    pub fn balance_channel<K>(capacity: usize) -> (Self, Sender<Change<K, ApiNode>>)
     where
         K: Hash + Eq + Send + Clone + 'static,
     {
         Self::balance_channel_with_executor(capacity, SharedExec::tokio())
     }
 
-    /// Balance a list of [`Endpoint`]'s.
+    /// Balance a list of [`ApiNode`]'s.
     ///
     /// This creates a [`Channel`] that will listen to a stream of change events and will add or remove provided endpoints.
     ///
@@ -146,7 +146,7 @@ impl Client {
     pub fn balance_channel_with_executor<K, E>(
         capacity: usize,
         executor: E,
-    ) -> (Self, Sender<Change<K, Endpoint>>)
+    ) -> (Self, Sender<Change<K, ApiNode>>)
     where
         K: Hash + Eq + Send + Clone + 'static,
         E: Executor<Pin<Box<dyn Future<Output = ()> + Send>>> + Send + Sync + 'static,
@@ -156,7 +156,7 @@ impl Client {
         (Self::balance(list, DEFAULT_BUFFER_SIZE, executor), tx)
     }
 
-    pub(crate) fn new<C>(connector: C, endpoint: Endpoint) -> Self
+    pub(crate) fn new<C>(connector: C, endpoint: ApiNode) -> Self
     where
         C: Service<Uri> + Send + 'static,
         C::Error: Into<crate::api::Error> + Send,
@@ -173,7 +173,7 @@ impl Client {
         Client { svc }
     }
 
-    pub(crate) async fn connect<C>(connector: C, endpoint: Endpoint) -> Result<Self, super::Error>
+    pub(crate) async fn connect<C>(connector: C, endpoint: ApiNode) -> Result<Self, super::Error>
     where
         C: Service<Uri> + Send + 'static,
         C::Error: Into<crate::api::Error> + Send,

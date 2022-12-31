@@ -17,7 +17,7 @@ use tower::{
 };
 use tower_service::Service;
 
-use crate::api::{body::BoxBody, transport::Endpoint};
+use crate::api::{body::BoxBody, transport::ApiNode};
 
 use super::super::BoxFuture;
 use super::{reconnect::Reconnect, AddOrigin, UserAgent};
@@ -30,7 +30,7 @@ pub struct Connection {
 }
 
 impl Connection {
-    fn new<C>(connector: C, endpoint: Endpoint, is_lazy: bool) -> Self
+    fn new<C>(connector: C, endpoint: ApiNode, is_lazy: bool) -> Self
     where
         C: Service<Uri> + Send + 'static,
         C::Error: Into<crate::api::Error> + Send,
@@ -65,7 +65,7 @@ impl Connection {
 
     pub(crate) async fn connect<C>(
         connector: C,
-        endpoint: Endpoint,
+        endpoint: ApiNode,
     ) -> Result<Self, crate::api::Error>
     where
         C: Service<Uri> + Send + 'static,
@@ -76,7 +76,7 @@ impl Connection {
         Self::new(connector, endpoint, false).ready_oneshot().await
     }
 
-    pub(crate) fn lazy<C>(connector: C, endpoint: Endpoint) -> Self
+    pub(crate) fn lazy<C>(connector: C, endpoint: ApiNode) -> Self
     where
         C: Service<Uri> + Send + 'static,
         C::Error: Into<crate::api::Error> + Send,
