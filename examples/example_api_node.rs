@@ -4,17 +4,13 @@
  * license that can be found in the LICENSE file.
  */
 
-use xpx_chain_sdk::api::Endpoint;
+use xpx_chain_sdk::api::ApiNode;
 
 #[tokio::main]
-async fn main() {
-    let client = match Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000")
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let client = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000")
         .connect()
-        .await
-    {
-        Ok(client) => client,
-        Err(err) => panic!("Exception when calling endpoint connect{}\n", err),
-    };
+        .await?;
 
     let node_api = client.node_api();
 
@@ -25,17 +21,19 @@ async fn main() {
         Err(err) => eprintln!("Exception when calling node_api->get_node_info: {}\n", err),
     }
 
-    // // Get the node time.
-    // let node_time = node_api.get_node_time().await;
-    // match node_time {
-    //     Ok(resp) => println!("{}", resp),
-    //     Err(err) => eprintln!("Exception when calling node_api->get_node_time: {}\n", err),
-    // }
-    //
-    // // Get the node time.
-    // let node_peers = node_api.get_node_peers().await;
-    // match node_peers {
-    //     Ok(resp) => println!("{:?}", resp),
-    //     Err(err) => eprintln!("Exception when calling node_api->get_node_peers: {}\n", err),
-    // }
+    // Get the node time.
+    let node_time = node_api.get_node_time().await;
+    match node_time {
+        Ok(resp) => println!("{}", resp),
+        Err(err) => eprintln!("Exception when calling node_api->get_node_time: {}\n", err),
+    }
+
+    // Get node peer list.
+    let node_peers = node_api.get_node_peers().await;
+    match node_peers {
+        Ok(resp) => println!("{:?}", resp),
+        Err(err) => eprintln!("Exception when calling node_api->get_node_peers: {}\n", err),
+    }
+
+    Ok(())
 }

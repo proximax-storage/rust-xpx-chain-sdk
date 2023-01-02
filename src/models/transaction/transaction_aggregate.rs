@@ -21,10 +21,10 @@ use crate::{
 
 use super::{
     buffers,
-    internal::{sign_transaction_with_cosignatures, to_aggregate_transaction_bytes},
-    schema::aggregate_transaction_schema,
-    CommonTransaction, Deadline, SignedTransaction, Transaction, TransactionType,
-    TransactionVersion, Transactions,
+    CommonTransaction,
+    Deadline,
+    internal::{sign_transaction_with_cosignatures, to_aggregate_transaction_bytes}, schema::aggregate_transaction_schema, SignedTransaction, Transaction, Transactions,
+    TransactionType, TransactionVersion,
 };
 
 /// AggregateTransaction:

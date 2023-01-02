@@ -108,8 +108,8 @@ impl Connected for tokio::io::DuplexStream {
 
 #[cfg(feature = "tls")]
 impl<T> Connected for TlsStream<T>
-where
-    T: Connected,
+    where
+        T: Connected,
 {
     type ConnectInfo = TlsConnectInfo<T::ConnectInfo>;
 

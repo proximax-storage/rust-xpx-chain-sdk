@@ -5,8 +5,8 @@
  */
 
 use super::{
-    schema_common_definition::schema_common_definition, ArrayAttribute, ScalarAttribute, Schema,
-    SchemaAttribute, TableArrayAttribute, SIZEOF_BYTE,
+    ArrayAttribute, ScalarAttribute, Schema, schema_common_definition::schema_common_definition,
+    SchemaAttribute, SIZEOF_BYTE, TableArrayAttribute,
 };
 
 pub fn account_property_transaction_schema() -> Schema {

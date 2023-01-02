@@ -88,13 +88,13 @@
 
 pub use hyper::{Body, Uri};
 
-#[cfg(feature = "tls")]
-#[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
-pub use self::channel::ClientTlsConfig;
 #[doc(inline)]
 // #[cfg(feature = "channel")]
 #[cfg_attr(docsrs, doc(cfg(feature = "channel")))]
-pub use self::channel::{Client, ApiNode};
+pub use self::channel::{ApiNode, Client};
+#[cfg(feature = "tls")]
+#[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
+pub use self::channel::ClientTlsConfig;
 pub use self::error::Error;
 #[cfg(feature = "tls")]
 #[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
@@ -115,4 +115,4 @@ mod service;
 mod tls;
 
 type BoxFuture<T, E> =
-    std::pin::Pin<Box<dyn std::future::Future<Output = Result<T, E>> + Send + 'static>>;
+std::pin::Pin<Box<dyn std::future::Future<Output=Result<T, E>> + Send + 'static>>;

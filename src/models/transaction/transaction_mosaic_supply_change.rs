@@ -12,15 +12,15 @@ use {::std::fmt, serde_json::Value};
 
 use crate::{
     account::PublicAccount,
+    AsUint64,
     models::consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
     mosaic::{MosaicSupplyType, UnresolvedMosaicId},
     network::NetworkType,
-    AsUint64,
 };
 
 use super::{
-    buffers, deadline::Deadline, schema::mosaic_supply_change_transaction_schema,
-    CommonTransaction, Transaction, TransactionType, TransactionVersion,
+    buffers, CommonTransaction, deadline::Deadline,
+    schema::mosaic_supply_change_transaction_schema, Transaction, TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

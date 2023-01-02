@@ -4,17 +4,12 @@
  * license that can be found in the LICENSE file.
  */
 
-use xpx_chain_sdk::api::{Client, Endpoint};
+use xpx_chain_sdk::api::ApiNode;
 
 #[tokio::main]
-async fn main() {
-    let client = match Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000")
-        .connect()
-        .await
-    {
-        Ok(client) => client,
-        Err(err) => panic!("Exception when calling endpoint connect{}\n", err),
-    };
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let client = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000")
+        .connect().await?;
 
     let network_api = client.network_api();
 
@@ -27,4 +22,6 @@ async fn main() {
             err
         ),
     }
+
+    Ok(())
 }

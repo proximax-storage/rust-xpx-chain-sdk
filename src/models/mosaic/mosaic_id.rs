@@ -6,8 +6,8 @@
 
 use std::any::Any;
 
-use serde::de::Error;
 use serde::{Deserialize, Deserializer, Serializer};
+use serde::de::Error;
 
 use {
     ::std::{fmt, ops::Deref},
@@ -65,8 +65,8 @@ impl Serialize for MosaicId {
 
 impl<'de> Deserialize<'de> for MosaicId {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
+        where
+            D: Deserializer<'de>,
     {
         let hex_mosaic_id = <String>::deserialize(deserializer)?;
         MosaicId::try_from_hex(&hex_mosaic_id).map_err(D::Error::custom)

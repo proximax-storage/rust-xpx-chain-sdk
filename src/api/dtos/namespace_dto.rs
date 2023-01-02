@@ -4,7 +4,6 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::mosaic::UnresolvedMosaicId;
 use crate::{
     account::PublicAccount,
     api::error::Result,
@@ -13,6 +12,7 @@ use crate::{
     network::NetworkType,
     transaction::{MetadataNamespaceTransaction, RegisterNamespaceTransaction, Transaction},
 };
+use crate::mosaic::UnresolvedMosaicId;
 
 use super::{
     AbstractTransactionDto, AliasDto, ModifyMetadataTransactionDto, TransactionDto,

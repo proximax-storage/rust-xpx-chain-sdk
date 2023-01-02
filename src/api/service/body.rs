@@ -7,9 +7,9 @@ pub type BoxBody = http_body::combinators::UnsyncBoxBody<bytes::Bytes, crate::ap
 
 /// Convert a [`http_body::Body`] into a [`BoxBody`].
 pub(crate) fn boxed_body<B>(body: B) -> BoxBody
-where
-    B: http_body::Body<Data = bytes::Bytes> + Send + 'static,
-    B::Error: Into<crate::api::Error>,
+    where
+        B: http_body::Body<Data=bytes::Bytes> + Send + 'static,
+        B::Error: Into<crate::api::Error>,
 {
     body.map_err(crate::api::Status::map_error).boxed_unsync()
 }

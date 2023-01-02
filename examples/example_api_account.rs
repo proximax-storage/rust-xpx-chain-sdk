@@ -3,28 +3,26 @@ use std::time::Duration;
 
 use xpx_chain_sdk::account::{Address, PublicAccount};
 use xpx_chain_sdk::api::{Client, OrderV2, TransactionQueryParams};
-use xpx_chain_sdk::network::NetworkType;
 use xpx_chain_sdk::transaction::TransactionType;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let endpoints = [
-        "http://142.44.246.241:3000",
-        "http://167.114.169.166:3000",
-        "http://192.99.55.111:3000",
+        "http://api-1.testnet2.xpxsirius.io:3000",
+        "http://api-2.testnet2.xpxsirius.io:3000",
     ]
-    .into_iter()
-    .map(|a| {
-        Client::from_shared(a).unwrap()
-        // .rate_limit(10, Duration::from_millis(500))
-        // .concurrency_limit(6)
-        // .timeout(Duration::from_secs(15))
-    });
+        .into_iter()
+        .map(|a| {
+            Client::from_shared(a).unwrap()
+            // .rate_limit(10, Duration::from_millis(500))
+            // .concurrency_limit(6)
+            // .timeout(Duration::from_secs(15))
+        });
 
-    let channel = Client::balance_list(endpoints.into_iter());
+    let client = Client::balance_list(endpoints.into_iter());
 
-    // let network_type = client.network_info().await.unwrap().network_type;
-    let network_type = NetworkType::PublicTest;
+    let network_type = client.chain_api().get_block_by_height(1).await?.network_type;
+    // let network_type = NetworkType::PublicTest;
 
     // let account_api = client.account_api();
 
@@ -40,7 +38,7 @@ async fn main() {
     // Create an Address from a given public key.
     let account_two = Address::from_public_key(account_id_two, network_type).unwrap();
 
-    let account_api = channel.account_api();
+    let account_api = client.account_api();
 
     for _i in 0..3 {
         let account_api = account_api.clone();
@@ -128,4 +126,6 @@ async fn main() {
         ),
     }
     sleep(Duration::from_secs(100));
+
+    Ok(())
 }

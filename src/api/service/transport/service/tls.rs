@@ -1,6 +1,6 @@
+use std::{fmt, sync::Arc};
 #[cfg(feature = "tls")]
 use std::convert::TryInto;
-use std::{fmt, sync::Arc};
 
 use tokio::io::{AsyncRead, AsyncWrite};
 
@@ -13,8 +13,8 @@ use tokio_rustls::{
 };
 
 use crate::transport::{
-    server::{Connected, TlsStream},
-    Certificate, Identity,
+    Certificate,
+    Identity, server::{Connected, TlsStream},
 };
 
 use super::io::BoxedIo;
@@ -93,8 +93,8 @@ impl TlsConnector {
     }
 
     pub(crate) async fn connect<I>(&self, io: I) -> Result<BoxedIo, crate::Error>
-    where
-        I: AsyncRead + AsyncWrite + Send + Unpin + 'static,
+        where
+            I: AsyncRead + AsyncWrite + Send + Unpin + 'static,
     {
         let tls_io = {
             let io = RustlsConnector::from(self.config.clone())
@@ -154,8 +154,8 @@ impl TlsAcceptor {
     }
 
     pub(crate) async fn accept<IO>(&self, io: IO) -> Result<TlsStream<IO>, crate::Error>
-    where
-        IO: AsyncRead + AsyncWrite + Connected + Unpin + Send + 'static,
+        where
+            IO: AsyncRead + AsyncWrite + Connected + Unpin + Send + 'static,
     {
         let acceptor = RustlsAcceptor::from(self.inner.clone());
         acceptor.accept(io).await.map_err(Into::into)
@@ -189,8 +189,8 @@ mod rustls_keys {
 
     use tokio_rustls::rustls::{Certificate, PrivateKey, RootCertStore};
 
-    use crate::transport::service::tls::TlsError;
     use crate::transport::Identity;
+    use crate::transport::service::tls::TlsError;
 
     fn load_rustls_private_key(
         mut cursor: std::io::Cursor<&[u8]>,

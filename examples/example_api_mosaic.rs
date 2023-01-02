@@ -4,24 +4,19 @@
  * license that can be found in the LICENSE file.
  */
 
-use xpx_chain_sdk::account::{Address, PublicAccount};
-use xpx_chain_sdk::api::{Client, Endpoint, PageQueryParams};
+use xpx_chain_sdk::api::{ApiNode, PageQueryParams};
 use xpx_chain_sdk::mosaic::MosaicId;
 
 #[tokio::main]
-async fn main() {
-    let client = match Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000")
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let client = ApiNode::from_static("http://demo-api-1.edlx.io:3000")
         .connect()
-        .await
-    {
-        Ok(client) => client,
-        Err(err) => panic!("Exception when calling endpoint connect{}\n", err),
-    };
+        .await?;
 
     let mosaic_api = client.mosaic_api();
 
-    let mosaic_id_one = MosaicId::try_from_hex("13BFC518E40549D7").unwrap();
-    let mosaic_id_two = MosaicId::try_from_hex("705BAFA9B6903C08").unwrap();
+    let mosaic_id_one = MosaicId::try_from_hex("13BFC518E40549D7")?;
+    let mosaic_id_two = MosaicId::try_from_hex("705BAFA9B6903C08")?;
 
     // Get the node information.
     let info = mosaic_api.get_mosaic_info(mosaic_id_one).await;
@@ -76,4 +71,5 @@ async fn main() {
             err
         ),
     }
+    Ok(())
 }

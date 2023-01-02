@@ -19,8 +19,8 @@ use crate::models::{
 };
 
 use super::{
-    buffers, deadline::Deadline, schema::remove_exchange_offer_transaction_schema,
-    CommonTransaction, Transaction, TransactionType, TransactionVersion,
+    buffers, CommonTransaction, deadline::Deadline,
+    schema::remove_exchange_offer_transaction_schema, Transaction, TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

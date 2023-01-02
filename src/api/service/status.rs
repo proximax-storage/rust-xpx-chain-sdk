@@ -2,7 +2,7 @@ use std::{borrow::Cow, error::Error, fmt, sync::Arc};
 
 use bytes::Bytes;
 use http::header::{HeaderMap, HeaderValue};
-use percent_encoding::{percent_encode, AsciiSet, CONTROLS};
+use percent_encoding::{AsciiSet, CONTROLS, percent_encode};
 use tracing::{debug, trace};
 
 use crate::api::body::BoxBody;
@@ -331,7 +331,7 @@ impl Status {
         };
 
         #[cfg(feature = "transport")]
-        let err = match err.downcast::<h2::Error>() {
+            let err = match err.downcast::<h2::Error>() {
             Ok(h2) => {
                 return Ok(Status::from_h2_error(h2));
             }
@@ -408,8 +408,8 @@ impl Status {
     }
 
     pub(crate) fn map_error<E>(err: E) -> Status
-    where
-        E: Into<Box<dyn Error + Send + Sync>>,
+        where
+            E: Into<Box<dyn Error + Send + Sync>>,
     {
         let err: Box<dyn Error + Send + Sync> = err.into();
         Status::from_error(err)

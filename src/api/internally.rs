@@ -10,30 +10,30 @@ use serde::de::DeserializeOwned;
 
 use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
 
-use crate::api::{
-    request as __internal_request, AccountPropertiesTransactionInfoDto,
-    AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto,
-    AggregateTransactionInfoDto, Client, ExchangeOfferTransactionInfoDto,
-    HashLockTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto,
-    MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto,
-    MosaicSupplyChangeTransactionInfoDto, Pagination, QueryParam,
-    RegisterNamespaceTransactionInfoDto, RemoveExchangeOfferTransactionInfoDto,
-    TransferTransactionInfoDto,
-};
-use crate::transaction::{Transaction, TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
     api, errors_const, helpers::is_hex, metadata::MetadataModification, mosaic::MosaicProperties,
     multisig::CosignatoryModification, network::NetworkType,
     transaction::TransactionType as Entity,
 };
+use crate::api::{
+    AccountPropertiesTransactionInfoDto, AddExchangeOfferTransactionInfoDto,
+    AddressAliasTransactionInfoDto, AggregateTransactionInfoDto,
+    Client, ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto,
+    ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto,
+    MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto,
+    Pagination, QueryParam, RegisterNamespaceTransactionInfoDto,
+    RemoveExchangeOfferTransactionInfoDto, request as __internal_request,
+    TransferTransactionInfoDto,
+};
+use crate::transaction::{Transaction, TransactionGroupType, Transactions, TransactionSearch};
 
 use super::{
     CosignatoryModificationDto, MetadataModificationDto, MosaicPropertyDto, TransactionDto,
 };
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
-where
-    T: Debug,
+    where
+        T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())

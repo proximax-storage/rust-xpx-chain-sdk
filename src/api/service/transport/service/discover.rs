@@ -10,8 +10,8 @@ use tower::discover::Change;
 
 use crate::api::transport::ApiNode;
 
-use super::super::service;
 use super::connection::Connection;
+use super::super::service;
 
 type DiscoverResult<K, S, E> = Result<Change<K, S>, E>;
 
@@ -39,10 +39,10 @@ impl<K: Hash + Eq + Clone> Stream for DynamicServiceStream<K> {
                     http.set_keepalive(endpoint.tcp_keepalive);
                     http.enforce_http(false);
                     #[cfg(feature = "tls")]
-                    let connector = service::connector(http, endpoint.tls.clone());
+                        let connector = service::connector(http, endpoint.tls.clone());
 
                     #[cfg(not(feature = "tls"))]
-                    let connector = service::connector(http);
+                        let connector = service::connector(http);
                     let connection = Connection::lazy(connector, endpoint);
                     let change = Ok(Change::Insert(k, connection));
                     Poll::Ready(Some(change))

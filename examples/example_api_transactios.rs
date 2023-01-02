@@ -1,28 +1,25 @@
 use std::str::FromStr;
 
-use xpx_chain_sdk::api::{Client, Endpoint, TransactionQueryParams};
+use xpx_chain_sdk::api::{ApiNode, TransactionQueryParams};
 use xpx_chain_sdk::transaction::{TransactionGroupType, TransactionType};
 use xpx_chain_sdk::TransactionHash;
 
 #[tokio::main]
-async fn main() {
-    let ep1 = Endpoint::from_static("http://api-1.testnet2.xpxsirius.io:3000");
-    let ep2 = Endpoint::from_static("http://api-2.testnet2.xpxsirius.io:3000");
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let client = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000")
+        .connect().await?;
 
-    let endpoints = [ep1, ep2];
-
-    let client = Client::balance_list(endpoints.into_iter());
     let transaction_api = client.transaction_api();
 
     let hash_one = TransactionHash::from_str(
-        "B27577726AD8F7CB848891F9AC585FE89252DF40327EDF29DE6C3CA9295AE074",
+        "33F586DB2235A57FAEA9A7F6A201F5AF525B368B812067019E49F4C8A350A397",
     )
-    .unwrap();
+        .unwrap();
 
     let hash_two = TransactionHash::from_str(
-        "47dec094a3379d9cfb1ed100c843da5f5578af7ad16bb2ef3d5d0ab0f6493c8d",
+        "16134853ea5003d38bd2b0b48765eb7c5d58e48c7ab389dae040228a775c8f78",
     )
-    .unwrap();
+        .unwrap();
 
     // Returns a [Transaction] information given a transactionId or hash.
     let account_info = transaction_api.get_any_transaction(hash_one).await;
@@ -102,5 +99,7 @@ async fn main() {
             "Exception when calling transaction_api->get_transactions_statuses: {}\n",
             err
         ),
-    }
+    };
+
+    Ok(())
 }
