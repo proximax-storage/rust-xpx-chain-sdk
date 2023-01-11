@@ -23,7 +23,7 @@ xpx-chain-sdk = { git = "https://github.com/proximax-storage/rust-xpx-chain-sdk"
 async fn main() {
     let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
 
-    let sirius_client = xpx_chain_sdk::api::SiriusClient::new(node_url).await;
+    let sirius_client = xpx_chain_sdk::api::ApiNode::new(node_url).await;
     let client = match sirius_client {
         Ok(resp) => resp,
         Err(err) => panic!("{}", err),

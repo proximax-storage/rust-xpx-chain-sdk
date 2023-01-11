@@ -23,7 +23,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     match info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_namespace_info: {}\n",
+            "Exception when calling mosaic_api->get_mosaic_info: {}\n",
             err
         ),
     }
@@ -35,7 +35,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     match info {
         Ok(resp) => println!("{:#?}", resp),
         Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_namespaces_from_account: {}\n",
+            "Exception when calling mosaic_api->get_mosaics_info: {}\n",
             err
         ),
     }
@@ -47,7 +47,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     match info {
         Ok(resp) => println!("{:#?}", resp),
         Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_namespaces_names: {}\n",
+            "Exception when calling mosaic_api->get_mosaics_names: {}\n",
             err
         ),
     }
@@ -58,7 +58,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     match info {
         Ok(resp) => println!("{:#?}", resp.len()),
         Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_mosaic_rich_list: {}\n",
+            "Exception when calling mosaic_api->get_mosaic_rich_list: {}\n",
             err
         ),
     }
@@ -67,7 +67,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     match info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_mosaic_levy: {}\n",
+            "Exception when calling mosaic_api->get_mosaic_levy: {}\n",
             err
         ),
     }

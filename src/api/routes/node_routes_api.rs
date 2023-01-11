@@ -37,12 +37,12 @@ impl NodeRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
     /// let node_info = client.node_api().get_node_info().await;
     ///
@@ -71,14 +71,14 @@ impl NodeRoutes {
     /// # Example
     ///
     /// ```
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
-    /// let node_info = client.node_api().get_node_time();
+    /// let node_time = client.node_api().get_node_time().await;
     /// match node_time {
     ///     Ok(resp_info) => println!("{}", resp_info),
     ///     Err(err) => eprintln!("{:?}", err),
@@ -103,14 +103,14 @@ impl NodeRoutes {
     /// # Example
     ///
     /// ```
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
-    /// let node_peers = client.node_api().get_node_peers();
+    /// let node_peers = client.node_api().get_node_peers().await;
     /// match node_peers {
     ///     Ok(resp_info) => println!("{:?}", resp_info),
     ///     Err(err) => eprintln!("{:?}", err),

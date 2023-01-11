@@ -56,14 +56,14 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///const PUBLIC_KEY: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let account_info = client.account_api().account_info( PUBLIC_KEY).await;
     ///
     /// match account_info {
@@ -99,15 +99,15 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///const PUBLIC_KEY_A: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
     ///const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let accounts_info = client.account_api().accounts_info( vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
     ///
     ///    match accounts_info {
@@ -154,15 +154,15 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///const PUBLIC_KEY_A: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
     ///const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let accounts_names = client.account_api().accounts_names( vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
     ///
     ///    match accounts_names {
@@ -210,14 +210,14 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///const PUBLIC_KEY: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let account_multisig = client.account_api().account_multisig( PUBLIC_KEY).await;
     ///
     /// match account_multisig {
@@ -254,14 +254,14 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///const PUBLIC_KEY: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let account_multisig_graph = client.account_api().account_multisig_graph( PUBLIC_KEY).await;
     ///
     /// match account_multisig_graph {
@@ -309,14 +309,13 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///use xpx_chain_sdk::account::Address;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    ///
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
     /// let address = Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap();
     /// let account_properties = client.account_api().account_properties( address).await;
@@ -353,14 +352,13 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///use xpx_chain_sdk::account::Address;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    ///
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
     /// let address_a = Address::from_raw("VCWN77662VNLFGQBQ6RIFTC7LFWO5BSA3U622CSK").unwrap();
     /// let address_b = Address::from_raw("VBWH2BUPITAIHNIPOQ322OB5Q5FF6GFPDR5SYMAA").unwrap();

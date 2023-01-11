@@ -38,12 +38,12 @@ impl ChainRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
     ///    let chain_height = client.chain_api().get_block_height().await;
     ///
@@ -77,12 +77,12 @@ impl ChainRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let chain_score = client.chain_api().get_block_score().await;
     ///
     ///    match chain_score {
@@ -111,12 +111,12 @@ impl ChainRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let chain_score = client.chain_api().get_block_storage().await;
     ///
     ///    match chain_score {
@@ -147,13 +147,13 @@ impl ChainRoutes {
     /// # Example
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
-    /// let chain_score = client.block_api().get_block_by_height(1).await;
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
+    /// let block_by_height = client.chain_api().get_block_by_height(1).await;
     ///
     ///    match block_by_height {
     ///        Ok(resp_info) => println!("{}", resp_info),
@@ -197,16 +197,16 @@ impl ChainRoutes {
     /// # Example
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
-    /// let chain_score = client.block_api().get_blocks_by_height_with_limit(1, 25).await;
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
+    /// let blocks_by_height_with_limit = client.chain_api().get_blocks_by_height_with_limit(1, 25).await;
     ///
     ///    match blocks_by_height_with_limit {
-    ///        Ok(resp_info) => println!("{}", resp_info),
+    ///        Ok(resp_info) => println!("{:#?}", resp_info),
     ///        Err(err) => eprintln!("{:?}", err),
     ///    }
     ///}

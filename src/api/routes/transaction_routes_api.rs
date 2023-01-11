@@ -80,16 +80,17 @@ impl TransactionRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
-    ///
-    ///const HASH: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
+    ///use xpx_chain_sdk::api::ApiNode;
+    /// use std::str::FromStr;
+    /// use xpx_chain_sdk::TransactionHash;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let hash: TransactionHash = TransactionHash::from_str("130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
-    /// let transaction_status = client.transaction_api().get_transaction_status( HASH ).await;
+    /// let transaction_status = client.transaction_api().get_transaction_status( hash ).await;
     /// match transaction_status {
     ///     Ok(resp_info) => println!("{}", resp_info),
     ///     Err(err) => eprintln!("{:?}", err),
@@ -125,18 +126,19 @@ impl TransactionRoutes {
     /// ```
     ///
     ///use ::std::str::FromStr;
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///use xpx_chain_sdk::TransactionHash;
-    ///
-    ///const HASH_A: TransactionHash = TransactionHash::from_str("130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").unwrap();
-    ///const HASH_B: TransactionHash = TransactionHash::from_str("5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4").unwrap();
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
     ///
-    /// let transactions_status = client.transaction_api().get_transactions_statuses( vec![HASH_A,HASH_B] ).await;
+    /// let hash_one: TransactionHash = TransactionHash::from_str("130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").unwrap();
+    /// let hash_two: TransactionHash = TransactionHash::from_str("5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4").unwrap();
+    ///
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
+    ///
+    /// let transactions_status = client.transaction_api().get_transactions_statuses( vec![hash_one,hash_two] ).await;
     ///
     /// match transactions_status {
     ///     Ok(statuses) => {
@@ -187,17 +189,18 @@ impl TransactionRoutes {
     /// # Example
     ///
     /// ```
-    ///
-    /// use xpx_chain_sdk::api::SiriusClient;
+    /// use ::std::str::FromStr;
+    /// use xpx_chain_sdk::api::ApiNode;
     /// use xpx_chain_sdk::transaction::TransactionGroupType;
-    /// const HASH: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
+    /// use xpx_chain_sdk::TransactionHash;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let hash_one: TransactionHash = TransactionHash::from_str("130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
-    /// let transaction = client.transaction_api().get_transaction( HASH , TransactionGroupType::Confirmed).await;
+    /// let transaction = client.transaction_api().get_transaction( hash_one , TransactionGroupType::Confirmed).await;
     ///
     /// match transaction {
     ///     Ok(resp_info) => println!("{}", resp_info),
@@ -258,17 +261,20 @@ impl TransactionRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
-    ///
-    ///const HASH_A: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
-    ///const HASH_B: &str = "5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4";
-    ///
+    ///use ::std::str::FromStr;
+    ///use xpx_chain_sdk::api::ApiNode;
+    ///use xpx_chain_sdk::TransactionHash;
+    /// use xpx_chain_sdk::transaction::TransactionGroupType;
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
-    ///    let transactions_info = client.transaction.get_transactions( vec![HASH_A,HASH_B] ).await;
+    /// let hash_one: TransactionHash = TransactionHash::from_str("130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").unwrap();
+    /// let hash_two: TransactionHash = TransactionHash::from_str("5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4").unwrap();
+    ///
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
+    ///
+    ///    let transactions_info = client.transaction_api().get_transactions( vec![hash_one,hash_two], TransactionGroupType::Confirmed ).await;
     ///
     ///    match transactions_info {
     ///        Ok(transactions) => {
@@ -315,12 +321,11 @@ impl TransactionRoutes {
     /// ```
     ///
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///use xpx_chain_sdk::{
     ///    account::{Account, Address},
     ///    message::PlainMessage,
     ///    mosaic::Mosaic,
-    ///    network::PUBLIC_TEST,
     ///    transaction::{Deadline, TransferTransaction}
     ///};
     ///
@@ -328,45 +333,46 @@ impl TransactionRoutes {
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url);
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
-    ///    let generation_hash = client.generation_hash().await;
+    /// let chain = client.chain_api().get_block_by_height(1).await.unwrap();
     ///
-    ///    // let network_type = client.network_type().await;
-    ///    let network_type = PUBLIC_TEST;
+    /// let network_type = chain.network_type;
+    /// let generation_hash = chain.generation_hash;
     ///
     ///    // Deadline default 1 hour
     ///    // let deadline = Deadline::new(1, 0, 0);
     ///    let deadline = Deadline::default();
     ///
-    ///    let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
+    ///    let account = Account::from_hex_private_key(PRIVATE_KEY, network_type).unwrap();
     ///
     ///    let recipient = Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap();
     ///
-    ///    let message = PlainMessage::new("Transfer From ProximaX Rust SDK");
+    ///    let message = PlainMessage::create("Transfer From ProximaX Rust SDK");
     ///
-    ///    let transfer_transaction = TransferTransaction::new(
+    ///    let transfer_transaction = TransferTransaction::create(
     ///        deadline,
     ///        recipient,
     ///        vec![Mosaic::xpx(1)],
     ///        message,
     ///        network_type,
+    ///        None
     ///    );
     ///
     ///    if let Err(err) = &transfer_transaction {
     ///        panic!("{}", err)
     ///    }
     ///
-    ///    let sig_transaction = account.sign(
-    ///        &transfer_transaction.unwrap(), generation_hash);
+    ///    let sig_transaction = account.sign_transaction(
+    ///        transfer_transaction.unwrap(), generation_hash);
     ///
     ///    let sig_tx = match &sig_transaction {
     ///        Ok(sig) => sig,
     ///        Err(err) => panic!("{}", err),
     ///    };
     ///
-    ///    let response = client.transaction.announce(&sig_tx).await;
+    ///    let response = client.transaction_api().announce(&sig_tx).await;
     ///
     ///    match response {
     ///        Ok(resp) => println!("{}", resp),

@@ -48,13 +48,13 @@ impl MosaicRoutes {
     ///
     /// ```
     ///
-    /// use xpx_chain_sdk::api::SiriusClient;
+    /// use xpx_chain_sdk::api::ApiNode;
     /// use xpx_chain_sdk::mosaic::MosaicId;
     ///
     ///#[tokio::main]
     ///async fn main() {    
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
     /// let mosaic_id = MosaicId::try_from_hex("3C520B7CEB2F7099").unwrap();
     ///
@@ -92,18 +92,18 @@ impl MosaicRoutes {
     ///
     /// ```
     ///
-    /// use xpx_chain_sdk::api::SiriusClient;
+    /// use xpx_chain_sdk::api::ApiNode;
     ///use xpx_chain_sdk::mosaic::MosaicId;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
     /// let mosaic_id_a = MosaicId::try_from_hex("3C520B7CEB2F7099").unwrap();
     /// let mosaic_id_b = MosaicId::try_from_hex("6208AE4D56451357").unwrap();
     ///
-    /// let mosaic_info = client.mosaic_api().get_mosaics_info(vec![mosaic_id_a, mosaic_id_b]).await;
+    /// let mosaics_info = client.mosaic_api().get_mosaics_info(vec![mosaic_id_a, mosaic_id_b]).await;
     /// match mosaics_info {
     ///     Ok(resp) => {
     ///         for mosaic in resp {
@@ -147,18 +147,18 @@ impl MosaicRoutes {
     ///
     /// ```
     ///
-    /// use xpx_chain_sdk::api::SiriusClient;
+    /// use xpx_chain_sdk::api::ApiNode;
     ///use xpx_chain_sdk::mosaic::MosaicId;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
     ///    let mosaic_id_a = MosaicId::try_from_hex("3C520B7CEB2F7099").unwrap();
     ///    let mosaic_id_b = MosaicId::try_from_hex("6208AE4D56451357").unwrap();
     ///
-    /// let mosaic_info = client.mosaic_api().get_mosaics_names(vec![mosaic_id_a, mosaic_id_b]).await;
+    /// let mosaics_names = client.mosaic_api().get_mosaics_names(vec![mosaic_id_a, mosaic_id_b]).await;
     /// match mosaics_names {
     ///     Ok(resp) => {
     ///         for mosaic in resp {
