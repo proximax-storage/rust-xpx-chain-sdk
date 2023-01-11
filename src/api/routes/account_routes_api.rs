@@ -6,7 +6,7 @@
 
 use serde_json::json;
 
-use {::std::collections::HashMap, reqwest::Method};
+use {::std::collections::HashMap, http::Method};
 
 use crate::api::routes::const_routes::{
     AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,

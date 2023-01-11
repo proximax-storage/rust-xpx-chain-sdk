@@ -6,7 +6,7 @@ use std::{
     time::Duration,
 };
 
-// use crate::metadata::GRPC_TIMEOUT_HEADER;
+// use crate::metadata::HTTP_TIMEOUT_HEADER;
 // use crate::util::{OptionPin, OptionPinProj};
 use http::{HeaderMap, HeaderValue, Request};
 use pin_project::pin_project;
@@ -14,12 +14,12 @@ use tokio::time::Sleep;
 use tower_service::Service;
 
 #[derive(Debug, Clone)]
-pub(crate) struct GrpcTimeout<S> {
+pub(crate) struct HttpTimeout<S> {
     inner: S,
     server_timeout: Option<Duration>,
 }
 
-impl<S> GrpcTimeout<S> {
+impl<S> HttpTimeout<S> {
     pub(crate) fn new(inner: S, server_timeout: Option<Duration>) -> Self {
         Self {
             inner,
@@ -28,10 +28,10 @@ impl<S> GrpcTimeout<S> {
     }
 }
 
-impl<S, ReqBody> Service<Request<ReqBody>> for GrpcTimeout<S>
-    where
-        S: Service<Request<ReqBody>>,
-        S::Error: Into<crate::Error>,
+impl<S, ReqBody> Service<Request<ReqBody>> for HttpTimeout<S>
+where
+    S: Service<Request<ReqBody>>,
+    S::Error: Into<crate::Error>,
 {
     type Response = S::Response;
     type Error = crate::Error;
@@ -42,8 +42,8 @@ impl<S, ReqBody> Service<Request<ReqBody>> for GrpcTimeout<S>
     }
 
     fn call(&mut self, req: Request<ReqBody>) -> Self::Future {
-        let client_timeout = try_parse_grpc_timeout(req.headers()).unwrap_or_else(|e| {
-            tracing::trace!("Error parsing `grpc-timeout` header {:?}", e);
+        let client_timeout = try_parse_http_timeout(req.headers()).unwrap_or_else(|e| {
+            tracing::trace!("Error parsing `http-timeout` header {:?}", e);
             None
         });
 
@@ -77,9 +77,9 @@ pub(crate) struct ResponseFuture<F> {
 }
 
 impl<F, Res, E> Future for ResponseFuture<F>
-    where
-        F: Future<Output=Result<Res, E>>,
-        E: Into<crate::Error>,
+where
+    F: Future<Output = Result<Res, E>>,
+    E: Into<crate::Error>,
 {
     type Output = Result<Res, crate::Error>;
 
@@ -102,14 +102,13 @@ impl<F, Res, E> Future for ResponseFuture<F>
 const SECONDS_IN_HOUR: u64 = 60 * 60;
 const SECONDS_IN_MINUTE: u64 = 60;
 
-/// Tries to parse the `grpc-timeout` header if it is present. If we fail to parse, returns
+/// Tries to parse the `http-timeout` header if it is present. If we fail to parse, returns
 /// the value we attempted to parse.
 ///
-/// Follows the [gRPC over HTTP2 spec](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md).
-fn try_parse_grpc_timeout(
+fn try_parse_http_timeout(
     headers: &HeaderMap<HeaderValue>,
 ) -> Result<Option<Duration>, &HeaderValue> {
-    match headers.get(GRPC_TIMEOUT_HEADER) {
+    match headers.get(HTTP_TIMEOUT_HEADER) {
         Some(val) => {
             let (timeout_value, timeout_unit) = val
                 .to_str()
@@ -122,7 +121,7 @@ fn try_parse_grpc_timeout(
                 // `len - 1` also wont panic since we just checked `s.is_empty`.
                 .split_at(val.len() - 1);
 
-            // gRPC spec specifies `TimeoutValue` will be at most 8 digits
+            // http spec specifies `TimeoutValue` will be at most 8 digits
             // Caping this at 8 digits also prevents integer overflow from ever occurring
             if timeout_value.len() > 8 {
                 return Err(val);
@@ -155,11 +154,11 @@ fn try_parse_grpc_timeout(
 /// Error returned if a request didn't complete within the configured timeout.
 ///
 /// Timeouts can be configured either with [`Endpoint::timeout`], [`Server::timeout`], or by
-/// setting the [`grpc-timeout` metadata value][spec].
+/// setting the [`http-timeout` metadata value][spec].
 ///
 /// [`Endpoint::timeout`]: crate::transport::server::Server::timeout
 /// [`Server::timeout`]: crate::transport::channel::Endpoint::timeout
-/// [spec]: https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md
+/// [spec]: https://github.com/http/http/blob/master/doc/PROTOCOL-HTTP2.md
 #[derive(Debug)]
 pub struct TimeoutExpired(());
 
@@ -184,10 +183,10 @@ mod tests {
         let mut hm = HeaderMap::new();
         if let Some(v) = val {
             let hv = HeaderValue::from_str(v).unwrap();
-            hm.insert(GRPC_TIMEOUT_HEADER, hv);
+            hm.insert(HTTP_TIMEOUT_HEADER, hv);
         };
 
-        try_parse_grpc_timeout(&hm).map_err(|e| e.clone())
+        try_parse_http_timeout(&hm).map_err(|e| e.clone())
     }
 
     #[test]
@@ -242,14 +241,14 @@ mod tests {
     #[test]
     #[should_panic(expected = "123456789H")]
     fn test_too_many_digits() {
-        // gRPC spec states TimeoutValue will be at most 8 digits
+        // http spec states TimeoutValue will be at most 8 digits
         setup_map_try_parse(Some("123456789H")).unwrap().unwrap();
     }
 
     #[test]
     #[should_panic(expected = "oneH")]
     fn test_invalid_digits() {
-        // gRPC spec states TimeoutValue will be at most 8 digits
+        // http spec states TimeoutValue will be at most 8 digits
         setup_map_try_parse(Some("oneH")).unwrap().unwrap();
     }
 

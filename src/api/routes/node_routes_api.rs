@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use reqwest::Method;
+use http::Method;
 
 use crate::api::{Client, NodeInfoDto};
 use crate::{

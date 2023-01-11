@@ -6,7 +6,7 @@
 
 use {
     ::std::{future::Future, pin::Pin},
-    reqwest::Method,
+    http::Method,
 };
 
 use crate::api::error::Error;

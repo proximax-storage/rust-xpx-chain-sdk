@@ -4,21 +4,22 @@
  * license that can be found in the LICENSE file.
  */
 
+use http::Method;
 use http::Request;
-use reqwest::Method;
 use tower::buffer::Buffer;
 
-use crate::{
-    account::PublicAccount,
-    api::{ExchangeInfoDto, OfferInfoDTOs, request as __internal_request},
-    api::error::Result,
-    exchange::{OfferInfos, OfferType, UserExchangeInfo},
-    mosaic::{AssetIdType, UnresolvedMosaicId}, network::NetworkType,
-};
 use crate::api::body::BoxBody;
 use crate::api::Svc;
+use crate::{
+    account::PublicAccount,
+    api::error::Result,
+    api::{request as __internal_request, ExchangeInfoDto, OfferInfoDTOs},
+    exchange::{OfferInfos, OfferType, UserExchangeInfo},
+    mosaic::{AssetIdType, UnresolvedMosaicId},
+    network::NetworkType,
+};
 
-use super::{EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE, resolver_routes_api::ResolverRoutes};
+use super::{resolver_routes_api::ResolverRoutes, EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE};
 
 /// Node ApiClient routes.
 ///

@@ -48,7 +48,7 @@ impl Connection {
                 AddOrigin::new(s, origin)
             })
             .layer_fn(|s| UserAgent::new(s, endpoint.user_agent.clone()))
-            // .layer_fn(|s| GrpcTimeout::new(s, endpoint.timeout))
+            // .layer_fn(|s| HttpTimeout::new(s, endpoint.timeout))
             .option_layer(endpoint.concurrency_limit.map(ConcurrencyLimitLayer::new))
             .option_layer(endpoint.rate_limit.map(|(l, d)| RateLimitLayer::new(l, d)))
             .into_inner();

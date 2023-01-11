@@ -9,7 +9,7 @@ use serde_json::json;
 
 use {
     ::std::fmt::{Debug, Display},
-    reqwest::Method,
+    http::Method,
 };
 
 use crate::api::error::{Error, SiriusError};

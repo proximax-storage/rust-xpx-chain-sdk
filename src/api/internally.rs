@@ -5,7 +5,7 @@
  */
 
 use anyhow::Result;
-use reqwest::Method;
+use http::Method;
 use serde::de::DeserializeOwned;
 
 use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};

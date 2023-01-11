@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use reqwest::Method;
+use http::Method;
 
 use crate::api::routes::const_routes::{MOSAIC_LEVY_ROUTE, MOSAIC_RICH_LIST_ROUTE};
 use crate::api::{Client, MosaicLevyDTO, MosaicRichListDTO, PageQueryParams};

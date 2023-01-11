@@ -4,17 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::Request;
+use http::header::{CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT};
+use http::{Method, Request, StatusCode};
 use tower::ServiceExt;
 
-use {
-    ::std::collections::HashMap,
-    reqwest::{
-        header::{CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT},
-        Method, StatusCode,
-    },
-    serde_json,
-};
+use {::std::collections::HashMap, serde_json};
 
 use crate::api;
 use crate::api::body::{boxed_body, BoxBody};

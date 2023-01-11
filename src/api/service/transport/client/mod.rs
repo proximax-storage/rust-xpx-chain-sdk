@@ -48,7 +48,7 @@ const DEFAULT_BUFFER_SIZE: usize = 1024;
 
 /// A default batteries included `transport` client.
 ///
-/// This provides a fully featured http2 gRPC client based on [`hyper::Client`]
+/// This provides a fully featured http client based on [`hyper::Client`]
 /// and `tower` services.
 ///
 /// # Multiplexing requests

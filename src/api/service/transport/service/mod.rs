@@ -10,7 +10,7 @@ mod connection;
 mod connector;
 mod discover;
 pub(crate) mod executor;
-// pub(crate) mod grpc_timeout;
+// pub(crate) mod http_timeout;
 mod io;
 mod reconnect;
 

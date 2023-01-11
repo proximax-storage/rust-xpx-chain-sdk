@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use reqwest::Method;
+use http::Method;
 
 use crate::api::routes::const_routes::{BLOCK_BY_HEIGHT_ROUTE, BLOCK_INFO_ROUTE};
 use crate::api::{BlockInfoDto, Client};
