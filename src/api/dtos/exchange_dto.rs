@@ -17,7 +17,7 @@ use crate::{
             RemoveOffer, UserExchangeInfo,
         },
         mosaic::{Mosaic, MosaicId, UnresolvedMosaicId},
-        namespace::{NAMESPACE_BIT, NamespaceId},
+        namespace::{NamespaceId, NAMESPACE_BIT},
         network::NetworkType,
         transaction::{
             AddExchangeOfferTransaction, ExchangeOfferTransaction, RemoveExchangeOfferTransaction,
@@ -33,7 +33,7 @@ type AddOfferDTOs = Vec<AddOfferDto>;
 type RemoveOfferDTOs = Vec<RemoveOfferDto>;
 type ConfirmationOfferDTOs = Vec<ConfirmationOffer>;
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct OfferDTO {
     mosaic_id: Uint64Dto,
@@ -56,14 +56,14 @@ impl OfferDTO {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RemoveOfferDto {
     mosaic_id: Uint64Dto,
     offer_type: u8,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddOfferDto {
     #[serde(flatten)]
@@ -71,7 +71,7 @@ pub(crate) struct AddOfferDto {
     duration: u64,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ConfirmationOffer {
     #[serde(flatten)]
@@ -79,7 +79,7 @@ pub(crate) struct ConfirmationOffer {
     owner: String,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ExchangeDto {
     owner: String,
@@ -87,7 +87,7 @@ pub(crate) struct ExchangeDto {
     sell_offers: OfferInfoDTOs,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ExchangeInfoDto {
     exchange: ExchangeDto,
@@ -137,7 +137,7 @@ impl ExchangeInfoDto {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct OfferInfoDto {
     mosaic_id: Uint64Dto,
@@ -167,7 +167,7 @@ impl OfferInfoDto {
 }
 
 /// AddExchangeOfferTransactionDto.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddExchangeOfferTransactionDto {
     #[serde(flatten)]
@@ -175,7 +175,7 @@ pub(crate) struct AddExchangeOfferTransactionDto {
     pub offers: AddOfferDTOs,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddExchangeOfferTransactionInfoDto {
     pub meta: TransactionMetaDto,
@@ -207,7 +207,7 @@ impl TransactionDto for AddExchangeOfferTransactionInfoDto {
 }
 
 /// AddExchangeOfferTransactionDto.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ExchangeOfferTransactionDto {
     #[serde(flatten)]
@@ -215,7 +215,7 @@ pub(crate) struct ExchangeOfferTransactionDto {
     pub offers: ConfirmationOfferDTOs,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ExchangeOfferTransactionInfoDto {
     pub meta: TransactionMetaDto,
@@ -251,7 +251,7 @@ impl TransactionDto for ExchangeOfferTransactionInfoDto {
 }
 
 /// AddExchangeOfferTransactionDto.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RemoveExchangeOfferTransactionDto {
     #[serde(flatten)]
@@ -259,7 +259,7 @@ pub(crate) struct RemoveExchangeOfferTransactionDto {
     pub offers: RemoveOfferDTOs,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RemoveExchangeOfferTransactionInfoDto {
     pub meta: TransactionMetaDto,

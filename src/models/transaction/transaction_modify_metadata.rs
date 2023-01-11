@@ -11,8 +11,8 @@ use crate::models::{
 };
 
 use super::{
-    buffers, CommonTransaction,
-    internal::metadata_modification_array_to_buffer, schema::modify_metadata_transaction_schema,
+    buffers, internal::metadata_modification_array_to_buffer,
+    schema::modify_metadata_transaction_schema, CommonTransaction,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

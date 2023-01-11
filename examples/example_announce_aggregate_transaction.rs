@@ -6,13 +6,15 @@ use xpx_chain_sdk::message::PlainMessage;
 use xpx_chain_sdk::mosaic::Mosaic;
 use xpx_chain_sdk::network::NetworkType;
 use xpx_chain_sdk::network::NetworkType::PrivateTest;
-use xpx_chain_sdk::transaction::{AggregateTransaction, Deadline, Transaction, TransferTransaction};
+use xpx_chain_sdk::transaction::{
+    AggregateTransaction, Deadline, Transaction, TransferTransaction,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let start = Instant::now();
 
-    let client = ApiNode::from_static("http://demo-api-1.edlx.io:3000")
+    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
         .connect()
         .await?;
 
@@ -27,7 +29,6 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let account = Account::from_hex_private_key(private_key, network_type).unwrap();
     let recipient_a = Account::random(network_type).to_address();
     let recipient_b = Account::random(network_type).to_address();
-
 
     let mut transfer_a = TransferTransaction::create(
         Deadline::default(),

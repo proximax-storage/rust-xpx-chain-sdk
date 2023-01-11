@@ -8,19 +8,15 @@ use std::{
 };
 
 use bytes::Bytes;
-use http::{HeaderValue, uri::Uri};
+use http::{uri::Uri, HeaderValue};
+use hyper::rt::Executor;
 use tower::make::MakeConnection;
 
-use api::transport::{Error, Executor, service::SharedExec};
+use crate::api::transport::service::SharedExec;
+use crate::api::transport::Error;
 
-use crate::api;
-#[cfg(feature = "tls")]
-use crate::transport::service::TlsConnector;
-
-use super::Client;
-#[cfg(feature = "tls")]
-use super::ClientTlsConfig;
 use super::super::service;
+use super::Client;
 
 /// Channel builder.
 ///
@@ -33,10 +29,8 @@ pub struct ApiNode {
     pub(crate) timeout: Option<Duration>,
     pub(crate) concurrency_limit: Option<usize>,
     pub(crate) rate_limit: Option<(u64, Duration)>,
-    #[cfg(feature = "tls")]
-    pub(crate) tls: Option<TlsConnector>,
     pub(crate) buffer_size: Option<usize>,
-    pub(crate) tcp_keepalive: Option<Duration>,
+    pub(crate) tcp_keep_alive: Option<Duration>,
     pub(crate) tcp_nodelay: bool,
     pub(crate) connect_timeout: Option<Duration>,
     pub(crate) executor: SharedExec,
@@ -47,9 +41,9 @@ impl ApiNode {
     // just used in codegen for a shortcut.
     #[doc(hidden)]
     pub fn new<D>(dst: D) -> Result<Self, Error>
-        where
-            D: TryInto<Self>,
-            D::Error: Into<crate::api::Error>,
+    where
+        D: TryInto<Self>,
+        D::Error: Into<crate::api::Error>,
     {
         let me = dst.try_into().map_err(|e| Error::from_source(e.into()))?;
         Ok(me)
@@ -74,7 +68,7 @@ impl ApiNode {
     ///
     /// ```
     /// # use xpx_chain_sdk::api::ApiNode;
-    /// ApiNode::from_shared("http://api-1.testnet2.xpxsirius.io:3000".to_string());
+    /// let _ = ApiNode::from_shared("http://api-1.testnet2.xpxsirius.io:3000".to_string());
     /// ```
     pub fn from_shared(s: impl Into<Bytes>) -> Result<Self, Error> {
         let uri = Uri::from_maybe_shared(s.into()).map_err(|e| Error::new_invalid_uri().with(e))?;
@@ -92,8 +86,8 @@ impl ApiNode {
     /// builder.user_agent("Greeter").expect("Greeter should be a valid header value");
     /// ```
     pub fn user_agent<T>(self, user_agent: T) -> Result<Self, Error>
-        where
-            T: TryInto<HeaderValue>,
+    where
+        T: TryInto<HeaderValue>,
     {
         user_agent
             .try_into()
@@ -171,9 +165,9 @@ impl ApiNode {
     ///
     /// Default is no keepalive (`None`)
     ///
-    pub fn tcp_keepalive(self, tcp_keepalive: Option<Duration>) -> Self {
+    pub fn tcp_keep_alive(self, tcp_keep_alive: Option<Duration>) -> Self {
         ApiNode {
-            tcp_keepalive,
+            tcp_keep_alive,
             ..self
         }
     }
@@ -207,20 +201,6 @@ impl ApiNode {
         }
     }
 
-    /// Configures TLS for the ApiNode.
-    #[cfg(feature = "tls")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
-    pub fn tls_config(self, tls_config: ClientTlsConfig) -> Result<Self, Error> {
-        Ok(ApiNode {
-            tls: Some(
-                tls_config
-                    .tls_connector(self.uri.clone())
-                    .map_err(Error::from_source)?,
-            ),
-            ..self
-        })
-    }
-
     /// Set the value of `TCP_NODELAY` option for accepted connections. Enabled by default.
     pub fn tcp_nodelay(self, enabled: bool) -> Self {
         ApiNode {
@@ -240,8 +220,8 @@ impl ApiNode {
     ///
     /// Uses `tokio::spawn` by default.
     pub fn executor<E>(mut self, executor: E) -> Self
-        where
-            E: Executor<Pin<Box<dyn Future<Output=()> + Send>>> + Send + Sync + 'static,
+    where
+        E: Executor<Pin<Box<dyn Future<Output = ()> + Send>>> + Send + Sync + 'static,
     {
         self.executor = SharedExec::new(executor);
         self
@@ -252,13 +232,9 @@ impl ApiNode {
         let mut http = hyper::client::connect::HttpConnector::new();
         http.enforce_http(false);
         http.set_nodelay(self.tcp_nodelay);
-        http.set_keepalive(self.tcp_keepalive);
+        http.set_keepalive(self.tcp_keep_alive);
 
-        #[cfg(feature = "tls")]
-            let connector = service::connector(http, self.tls.clone());
-
-        #[cfg(not(feature = "tls"))]
-            let connector = service::connector(http);
+        let connector = service::connector(http);
 
         if let Some(connect_timeout) = self.connect_timeout {
             let mut connector = hyper_timeout::TimeoutConnector::new(connector);
@@ -277,13 +253,9 @@ impl ApiNode {
         let mut http = hyper::client::connect::HttpConnector::new();
         http.enforce_http(false);
         http.set_nodelay(self.tcp_nodelay);
-        http.set_keepalive(self.tcp_keepalive);
+        http.set_keepalive(self.tcp_keep_alive);
 
-        #[cfg(feature = "tls")]
-            let connector = service::connector(http, self.tls.clone());
-
-        #[cfg(not(feature = "tls"))]
-            let connector = service::connector(http);
+        let connector = service::connector(http);
 
         if let Some(connect_timeout) = self.connect_timeout {
             let mut connector = hyper_timeout::TimeoutConnector::new(connector);
@@ -302,17 +274,13 @@ impl ApiNode {
     ///
     /// The [`connect_timeout`](ApiNode::connect_timeout) will still be applied.
     pub async fn connect_with_connector<C>(&self, connector: C) -> Result<Client, Error>
-        where
-            C: MakeConnection<Uri> + Send + 'static,
-            C::Connection: Unpin + Send + 'static,
-            C::Future: Send + 'static,
-            crate::api::Error: From<C::Error> + Send + 'static,
+    where
+        C: MakeConnection<Uri> + Send + 'static,
+        C::Connection: Unpin + Send + 'static,
+        C::Future: Send + 'static,
+        crate::api::Error: From<C::Error> + Send + 'static,
     {
-        #[cfg(feature = "tls")]
-            let connector = service::connector(connector, self.tls.clone());
-
-        #[cfg(not(feature = "tls"))]
-            let connector = service::connector(connector);
+        let connector = service::connector(connector);
 
         if let Some(connect_timeout) = self.connect_timeout {
             let mut connector = hyper_timeout::TimeoutConnector::new(connector);
@@ -331,17 +299,13 @@ impl ApiNode {
     /// See the `uds` example for an example on how to use this function to build channel that
     /// uses a Unix socket transport.
     pub fn connect_with_connector_lazy<C>(&self, connector: C) -> Client
-        where
-            C: MakeConnection<Uri> + Send + 'static,
-            C::Connection: Unpin + Send + 'static,
-            C::Future: Send + 'static,
-            crate::api::Error: From<C::Error> + Send + 'static,
+    where
+        C: MakeConnection<Uri> + Send + 'static,
+        C::Connection: Unpin + Send + 'static,
+        C::Future: Send + 'static,
+        crate::api::Error: From<C::Error> + Send + 'static,
     {
-        #[cfg(feature = "tls")]
-            let connector = service::connector(connector, self.tls.clone());
-
-        #[cfg(not(feature = "tls"))]
-            let connector = service::connector(connector);
+        let connector = service::connector(connector);
 
         Client::new(connector, self.clone())
     }
@@ -351,9 +315,9 @@ impl ApiNode {
     /// ```
     /// # use xpx_chain_sdk::api::ApiNode;
     /// # use http::Uri;
-    /// let ApiNode = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
+    /// let node = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     ///
-    /// assert_eq!(ApiNode.uri(), &Uri::from_static("http://api-1.testnet2.xpxsirius.io:3000"));
+    /// assert_eq!(node.uri(), &Uri::from_static("http://api-1.testnet2.xpxsirius.io:3000"));
     /// ```
     pub fn uri(&self) -> &Uri {
         &self.uri
@@ -369,10 +333,8 @@ impl From<Uri> for ApiNode {
             concurrency_limit: None,
             rate_limit: None,
             timeout: None,
-            #[cfg(feature = "tls")]
-            tls: None,
             buffer_size: None,
-            tcp_keepalive: None,
+            tcp_keep_alive: None,
             tcp_nodelay: true,
             connect_timeout: None,
             executor: SharedExec::tokio(),

@@ -1,17 +1,15 @@
 use std::time::Instant;
 
-use xpx_chain_sdk::account::{Account, Address};
-use xpx_chain_sdk::api::{ApiNode, Client};
+use xpx_chain_sdk::account::Account;
+use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::message::PlainMessage;
-use xpx_chain_sdk::network::NetworkType;
-use xpx_chain_sdk::network::NetworkType::PrivateTest;
 use xpx_chain_sdk::transaction::{Deadline, TransferTransaction};
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let start = Instant::now();
 
-    let client = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000")
+    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
         .connect()
         .await?;
 

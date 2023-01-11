@@ -8,8 +8,9 @@ use xpx_chain_sdk::api::ApiNode;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-    let client = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000")
-        .connect().await?;
+    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
+        .connect()
+        .await?;
 
     let network_api = client.network_api();
 

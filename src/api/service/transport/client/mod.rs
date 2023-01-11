@@ -10,8 +10,8 @@ use std::{
 
 use bytes::Bytes;
 use http::{
-    Request,
-    Response, uri::{InvalidUri, Uri},
+    uri::{InvalidUri, Uri},
+    Request, Response,
 };
 use hyper::client::connect::Connection as HyperConnection;
 use hyper::rt::Executor;
@@ -19,35 +19,30 @@ use tokio::{
     io::{AsyncRead, AsyncWrite},
     sync::mpsc::{channel, Sender},
 };
+use tower::balance::p2c::Balance;
 use tower::{
     buffer::{self, Buffer},
     discover::{Change, Discover},
-    Service,
     util::{BoxService, Either},
+    Service,
 };
-use tower::balance::p2c::Balance;
 
 pub use api_node::ApiNode;
-#[cfg(feature = "tls")]
-pub use tls::ClientTlsConfig;
 
 use crate::api::body::BoxBody;
-use crate::api::routes::account_routes_api::AccountRoutes;
-use crate::api::routes::chain_routes_api::ChainRoutes;
-use crate::api::routes::mosaic_routes_api::MosaicRoutes;
-use crate::api::routes::network_routes_api::NetworkRoutes;
-use crate::api::routes::node_routes_api::NodeRoutes;
-use crate::api::routes::transaction_routes_api::TransactionRoutes;
+use crate::api::routes::{
+    account_routes_api::AccountRoutes, chain_routes_api::ChainRoutes,
+    mosaic_routes_api::MosaicRoutes, namespace_routes_api::NamespaceRoutes,
+    network_routes_api::NetworkRoutes, node_routes_api::NodeRoutes,
+    resolver_routes_api::ResolverRoutes, transaction_routes_api::TransactionRoutes,
+};
 
 use super::service::{Connection, DynamicServiceStream, SharedExec};
 
 mod api_node;
-#[cfg(feature = "tls")]
-#[cfg_attr(docsrs, doc(cfg(feature = "tls")))]
-mod tls;
 
 pub type Svc =
-Either<Connection, BoxService<Request<BoxBody>, Response<hyper::Body>, crate::api::Error>>;
+    Either<Connection, BoxService<Request<BoxBody>, Response<hyper::Body>, crate::api::Error>>;
 
 const DEFAULT_BUFFER_SIZE: usize = 1024;
 
@@ -118,7 +113,7 @@ impl Client {
     ///
     /// This creates a [`Channel`] that will load balance across all the
     /// provided endpoints.
-    pub fn balance_list(list: impl Iterator<Item=ApiNode>) -> Self {
+    pub fn balance_list(list: impl Iterator<Item = ApiNode>) -> Self {
         let (client, tx) = Self::balance_channel(DEFAULT_BUFFER_SIZE);
         list.for_each(|endpoint| {
             tx.try_send(Change::Insert(endpoint.uri.clone(), endpoint))
@@ -132,8 +127,8 @@ impl Client {
     ///
     /// This creates a [`Channel`] that will listen to a stream of change events and will add or remove provided endpoints.
     pub fn balance_channel<K>(capacity: usize) -> (Self, Sender<Change<K, ApiNode>>)
-        where
-            K: Hash + Eq + Send + Clone + 'static,
+    where
+        K: Hash + Eq + Send + Clone + 'static,
     {
         Self::balance_channel_with_executor(capacity, SharedExec::tokio())
     }
@@ -147,9 +142,9 @@ impl Client {
         capacity: usize,
         executor: E,
     ) -> (Self, Sender<Change<K, ApiNode>>)
-        where
-            K: Hash + Eq + Send + Clone + 'static,
-            E: Executor<Pin<Box<dyn Future<Output=()> + Send>>> + Send + Sync + 'static,
+    where
+        K: Hash + Eq + Send + Clone + 'static,
+        E: Executor<Pin<Box<dyn Future<Output = ()> + Send>>> + Send + Sync + 'static,
     {
         let (tx, rx) = channel(capacity);
         let list = DynamicServiceStream::new(rx);
@@ -157,11 +152,11 @@ impl Client {
     }
 
     pub(crate) fn new<C>(connector: C, endpoint: ApiNode) -> Self
-        where
-            C: Service<Uri> + Send + 'static,
-            C::Error: Into<crate::api::Error> + Send,
-            C::Future: Unpin + Send,
-            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+    where
+        C: Service<Uri> + Send + 'static,
+        C::Error: Into<crate::api::Error> + Send,
+        C::Future: Unpin + Send,
+        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
         let buffer_size = endpoint.buffer_size.unwrap_or(DEFAULT_BUFFER_SIZE);
         let executor = endpoint.executor.clone();
@@ -174,11 +169,11 @@ impl Client {
     }
 
     pub(crate) async fn connect<C>(connector: C, endpoint: ApiNode) -> Result<Self, super::Error>
-        where
-            C: Service<Uri> + Send + 'static,
-            C::Error: Into<crate::api::Error> + Send,
-            C::Future: Unpin + Send,
-            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+    where
+        C: Service<Uri> + Send + 'static,
+        C::Error: Into<crate::api::Error> + Send,
+        C::Future: Unpin + Send,
+        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
         let buffer_size = endpoint.buffer_size.unwrap_or(DEFAULT_BUFFER_SIZE);
         let executor = endpoint.executor.clone();
@@ -193,11 +188,11 @@ impl Client {
     }
 
     pub(crate) fn balance<D, E>(discover: D, buffer_size: usize, executor: E) -> Self
-        where
-            D: Discover<Service=Connection> + Unpin + Send + 'static,
-            D::Error: Into<crate::api::Error>,
-            D::Key: Hash + Send + Clone,
-            E: Executor<futures_core::future::BoxFuture<'static, ()>> + Send + Sync + 'static,
+    where
+        D: Discover<Service = Connection> + Unpin + Send + 'static,
+        D::Error: Into<crate::api::Error>,
+        D::Key: Hash + Send + Clone,
+        E: Executor<futures_core::future::BoxFuture<'static, ()>> + Send + Sync + 'static,
     {
         let svc = Balance::new(discover);
 
@@ -285,25 +280,25 @@ impl Client {
     pub fn mosaic_api(&self) -> Box<MosaicRoutes> {
         Box::new(MosaicRoutes::new(self.__client()))
     }
-    //
-    // /// Get Namespace ApiClient routes.
-    // pub fn namespace_api(&self) -> Box<NamespaceRoutes> {
-    //     Box::new(NamespaceRoutes::new(self.__client(), self.network_type()))
-    // }
+
+    /// Get Namespace ApiClient routes.
+    pub fn namespace_api(&self) -> Box<NamespaceRoutes> {
+        Box::new(NamespaceRoutes::new(self.__client()))
+    }
 
     /// Get Transaction ApiClient routes.
     pub fn transaction_api(&self) -> Box<TransactionRoutes> {
         Box::new(TransactionRoutes::new(self.__client()))
     }
 
-    // /// Get Resolver ApiClient routes.
-    // pub fn resolver_api(&self) -> Box<ResolverRoutes> {
-    //     Box::new(ResolverRoutes::new(
-    //         self.__client(),
-    //         *self.namespace_api(),
-    //         *self.mosaic_api(),
-    //     ))
-    // }
+    /// Get Resolver ApiClient routes.
+    pub fn resolver_api(&self) -> Box<ResolverRoutes> {
+        Box::new(ResolverRoutes::new(
+            self.__client(),
+            *self.namespace_api(),
+            *self.mosaic_api(),
+        ))
+    }
 
     // /// Get Metadata ApiClient routes.
     // pub fn metadata_api(&self) -> Box<MetadataRoutes> {

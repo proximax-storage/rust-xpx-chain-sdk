@@ -3,15 +3,17 @@
 use http_body::Body;
 
 /// A type erased HTTP body used for tonic services.
-pub type BoxBody = http_body::combinators::UnsyncBoxBody<bytes::Bytes, crate::api::Status>;
+pub type BoxBody =
+    http_body::combinators::UnsyncBoxBody<bytes::Bytes, crate::api::transport::Error>;
 
 /// Convert a [`http_body::Body`] into a [`BoxBody`].
 pub(crate) fn boxed_body<B>(body: B) -> BoxBody
-    where
-        B: http_body::Body<Data=bytes::Bytes> + Send + 'static,
-        B::Error: Into<crate::api::Error>,
+where
+    B: Body<Data = bytes::Bytes> + Send + 'static,
+    B::Error: Into<crate::api::Error>,
 {
-    body.map_err(crate::api::Status::map_error).boxed_unsync()
+    body.map_err(crate::api::transport::Error::from_source)
+        .boxed_unsync()
 }
 
 // this also exists in `crate::codegen` but we need it here since `codegen` has

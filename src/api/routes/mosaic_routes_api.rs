@@ -6,19 +6,19 @@
 
 use reqwest::Method;
 
+use crate::api::routes::const_routes::{MOSAIC_LEVY_ROUTE, MOSAIC_RICH_LIST_ROUTE};
+use crate::api::{Client, MosaicLevyDTO, MosaicRichListDTO, PageQueryParams};
+use crate::mosaic::{MosaicLevy, MosaicRichList, UnresolvedMosaicId};
 use crate::{
     api::{
-        error::Result, internally::valid_vec_len, MosaicInfoDto, MosaicNamesDto,
-        request as __internal_request,
+        error::Result, internally::valid_vec_len, request as __internal_request, MosaicInfoDto,
+        MosaicNamesDto,
     },
     errors_const::ERR_EMPTY_MOSAIC_IDS,
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},
 };
-use crate::api::{Client, MosaicLevyDTO, MosaicRichListDTO, PageQueryParams};
-use crate::api::routes::const_routes::{MOSAIC_LEVY_ROUTE, MOSAIC_RICH_LIST_ROUTE};
-use crate::mosaic::{MosaicLevy, MosaicRichList, UnresolvedMosaicId};
 
-use super::{MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE, MOSAICS_ROUTE};
+use super::{MOSAICS_ROUTE, MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE};
 
 /// Mosaic ApiClient routes.
 ///

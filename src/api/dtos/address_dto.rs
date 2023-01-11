@@ -13,7 +13,7 @@ use super::{ModifyMetadataTransactionDto, TransactionDto, TransactionMetaDto};
 
 /// AddressMetadataTransactionDto :
 ///Transaction that addes metadata to account.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddressMetadataTransactionDto {
     #[serde(flatten)]
@@ -22,7 +22,7 @@ pub(crate) struct AddressMetadataTransactionDto {
     address: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddressMetadataTransactionInfoDto {
     meta: TransactionMetaDto,

@@ -17,7 +17,7 @@ use super::{
     AbstractTransactionDto, CosignatoryModificationDto, TransactionDto, TransactionMetaDto,
 };
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MultisigDto {
     account: String,
@@ -29,7 +29,7 @@ pub(crate) struct MultisigDto {
     multisig_accounts: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct MultisigAccountGraphInfoDto {
     #[serde(rename = "level")]
     pub level: i16,
@@ -47,7 +47,7 @@ impl MultisigAccountGraphInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct MultisigAccountInfoDto {
     #[serde(rename = "multisig")]
     multisig: MultisigDto,
@@ -82,7 +82,7 @@ impl MultisigAccountInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ModifyMultisigAccountTransactionInfoDto {
     meta: TransactionMetaDto,
@@ -90,7 +90,7 @@ pub(crate) struct ModifyMultisigAccountTransactionInfoDto {
 }
 
 /// ModifyMultisigAccountTransactionDto : Transaction that creates or modifies a multisig account.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ModifyMultisigAccountTransactionDto {
     #[serde(flatten)]

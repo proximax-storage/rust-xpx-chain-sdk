@@ -4,39 +4,30 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::thread::{sleep, spawn};
-use std::time::Duration;
-
-use http::Request;
-use tokio::task;
-use tower::ServiceExt;
-use typetag::private::inventory::Node;
-
 use xpx_chain_sdk::api::ApiNode;
-use xpx_chain_sdk::api::body::BoxBody;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-    let client = ApiNode::from_static("http://demo-api-1.edlx.io:3000")
+    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
         .connect()
         .await?;
 
     let chain_api = client.chain_api();
 
-    // // // Get the current `Height` of the chain.
-    // let block_height = chain_api.get_block_height().await;
-    // match block_height {
-    //     Ok(resp) => println!("{}", *resp),
-    //     Err(err) => eprintln!(
-    //         "Exception when calling chain_api->get_block_height: {}\n",
-    //         err
-    //     ),
-    // }
+    // Get the current `Height` of the chain.
+    let block_height = chain_api.get_block_height().await;
+    match block_height {
+        Ok(resp) => println!("{}", *resp),
+        Err(err) => eprintln!(
+            "Exception when calling chain_api->get_block_height: {}\n",
+            err
+        ),
+    }
 
     // Gets a block from the chain that has the given height.
-    let block_by_height = chain_api.get_block_by_height(4000866).await;
+    let block_by_height = chain_api.get_block_by_height(1).await;
     match block_by_height {
-        Ok(resp) => println!("{}", resp.num_transactions),
+        Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!(
             "Exception when calling chain_api->get_block_by_height: {}\n",
             err
@@ -71,7 +62,6 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
             "Exception when calling chain_api->get_blocks_by_height_with_limit: {}\n",
             err
         ),
-    }
-
+    };
     Ok(())
 }

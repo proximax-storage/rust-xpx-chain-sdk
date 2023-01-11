@@ -9,7 +9,7 @@ use xpx_chain_sdk::mosaic::MosaicId;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-    let client = ApiNode::from_static("http://demo-api-1.edlx.io:3000")
+    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
         .connect()
         .await?;
 

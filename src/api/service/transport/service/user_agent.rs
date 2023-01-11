@@ -28,8 +28,8 @@ impl<T> UserAgent<T> {
 }
 
 impl<T, ReqBody> Service<Request<ReqBody>> for UserAgent<T>
-    where
-        T: Service<Request<ReqBody>>,
+where
+    T: Service<Request<ReqBody>>,
 {
     type Response = T::Response;
     type Error = T::Error;

@@ -4,16 +4,11 @@ use std::task::{Context, Poll};
 
 use hyper::client::connect::{Connected as HyperConnected, Connection};
 use tokio::io::{AsyncRead, AsyncWrite, ReadBuf};
-use tower::util::Either;
-
-#[cfg(feature = "tls")]
-use tokio_rustls::server::TlsStream;
-
-use crate::api::server::Connected;
 
 pub(in crate::api::service::transport) trait Io:
-AsyncRead + AsyncWrite + Send + 'static
-{}
+    AsyncRead + AsyncWrite + Send + 'static
+{
+}
 
 impl<T> Io for T where T: AsyncRead + AsyncWrite + Send + 'static {}
 
@@ -28,14 +23,6 @@ impl BoxedIo {
 impl Connection for BoxedIo {
     fn connected(&self) -> HyperConnected {
         HyperConnected::new()
-    }
-}
-
-impl Connected for BoxedIo {
-    type ConnectInfo = NoneConnectInfo;
-
-    fn connect_info(&self) -> Self::ConnectInfo {
-        NoneConnectInfo
     }
 }
 
@@ -67,101 +54,5 @@ impl AsyncWrite for BoxedIo {
 
     fn poll_shutdown(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
         Pin::new(&mut self.0).poll_shutdown(cx)
-    }
-}
-
-pub(crate) enum ServerIo<IO> {
-    Io(IO),
-    #[cfg(feature = "tls")]
-    TlsIo(TlsStream<IO>),
-}
-
-#[cfg(feature = "tls")]
-type ServerIoConnectInfo<IO> =
-Either<<IO as Connected>::ConnectInfo, <TlsStream<IO> as Connected>::ConnectInfo>;
-
-#[cfg(not(feature = "tls"))]
-type ServerIoConnectInfo<IO> = Either<<IO as Connected>::ConnectInfo, ()>;
-
-impl<IO> ServerIo<IO> {
-    pub(in crate::api::service::transport) fn new_io(io: IO) -> Self {
-        Self::Io(io)
-    }
-
-    #[cfg(feature = "tls")]
-    pub(in crate::transport) fn new_tls_io(io: TlsStream<IO>) -> Self {
-        Self::TlsIo(io)
-    }
-
-    #[cfg(feature = "tls")]
-    pub(in crate::transport) fn connect_info(&self) -> ServerIoConnectInfo<IO>
-        where
-            IO: Connected,
-            TlsStream<IO>: Connected,
-    {
-        match self {
-            Self::Io(io) => Either::A(io.connect_info()),
-            Self::TlsIo(io) => Either::B(io.connect_info()),
-        }
-    }
-
-    #[cfg(not(feature = "tls"))]
-    pub(in crate::api::service::transport) fn connect_info(&self) -> ServerIoConnectInfo<IO>
-        where
-            IO: Connected,
-    {
-        match self {
-            Self::Io(io) => Either::A(io.connect_info()),
-        }
-    }
-}
-
-impl<IO> AsyncRead for ServerIo<IO>
-    where
-        IO: AsyncWrite + AsyncRead + Unpin,
-{
-    fn poll_read(
-        mut self: Pin<&mut Self>,
-        cx: &mut Context<'_>,
-        buf: &mut ReadBuf<'_>,
-    ) -> Poll<io::Result<()>> {
-        match &mut *self {
-            Self::Io(io) => Pin::new(io).poll_read(cx, buf),
-            #[cfg(feature = "tls")]
-            Self::TlsIo(io) => Pin::new(io).poll_read(cx, buf),
-        }
-    }
-}
-
-impl<IO> AsyncWrite for ServerIo<IO>
-    where
-        IO: AsyncWrite + AsyncRead + Unpin,
-{
-    fn poll_write(
-        mut self: Pin<&mut Self>,
-        cx: &mut Context<'_>,
-        buf: &[u8],
-    ) -> Poll<io::Result<usize>> {
-        match &mut *self {
-            Self::Io(io) => Pin::new(io).poll_write(cx, buf),
-            #[cfg(feature = "tls")]
-            Self::TlsIo(io) => Pin::new(io).poll_write(cx, buf),
-        }
-    }
-
-    fn poll_flush(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
-        match &mut *self {
-            Self::Io(io) => Pin::new(io).poll_flush(cx),
-            #[cfg(feature = "tls")]
-            Self::TlsIo(io) => Pin::new(io).poll_flush(cx),
-        }
-    }
-
-    fn poll_shutdown(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
-        match &mut *self {
-            Self::Io(io) => Pin::new(io).poll_shutdown(cx),
-            #[cfg(feature = "tls")]
-            Self::TlsIo(io) => Pin::new(io).poll_shutdown(cx),
-        }
     }
 }

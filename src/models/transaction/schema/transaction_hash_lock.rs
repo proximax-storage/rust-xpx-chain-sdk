@@ -5,7 +5,7 @@
  */
 
 use super::{
-    ArrayAttribute, Schema, schema_common_definition::schema_common_definition, SchemaAttribute,
+    schema_common_definition::schema_common_definition, ArrayAttribute, Schema, SchemaAttribute,
     SIZEOF_BYTE, SIZEOF_INT,
 };
 

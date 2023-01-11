@@ -31,7 +31,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     // Get node peer list.
     let node_peers = node_api.get_node_peers().await;
     match node_peers {
-        Ok(resp) => println!("{:?}", resp),
+        Ok(resp) => println!("{:#?}", resp),
         Err(err) => eprintln!("Exception when calling node_api->get_node_peers: {}\n", err),
     }
 

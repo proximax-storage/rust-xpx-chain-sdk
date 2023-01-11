@@ -4,15 +4,15 @@
  * license that can be found in the LICENSE file.
  */
 
+use crate::account::Address;
+use crate::mosaic::UnresolvedMosaicId;
 use crate::{
     account::PublicAccount,
     api::error::Result,
     errors_const,
     namespace::{NamespaceId, NamespaceInfo, NamespaceName, NamespaceType},
-    network::NetworkType,
     transaction::{MetadataNamespaceTransaction, RegisterNamespaceTransaction, Transaction},
 };
-use crate::mosaic::UnresolvedMosaicId;
 
 use super::{
     AbstractTransactionDto, AliasDto, ModifyMetadataTransactionDto, TransactionDto,
@@ -21,7 +21,7 @@ use super::{
 
 type NamespaceIdDto = Option<Uint64Dto>;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceDto {
     /// The public key of the owner of the namespace.
@@ -65,7 +65,7 @@ impl NamespaceDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct NamespaceInfoDto {
     #[serde(rename = "meta")]
     meta: NamespaceMetaDto,
@@ -74,8 +74,11 @@ pub(crate) struct NamespaceInfoDto {
 }
 
 impl NamespaceInfoDto {
-    pub fn compact(&self, network_type: NetworkType) -> anyhow::Result<NamespaceInfo> {
-        let public_account = PublicAccount::from_public_key(&self.namespace.owner, network_type)?;
+    pub fn compact(&self) -> anyhow::Result<NamespaceInfo> {
+        let owner_address = Address::from_encoded(&self.namespace.owner_address)?;
+
+        let public_account =
+            PublicAccount::from_public_key(&self.namespace.owner, owner_address.network_type)?;
 
         let levels = self.namespace.extract_levels()?;
 
@@ -116,7 +119,7 @@ impl NamespaceInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct NamespaceMetaDto {
     #[serde(rename = "id")]
     id: String,
@@ -128,7 +131,7 @@ pub(crate) struct NamespaceMetaDto {
 
 /// NamespaceMetadataTransactionDto :
 /// Transaction that address metadata to namespace.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceMetadataTransactionDto {
     #[serde(flatten)]
@@ -137,7 +140,7 @@ pub(crate) struct NamespaceMetadataTransactionDto {
     namespace_id: Uint64Dto,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceMetadataTransactionInfoDto {
     meta: TransactionMetaDto,
@@ -162,7 +165,7 @@ impl TransactionDto for NamespaceMetadataTransactionInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct NamespaceNameDto {
     #[serde(rename = "namespaceId")]
     namespace_id: Uint64Dto,
@@ -181,7 +184,7 @@ impl NamespaceNameDto {
 }
 
 /// RegisterNamespaceTransactionDto : Transaction that creates or renew a namespace.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RegisterNamespaceTransactionDto {
     #[serde(flatten)]
@@ -197,7 +200,7 @@ pub(crate) struct RegisterNamespaceTransactionDto {
     parent_id: Option<Uint64Dto>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RegisterNamespaceTransactionInfoDto {
     meta: TransactionMetaDto,

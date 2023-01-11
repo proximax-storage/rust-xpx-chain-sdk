@@ -9,6 +9,7 @@ use {
     serde_json::Value,
 };
 
+use crate::api::error::Error::Failure;
 use crate::{
     account::{
         AccountInfo, AccountLinkType, AccountName, AccountProperties,
@@ -23,7 +24,6 @@ use crate::{
         AccountPropertiesMosaicTransaction, Transaction, TransactionType,
     },
 };
-use crate::api::error::Error::Failure;
 
 use super::{AbstractTransactionDto, MosaicDto, TransactionDto, TransactionMetaDto, Uint64Dto};
 
@@ -101,7 +101,7 @@ impl AccountNamesDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AccountPropertiesTransactionInfoDto {
     meta: TransactionMetaDto,
@@ -111,7 +111,7 @@ pub(crate) struct AccountPropertiesTransactionInfoDto {
 /// AccountPropertiesTransactionDto :
 /// Transaction that prevents receiving transactions from undesired
 /// addresses, mosaics or sending certain transaction types.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AccountPropertiesTransactionDto {
     #[serde(flatten)]
@@ -182,7 +182,7 @@ impl TransactionDto for AccountPropertiesTransactionInfoDto {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct AccountPropertiesModificationDto {
     r#type: u8,
     /// The address, transaction type or mosaic id to filter.
@@ -278,8 +278,8 @@ struct PropertiesDto {
 
 impl<'de> Deserialize<'de> for PropertiesDto {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
-        where
-            D: Deserializer<'de>,
+    where
+        D: Deserializer<'de>,
     {
         #[derive(Deserialize, Debug)]
         struct PropertyValue {

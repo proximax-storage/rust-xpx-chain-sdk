@@ -10,30 +10,30 @@ use serde::de::DeserializeOwned;
 
 use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
 
+use crate::api::{
+    request as __internal_request, AccountPropertiesTransactionInfoDto,
+    AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto,
+    AggregateTransactionInfoDto, BlockchainUpgradeTransactionInfoDto, Client,
+    ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto,
+    ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto,
+    MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto,
+    NetworkConfigTransactionInfoDto, Pagination, QueryParam, RegisterNamespaceTransactionInfoDto,
+    RemoveExchangeOfferTransactionInfoDto, TransferTransactionInfoDto,
+};
+use crate::transaction::{Transaction, TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
     api, errors_const, helpers::is_hex, metadata::MetadataModification, mosaic::MosaicProperties,
     multisig::CosignatoryModification, network::NetworkType,
     transaction::TransactionType as Entity,
 };
-use crate::api::{
-    AccountPropertiesTransactionInfoDto, AddExchangeOfferTransactionInfoDto,
-    AddressAliasTransactionInfoDto, AggregateTransactionInfoDto,
-    Client, ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto,
-    ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto,
-    MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto,
-    Pagination, QueryParam, RegisterNamespaceTransactionInfoDto,
-    RemoveExchangeOfferTransactionInfoDto, request as __internal_request,
-    TransferTransactionInfoDto,
-};
-use crate::transaction::{Transaction, TransactionGroupType, Transactions, TransactionSearch};
 
 use super::{
     CosignatoryModificationDto, MetadataModificationDto, MosaicPropertyDto, TransactionDto,
 };
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
-    where
-        T: Debug,
+where
+    T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())
@@ -73,7 +73,7 @@ pub(crate) fn value_to_transaction(body_value: Value) -> api::error::Result<Tran
     let transactions_dto = map_transaction_vec_dto(body_value)?;
 
     for transaction_dto in transactions_dto.into_iter() {
-        transactions.push(transaction_dto.compact()?)
+        transactions.push(transaction_dto.compact()?);
     }
 
     Ok(transactions)
@@ -95,7 +95,7 @@ pub(crate) fn map_transaction_vec_dto(body_value: Value) -> Result<Vec<Box<dyn T
 
     for value_raw in body_value.as_array().unwrap().clone() {
         let transaction_dto = map_transaction_dto_new(Bytes::from(format!("{}", value_raw)))?;
-        entity_dto_vec.push(transaction_dto);
+        entity_dto_vec.push(transaction_dto)
     }
 
     Ok(entity_dto_vec)
@@ -113,7 +113,6 @@ pub(crate) fn map_transaction_dto_new(body: Bytes) -> Result<Box<dyn Transaction
     let value_dto: Value = serde_json::from_slice(&body)?;
 
     let entity_type: Entity = (value_dto["transaction"]["type"].as_u64().unwrap() as u16).into();
-    println!("{entity_type}");
 
     let entity_dto = match entity_type {
         Entity::Transfer => ser_callback::<TransferTransactionInfoDto>(value_dto),
@@ -148,9 +147,12 @@ pub(crate) fn map_transaction_dto_new(body: Bytes) -> Result<Box<dyn Transaction
         // Entity::ModifyMetadataAddress => "AddressMetadata",
         // Entity::ModifyMetadataMosaic => "MosaicMetadata",
         // Entity::ModifyMetadataNamespace => "NamespaceMetadata",
-        // Entity::BlockchainUpgrade => "BlockchainUpgrade",
+        Entity::BlockchainUpgrade => ser_callback::<BlockchainUpgradeTransactionInfoDto>(value_dto),
         // Entity::NemesisBlock => "NemesisBlock:",
-        // Entity::NetworkConfigEntityType => "NetworkConfigEntityType",
+        Entity::NetworkConfigEntityType => {
+            ser_callback::<NetworkConfigTransactionInfoDto>(value_dto)
+        }
+        // }
         // Entity::SecretLock => "SecretLock",
         // Entity::SecretProof => "SecretProof",
         _ => panic!("{}", errors_const::ERR_UNKNOWN_BLOCKCHAIN_TYPE),

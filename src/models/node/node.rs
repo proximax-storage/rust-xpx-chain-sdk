@@ -4,6 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
+use crate::network::NetworkType;
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NodeInfo {
@@ -11,7 +13,7 @@ pub struct NodeInfo {
     pub public_key: String,
     /// The port used for the communication.
     pub port: u16,
-    pub network_identifier: u8,
+    pub network_type: NetworkType,
     /// The version of the application.
     pub version: u16,
     pub roles: u8,

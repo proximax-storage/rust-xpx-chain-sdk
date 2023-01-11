@@ -11,16 +11,16 @@ use anyhow::Result;
 use {::std::fmt, serde_json::Value};
 
 use crate::{
-    AsUint64,
     errors_const,
     models::consts::REGISTER_NAMESPACE_HEADER_SIZE,
     mosaic::UnresolvedMosaicId,
     namespace::{generate_namespace_id, NamespaceId, NamespaceType},
     network::NetworkType,
+    AsUint64,
 };
 
 use super::{
-    buffers, CommonTransaction, Deadline, schema::register_namespace_transaction_schema,
+    buffers, schema::register_namespace_transaction_schema, CommonTransaction, Deadline,
     Transaction, TransactionType, TransactionVersion,
 };
 

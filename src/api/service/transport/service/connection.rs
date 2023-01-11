@@ -8,19 +8,19 @@ use hyper::client::conn::Builder;
 use hyper::client::connect::Connection as HyperConnection;
 use hyper::client::service::Connect as HyperConnect;
 use tokio::io::{AsyncRead, AsyncWrite};
+use tower::load::Load;
 use tower::{
     layer::Layer,
     limit::{concurrency::ConcurrencyLimitLayer, rate::RateLimitLayer},
-    ServiceBuilder,
-    ServiceExt, util::BoxService,
+    util::BoxService,
+    ServiceBuilder, ServiceExt,
 };
-use tower::load::Load;
 use tower_service::Service;
 
 use crate::api::{body::BoxBody, transport::ApiNode};
 
-use super::{AddOrigin, reconnect::Reconnect, UserAgent};
 use super::super::BoxFuture;
+use super::{reconnect::Reconnect, AddOrigin, UserAgent};
 
 pub(crate) type Request = http::Request<BoxBody>;
 pub(crate) type Response = http::Response<hyper::Body>;
@@ -31,11 +31,11 @@ pub struct Connection {
 
 impl Connection {
     fn new<C>(connector: C, endpoint: ApiNode, is_lazy: bool) -> Self
-        where
-            C: Service<Uri> + Send + 'static,
-            C::Error: Into<crate::api::Error> + Send,
-            C::Future: Unpin + Send,
-            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+    where
+        C: Service<Uri> + Send + 'static,
+        C::Error: Into<crate::api::Error> + Send,
+        C::Future: Unpin + Send,
+        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
         let settings = Builder::new()
             .http2_only(false)
@@ -67,21 +67,21 @@ impl Connection {
         connector: C,
         endpoint: ApiNode,
     ) -> Result<Self, crate::api::Error>
-        where
-            C: Service<Uri> + Send + 'static,
-            C::Error: Into<crate::api::Error> + Send,
-            C::Future: Unpin + Send,
-            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+    where
+        C: Service<Uri> + Send + 'static,
+        C::Error: Into<crate::api::Error> + Send,
+        C::Future: Unpin + Send,
+        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
         Self::new(connector, endpoint, false).ready_oneshot().await
     }
 
     pub(crate) fn lazy<C>(connector: C, endpoint: ApiNode) -> Self
-        where
-            C: Service<Uri> + Send + 'static,
-            C::Error: Into<crate::api::Error> + Send,
-            C::Future: Unpin + Send,
-            C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+    where
+        C: Service<Uri> + Send + 'static,
+        C::Error: Into<crate::api::Error> + Send,
+        C::Future: Unpin + Send,
+        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
         Self::new(connector, endpoint, true)
     }

@@ -8,53 +8,45 @@ use {
     ::std::{future::Future, pin::Pin},
     reqwest::Method,
 };
-use http::Request;
-use tower::buffer::Buffer;
 
+use crate::api::error::Error;
+use crate::api::{Client, QueryParam, QueryParams};
 use crate::{
     account::{AccountsId, Address},
     api::{
-        error::Result, internally::valid_vec_len, NamespaceInfoDto,
-        NamespaceNameDto, request as __internal_request,
+        error::Result, internally::valid_vec_len, request as __internal_request, NamespaceInfoDto,
+        NamespaceNameDto,
     },
     errors_const::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
     mosaic::UnresolvedMosaicId,
     namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
-    network::NetworkType,
 };
-use crate::api::{QueryParam, QueryParams, Svc};
-use crate::api::body::BoxBody;
-use crate::api::error::Error;
 
 use super::{
-    NAMESPACE_NAMES_ROUTE, NAMESPACE_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES,
-    NAMESPACES_FROM_ACCOUNTS_ROUTE,
+    NAMESPACES_FROM_ACCOUNTS_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES, NAMESPACE_NAMES_ROUTE,
+    NAMESPACE_ROUTE,
 };
 
 /// Namespace ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NamespaceRoutes(Buffer<Svc, Request<BoxBody>>, NetworkType);
+pub struct NamespaceRoutes(Client);
 
 /// Namespace related endpoints.
 ///
 impl NamespaceRoutes {
-    pub(crate) fn new(client: Buffer<Svc, Request<BoxBody>>, network_time: NetworkType) -> Self {
-        NamespaceRoutes(client, network_time)
+    pub(crate) fn new(client: Client) -> Self {
+        NamespaceRoutes(client)
     }
 
-    fn __client(&self) -> Buffer<Svc, Request<BoxBody>> {
+    fn __client(&self) -> Client {
         self.0.clone()
-    }
-
-    fn __network_type(&self) -> NetworkType {
-        self.1
     }
 
     fn __build_namespace_hierarchy<'a>(
         &'a self,
         ns_info: &'a mut NamespaceInfo,
-    ) -> Pin<Box<dyn Future<Output=()> + '_>> {
+    ) -> Pin<Box<dyn Future<Output = ()> + '_>> {
         Box::pin(async move {
             let info_parent = match &ns_info.parent {
                 Some(info) => info,
@@ -84,7 +76,7 @@ impl NamespaceRoutes {
     fn __build_namespaces_hierarchy<'b>(
         &'b self,
         ns_infos: &'b mut Vec<NamespaceInfo>,
-    ) -> Pin<Box<dyn Future<Output=()> + 'b>> {
+    ) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
         Box::pin(async move {
             for ns_info in ns_infos.iter_mut() {
                 self.__build_namespace_hierarchy(ns_info).await
@@ -99,7 +91,7 @@ impl NamespaceRoutes {
 
         let dto_raw: Result<NamespaceInfoDto> = req.clone().execute(self.__client()).await;
 
-        let mut dto_to_struct = dto_raw?.compact(self.__network_type())?;
+        let mut dto_to_struct = dto_raw?.compact()?;
 
         self.__build_namespace_hierarchy(&mut dto_to_struct).await;
 
@@ -153,7 +145,7 @@ impl NamespaceRoutes {
 
         let mut namespace_info: Vec<NamespaceInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.compact(self.__network_type())?);
+            namespace_info.push(namespace_dto.compact()?);
         }
 
         self.clone()
@@ -198,7 +190,7 @@ impl NamespaceRoutes {
 
         let mut namespace_info: Vec<NamespaceInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.compact(self.__network_type())?);
+            namespace_info.push(namespace_dto.compact()?);
         }
 
         self.__build_namespaces_hierarchy(&mut namespace_info).await;

@@ -16,7 +16,7 @@ use crate::{
 use super::{AbstractTransactionDto, CosignatureDto, TransactionDto, TransactionMetaDto};
 
 /// AggregateTransactionDto : Transaction that combines multiple transactions together.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AggregateTransactionDto {
     #[serde(flatten)]
@@ -26,7 +26,7 @@ pub(crate) struct AggregateTransactionDto {
     pub transactions: Vec<Value>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AggregateTransactionInfoDto {
     pub meta: TransactionMetaDto,

@@ -6,11 +6,11 @@
 
 use reqwest::Method;
 
+use crate::api::{Client, NodeInfoDto};
 use crate::{
-    api::{error::Result, NodeTimeDto, request as __internal_request},
+    api::{error::Result, request as __internal_request, NodeTimeDto},
     node::{NodeInfo, NodeTime},
 };
-use crate::api::Client;
 
 use super::{NODE_INFO, NODE_PEERS, NODE_TIME};
 
@@ -60,7 +60,9 @@ impl NodeRoutes {
     pub async fn get_node_info(&self) -> Result<NodeInfo> {
         let req = __internal_request::ApiRequest::new(Method::GET, NODE_INFO.to_string());
 
-        req.execute(self.__client()).await
+        let resp: NodeInfoDto = req.execute(self.__client()).await?;
+
+        Ok(resp.compact())
     }
 
     /// Get the node time.
@@ -123,6 +125,8 @@ impl NodeRoutes {
     pub async fn get_node_peers(&self) -> Result<Vec<NodeInfo>> {
         let req = __internal_request::ApiRequest::new(Method::GET, NODE_PEERS.to_string());
 
-        req.execute(self.__client()).await
+        let resp: Vec<NodeInfoDto> = req.execute(self.__client()).await?;
+
+        Ok(resp.iter().map(NodeInfoDto::compact).collect::<Vec<_>>())
     }
 }

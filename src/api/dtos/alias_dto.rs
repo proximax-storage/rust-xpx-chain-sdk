@@ -15,7 +15,7 @@ use crate::{
 
 use super::{AbstractTransactionDto, TransactionDto, TransactionMetaDto, Uint64Dto};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AliasDto {
     #[serde(rename = "type")]
@@ -48,7 +48,7 @@ impl AliasDto {
 
 /// AddressAliasTransactionDto :
 /// Transaction that attaches a namespace to an account.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AliasTransactionDto {
     #[serde(flatten)]
@@ -61,7 +61,7 @@ pub(crate) struct AliasTransactionDto {
     mosaic_id: Option<Uint64Dto>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddressAliasTransactionInfoDto {
     meta: TransactionMetaDto,
@@ -92,7 +92,7 @@ impl TransactionDto for AddressAliasTransactionInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicAliasTransactionInfoDto {
     meta: TransactionMetaDto,

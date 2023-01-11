@@ -6,20 +6,21 @@ use xpx_chain_sdk::TransactionHash;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-    let client = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000")
-        .connect().await?;
+    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
+        .connect()
+        .await?;
 
     let transaction_api = client.transaction_api();
 
     let hash_one = TransactionHash::from_str(
-        "33F586DB2235A57FAEA9A7F6A201F5AF525B368B812067019E49F4C8A350A397",
+        "CE1196D5665BBE23F6DFFE052EEC292636CB494D4B5576FFEA2130CB77893A6D",
     )
-        .unwrap();
+    .unwrap();
 
     let hash_two = TransactionHash::from_str(
-        "16134853ea5003d38bd2b0b48765eb7c5d58e48c7ab389dae040228a775c8f78",
+        "4E86FB6372C3783E6EA28F48DBB600B727C0BC8C9BD81CE6CC9DCB9520230990",
     )
-        .unwrap();
+    .unwrap();
 
     // Returns a [Transaction] information given a transactionId or hash.
     let account_info = transaction_api.get_any_transaction(hash_one).await;
@@ -48,7 +49,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         .get_transactions(vec![hash_one, hash_two], TransactionGroupType::Confirmed)
         .await;
     match account_info {
-        Ok(resp) => println!("{:?}", resp),
+        Ok(resp) => println!("{:#?}", resp),
         Err(err) => eprintln!(
             "Exception when calling transaction_api->get_transactions: {}\n",
             err
@@ -72,7 +73,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         Ok(resp) => resp
             .transactions
             .iter()
-            .for_each(|item| println!("{:?}", item.get_common_transaction().transaction_info)),
+            .for_each(|item| println!("{:#?}", item)),
         Err(err) => eprintln!(
             "Exception when calling transaction_api->get_transactions_by_group: {}\n",
             err

@@ -5,9 +5,9 @@
  */
 
 use super::{
-    ArrayAttribute, ScalarAttribute,
-    Schema, schema_common_definition::schema_common_definition, SchemaAttribute, SIZEOF_BYTE, SIZEOF_INT, SIZEOF_SHORT,
-    table_attribute::TableAttribute, TableArrayAttribute,
+    schema_common_definition::schema_common_definition, table_attribute::TableAttribute,
+    ArrayAttribute, ScalarAttribute, Schema, SchemaAttribute, TableArrayAttribute, SIZEOF_BYTE,
+    SIZEOF_INT, SIZEOF_SHORT,
 };
 
 pub fn transfer_transaction_schema() -> Schema {

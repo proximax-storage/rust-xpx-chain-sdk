@@ -9,7 +9,7 @@ use crate::{
     message::{Message, PlainMessage},
 };
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub(crate) struct MessageDto {
     #[serde(rename = "type")]
     _type: u8,

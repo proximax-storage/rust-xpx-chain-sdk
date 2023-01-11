@@ -13,12 +13,12 @@ use {
 
 use crate::account::{Account, PublicAccount};
 use crate::anyhow::Result;
-use crate::AsUint64;
-use crate::helpers::{GenerationHash, hex_decode, hex_encode, TransactionHash};
+use crate::helpers::{hex_decode, hex_encode, GenerationHash, TransactionHash};
 use crate::models::consts::{HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE};
+use crate::AsUint64;
 
 use super::{
-    CommonTransaction, deadline::Deadline, SignedTransaction, TransactionStatus, TransactionType,
+    deadline::Deadline, CommonTransaction, SignedTransaction, TransactionStatus, TransactionType,
 };
 
 pub type Amount = u64;
@@ -77,8 +77,8 @@ impl<'b> AbsVector<'b> {
 ///
 #[typetag::serde]
 pub trait Transaction
-    where
-        Self: fmt::Debug + 'static + Sync + Send,
+where
+    Self: fmt::Debug + 'static + Sync + Send,
 {
     fn size(&self) -> usize;
 
@@ -117,7 +117,7 @@ pub trait Transaction
                 generation_hash_bytes[..32].as_ref(),
                 byte_buffer_without_header,
             ]
-                .concat()
+            .concat()
         } else {
             [generation_hash_bytes, byte_buffer_without_header].concat()
         }
