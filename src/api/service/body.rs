@@ -2,7 +2,7 @@
 
 use http_body::Body;
 
-/// A type erased HTTP body used for tonic services.
+/// A type erased HTTP body used for sirius services.
 pub type BoxBody =
     http_body::combinators::UnsyncBoxBody<bytes::Bytes, crate::api::transport::Error>;
 

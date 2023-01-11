@@ -7,7 +7,7 @@
 #[macro_use]
 extern crate anyhow;
 extern crate core;
-// #[macro_use]
+#[macro_use]
 extern crate erased_serde;
 #[macro_use]
 extern crate fixed_hash;

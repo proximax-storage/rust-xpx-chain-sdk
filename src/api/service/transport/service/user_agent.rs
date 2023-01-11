@@ -3,7 +3,7 @@ use std::task::{Context, Poll};
 use http::{header::USER_AGENT, HeaderValue, Request};
 use tower_service::Service;
 
-const TONIC_USER_AGENT: &str = concat!("tonic/", env!("CARGO_PKG_VERSION"));
+const SIRIUS_USER_AGENT: &str = concat!("sirius/", env!("CARGO_PKG_VERSION"));
 
 #[derive(Debug)]
 pub(crate) struct UserAgent<T> {
@@ -18,10 +18,10 @@ impl<T> UserAgent<T> {
                 let mut buf = Vec::new();
                 buf.extend(value.as_bytes());
                 buf.push(b' ');
-                buf.extend(TONIC_USER_AGENT.as_bytes());
+                buf.extend(SIRIUS_USER_AGENT.as_bytes());
                 HeaderValue::from_bytes(&buf).expect("user-agent should be valid")
             })
-            .unwrap_or_else(|| HeaderValue::from_static(TONIC_USER_AGENT));
+            .unwrap_or_else(|| HeaderValue::from_static(SIRIUS_USER_AGENT));
 
         Self { inner, user_agent }
     }
@@ -57,7 +57,7 @@ mod tests {
     fn sets_default_if_no_custom_user_agent() {
         assert_eq!(
             UserAgent::new(Svc, None).user_agent,
-            HeaderValue::from_static(TONIC_USER_AGENT)
+            HeaderValue::from_static(SIRIUS_USER_AGENT)
         )
     }
 
@@ -65,7 +65,7 @@ mod tests {
     fn prepends_custom_user_agent_to_default() {
         assert_eq!(
             UserAgent::new(Svc, Some(HeaderValue::from_static("Greeter 1.1"))).user_agent,
-            HeaderValue::from_str(&format!("Greeter 1.1 {}", TONIC_USER_AGENT)).unwrap()
+            HeaderValue::from_str(&format!("Greeter 1.1 {}", SIRIUS_USER_AGENT)).unwrap()
         )
     }
 }

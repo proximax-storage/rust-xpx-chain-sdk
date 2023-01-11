@@ -136,8 +136,9 @@ impl TryFrom<&str> for Uint64 {
     /// - When encountering invalid non hex-digits
     /// - Upon empty string input or invalid input length in general
     fn try_from(hex: &str) -> Result<Self, Self::Error> {
-        let bytes = <[u8; Self::BYTES]>::from_hex(hex)?;
-        Ok(Self::from(bytes))
+        <[u8; Self::BYTES]>::from_hex(hex)?;
+        let int = u64::from_str_radix(hex, 16).unwrap();
+        Ok(Self(int))
     }
 }
 
@@ -319,33 +320,33 @@ mod tests {
 
     struct TestVector {
         str: &'static str,
-        value: [u32; 2],
+        dto: [u32; 2],
     }
 
     static HEX_TEST_VECTORS: &[TestVector] = &[
         TestVector {
             str: "0000000000000000",
-            value: [0, 0],
+            dto: [0, 0],
         }, // "0"
         TestVector {
             str: "000000000000A1B2",
-            value: [0xa1b2, 0],
+            dto: [0xa1b2, 0],
         }, // "(0, 8)"
         TestVector {
             str: "0000000012345678",
-            value: [0x12345678, 0],
+            dto: [0x12345678, 0],
         }, // "8"
         TestVector {
             str: "0000ABCD12345678",
-            value: [0x12345678, 0xabcd],
+            dto: [0x12345678, 0xabcd],
         }, //"(8, 16)"
         TestVector {
             str: "1234567890ABCDEF",
-            value: [0x90abcdef, 0x12345678],
+            dto: [0x90abcdef, 0x12345678],
         }, // "16"
         TestVector {
             str: "FFFFFFFFFFFFFFFF",
-            value: [0xffffffff, 0xffffffff],
+            dto: [0xffffffff, 0xffffffff],
         }, // "16 (max value)"
     ];
 
@@ -393,8 +394,8 @@ mod tests {
 
     #[test]
     fn test_should_be_created_from_utf8() {
-        let value = u64::from_utf8_str("ZBEYIC6XHIAK6CMMOJR4L6CJH3FPD6D34D5YAS5S").unwrap();
-        assert_ne!(value, 12385070877040004926_u64);
+        let value = u64::from_utf8_str("VAQXZH7TDE6EMG7KIGJ5KPCHHAEDYK4VIMLZD7VK");
+        assert_eq!(value, 15125179076792208082_u64);
     }
 
     #[cfg(test)]
@@ -405,7 +406,7 @@ mod tests {
         fn test_should_create_from_hex_str() {
             for test_case in HEX_TEST_VECTORS {
                 let value = Uint64::try_from(test_case.str).unwrap();
-                assert_eq!(value.to_dto(), test_case.value);
+                assert_eq!(value.to_dto(), test_case.dto);
             }
         }
 

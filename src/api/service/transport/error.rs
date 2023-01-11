@@ -59,7 +59,7 @@ impl Error {
 
 impl fmt::Debug for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut f = f.debug_tuple("tonic::transport::Error");
+        let mut f = f.debug_tuple("api::transport::Error");
 
         f.field(&self.inner.kind);
 

@@ -37,10 +37,7 @@ impl Connection {
         C::Future: Unpin + Send,
         C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
-        let settings = Builder::new()
-            .http2_only(false)
-            .executor(endpoint.executor.clone())
-            .clone();
+        let settings = Builder::new().executor(endpoint.executor.clone()).clone();
 
         let stack = ServiceBuilder::new()
             .layer_fn(|s| {

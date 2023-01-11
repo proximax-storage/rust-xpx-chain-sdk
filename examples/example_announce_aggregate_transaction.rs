@@ -6,12 +6,9 @@
 
 use std::time::Instant;
 
-use xpx_chain_sdk::account::{Account, Address};
-use xpx_chain_sdk::api::{ApiNode, Client};
+use xpx_chain_sdk::account::Account;
+use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::message::PlainMessage;
-use xpx_chain_sdk::mosaic::Mosaic;
-use xpx_chain_sdk::network::NetworkType;
-use xpx_chain_sdk::network::NetworkType::PrivateTest;
 use xpx_chain_sdk::transaction::{
     AggregateTransaction, Deadline, Transaction, TransferTransaction,
 };
