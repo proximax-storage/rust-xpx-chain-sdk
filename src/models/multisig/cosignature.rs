@@ -10,9 +10,7 @@ use crypto::{Keypair, Signature};
 use crate::{
     account::Account,
     errors_const,
-    transaction::{
-        AggregateTransaction, CosignatureSignedTransaction, Transaction,
-    },
+    transaction::{AggregateTransaction, CosignatureSignedTransaction, Transaction},
 };
 
 /// Cosign an aggregate bonded transaction.

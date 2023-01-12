@@ -10,7 +10,7 @@ use crate::{
     network::NetworkType,
 };
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct CosignatoryModificationDto {
     #[serde(rename = "type")]
@@ -52,7 +52,7 @@ impl CosignatureDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct CosignatureDtoAllOf {
     /// The public key of the transaction signer.
     signer: String,

@@ -4,17 +4,13 @@
  * license that can be found in the LICENSE file.
  */
 
-use xpx_chain_sdk::api::SiriusClient;
+use xpx_chain_sdk::api::ApiNode;
 
 #[tokio::main]
-async fn main() {
-    let node_url = vec!["https://api-2.testnet2.xpxsirius.io:443"];
-
-    let sirius_client = SiriusClient::new_from_urls(&node_url).await;
-    let client = match sirius_client {
-        Ok(resp) => resp,
-        Err(err) => panic!("{}", err),
-    };
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let client = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000")
+        .connect()
+        .await?;
 
     let node_api = client.node_api();
 
@@ -32,10 +28,12 @@ async fn main() {
         Err(err) => eprintln!("Exception when calling node_api->get_node_time: {}\n", err),
     }
 
-    // Get the node time.
+    // Get node peer list.
     let node_peers = node_api.get_node_peers().await;
     match node_peers {
-        Ok(resp) => println!("{:?}", resp),
+        Ok(resp) => println!("{:#?}", resp),
         Err(err) => eprintln!("Exception when calling node_api->get_node_peers: {}\n", err),
     }
+
+    Ok(())
 }

@@ -8,6 +8,6 @@ pub use self::hashes::*;
 pub use self::utils_bytes::*;
 pub use self::utils_hex::*;
 
+pub(crate) mod hashes;
 mod utils_bytes;
 mod utils_hex;
-pub(crate) mod hashes;

@@ -6,10 +6,7 @@
 
 use sha3::{Digest, Sha3_256};
 
-use crate::{
-    account::PublicAccount,
-    helpers::array_u8_to_u64, namespace::NAMESPACE_BIT,
-};
+use crate::{account::PublicAccount, helpers::array_u8_to_u64, namespace::NAMESPACE_BIT};
 
 use super::{MosaicId, MosaicNonce};
 

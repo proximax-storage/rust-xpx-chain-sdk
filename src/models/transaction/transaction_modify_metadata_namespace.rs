@@ -11,6 +11,8 @@ use {
     std::{any::Any, fmt},
 };
 
+use crate::models::consts::NAMESPACE_SIZE;
+use crate::mosaic::UnresolvedMosaicId;
 use crate::{
     account::PublicAccount,
     errors_const,
@@ -18,13 +20,10 @@ use crate::{
     namespace::NamespaceId,
     network::NetworkType,
 };
-use crate::models::consts::NAMESPACE_SIZE;
-use crate::mosaic::UnresolvedMosaicId;
 
 use super::{
-    CommonTransaction, Deadline,
-    ModifyMetadataTransaction, Transaction,
-    TransactionType, TransactionVersion,
+    CommonTransaction, Deadline, ModifyMetadataTransaction, Transaction, TransactionType,
+    TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

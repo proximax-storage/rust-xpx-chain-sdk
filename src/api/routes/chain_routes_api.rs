@@ -4,21 +4,13 @@
  * license that can be found in the LICENSE file.
  */
 
-use serde_json::Value;
+use http::Method;
 
-use {::std::sync::Arc, reqwest::Method};
-
-use crate::api::routes::const_routes::{
-    BLOCK_BY_HEIGHT_ROUTE, BLOCK_GET_TRANSACTION_ROUTE, BLOCK_INFO_ROUTE,
-};
-use crate::api::{BlockInfoDto, QueryParam, TransactionDto};
+use crate::api::routes::const_routes::{BLOCK_BY_HEIGHT_ROUTE, BLOCK_INFO_ROUTE};
+use crate::api::{BlockInfoDto, Client};
 use crate::blockchain::BlockInfo;
-use crate::transaction::Transactions;
 use crate::{
-    api::{
-        error::Result, request as __internal_request, sirius_client::ApiClient, BlockchainScoreDto,
-        HeightInfoDto,
-    },
+    api::{error::Result, request as __internal_request, BlockchainScoreDto, HeightInfoDto},
     blockchain::{BlockchainScore, HeightInfo, StorageInfo},
 };
 
@@ -27,17 +19,17 @@ use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
 /// Chain ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct ChainRoutes(Arc<ApiClient>);
+pub struct ChainRoutes(Client);
 
 /// Chain related endpoints.
 ///
 impl ChainRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
+    pub(crate) fn new(client: Client) -> Self {
         ChainRoutes(client)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Client {
+        self.0.clone()
     }
 
     /// Get the current `Height` of the chain
@@ -46,12 +38,12 @@ impl ChainRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
     ///    let chain_height = client.chain_api().get_block_height().await;
     ///
@@ -67,7 +59,7 @@ impl ChainRoutes {
     /// Returns a Future `Result` whose okay value is the current `Height` of the blockchain or
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_block_height(&self) -> Result<HeightInfo> {
-        let req = __internal_request::Request::new(Method::GET, CHAIN_HEIGHT_ROUTE.to_string());
+        let req = __internal_request::ApiRequest::new(Method::GET, CHAIN_HEIGHT_ROUTE.to_string());
         let dto: Result<HeightInfoDto> = req.execute(self.__client()).await;
 
         Ok(dto?.compact())
@@ -85,12 +77,12 @@ impl ChainRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let chain_score = client.chain_api().get_block_score().await;
     ///
     ///    match chain_score {
@@ -105,7 +97,7 @@ impl ChainRoutes {
     /// Returns a Future `Result` whose okay value is `BlockchainScore` or
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_block_score(&self) -> Result<BlockchainScore> {
-        let req = __internal_request::Request::new(Method::GET, CHAIN_SCORE_ROUTE.to_string());
+        let req = __internal_request::ApiRequest::new(Method::GET, CHAIN_SCORE_ROUTE.to_string());
 
         let dto: Result<BlockchainScoreDto> = req.execute(self.__client()).await;
 
@@ -119,12 +111,12 @@ impl ChainRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let chain_score = client.chain_api().get_block_storage().await;
     ///
     ///    match chain_score {
@@ -139,7 +131,7 @@ impl ChainRoutes {
     /// Returns a Future `Result` whose okay value is `StorageInfo` or
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn get_block_storage(&self) -> Result<StorageInfo> {
-        let req = __internal_request::Request::new(Method::GET, CHAIN_STORAGE_ROUTE.to_string());
+        let req = __internal_request::ApiRequest::new(Method::GET, CHAIN_STORAGE_ROUTE.to_string());
 
         req.execute(self.__client()).await
     }
@@ -155,13 +147,13 @@ impl ChainRoutes {
     /// # Example
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
-    /// let chain_score = client.block_api().get_block_by_height(1).await;
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
+    /// let block_by_height = client.chain_api().get_block_by_height(1).await;
     ///
     ///    match block_by_height {
     ///        Ok(resp_info) => println!("{}", resp_info),
@@ -178,7 +170,7 @@ impl ChainRoutes {
         assert_ne!(height, 0, "Block height should not be zero.");
 
         let mut req =
-            __internal_request::Request::new(Method::GET, BLOCK_BY_HEIGHT_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::GET, BLOCK_BY_HEIGHT_ROUTE.to_string());
 
         req = req.with_path_param("height".to_string(), height.to_string());
 
@@ -205,16 +197,16 @@ impl ChainRoutes {
     /// # Example
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
-    /// let chain_score = client.block_api().get_blocks_by_height_with_limit(1, 25).await;
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
+    /// let blocks_by_height_with_limit = client.chain_api().get_blocks_by_height_with_limit(1, 25).await;
     ///
     ///    match blocks_by_height_with_limit {
-    ///        Ok(resp_info) => println!("{}", resp_info),
+    ///        Ok(resp_info) => println!("{:#?}", resp_info),
     ///        Err(err) => eprintln!("{:?}", err),
     ///    }
     ///}
@@ -241,7 +233,8 @@ impl ChainRoutes {
             100
         };
 
-        let mut req = __internal_request::Request::new(Method::GET, BLOCK_INFO_ROUTE.to_string());
+        let mut req =
+            __internal_request::ApiRequest::new(Method::GET, BLOCK_INFO_ROUTE.to_string());
 
         req = req.with_path_param("height".to_string(), height.to_string());
 

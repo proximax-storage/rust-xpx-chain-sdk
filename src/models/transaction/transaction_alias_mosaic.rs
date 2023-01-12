@@ -14,10 +14,13 @@ use crate::{
     alias::AliasActionType,
     models::consts::MOSAIC_ID_SIZE,
     mosaic::{MosaicId, UnresolvedMosaicId},
-    namespace::NamespaceId, network::NetworkType,
+    namespace::NamespaceId,
+    network::NetworkType,
 };
 
-use super::{AliasTransaction, CommonTransaction, Deadline, Transaction, TransactionType, TransactionVersion};
+use super::{
+    AliasTransaction, CommonTransaction, Deadline, Transaction, TransactionType, TransactionVersion,
+};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

@@ -4,31 +4,26 @@
  * license that can be found in the LICENSE file.
  */
 
-use xpx_chain_sdk::account::{Address, PublicAccount};
-use xpx_chain_sdk::api::{PageQueryParams, SiriusClient};
+use xpx_chain_sdk::api::{ApiNode, PageQueryParams};
 use xpx_chain_sdk::mosaic::MosaicId;
 
 #[tokio::main]
-async fn main() {
-    let node_url = vec!["https://api-2.testnet2.xpxsirius.io:443"];
-
-    let sirius_client = SiriusClient::new_from_urls(&node_url).await;
-    let client = match sirius_client {
-        Ok(resp) => resp,
-        Err(err) => panic!("{}", err),
-    };
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
+        .connect()
+        .await?;
 
     let mosaic_api = client.mosaic_api();
 
-    let mosaic_id_one = MosaicId::try_from_hex("13BFC518E40549D7").unwrap();
-    let mosaic_id_two = MosaicId::try_from_hex("705BAFA9B6903C08").unwrap();
+    let mosaic_id_one = MosaicId::try_from_hex("13BFC518E40549D7")?;
+    let mosaic_id_two = MosaicId::try_from_hex("705BAFA9B6903C08")?;
 
     // Get the node information.
     let info = mosaic_api.get_mosaic_info(mosaic_id_one).await;
     match info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_namespace_info: {}\n",
+            "Exception when calling mosaic_api->get_mosaic_info: {}\n",
             err
         ),
     }
@@ -40,7 +35,7 @@ async fn main() {
     match info {
         Ok(resp) => println!("{:#?}", resp),
         Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_namespaces_from_account: {}\n",
+            "Exception when calling mosaic_api->get_mosaics_info: {}\n",
             err
         ),
     }
@@ -52,7 +47,7 @@ async fn main() {
     match info {
         Ok(resp) => println!("{:#?}", resp),
         Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_namespaces_names: {}\n",
+            "Exception when calling mosaic_api->get_mosaics_names: {}\n",
             err
         ),
     }
@@ -63,7 +58,7 @@ async fn main() {
     match info {
         Ok(resp) => println!("{:#?}", resp.len()),
         Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_mosaic_rich_list: {}\n",
+            "Exception when calling mosaic_api->get_mosaic_rich_list: {}\n",
             err
         ),
     }
@@ -72,8 +67,9 @@ async fn main() {
     match info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_mosaic_levy: {}\n",
+            "Exception when calling mosaic_api->get_mosaic_levy: {}\n",
             err
         ),
     }
+    Ok(())
 }

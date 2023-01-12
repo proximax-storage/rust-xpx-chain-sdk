@@ -4,30 +4,26 @@
  * license that can be found in the LICENSE file.
  */
 
-use xpx_chain_sdk::account::{Address, PublicAccount};
-use xpx_chain_sdk::api::SiriusClient;
+use xpx_chain_sdk::account::Address;
+use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::namespace::NamespaceId;
 
 #[tokio::main]
-async fn main() {
-    let node_url = vec!["https://api-2.testnet2.xpxsirius.io:443"];
-
-    let sirius_client = SiriusClient::new_from_urls(&node_url).await;
-    let client = match sirius_client {
-        Ok(resp) => resp,
-        Err(err) => panic!("{}", err),
-    };
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
+        .connect()
+        .await?;
 
     let namespace_api = client.namespace_api();
 
-    let namespace_id_one = NamespaceId::try_from_hex("BFFB42A19116BDF6").unwrap();
-    let namespace_id_two = NamespaceId::try_from_hex("CCD875904F024AAC").unwrap();
+    let namespace_id_one = NamespaceId::from_name("prx.xpx")?;
+    let namespace_id_two = NamespaceId::try_from_hex("BFFB42A19116BDF6")?;
 
     // Create an Address.
-    let address_one = Address::from_raw("VCMCJPRMJ6IUBOZ7HCYBQOSEOVGISX6AMUJ4ESTN").unwrap();
+    let address_one = Address::from_raw("VCMCJPRMJ6IUBOZ7HCYBQOSEOVGISX6AMUJ4ESTN")?;
 
     // Create an Address.
-    let address_two = Address::from_raw("VB2HPZ-FL3IRV-62FGZM-7GGIZS-LZGAZE-DZ23P3-EFOR").unwrap();
+    let address_two = Address::from_raw("VB2HPZ-FL3IRV-62FGZM-7GGIZS-LZGAZE-DZ23P3-EFOR")?;
 
     // Get the node information.
     let info = namespace_api.get_namespace_info(namespace_id_one).await;
@@ -74,4 +70,5 @@ async fn main() {
             err
         ),
     }
+    Ok(())
 }

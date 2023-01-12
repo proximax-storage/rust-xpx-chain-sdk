@@ -4,10 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::sync::Arc;
-
 use anyhow::Result;
-use reqwest::Method;
+use http::Method;
 use serde::de::DeserializeOwned;
 
 use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
@@ -15,11 +13,12 @@ use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
 use crate::api::{
     request as __internal_request, AccountPropertiesTransactionInfoDto,
     AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto,
-    AggregateTransactionInfoDto, ApiClient, ExchangeOfferTransactionInfoDto,
-    HashLockTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto,
-    MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto,
-    MosaicSupplyChangeTransactionInfoDto, NamespaceMetadataTransactionInfoDto, Pagination,
-    QueryParam, RemoveExchangeOfferTransactionInfoDto, TransferTransactionInfoDto,
+    AggregateTransactionInfoDto, BlockchainUpgradeTransactionInfoDto, Client,
+    ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto,
+    ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto,
+    MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto,
+    NetworkConfigTransactionInfoDto, Pagination, QueryParam, RegisterNamespaceTransactionInfoDto,
+    RemoveExchangeOfferTransactionInfoDto, TransferTransactionInfoDto,
 };
 use crate::transaction::{Transaction, TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
@@ -74,7 +73,7 @@ pub(crate) fn value_to_transaction(body_value: Value) -> api::error::Result<Tran
     let transactions_dto = map_transaction_vec_dto(body_value)?;
 
     for transaction_dto in transactions_dto.into_iter() {
-        transactions.push(transaction_dto.compact()?)
+        transactions.push(transaction_dto.compact()?);
     }
 
     Ok(transactions)
@@ -96,7 +95,7 @@ pub(crate) fn map_transaction_vec_dto(body_value: Value) -> Result<Vec<Box<dyn T
 
     for value_raw in body_value.as_array().unwrap().clone() {
         let transaction_dto = map_transaction_dto_new(Bytes::from(format!("{}", value_raw)))?;
-        entity_dto_vec.push(transaction_dto);
+        entity_dto_vec.push(transaction_dto)
     }
 
     Ok(entity_dto_vec)
@@ -126,7 +125,7 @@ pub(crate) fn map_transaction_dto_new(body: Bytes) -> Result<Box<dyn Transaction
         Entity::MosaicSupplyChange => {
             ser_callback::<MosaicSupplyChangeTransactionInfoDto>(value_dto)
         }
-        Entity::RegisterNamespace => ser_callback::<NamespaceMetadataTransactionInfoDto>(value_dto),
+        Entity::RegisterNamespace => ser_callback::<RegisterNamespaceTransactionInfoDto>(value_dto),
         Entity::AddExchangeOffer => ser_callback::<AddExchangeOfferTransactionInfoDto>(value_dto),
         Entity::ExchangeOffer => ser_callback::<ExchangeOfferTransactionInfoDto>(value_dto),
         Entity::RemoveExchangeOffer => {
@@ -148,9 +147,12 @@ pub(crate) fn map_transaction_dto_new(body: Bytes) -> Result<Box<dyn Transaction
         // Entity::ModifyMetadataAddress => "AddressMetadata",
         // Entity::ModifyMetadataMosaic => "MosaicMetadata",
         // Entity::ModifyMetadataNamespace => "NamespaceMetadata",
-        // Entity::BlockchainUpgrade => "BlockchainUpgrade",
+        Entity::BlockchainUpgrade => ser_callback::<BlockchainUpgradeTransactionInfoDto>(value_dto),
         // Entity::NemesisBlock => "NemesisBlock:",
-        // Entity::NetworkConfigEntityType => "NetworkConfigEntityType",
+        Entity::NetworkConfigEntityType => {
+            ser_callback::<NetworkConfigTransactionInfoDto>(value_dto)
+        }
+        // }
         // Entity::SecretLock => "SecretLock",
         // Entity::SecretProof => "SecretProof",
         _ => panic!("{}", errors_const::ERR_UNKNOWN_BLOCKCHAIN_TYPE),
@@ -248,7 +250,7 @@ pub(crate) fn map_aggregate_transactions_dto(
 ) -> Result<Vec<Box<dyn TransactionDto>>> {
     let mut txs_dto: Vec<Box<dyn TransactionDto>> = vec![];
     for item in transactions.into_iter() {
-        let body: Bytes = Bytes::from(item["AggregateTransactionInfoDto"].to_string());
+        let body: Bytes = Bytes::from(item.to_string());
         let map_dto = map_transaction_dto(body)?;
         txs_dto.push(serde_json::from_str(&map_dto)?);
     }
@@ -302,11 +304,11 @@ pub(crate) fn metadata_dto_vec_to_struct(
 }
 
 pub(crate) async fn __internal_get_transactions(
-    client: Arc<ApiClient>,
+    client: Client,
     route: &str,
     query_params: Vec<QueryParam>,
 ) -> api::error::Result<TransactionSearch> {
-    let mut req = __internal_request::Request::new(Method::GET, route.to_string());
+    let mut req = __internal_request::ApiRequest::new(Method::GET, route.to_string());
 
     for query_param in query_params {
         req = req.with_query_param(query_param);
@@ -317,12 +319,12 @@ pub(crate) async fn __internal_get_transactions(
 }
 
 pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
-    client: Arc<ApiClient>,
+    client: Client,
     route: &str,
     group_type: TransactionGroupType,
     query_params: Vec<QueryParam>,
 ) -> api::error::Result<TransactionSearch> {
-    let mut req = __internal_request::Request::new(Method::GET, route.to_string());
+    let mut req = __internal_request::ApiRequest::new(Method::GET, route.to_string());
 
     req = req.with_path_param("group".to_string(), group_type.to_string());
 
@@ -335,8 +337,8 @@ pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
 }
 
 pub(crate) async fn __internal_get_transaction(
-    client: Arc<ApiClient>,
-    req: __internal_request::Request,
+    client: Client,
+    req: __internal_request::ApiRequest,
 ) -> api::error::Result<Box<dyn Transaction>> {
     let body_value: Value = req.execute(client).await?;
 

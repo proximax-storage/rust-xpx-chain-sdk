@@ -12,15 +12,15 @@ use {::std::fmt, fb::FlatBufferBuilder, serde_json::Value};
 
 use crate::{
     account::PublicAccount,
-    AsUint64,
     errors_const,
     exchange::ExchangeConfirmation,
     models::consts::{EXCHANGE_OFFER_HEADER_SIZE, EXCHANGE_OFFER_SIZE},
     network::NetworkType,
+    AsUint64,
 };
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline, schema::exchange_offer_transaction_schema,
+    buffers, deadline::Deadline, schema::exchange_offer_transaction_schema, CommonTransaction,
     Transaction, TransactionType, TransactionVersion,
 };
 

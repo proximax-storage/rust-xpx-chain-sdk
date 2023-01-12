@@ -13,12 +13,14 @@ use {::std::fmt, serde_json::Value};
 use crate::{
     account::PublicAccount,
     models::consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE},
-    mosaic::{MosaicId, MosaicNonce, MosaicProperties}, network::NetworkType,
+    mosaic::{MosaicId, MosaicNonce, MosaicProperties},
+    network::NetworkType,
 };
 
-use super::{buffers, CommonTransaction,
-            deadline::Deadline, internal::mosaic_property_array_to_buffer, schema::mosaic_definition_transaction_schema,
-            Transaction, TransactionType, TransactionVersion,
+use super::{
+    buffers, deadline::Deadline, internal::mosaic_property_array_to_buffer,
+    schema::mosaic_definition_transaction_schema, CommonTransaction, Transaction, TransactionType,
+    TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

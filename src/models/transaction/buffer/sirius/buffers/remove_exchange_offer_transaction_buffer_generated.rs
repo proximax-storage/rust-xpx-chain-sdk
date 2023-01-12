@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for RemoveExchangeOfferTransactionBuffer<'a> {
     type Inner = RemoveExchangeOfferTransactionBuffer<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -42,73 +44,135 @@ impl<'a> RemoveExchangeOfferTransactionBuffer<'a> {
         args: &'args RemoveExchangeOfferTransactionBufferArgs<'args>,
     ) -> flatbuffers::WIPOffset<RemoveExchangeOfferTransactionBuffer<'bldr>> {
         let mut builder = RemoveExchangeOfferTransactionBufferBuilder::new(_fbb);
-        if let Some(x) = args.offers { builder.add_offers(x); }
-        if let Some(x) = args.deadline { builder.add_deadline(x); }
-        if let Some(x) = args.max_fee { builder.add_max_fee(x); }
+        if let Some(x) = args.offers {
+            builder.add_offers(x);
+        }
+        if let Some(x) = args.deadline {
+            builder.add_deadline(x);
+        }
+        if let Some(x) = args.max_fee {
+            builder.add_max_fee(x);
+        }
         builder.add_version(args.version);
-        if let Some(x) = args.signer { builder.add_signer(x); }
-        if let Some(x) = args.signature { builder.add_signature(x); }
+        if let Some(x) = args.signer {
+            builder.add_signer(x);
+        }
+        if let Some(x) = args.signature {
+            builder.add_signature(x);
+        }
         builder.add_size_(args.size_);
         builder.add_type_(args.type_);
         builder.add_offers_count(args.offers_count);
         builder.finish()
     }
 
-
     #[inline]
     pub fn size_(&self) -> u32 {
-        self._tab.get::<u32>(RemoveExchangeOfferTransactionBuffer::VT_SIZE_, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(RemoveExchangeOfferTransactionBuffer::VT_SIZE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn signature(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(RemoveExchangeOfferTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                RemoveExchangeOfferTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn signer(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(RemoveExchangeOfferTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                RemoveExchangeOfferTransactionBuffer::VT_SIGNER,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn version(&self) -> u32 {
-        self._tab.get::<u32>(RemoveExchangeOfferTransactionBuffer::VT_VERSION, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(RemoveExchangeOfferTransactionBuffer::VT_VERSION, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn type_(&self) -> u16 {
-        self._tab.get::<u16>(RemoveExchangeOfferTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
+        self._tab
+            .get::<u16>(RemoveExchangeOfferTransactionBuffer::VT_TYPE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(RemoveExchangeOfferTransactionBuffer::VT_MAX_FEE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RemoveExchangeOfferTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
     }
     #[inline]
     pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(RemoveExchangeOfferTransactionBuffer::VT_DEADLINE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RemoveExchangeOfferTransactionBuffer::VT_DEADLINE,
+                None,
+            )
     }
     #[inline]
     pub fn offers_count(&self) -> u8 {
-        self._tab.get::<u8>(RemoveExchangeOfferTransactionBuffer::VT_OFFERS_COUNT, Some(0)).unwrap()
+        self._tab
+            .get::<u8>(
+                RemoveExchangeOfferTransactionBuffer::VT_OFFERS_COUNT,
+                Some(0),
+            )
+            .unwrap()
     }
     #[inline]
-    pub fn offers(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<RemoveExchangeOfferBuffer<'a>>>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<RemoveExchangeOfferBuffer>>>>(RemoveExchangeOfferTransactionBuffer::VT_OFFERS, None)
+    pub fn offers(
+        &self,
+    ) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<RemoveExchangeOfferBuffer<'a>>>>
+    {
+        self._tab.get::<flatbuffers::ForwardsUOffset<
+            flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<RemoveExchangeOfferBuffer>>,
+        >>(RemoveExchangeOfferTransactionBuffer::VT_OFFERS, None)
     }
 }
 
 impl flatbuffers::Verifiable for RemoveExchangeOfferTransactionBuffer<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signature", Self::VT_SIGNATURE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signer", Self::VT_SIGNER, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signature",
+                Self::VT_SIGNATURE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signer",
+                Self::VT_SIGNER,
+                false,
+            )?
             .visit_field::<u32>("version", Self::VT_VERSION, false)?
             .visit_field::<u16>("type_", Self::VT_TYPE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("max_fee", Self::VT_MAX_FEE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("deadline", Self::VT_DEADLINE, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "max_fee",
+                Self::VT_MAX_FEE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "deadline",
+                Self::VT_DEADLINE,
+                false,
+            )?
             .visit_field::<u8>("offers_count", Self::VT_OFFERS_COUNT, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, flatbuffers::ForwardsUOffset<RemoveExchangeOfferBuffer>>>>("offers", Self::VT_OFFERS, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<
+                flatbuffers::Vector<'_, flatbuffers::ForwardsUOffset<RemoveExchangeOfferBuffer>>,
+            >>("offers", Self::VT_OFFERS, false)?
             .finish();
         Ok(())
     }
@@ -123,7 +187,11 @@ pub struct RemoveExchangeOfferTransactionBufferArgs<'a> {
     pub max_fee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
     pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
     pub offers_count: u8,
-    pub offers: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<RemoveExchangeOfferBuffer<'a>>>>>,
+    pub offers: Option<
+        flatbuffers::WIPOffset<
+            flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<RemoveExchangeOfferBuffer<'a>>>,
+        >,
+    >,
 }
 
 impl<'a> Default for RemoveExchangeOfferTransactionBufferArgs<'a> {
@@ -151,42 +219,74 @@ pub struct RemoveExchangeOfferTransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> RemoveExchangeOfferTransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_.push_slot::<u32>(RemoveExchangeOfferTransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_
+            .push_slot::<u32>(RemoveExchangeOfferTransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
-    pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RemoveExchangeOfferTransactionBuffer::VT_SIGNATURE, signature);
+    pub fn add_signature(
+        &mut self,
+        signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RemoveExchangeOfferTransactionBuffer::VT_SIGNATURE,
+            signature,
+        );
     }
     #[inline]
     pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RemoveExchangeOfferTransactionBuffer::VT_SIGNER, signer);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RemoveExchangeOfferTransactionBuffer::VT_SIGNER,
+            signer,
+        );
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_.push_slot::<u32>(RemoveExchangeOfferTransactionBuffer::VT_VERSION, version, 0);
+        self.fbb_
+            .push_slot::<u32>(RemoveExchangeOfferTransactionBuffer::VT_VERSION, version, 0);
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_.push_slot::<u16>(RemoveExchangeOfferTransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_
+            .push_slot::<u16>(RemoveExchangeOfferTransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RemoveExchangeOfferTransactionBuffer::VT_MAX_FEE, max_fee);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RemoveExchangeOfferTransactionBuffer::VT_MAX_FEE,
+            max_fee,
+        );
     }
     #[inline]
     pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RemoveExchangeOfferTransactionBuffer::VT_DEADLINE, deadline);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RemoveExchangeOfferTransactionBuffer::VT_DEADLINE,
+            deadline,
+        );
     }
     #[inline]
     pub fn add_offers_count(&mut self, offers_count: u8) {
-        self.fbb_.push_slot::<u8>(RemoveExchangeOfferTransactionBuffer::VT_OFFERS_COUNT, offers_count, 0);
+        self.fbb_.push_slot::<u8>(
+            RemoveExchangeOfferTransactionBuffer::VT_OFFERS_COUNT,
+            offers_count,
+            0,
+        );
     }
     #[inline]
-    pub fn add_offers(&mut self, offers: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<RemoveExchangeOfferBuffer<'b>>>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(RemoveExchangeOfferTransactionBuffer::VT_OFFERS, offers);
+    pub fn add_offers(
+        &mut self,
+        offers: flatbuffers::WIPOffset<
+            flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<RemoveExchangeOfferBuffer<'b>>>,
+        >,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            RemoveExchangeOfferTransactionBuffer::VT_OFFERS,
+            offers,
+        );
     }
     #[inline]
-    pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> RemoveExchangeOfferTransactionBufferBuilder<'a, 'b> {
+    pub fn new(
+        _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    ) -> RemoveExchangeOfferTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
         RemoveExchangeOfferTransactionBufferBuilder {
             fbb_: _fbb,
@@ -218,14 +318,20 @@ impl core::fmt::Debug for RemoveExchangeOfferTransactionBuffer<'_> {
 
 #[inline]
 #[deprecated(since = "2.0.0", note = "Deprecated in favor of `root_as...` methods.")]
-pub fn get_root_as_remove_exchange_offer_transaction_buffer<'a>(buf: &'a [u8]) -> RemoveExchangeOfferTransactionBuffer<'a> {
+pub fn get_root_as_remove_exchange_offer_transaction_buffer<'a>(
+    buf: &'a [u8],
+) -> RemoveExchangeOfferTransactionBuffer<'a> {
     unsafe { flatbuffers::root_unchecked::<RemoveExchangeOfferTransactionBuffer<'a>>(buf) }
 }
 
 #[inline]
 #[deprecated(since = "2.0.0", note = "Deprecated in favor of `root_as...` methods.")]
-pub fn get_size_prefixed_root_as_remove_exchange_offer_transaction_buffer<'a>(buf: &'a [u8]) -> RemoveExchangeOfferTransactionBuffer<'a> {
-    unsafe { flatbuffers::size_prefixed_root_unchecked::<RemoveExchangeOfferTransactionBuffer<'a>>(buf) }
+pub fn get_size_prefixed_root_as_remove_exchange_offer_transaction_buffer<'a>(
+    buf: &'a [u8],
+) -> RemoveExchangeOfferTransactionBuffer<'a> {
+    unsafe {
+        flatbuffers::size_prefixed_root_unchecked::<RemoveExchangeOfferTransactionBuffer<'a>>(buf)
+    }
 }
 
 #[inline]
@@ -235,7 +341,9 @@ pub fn get_size_prefixed_root_as_remove_exchange_offer_transaction_buffer<'a>(bu
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `root_as_remove_exchange_offer_transaction_buffer_unchecked`.
-pub fn root_as_remove_exchange_offer_transaction_buffer(buf: &[u8]) -> Result<RemoveExchangeOfferTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn root_as_remove_exchange_offer_transaction_buffer(
+    buf: &[u8],
+) -> Result<RemoveExchangeOfferTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::root::<RemoveExchangeOfferTransactionBuffer>(buf)
 }
 
@@ -246,7 +354,9 @@ pub fn root_as_remove_exchange_offer_transaction_buffer(buf: &[u8]) -> Result<Re
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `size_prefixed_root_as_remove_exchange_offer_transaction_buffer_unchecked`.
-pub fn size_prefixed_root_as_remove_exchange_offer_transaction_buffer(buf: &[u8]) -> Result<RemoveExchangeOfferTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn size_prefixed_root_as_remove_exchange_offer_transaction_buffer(
+    buf: &[u8],
+) -> Result<RemoveExchangeOfferTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::size_prefixed_root::<RemoveExchangeOfferTransactionBuffer>(buf)
 }
 
@@ -282,7 +392,9 @@ pub fn size_prefixed_root_as_remove_exchange_offer_transaction_buffer_with_opts<
 /// Assumes, without verification, that a buffer of bytes contains a RemoveExchangeOfferTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid `RemoveExchangeOfferTransactionBuffer`.
-pub unsafe fn root_as_remove_exchange_offer_transaction_buffer_unchecked(buf: &[u8]) -> RemoveExchangeOfferTransactionBuffer {
+pub unsafe fn root_as_remove_exchange_offer_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> RemoveExchangeOfferTransactionBuffer {
     flatbuffers::root_unchecked::<RemoveExchangeOfferTransactionBuffer>(buf)
 }
 
@@ -290,18 +402,24 @@ pub unsafe fn root_as_remove_exchange_offer_transaction_buffer_unchecked(buf: &[
 /// Assumes, without verification, that a buffer of bytes contains a size prefixed RemoveExchangeOfferTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid size prefixed `RemoveExchangeOfferTransactionBuffer`.
-pub unsafe fn size_prefixed_root_as_remove_exchange_offer_transaction_buffer_unchecked(buf: &[u8]) -> RemoveExchangeOfferTransactionBuffer {
+pub unsafe fn size_prefixed_root_as_remove_exchange_offer_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> RemoveExchangeOfferTransactionBuffer {
     flatbuffers::size_prefixed_root_unchecked::<RemoveExchangeOfferTransactionBuffer>(buf)
 }
 
 #[inline]
 pub fn finish_remove_exchange_offer_transaction_buffer_buffer<'a, 'b>(
     fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<RemoveExchangeOfferTransactionBuffer<'a>>) {
+    root: flatbuffers::WIPOffset<RemoveExchangeOfferTransactionBuffer<'a>>,
+) {
     fbb.finish(root, None);
 }
 
 #[inline]
-pub fn finish_size_prefixed_remove_exchange_offer_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<RemoveExchangeOfferTransactionBuffer<'a>>) {
+pub fn finish_size_prefixed_remove_exchange_offer_transaction_buffer_buffer<'a, 'b>(
+    fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    root: flatbuffers::WIPOffset<RemoveExchangeOfferTransactionBuffer<'a>>,
+) {
     fbb.finish_size_prefixed(root, None);
 }

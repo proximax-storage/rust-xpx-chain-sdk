@@ -13,9 +13,9 @@ pub use self::namespace_name::*;
 pub use self::namespace_type::*;
 
 mod internal;
+mod namespace_alias;
 mod namespace_id;
 mod namespace_ids;
-mod namespace_type;
 mod namespace_info;
-mod namespace_alias;
 mod namespace_name;
+mod namespace_type;

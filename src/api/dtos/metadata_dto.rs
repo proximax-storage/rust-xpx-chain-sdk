@@ -49,7 +49,7 @@ impl MetadataInfoDto {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub(crate) struct MetadataModificationDto {
     #[serde(rename = "modificationType")]
     modification_type: u8,
@@ -69,7 +69,7 @@ impl MetadataModificationDto {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ModifyMetadataTransactionDto {
     #[serde(flatten)]

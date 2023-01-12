@@ -11,8 +11,8 @@
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Pagination {
-    pub total_entries: u16,
-    pub page_number: u16,
-    pub page_size: u16,
-    pub total_pages: u16,
+    pub total_entries: u32,
+    pub page_number: u32,
+    pub page_size: u32,
+    pub total_pages: u32,
 }

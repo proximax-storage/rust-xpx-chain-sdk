@@ -1,20 +1,31 @@
+/*
+ * Copyright 2018 ProximaX Limited. All rights reserved.
+ * Use of this source code is governed by the Apache 2.0
+ * license that can be found in the LICENSE file.
+ */
+
+use std::thread::sleep;
+use std::time::Duration;
+
 use xpx_chain_sdk::account::{Address, PublicAccount};
-use xpx_chain_sdk::api::{OrderV2, SiriusClient, TransactionQueryParams};
+use xpx_chain_sdk::api::ApiNode;
+use xpx_chain_sdk::api::{OrderV2, TransactionQueryParams};
 use xpx_chain_sdk::transaction::TransactionType;
 
 #[tokio::main]
-async fn main() {
-    let node_url = vec!["https://api-2.testnet2.xpxsirius.io:443"];
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
+        .connect()
+        .await?;
 
-    let sirius_client = SiriusClient::new_from_urls(&node_url).await;
-    let client = match sirius_client {
-        Ok(resp) => resp,
-        Err(err) => panic!("{}", err),
-    };
+    let network_type = client
+        .chain_api()
+        .get_block_by_height(1)
+        .await?
+        .network_type;
+    // let network_type = NetworkType::PublicTest;
 
-    let network_type = client.network_type();
-
-    let account_api = client.account_api();
+    // let account_api = client.account_api();
 
     // let account_id_one: &str = "VCTVW23D2MN5VE4AQ4TZIDZENGNOZXPRPR3HTEHT";
     let account_id_one: &str = "C2F93346E27CE6AD1A9F8F5E3066F8326593A406BDF357ACB041E2F9AB402EFE";
@@ -28,11 +39,15 @@ async fn main() {
     // Create an Address from a given public key.
     let account_two = Address::from_public_key(account_id_two, network_type).unwrap();
 
-    // Returns the account information.
-    let account_info = account_api.account_info(account_id_one).await;
-    match account_info {
-        Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!("Exception when calling AccountApi->AccountInfo: {}\n", err),
+    let account_api = client.account_api();
+
+    for _i in 0..3 {
+        let account_api = account_api.clone();
+
+        tokio::spawn(async move {
+            let req = account_api.account_info(account_id_one).await;
+            println!("{:?}", req);
+        });
     }
 
     // Returns the account information for an vector of accounts.
@@ -110,4 +125,7 @@ async fn main() {
             err
         ),
     }
+    sleep(Duration::from_secs(100));
+
+    Ok(())
 }

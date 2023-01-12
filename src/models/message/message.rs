@@ -14,8 +14,8 @@ use super::{MessageType, PlainMessage};
 ///
 #[typetag::serde]
 pub trait Message: Sync + Send + erased_serde::Serialize
-    where
-        Self: fmt::Debug,
+where
+    Self: fmt::Debug,
 {
     fn message_type(&self) -> MessageType;
 
@@ -58,7 +58,7 @@ pub trait Message: Sync + Send + erased_serde::Serialize
             }
             _ => String::new(),
         }
-            .to_uppercase()
+        .to_uppercase()
     }
 }
 
@@ -90,7 +90,7 @@ impl fmt::Display for dyn Message {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AbsTransaction: {}",
+            "{}",
             serde_json::to_string_pretty(&self).unwrap_or_default()
         )
     }

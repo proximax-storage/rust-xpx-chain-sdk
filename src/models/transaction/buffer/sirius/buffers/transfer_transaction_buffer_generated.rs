@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for TransferTransactionBuffer<'a> {
     type Inner = TransferTransactionBuffer<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -45,14 +47,28 @@ impl<'a> TransferTransactionBuffer<'a> {
         args: &'args TransferTransactionBufferArgs<'args>,
     ) -> flatbuffers::WIPOffset<TransferTransactionBuffer<'bldr>> {
         let mut builder = TransferTransactionBufferBuilder::new(_fbb);
-        if let Some(x) = args.mosaics { builder.add_mosaics(x); }
-        if let Some(x) = args.message { builder.add_message(x); }
-        if let Some(x) = args.recipient { builder.add_recipient(x); }
-        if let Some(x) = args.deadline { builder.add_deadline(x); }
-        if let Some(x) = args.max_fee { builder.add_max_fee(x); }
+        if let Some(x) = args.mosaics {
+            builder.add_mosaics(x);
+        }
+        if let Some(x) = args.message {
+            builder.add_message(x);
+        }
+        if let Some(x) = args.recipient {
+            builder.add_recipient(x);
+        }
+        if let Some(x) = args.deadline {
+            builder.add_deadline(x);
+        }
+        if let Some(x) = args.max_fee {
+            builder.add_max_fee(x);
+        }
         builder.add_version(args.version);
-        if let Some(x) = args.signer { builder.add_signer(x); }
-        if let Some(x) = args.signature { builder.add_signature(x); }
+        if let Some(x) = args.signer {
+            builder.add_signer(x);
+        }
+        if let Some(x) = args.signature {
+            builder.add_signature(x);
+        }
         builder.add_size_(args.size_);
         builder.add_message_size(args.message_size);
         builder.add_type_(args.type_);
@@ -60,76 +76,143 @@ impl<'a> TransferTransactionBuffer<'a> {
         builder.finish()
     }
 
-
     #[inline]
     pub fn size_(&self) -> u32 {
-        self._tab.get::<u32>(TransferTransactionBuffer::VT_SIZE_, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(TransferTransactionBuffer::VT_SIZE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn signature(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(TransferTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                TransferTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn signer(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(TransferTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                TransferTransactionBuffer::VT_SIGNER,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn version(&self) -> u32 {
-        self._tab.get::<u32>(TransferTransactionBuffer::VT_VERSION, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(TransferTransactionBuffer::VT_VERSION, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn type_(&self) -> u16 {
-        self._tab.get::<u16>(TransferTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
+        self._tab
+            .get::<u16>(TransferTransactionBuffer::VT_TYPE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(TransferTransactionBuffer::VT_MAX_FEE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                TransferTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
     }
     #[inline]
     pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(TransferTransactionBuffer::VT_DEADLINE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                TransferTransactionBuffer::VT_DEADLINE,
+                None,
+            )
     }
     #[inline]
     pub fn recipient(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(TransferTransactionBuffer::VT_RECIPIENT, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                TransferTransactionBuffer::VT_RECIPIENT,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn message_size(&self) -> u16 {
-        self._tab.get::<u16>(TransferTransactionBuffer::VT_MESSAGE_SIZE, Some(0)).unwrap()
+        self._tab
+            .get::<u16>(TransferTransactionBuffer::VT_MESSAGE_SIZE, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn num_mosaics(&self) -> u8 {
-        self._tab.get::<u8>(TransferTransactionBuffer::VT_NUM_MOSAICS, Some(0)).unwrap()
+        self._tab
+            .get::<u8>(TransferTransactionBuffer::VT_NUM_MOSAICS, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn message(&self) -> Option<MessageBuffer<'a>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<MessageBuffer>>(TransferTransactionBuffer::VT_MESSAGE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<MessageBuffer>>(
+                TransferTransactionBuffer::VT_MESSAGE,
+                None,
+            )
     }
     #[inline]
-    pub fn mosaics(&self) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MosaicBuffer<'a>>>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MosaicBuffer>>>>(TransferTransactionBuffer::VT_MOSAICS, None)
+    pub fn mosaics(
+        &self,
+    ) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MosaicBuffer<'a>>>> {
+        self._tab.get::<flatbuffers::ForwardsUOffset<
+            flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MosaicBuffer>>,
+        >>(TransferTransactionBuffer::VT_MOSAICS, None)
     }
 }
 
 impl flatbuffers::Verifiable for TransferTransactionBuffer<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signature", Self::VT_SIGNATURE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signer", Self::VT_SIGNER, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signature",
+                Self::VT_SIGNATURE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signer",
+                Self::VT_SIGNER,
+                false,
+            )?
             .visit_field::<u32>("version", Self::VT_VERSION, false)?
             .visit_field::<u16>("type_", Self::VT_TYPE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("max_fee", Self::VT_MAX_FEE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("deadline", Self::VT_DEADLINE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("recipient", Self::VT_RECIPIENT, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "max_fee",
+                Self::VT_MAX_FEE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "deadline",
+                Self::VT_DEADLINE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "recipient",
+                Self::VT_RECIPIENT,
+                false,
+            )?
             .visit_field::<u16>("message_size", Self::VT_MESSAGE_SIZE, false)?
             .visit_field::<u8>("num_mosaics", Self::VT_NUM_MOSAICS, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<MessageBuffer>>("message", Self::VT_MESSAGE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, flatbuffers::ForwardsUOffset<MosaicBuffer>>>>("mosaics", Self::VT_MOSAICS, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<MessageBuffer>>(
+                "message",
+                Self::VT_MESSAGE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<
+                flatbuffers::Vector<'_, flatbuffers::ForwardsUOffset<MosaicBuffer>>,
+            >>("mosaics", Self::VT_MOSAICS, false)?
             .finish();
         Ok(())
     }
@@ -147,7 +230,11 @@ pub struct TransferTransactionBufferArgs<'a> {
     pub message_size: u16,
     pub num_mosaics: u8,
     pub message: Option<flatbuffers::WIPOffset<MessageBuffer<'a>>>,
-    pub mosaics: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MosaicBuffer<'a>>>>>,
+    pub mosaics: Option<
+        flatbuffers::WIPOffset<
+            flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MosaicBuffer<'a>>>,
+        >,
+    >,
 }
 
 impl<'a> Default for TransferTransactionBufferArgs<'a> {
@@ -178,54 +265,94 @@ pub struct TransferTransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> TransferTransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_.push_slot::<u32>(TransferTransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_
+            .push_slot::<u32>(TransferTransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
-    pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(TransferTransactionBuffer::VT_SIGNATURE, signature);
+    pub fn add_signature(
+        &mut self,
+        signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            TransferTransactionBuffer::VT_SIGNATURE,
+            signature,
+        );
     }
     #[inline]
     pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(TransferTransactionBuffer::VT_SIGNER, signer);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            TransferTransactionBuffer::VT_SIGNER,
+            signer,
+        );
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_.push_slot::<u32>(TransferTransactionBuffer::VT_VERSION, version, 0);
+        self.fbb_
+            .push_slot::<u32>(TransferTransactionBuffer::VT_VERSION, version, 0);
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_.push_slot::<u16>(TransferTransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_
+            .push_slot::<u16>(TransferTransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(TransferTransactionBuffer::VT_MAX_FEE, max_fee);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            TransferTransactionBuffer::VT_MAX_FEE,
+            max_fee,
+        );
     }
     #[inline]
     pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(TransferTransactionBuffer::VT_DEADLINE, deadline);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            TransferTransactionBuffer::VT_DEADLINE,
+            deadline,
+        );
     }
     #[inline]
-    pub fn add_recipient(&mut self, recipient: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(TransferTransactionBuffer::VT_RECIPIENT, recipient);
+    pub fn add_recipient(
+        &mut self,
+        recipient: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            TransferTransactionBuffer::VT_RECIPIENT,
+            recipient,
+        );
     }
     #[inline]
     pub fn add_message_size(&mut self, message_size: u16) {
-        self.fbb_.push_slot::<u16>(TransferTransactionBuffer::VT_MESSAGE_SIZE, message_size, 0);
+        self.fbb_
+            .push_slot::<u16>(TransferTransactionBuffer::VT_MESSAGE_SIZE, message_size, 0);
     }
     #[inline]
     pub fn add_num_mosaics(&mut self, num_mosaics: u8) {
-        self.fbb_.push_slot::<u8>(TransferTransactionBuffer::VT_NUM_MOSAICS, num_mosaics, 0);
+        self.fbb_
+            .push_slot::<u8>(TransferTransactionBuffer::VT_NUM_MOSAICS, num_mosaics, 0);
     }
     #[inline]
     pub fn add_message(&mut self, message: flatbuffers::WIPOffset<MessageBuffer<'b>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<MessageBuffer>>(TransferTransactionBuffer::VT_MESSAGE, message);
+        self.fbb_
+            .push_slot_always::<flatbuffers::WIPOffset<MessageBuffer>>(
+                TransferTransactionBuffer::VT_MESSAGE,
+                message,
+            );
     }
     #[inline]
-    pub fn add_mosaics(&mut self, mosaics: flatbuffers::WIPOffset<flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<MosaicBuffer<'b>>>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(TransferTransactionBuffer::VT_MOSAICS, mosaics);
+    pub fn add_mosaics(
+        &mut self,
+        mosaics: flatbuffers::WIPOffset<
+            flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<MosaicBuffer<'b>>>,
+        >,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            TransferTransactionBuffer::VT_MOSAICS,
+            mosaics,
+        );
     }
     #[inline]
-    pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> TransferTransactionBufferBuilder<'a, 'b> {
+    pub fn new(
+        _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    ) -> TransferTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
         TransferTransactionBufferBuilder {
             fbb_: _fbb,
@@ -266,7 +393,9 @@ pub fn get_root_as_transfer_transaction_buffer<'a>(buf: &'a [u8]) -> TransferTra
 
 #[inline]
 #[deprecated(since = "2.0.0", note = "Deprecated in favor of `root_as...` methods.")]
-pub fn get_size_prefixed_root_as_transfer_transaction_buffer<'a>(buf: &'a [u8]) -> TransferTransactionBuffer<'a> {
+pub fn get_size_prefixed_root_as_transfer_transaction_buffer<'a>(
+    buf: &'a [u8],
+) -> TransferTransactionBuffer<'a> {
     unsafe { flatbuffers::size_prefixed_root_unchecked::<TransferTransactionBuffer<'a>>(buf) }
 }
 
@@ -277,7 +406,9 @@ pub fn get_size_prefixed_root_as_transfer_transaction_buffer<'a>(buf: &'a [u8]) 
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `root_as_transfer_transaction_buffer_unchecked`.
-pub fn root_as_transfer_transaction_buffer(buf: &[u8]) -> Result<TransferTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn root_as_transfer_transaction_buffer(
+    buf: &[u8],
+) -> Result<TransferTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::root::<TransferTransactionBuffer>(buf)
 }
 
@@ -288,7 +419,9 @@ pub fn root_as_transfer_transaction_buffer(buf: &[u8]) -> Result<TransferTransac
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `size_prefixed_root_as_transfer_transaction_buffer_unchecked`.
-pub fn size_prefixed_root_as_transfer_transaction_buffer(buf: &[u8]) -> Result<TransferTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn size_prefixed_root_as_transfer_transaction_buffer(
+    buf: &[u8],
+) -> Result<TransferTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::size_prefixed_root::<TransferTransactionBuffer>(buf)
 }
 
@@ -324,7 +457,9 @@ pub fn size_prefixed_root_as_transfer_transaction_buffer_with_opts<'b, 'o>(
 /// Assumes, without verification, that a buffer of bytes contains a TransferTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid `TransferTransactionBuffer`.
-pub unsafe fn root_as_transfer_transaction_buffer_unchecked(buf: &[u8]) -> TransferTransactionBuffer {
+pub unsafe fn root_as_transfer_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> TransferTransactionBuffer {
     flatbuffers::root_unchecked::<TransferTransactionBuffer>(buf)
 }
 
@@ -332,18 +467,24 @@ pub unsafe fn root_as_transfer_transaction_buffer_unchecked(buf: &[u8]) -> Trans
 /// Assumes, without verification, that a buffer of bytes contains a size prefixed TransferTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid size prefixed `TransferTransactionBuffer`.
-pub unsafe fn size_prefixed_root_as_transfer_transaction_buffer_unchecked(buf: &[u8]) -> TransferTransactionBuffer {
+pub unsafe fn size_prefixed_root_as_transfer_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> TransferTransactionBuffer {
     flatbuffers::size_prefixed_root_unchecked::<TransferTransactionBuffer>(buf)
 }
 
 #[inline]
 pub fn finish_transfer_transaction_buffer_buffer<'a, 'b>(
     fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<TransferTransactionBuffer<'a>>) {
+    root: flatbuffers::WIPOffset<TransferTransactionBuffer<'a>>,
+) {
     fbb.finish(root, None);
 }
 
 #[inline]
-pub fn finish_size_prefixed_transfer_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<TransferTransactionBuffer<'a>>) {
+pub fn finish_size_prefixed_transfer_transaction_buffer_buffer<'a, 'b>(
+    fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    root: flatbuffers::WIPOffset<TransferTransactionBuffer<'a>>,
+) {
     fbb.finish_size_prefixed(root, None);
 }

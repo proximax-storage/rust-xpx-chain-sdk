@@ -4,26 +4,22 @@
  * license that can be found in the LICENSE file.
  */
 
-use futures_util::TryStreamExt;
-use serde_json::{json, Value};
-
 use {
-    ::std::{future::Future, pin::Pin, sync::Arc},
-    reqwest::Method,
+    ::std::{future::Future, pin::Pin},
+    http::Method,
 };
 
 use crate::api::error::Error;
-use crate::api::{QueryParam, QueryParams};
+use crate::api::{Client, QueryParam, QueryParams};
 use crate::{
     account::{AccountsId, Address},
     api::{
-        error::Result, internally::valid_vec_len, request as __internal_request,
-        sirius_client::ApiClient, NamespaceInfoDto, NamespaceNameDto,
+        error::Result, internally::valid_vec_len, request as __internal_request, NamespaceInfoDto,
+        NamespaceNameDto,
     },
     errors_const::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
     mosaic::UnresolvedMosaicId,
     namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
-    network::NetworkType,
 };
 
 use super::{
@@ -34,21 +30,17 @@ use super::{
 /// Namespace ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NamespaceRoutes(Arc<ApiClient>, NetworkType);
+pub struct NamespaceRoutes(Client);
 
 /// Namespace related endpoints.
 ///
 impl NamespaceRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>, network_time: NetworkType) -> Self {
-        NamespaceRoutes(client, network_time)
+    pub(crate) fn new(client: Client) -> Self {
+        NamespaceRoutes(client)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
-    }
-
-    fn __network_type(&self) -> NetworkType {
-        self.1
+    fn __client(&self) -> Client {
+        self.0.clone()
     }
 
     fn __build_namespace_hierarchy<'a>(
@@ -93,13 +85,13 @@ impl NamespaceRoutes {
     }
 
     pub async fn get_namespace_info(&self, namespace_id: NamespaceId) -> Result<NamespaceInfo> {
-        let mut req = __internal_request::Request::new(Method::GET, NAMESPACE_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::GET, NAMESPACE_ROUTE.to_string());
 
         req = req.with_path_param("namespaceId".to_string(), namespace_id.to_string());
 
         let dto_raw: Result<NamespaceInfoDto> = req.clone().execute(self.__client()).await;
 
-        let mut dto_to_struct = dto_raw?.compact(self.__network_type())?;
+        let mut dto_to_struct = dto_raw?.compact()?;
 
         self.__build_namespace_hierarchy(&mut dto_to_struct).await;
 
@@ -114,7 +106,7 @@ impl NamespaceRoutes {
 
         let namespace_ids_ = NamespaceIds::from(namespace_ids);
         let mut req =
-            __internal_request::Request::new(Method::POST, NAMESPACE_NAMES_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::POST, NAMESPACE_NAMES_ROUTE.to_string());
 
         req = req.with_body_param(namespace_ids_);
 
@@ -136,7 +128,7 @@ impl NamespaceRoutes {
         address: Address,
         query_params: Option<QueryParams>,
     ) -> Result<Vec<NamespaceInfo>> {
-        let mut req = __internal_request::Request::new(
+        let mut req = __internal_request::ApiRequest::new(
             Method::GET,
             NAMESPACES_FROM_ACCOUNT_ROUTES.to_string(),
         );
@@ -153,7 +145,7 @@ impl NamespaceRoutes {
 
         let mut namespace_info: Vec<NamespaceInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.compact(self.__network_type())?);
+            namespace_info.push(namespace_dto.compact()?);
         }
 
         self.clone()
@@ -181,7 +173,7 @@ impl NamespaceRoutes {
                 .collect::<Vec<_>>(),
         );
 
-        let mut req = __internal_request::Request::new(
+        let mut req = __internal_request::ApiRequest::new(
             Method::POST,
             NAMESPACES_FROM_ACCOUNTS_ROUTE.to_string(),
         );
@@ -198,7 +190,7 @@ impl NamespaceRoutes {
 
         let mut namespace_info: Vec<NamespaceInfo> = vec![];
         for namespace_dto in dto.into_iter() {
-            namespace_info.push(namespace_dto.compact(self.__network_type())?);
+            namespace_info.push(namespace_dto.compact()?);
         }
 
         self.__build_namespaces_hierarchy(&mut namespace_info).await;

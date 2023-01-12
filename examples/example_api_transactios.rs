@@ -1,28 +1,30 @@
+/*
+ * Copyright 2018 ProximaX Limited. All rights reserved.
+ * Use of this source code is governed by the Apache 2.0
+ * license that can be found in the LICENSE file.
+ */
+
 use std::str::FromStr;
 
-use xpx_chain_sdk::api::{SiriusClient, TransactionQueryParams};
+use xpx_chain_sdk::api::{ApiNode, TransactionQueryParams};
 use xpx_chain_sdk::transaction::{TransactionGroupType, TransactionType};
 use xpx_chain_sdk::TransactionHash;
 
 #[tokio::main]
-async fn main() {
-    let node_url = vec!["https://api-2.testnet2.xpxsirius.io:443"];
-
-    let sirius_client = SiriusClient::new_from_urls(&node_url).await;
-    let client = match sirius_client {
-        Ok(resp) => resp,
-        Err(err) => panic!("{}", err),
-    };
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
+        .connect()
+        .await?;
 
     let transaction_api = client.transaction_api();
 
     let hash_one = TransactionHash::from_str(
-        "2E1BC6D0B59564649B0DEC3211398A467D4191847501863CC7342F2190CEF871",
+        "CE1196D5665BBE23F6DFFE052EEC292636CB494D4B5576FFEA2130CB77893A6D",
     )
     .unwrap();
 
     let hash_two = TransactionHash::from_str(
-        "BBBAB6316868DC400F27B293FDE6AEFBC30295F38978CD472787C4C5C56F378B",
+        "4E86FB6372C3783E6EA28F48DBB600B727C0BC8C9BD81CE6CC9DCB9520230990",
     )
     .unwrap();
 
@@ -53,7 +55,7 @@ async fn main() {
         .get_transactions(vec![hash_one, hash_two], TransactionGroupType::Confirmed)
         .await;
     match account_info {
-        Ok(resp) => println!("{:?}", resp),
+        Ok(resp) => println!("{:#?}", resp),
         Err(err) => eprintln!(
             "Exception when calling transaction_api->get_transactions: {}\n",
             err
@@ -64,7 +66,7 @@ async fn main() {
         embedded: true,
         r#type: vec![TransactionType::Transfer],
         signer_public_key: Some(
-            "C2F93346E27CE6AD1A9F8F5E3066F8326593A406BDF357ACB041E2F9AB402EFE".to_string(),
+            "5e1d44d8a09b2146cc64f369d4b030ce8df4f6d4bee499aeb62f6d154cf95fa4".to_string(),
         ),
         ..Default::default()
     };
@@ -74,7 +76,10 @@ async fn main() {
         .get_transactions_by_group(TransactionGroupType::Confirmed, Some(txn_query_params))
         .await;
     match account_info {
-        Ok(resp) => println!("{}", resp),
+        Ok(resp) => resp
+            .transactions
+            .iter()
+            .for_each(|item| println!("{:#?}", item)),
         Err(err) => eprintln!(
             "Exception when calling transaction_api->get_transactions_by_group: {}\n",
             err
@@ -101,5 +106,7 @@ async fn main() {
             "Exception when calling transaction_api->get_transactions_statuses: {}\n",
             err
         ),
-    }
+    };
+
+    Ok(())
 }

@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for MosaicBuffer<'a> {
     type Inner = MosaicBuffer<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -35,31 +37,51 @@ impl<'a> MosaicBuffer<'a> {
         args: &'args MosaicBufferArgs<'args>,
     ) -> flatbuffers::WIPOffset<MosaicBuffer<'bldr>> {
         let mut builder = MosaicBufferBuilder::new(_fbb);
-        if let Some(x) = args.amount { builder.add_amount(x); }
-        if let Some(x) = args.id { builder.add_id(x); }
+        if let Some(x) = args.amount {
+            builder.add_amount(x);
+        }
+        if let Some(x) = args.id {
+            builder.add_id(x);
+        }
         builder.finish()
     }
 
-
     #[inline]
     pub fn id(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(MosaicBuffer::VT_ID, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicBuffer::VT_ID,
+                None,
+            )
     }
     #[inline]
     pub fn amount(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(MosaicBuffer::VT_AMOUNT, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicBuffer::VT_AMOUNT,
+                None,
+            )
     }
 }
 
 impl flatbuffers::Verifiable for MosaicBuffer<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("id", Self::VT_ID, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("amount", Self::VT_AMOUNT, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "id",
+                Self::VT_ID,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "amount",
+                Self::VT_AMOUNT,
+                false,
+            )?
             .finish();
         Ok(())
     }
@@ -88,11 +110,13 @@ pub struct MosaicBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> MosaicBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_id(&mut self, id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicBuffer::VT_ID, id);
+        self.fbb_
+            .push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicBuffer::VT_ID, id);
     }
     #[inline]
     pub fn add_amount(&mut self, amount: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicBuffer::VT_AMOUNT, amount);
+        self.fbb_
+            .push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicBuffer::VT_AMOUNT, amount);
     }
     #[inline]
     pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> MosaicBufferBuilder<'a, 'b> {

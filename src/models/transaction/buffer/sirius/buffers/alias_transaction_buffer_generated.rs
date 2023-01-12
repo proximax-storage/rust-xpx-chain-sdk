@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for AliasTransactionBuffer<'a> {
     type Inner = AliasTransactionBuffer<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -43,80 +45,151 @@ impl<'a> AliasTransactionBuffer<'a> {
         args: &'args AliasTransactionBufferArgs<'args>,
     ) -> flatbuffers::WIPOffset<AliasTransactionBuffer<'bldr>> {
         let mut builder = AliasTransactionBufferBuilder::new(_fbb);
-        if let Some(x) = args.alias_id { builder.add_alias_id(x); }
-        if let Some(x) = args.namespace_id { builder.add_namespace_id(x); }
-        if let Some(x) = args.deadline { builder.add_deadline(x); }
-        if let Some(x) = args.max_fee { builder.add_max_fee(x); }
+        if let Some(x) = args.alias_id {
+            builder.add_alias_id(x);
+        }
+        if let Some(x) = args.namespace_id {
+            builder.add_namespace_id(x);
+        }
+        if let Some(x) = args.deadline {
+            builder.add_deadline(x);
+        }
+        if let Some(x) = args.max_fee {
+            builder.add_max_fee(x);
+        }
         builder.add_version(args.version);
-        if let Some(x) = args.signer { builder.add_signer(x); }
-        if let Some(x) = args.signature { builder.add_signature(x); }
+        if let Some(x) = args.signer {
+            builder.add_signer(x);
+        }
+        if let Some(x) = args.signature {
+            builder.add_signature(x);
+        }
         builder.add_size_(args.size_);
         builder.add_type_(args.type_);
         builder.add_action_type(args.action_type);
         builder.finish()
     }
 
-
     #[inline]
     pub fn size_(&self) -> u32 {
-        self._tab.get::<u32>(AliasTransactionBuffer::VT_SIZE_, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(AliasTransactionBuffer::VT_SIZE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn signature(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(AliasTransactionBuffer::VT_SIGNATURE, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                AliasTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn signer(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(AliasTransactionBuffer::VT_SIGNER, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                AliasTransactionBuffer::VT_SIGNER,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
     #[inline]
     pub fn version(&self) -> u32 {
-        self._tab.get::<u32>(AliasTransactionBuffer::VT_VERSION, Some(0)).unwrap()
+        self._tab
+            .get::<u32>(AliasTransactionBuffer::VT_VERSION, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn type_(&self) -> u16 {
-        self._tab.get::<u16>(AliasTransactionBuffer::VT_TYPE_, Some(0)).unwrap()
+        self._tab
+            .get::<u16>(AliasTransactionBuffer::VT_TYPE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(AliasTransactionBuffer::VT_MAX_FEE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AliasTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
     }
     #[inline]
     pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(AliasTransactionBuffer::VT_DEADLINE, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AliasTransactionBuffer::VT_DEADLINE,
+                None,
+            )
     }
     #[inline]
     pub fn action_type(&self) -> u8 {
-        self._tab.get::<u8>(AliasTransactionBuffer::VT_ACTION_TYPE, Some(0)).unwrap()
+        self._tab
+            .get::<u8>(AliasTransactionBuffer::VT_ACTION_TYPE, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn namespace_id(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(AliasTransactionBuffer::VT_NAMESPACE_ID, None)
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AliasTransactionBuffer::VT_NAMESPACE_ID,
+                None,
+            )
     }
     /// In case of address it is 25 bytes array. In case of mosaic it is 8 byte array(or 2 uint32 array)
     #[inline]
     pub fn alias_id(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(AliasTransactionBuffer::VT_ALIAS_ID, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                AliasTransactionBuffer::VT_ALIAS_ID,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
 }
 
 impl flatbuffers::Verifiable for AliasTransactionBuffer<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signature", Self::VT_SIGNATURE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("signer", Self::VT_SIGNER, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signature",
+                Self::VT_SIGNATURE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "signer",
+                Self::VT_SIGNER,
+                false,
+            )?
             .visit_field::<u32>("version", Self::VT_VERSION, false)?
             .visit_field::<u16>("type_", Self::VT_TYPE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("max_fee", Self::VT_MAX_FEE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("deadline", Self::VT_DEADLINE, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "max_fee",
+                Self::VT_MAX_FEE,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "deadline",
+                Self::VT_DEADLINE,
+                false,
+            )?
             .visit_field::<u8>("action_type", Self::VT_ACTION_TYPE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>("namespace_id", Self::VT_NAMESPACE_ID, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("alias_id", Self::VT_ALIAS_ID, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+                "namespace_id",
+                Self::VT_NAMESPACE_ID,
+                false,
+            )?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "alias_id",
+                Self::VT_ALIAS_ID,
+                false,
+            )?
             .finish();
         Ok(())
     }
@@ -161,46 +234,76 @@ pub struct AliasTransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> AliasTransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_.push_slot::<u32>(AliasTransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_
+            .push_slot::<u32>(AliasTransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
-    pub fn add_signature(&mut self, signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(AliasTransactionBuffer::VT_SIGNATURE, signature);
+    pub fn add_signature(
+        &mut self,
+        signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            AliasTransactionBuffer::VT_SIGNATURE,
+            signature,
+        );
     }
     #[inline]
     pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(AliasTransactionBuffer::VT_SIGNER, signer);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            AliasTransactionBuffer::VT_SIGNER,
+            signer,
+        );
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_.push_slot::<u32>(AliasTransactionBuffer::VT_VERSION, version, 0);
+        self.fbb_
+            .push_slot::<u32>(AliasTransactionBuffer::VT_VERSION, version, 0);
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_.push_slot::<u16>(AliasTransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_
+            .push_slot::<u16>(AliasTransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(AliasTransactionBuffer::VT_MAX_FEE, max_fee);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            AliasTransactionBuffer::VT_MAX_FEE,
+            max_fee,
+        );
     }
     #[inline]
     pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(AliasTransactionBuffer::VT_DEADLINE, deadline);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            AliasTransactionBuffer::VT_DEADLINE,
+            deadline,
+        );
     }
     #[inline]
     pub fn add_action_type(&mut self, action_type: u8) {
-        self.fbb_.push_slot::<u8>(AliasTransactionBuffer::VT_ACTION_TYPE, action_type, 0);
+        self.fbb_
+            .push_slot::<u8>(AliasTransactionBuffer::VT_ACTION_TYPE, action_type, 0);
     }
     #[inline]
-    pub fn add_namespace_id(&mut self, namespace_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(AliasTransactionBuffer::VT_NAMESPACE_ID, namespace_id);
+    pub fn add_namespace_id(
+        &mut self,
+        namespace_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>,
+    ) {
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            AliasTransactionBuffer::VT_NAMESPACE_ID,
+            namespace_id,
+        );
     }
     #[inline]
     pub fn add_alias_id(&mut self, alias_id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(AliasTransactionBuffer::VT_ALIAS_ID, alias_id);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+            AliasTransactionBuffer::VT_ALIAS_ID,
+            alias_id,
+        );
     }
     #[inline]
-    pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> AliasTransactionBufferBuilder<'a, 'b> {
+    pub fn new(
+        _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    ) -> AliasTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
         AliasTransactionBufferBuilder {
             fbb_: _fbb,
@@ -239,7 +342,9 @@ pub fn get_root_as_alias_transaction_buffer<'a>(buf: &'a [u8]) -> AliasTransacti
 
 #[inline]
 #[deprecated(since = "2.0.0", note = "Deprecated in favor of `root_as...` methods.")]
-pub fn get_size_prefixed_root_as_alias_transaction_buffer<'a>(buf: &'a [u8]) -> AliasTransactionBuffer<'a> {
+pub fn get_size_prefixed_root_as_alias_transaction_buffer<'a>(
+    buf: &'a [u8],
+) -> AliasTransactionBuffer<'a> {
     unsafe { flatbuffers::size_prefixed_root_unchecked::<AliasTransactionBuffer<'a>>(buf) }
 }
 
@@ -250,7 +355,9 @@ pub fn get_size_prefixed_root_as_alias_transaction_buffer<'a>(buf: &'a [u8]) -> 
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `root_as_alias_transaction_buffer_unchecked`.
-pub fn root_as_alias_transaction_buffer(buf: &[u8]) -> Result<AliasTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn root_as_alias_transaction_buffer(
+    buf: &[u8],
+) -> Result<AliasTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::root::<AliasTransactionBuffer>(buf)
 }
 
@@ -261,7 +368,9 @@ pub fn root_as_alias_transaction_buffer(buf: &[u8]) -> Result<AliasTransactionBu
 /// catch every error, or be maximally performant. For the
 /// previous, unchecked, behavior use
 /// `size_prefixed_root_as_alias_transaction_buffer_unchecked`.
-pub fn size_prefixed_root_as_alias_transaction_buffer(buf: &[u8]) -> Result<AliasTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
+pub fn size_prefixed_root_as_alias_transaction_buffer(
+    buf: &[u8],
+) -> Result<AliasTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
     flatbuffers::size_prefixed_root::<AliasTransactionBuffer>(buf)
 }
 
@@ -305,18 +414,24 @@ pub unsafe fn root_as_alias_transaction_buffer_unchecked(buf: &[u8]) -> AliasTra
 /// Assumes, without verification, that a buffer of bytes contains a size prefixed AliasTransactionBuffer and returns it.
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid size prefixed `AliasTransactionBuffer`.
-pub unsafe fn size_prefixed_root_as_alias_transaction_buffer_unchecked(buf: &[u8]) -> AliasTransactionBuffer {
+pub unsafe fn size_prefixed_root_as_alias_transaction_buffer_unchecked(
+    buf: &[u8],
+) -> AliasTransactionBuffer {
     flatbuffers::size_prefixed_root_unchecked::<AliasTransactionBuffer>(buf)
 }
 
 #[inline]
 pub fn finish_alias_transaction_buffer_buffer<'a, 'b>(
     fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<AliasTransactionBuffer<'a>>) {
+    root: flatbuffers::WIPOffset<AliasTransactionBuffer<'a>>,
+) {
     fbb.finish(root, None);
 }
 
 #[inline]
-pub fn finish_size_prefixed_alias_transaction_buffer_buffer<'a, 'b>(fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>, root: flatbuffers::WIPOffset<AliasTransactionBuffer<'a>>) {
+pub fn finish_size_prefixed_alias_transaction_buffer_buffer<'a, 'b>(
+    fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+    root: flatbuffers::WIPOffset<AliasTransactionBuffer<'a>>,
+) {
     fbb.finish_size_prefixed(root, None);
 }

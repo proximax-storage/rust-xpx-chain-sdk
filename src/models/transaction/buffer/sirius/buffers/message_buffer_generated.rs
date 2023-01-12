@@ -17,7 +17,9 @@ impl<'a> flatbuffers::Follow<'a> for MessageBuffer<'a> {
     type Inner = MessageBuffer<'a>;
     #[inline]
     fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self { _tab: flatbuffers::Table { buf, loc } }
+        Self {
+            _tab: flatbuffers::Table { buf, loc },
+        }
     }
 }
 
@@ -35,31 +37,44 @@ impl<'a> MessageBuffer<'a> {
         args: &'args MessageBufferArgs<'args>,
     ) -> flatbuffers::WIPOffset<MessageBuffer<'bldr>> {
         let mut builder = MessageBufferBuilder::new(_fbb);
-        if let Some(x) = args.payload { builder.add_payload(x); }
+        if let Some(x) = args.payload {
+            builder.add_payload(x);
+        }
         builder.add_type_(args.type_);
         builder.finish()
     }
 
-
     #[inline]
     pub fn type_(&self) -> u8 {
-        self._tab.get::<u8>(MessageBuffer::VT_TYPE_, Some(0)).unwrap()
+        self._tab
+            .get::<u8>(MessageBuffer::VT_TYPE_, Some(0))
+            .unwrap()
     }
     #[inline]
     pub fn payload(&self) -> Option<&'a [u8]> {
-        self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(MessageBuffer::VT_PAYLOAD, None).map(|v| v.safe_slice())
+        self._tab
+            .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MessageBuffer::VT_PAYLOAD,
+                None,
+            )
+            .map(|v| v.safe_slice())
     }
 }
 
 impl flatbuffers::Verifiable for MessageBuffer<'_> {
     #[inline]
     fn run_verifier(
-        v: &mut flatbuffers::Verifier, pos: usize,
+        v: &mut flatbuffers::Verifier,
+        pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
         use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u8>("type_", Self::VT_TYPE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>("payload", Self::VT_PAYLOAD, false)?
+            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+                "payload",
+                Self::VT_PAYLOAD,
+                false,
+            )?
             .finish();
         Ok(())
     }
@@ -92,7 +107,8 @@ impl<'a: 'b, 'b> MessageBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_payload(&mut self, payload: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MessageBuffer::VT_PAYLOAD, payload);
+        self.fbb_
+            .push_slot_always::<flatbuffers::WIPOffset<_>>(MessageBuffer::VT_PAYLOAD, payload);
     }
     #[inline]
     pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> MessageBufferBuilder<'a, 'b> {

@@ -56,7 +56,7 @@ impl NetworkType {
     pub const PREFIX_MIJIN_TEST: char = 'S';
     pub const PREFIX_MIJIN: char = 'M';
 
-    const UNKNOWN_NETWORK_TYPE: &'static str = "Address Network unsupported";
+    pub(crate) const UNKNOWN_NETWORK_TYPE: &'static str = "Address Network unsupported";
 
     pub fn value(self) -> u8 {
         self as u8

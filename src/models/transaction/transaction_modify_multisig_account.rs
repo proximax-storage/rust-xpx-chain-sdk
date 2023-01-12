@@ -19,11 +19,9 @@ use crate::{
 };
 
 use super::{
-    buffers,
-    CommonTransaction,
-    Deadline,
-    internal::cosignatory_modification_array_to_buffer, schema::modify_multisig_account_transaction_schema, Transaction, TransactionType,
-    TransactionVersion,
+    buffers, internal::cosignatory_modification_array_to_buffer,
+    schema::modify_multisig_account_transaction_schema, CommonTransaction, Deadline, Transaction,
+    TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

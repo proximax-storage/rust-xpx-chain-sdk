@@ -14,15 +14,17 @@ use crate::{
     account::{Account, PublicAccount},
     errors_const::{ERR_EMPTY_INNER_TRANSACTION, ERR_EMPTY_TRANSACTION_SIGNER},
     helpers::TransactionHash,
-    models::consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE}, multisig::Cosignature,
+    models::consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE},
+    multisig::Cosignature,
     network::NetworkType,
 };
 
 use super::{
     buffers,
-    CommonTransaction, Deadline, internal::{sign_transaction_with_cosignatures, to_aggregate_transaction_bytes},
+    internal::{sign_transaction_with_cosignatures, to_aggregate_transaction_bytes},
     schema::aggregate_transaction_schema,
-    SignedTransaction, Transaction, Transactions, TransactionType, TransactionVersion,
+    CommonTransaction, Deadline, SignedTransaction, Transaction, TransactionType,
+    TransactionVersion, Transactions,
 };
 
 /// AggregateTransaction:

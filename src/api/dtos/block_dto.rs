@@ -6,14 +6,14 @@
 
 use ::std::str::FromStr;
 
+use crate::network::NetworkType;
 use crate::{
     account::PublicAccount,
     api::error::Result,
     blockchain::BlockInfo,
     helpers::TransactionHash,
-    transaction::{BlockchainTimestamp, internal::extract_version},
+    transaction::{internal::extract_version, BlockchainTimestamp},
 };
-use crate::network::NetworkType;
 
 use super::Uint64Dto;
 
@@ -112,9 +112,12 @@ impl BlockDto {
             difficulty: dto.difficulty.compact(),
             num_transactions,
             fee_multiplier,
-            generation_hash: TransactionHash::from_str(&generation_hash).map_err(|err| anyhow!(err))?,
-            previous_block_hash: TransactionHash::from_str(&dto.previous_block_hash).map_err(|err| anyhow!(err))?,
-            block_transactions_hash: TransactionHash::from_str(&dto.block_transactions_hash).map_err(|err| anyhow!(err))?,
+            generation_hash: TransactionHash::from_str(&generation_hash)
+                .map_err(|err| anyhow!(err))?,
+            previous_block_hash: TransactionHash::from_str(&dto.previous_block_hash)
+                .map_err(|err| anyhow!(err))?,
+            block_transactions_hash: TransactionHash::from_str(&dto.block_transactions_hash)
+                .map_err(|err| anyhow!(err))?,
             block_receipts_hash,
             state_hash,
             beneficiary: beneficiary_public_account,

@@ -6,8 +6,8 @@
 
 use std::any::Any;
 
-use anyhow::{bail, ensure};
 use anyhow::Result;
+use anyhow::{bail, ensure};
 
 use {
     ::std::fmt::{self, Display, Formatter},
@@ -16,12 +16,13 @@ use {
 
 use crate::{
     account::{AccountPropertiesMosaicModification, AccountPropertyType, PublicAccount},
-    models::consts::{ACCOUNT_PROPERTIES_MOSAIC_MODIFICATION_SIZE, ACCOUNT_PROPERTY_MOSAIC_HEADER}, network::NetworkType,
+    models::consts::{ACCOUNT_PROPERTIES_MOSAIC_MODIFICATION_SIZE, ACCOUNT_PROPERTY_MOSAIC_HEADER},
+    network::NetworkType,
 };
 
-use super::{buffers, CommonTransaction,
-            Deadline, schema::account_property_transaction_schema,
-            Transaction, TransactionType, TransactionVersion,
+use super::{
+    buffers, schema::account_property_transaction_schema, CommonTransaction, Deadline, Transaction,
+    TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

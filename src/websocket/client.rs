@@ -280,7 +280,7 @@ impl SiriusWebsocketClient {
                             break;
                         }
                     } else if let Some(handler_info) =
-                    base.downcast_ref::<HandlerUnconfirmedRemoved>()
+                        base.downcast_ref::<HandlerUnconfirmedRemoved>()
                     {
                         let channel =
                             get_channel_data::<WsUnconfirmedRemovedDto>(&msg_string, false)?;

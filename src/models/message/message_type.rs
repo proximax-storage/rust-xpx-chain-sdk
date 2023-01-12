@@ -61,7 +61,6 @@ impl Default for MessageType {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::message::MessageType;

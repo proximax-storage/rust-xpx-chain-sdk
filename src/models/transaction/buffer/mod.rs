@@ -24,27 +24,27 @@ pub mod sirius {
         pub use self::remove_exchange_offer_transaction_buffer_generated::*;
         pub use self::transfer_transaction_buffer_generated::*;
 
-        mod register_namespace_transaction_buffer_generated;
-        mod mosaic_definition_transaction_buffer_generated;
-        mod mosaic_supply_change_transaction_buffer_generated;
-        mod modify_metadata_transaction_buffer_generated;
-        mod lock_funds_transaction_buffer_generated;
+        mod account_properties_transaction_buffer_generated;
         mod add_exchange_offer_buffer_generated;
         mod add_exchange_offer_transaction_buffer_generated;
-        mod exchange_offer_transaction_buffer_generated;
-        mod exchange_offer_buffer_generated;
-        mod remove_exchange_offer_transaction_buffer_generated;
-        mod remove_exchange_offer_buffer_generated;
         mod aggregate_transaction_buffer_generated;
         mod alias_transaction_buffer_generated;
-        mod account_properties_transaction_buffer_generated;
-        mod property_modification_buffer_generated;
-        mod message_buffer_generated;
-        mod mosaic_property_generated;
-        mod metadata_modification_buffer_generated;
-        mod mosaic_buffer_generated;
-        mod transfer_transaction_buffer_generated;
-        mod modify_multisig_account_transaction_buffer_generated;
         mod cosignatory_modification_buffer_generated;
+        mod exchange_offer_buffer_generated;
+        mod exchange_offer_transaction_buffer_generated;
+        mod lock_funds_transaction_buffer_generated;
+        mod message_buffer_generated;
+        mod metadata_modification_buffer_generated;
+        mod modify_metadata_transaction_buffer_generated;
+        mod modify_multisig_account_transaction_buffer_generated;
+        mod mosaic_buffer_generated;
+        mod mosaic_definition_transaction_buffer_generated;
+        mod mosaic_property_generated;
+        mod mosaic_supply_change_transaction_buffer_generated;
+        mod property_modification_buffer_generated;
+        mod register_namespace_transaction_buffer_generated;
+        mod remove_exchange_offer_buffer_generated;
+        mod remove_exchange_offer_transaction_buffer_generated;
+        mod transfer_transaction_buffer_generated;
     } // buffers
 } // sirius

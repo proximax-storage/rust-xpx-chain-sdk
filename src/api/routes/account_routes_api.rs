@@ -6,15 +6,12 @@
 
 use serde_json::json;
 
-use {
-    ::std::{collections::HashMap, sync::Arc},
-    reqwest::Method,
-};
+use {::std::collections::HashMap, http::Method};
 
 use crate::api::routes::const_routes::{
     AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
 };
-use crate::api::{QueryParam, TransactionQueryParams, __internal_get_transactions};
+use crate::api::{Client, QueryParam, TransactionQueryParams, __internal_get_transactions};
 use crate::transaction::{AggregateTransaction, TransactionSearch};
 use crate::{
     account::{AccountInfo, AccountName, AccountProperties, AccountsId, Address, PublicAccount},
@@ -22,7 +19,7 @@ use crate::{
         error::Result,
         internally::{str_to_account_id, valid_vec_len},
         request as __internal_request, AccountInfoDto, AccountNamesDto, AccountPropertiesInfoDto,
-        ApiClient, MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
+        MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
     },
     errors_const::ERR_EMPTY_ADDRESSES_IDS,
     multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
@@ -36,17 +33,17 @@ use super::{
 /// Account ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct AccountRoutes(Arc<ApiClient>);
+pub struct AccountRoutes(Client);
 
 /// Account related endpoints.
 ///
 impl AccountRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
+    pub fn new(client: Client) -> Self {
         AccountRoutes(client)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Client {
+        self.0.clone()
     }
 
     /// Get `Account` information
@@ -59,14 +56,14 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///const PUBLIC_KEY: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let account_info = client.account_api().account_info( PUBLIC_KEY).await;
     ///
     /// match account_info {
@@ -83,7 +80,7 @@ impl AccountRoutes {
     pub async fn account_info(&self, account_id: &str) -> Result<AccountInfo> {
         let id = str_to_account_id(account_id)?;
 
-        let mut req = __internal_request::Request::new(Method::GET, ACCOUNT_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::GET, ACCOUNT_ROUTE.to_string());
 
         req = req.with_path_param("address_id".to_string(), id);
 
@@ -102,15 +99,15 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///const PUBLIC_KEY_A: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
     ///const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let accounts_info = client.account_api().accounts_info( vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
     ///
     ///    match accounts_info {
@@ -133,7 +130,7 @@ impl AccountRoutes {
 
         let accounts = AccountsId::from(accounts_id);
 
-        let mut req = __internal_request::Request::new(Method::POST, ACCOUNTS_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(Method::POST, ACCOUNTS_ROUTE.to_string());
 
         req = req.with_body_param(&accounts);
 
@@ -157,15 +154,15 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///const PUBLIC_KEY_A: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
     ///const PUBLIC_KEY_B: &str = "3B49BF0A08BB7528E54BB803BEEE0D935B2C800364917B6EFF331368A4232FD5";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let accounts_names = client.account_api().accounts_names( vec![PUBLIC_KEY_A, PUBLIC_KEY_B]).await;
     ///
     ///    match accounts_names {
@@ -183,13 +180,13 @@ impl AccountRoutes {
     ///
     /// Returns a Future `Result` whose okay value is an vector of `AccountName` or
     /// whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn accounts_names(self, accounts_id: Vec<&str>) -> Result<Vec<AccountName>> {
+    pub async fn accounts_names(&self, accounts_id: Vec<&str>) -> Result<Vec<AccountName>> {
         valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
 
         let accounts = AccountsId::from(accounts_id);
 
         let mut req =
-            __internal_request::Request::new(Method::POST, ACCOUNT_NAMES_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::POST, ACCOUNT_NAMES_ROUTE.to_string());
 
         req = req.with_body_param(&accounts);
 
@@ -213,14 +210,14 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///const PUBLIC_KEY: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let account_multisig = client.account_api().account_multisig( PUBLIC_KEY).await;
     ///
     /// match account_multisig {
@@ -238,7 +235,7 @@ impl AccountRoutes {
         let id = str_to_account_id(account_id)?;
 
         let mut req =
-            __internal_request::Request::new(Method::GET, MULTISIG_ACCOUNT_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::GET, MULTISIG_ACCOUNT_ROUTE.to_string());
 
         req = req.with_path_param("address_id".to_string(), id);
 
@@ -257,14 +254,14 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///
     ///const PUBLIC_KEY: &str = "93C3B9075649F59BD88573ADC55B8915B12390A47C76F0C45F362ED0800BE237";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     /// let account_multisig_graph = client.account_api().account_multisig_graph( PUBLIC_KEY).await;
     ///
     /// match account_multisig_graph {
@@ -284,7 +281,7 @@ impl AccountRoutes {
     ) -> Result<MultisigAccountGraphInfo> {
         let id = str_to_account_id(account_id)?;
 
-        let mut req = __internal_request::Request::new(
+        let mut req = __internal_request::ApiRequest::new(
             Method::GET,
             MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE.to_string(),
         );
@@ -312,14 +309,13 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///use xpx_chain_sdk::account::Address;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    ///
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
     /// let address = Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap();
     /// let account_properties = client.account_api().account_properties( address).await;
@@ -337,7 +333,7 @@ impl AccountRoutes {
     /// whose error value is an `Error<Value>` describing the error that occurred.
     pub async fn account_properties(&self, address: Address) -> Result<AccountProperties> {
         let mut req =
-            __internal_request::Request::new(Method::GET, ACCOUNT_PROPERTIES_ROUTE.to_string());
+            __internal_request::ApiRequest::new(Method::GET, ACCOUNT_PROPERTIES_ROUTE.to_string());
 
         req = req.with_path_param("address_id".to_string(), address.address_str());
 
@@ -356,14 +352,13 @@ impl AccountRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///use xpx_chain_sdk::account::Address;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    ///
-    /// let node_url = vec!["https://api-2.testnet2.xpxsirius.io"];
-    /// let client = SiriusClient::new_from_urls(&node_url).await.unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
     /// let address_a = Address::from_raw("VCWN77662VNLFGQBQ6RIFTC7LFWO5BSA3U622CSK").unwrap();
     /// let address_b = Address::from_raw("VBWH2BUPITAIHNIPOQ322OB5Q5FF6GFPDR5SYMAA").unwrap();
@@ -398,8 +393,10 @@ impl AccountRoutes {
                 .collect::<Vec<_>>(),
         );
 
-        let mut req =
-            __internal_request::Request::new(Method::POST, ACCOUNTS_PROPERTIES_ROUTE.to_string());
+        let mut req = __internal_request::ApiRequest::new(
+            Method::POST,
+            ACCOUNTS_PROPERTIES_ROUTE.to_string(),
+        );
 
         req = req.with_body_param(&accounts);
 

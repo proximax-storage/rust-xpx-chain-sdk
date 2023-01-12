@@ -21,7 +21,7 @@ use super::{
     Uint64Dto,
 };
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub(crate) struct MosaicDto {
     #[serde(rename = "id")]
     id: Uint64Dto,
@@ -37,7 +37,7 @@ impl MosaicDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct MosaicInfoDto {
     #[serde(rename = "meta")]
     meta: MosaicMetaDto,
@@ -67,13 +67,13 @@ impl MosaicInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct MosaicMetaDto {
     #[serde(rename = "id")]
     id: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicDefinitionTransactionInfoDto {
     meta: TransactionMetaDto,
@@ -81,7 +81,7 @@ pub(crate) struct MosaicDefinitionTransactionInfoDto {
 }
 
 /// MosaicDefinitionTransactionDto : Transaction that creates a new mosaic.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicDefinitionTransactionDto {
     #[serde(flatten)]
@@ -112,7 +112,7 @@ impl TransactionDto for MosaicDefinitionTransactionInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicDefinitionDto {
     mosaic_id: Uint64Dto,
@@ -125,7 +125,7 @@ pub(crate) struct MosaicDefinitionDto {
 
 /// MosaicMetadataTransactionDto :
 /// Transaction that addes metadata to mosaic.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicMetadataTransactionDto {
     #[serde(flatten)]
@@ -134,7 +134,7 @@ pub(crate) struct MosaicMetadataTransactionDto {
     mosaic_id: Uint64Dto,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicMetadataTransactionInfoDto {
     meta: TransactionMetaDto,
@@ -159,7 +159,7 @@ impl TransactionDto for MosaicMetadataTransactionInfoDto {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicNamesDto {
     mosaic_id: Uint64Dto,
@@ -175,13 +175,13 @@ impl MosaicNamesDto {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub(crate) struct MosaicPropertyDto {
     pub(crate) id: u8,
     pub(crate) value: Uint64Dto,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicSupplyChangeTransactionInfoDto {
     meta: TransactionMetaDto,
@@ -207,7 +207,7 @@ impl TransactionDto for MosaicSupplyChangeTransactionInfoDto {
 }
 
 /// MosaicSupplyChangeTransactionDto : Transaction to increase or decrease a mosaic’s supply.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MosaicSupplyChangeTransactionDto {
     #[serde(flatten)]

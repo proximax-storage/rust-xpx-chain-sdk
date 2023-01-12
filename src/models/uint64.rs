@@ -9,8 +9,6 @@ use std::{convert::TryFrom, io::Write, num::ParseIntError, ops::Deref};
 use hex::{FromHex, FromHexError};
 use sha3::{Digest, Sha3_256};
 
-use crate::helpers::hex_encode;
-
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Uint64(u64);
 
@@ -46,7 +44,7 @@ impl Uint64 {
     ///
     #[inline]
     pub fn to_fixed_bytes(self) -> [u8; Self::BYTES] {
-        self.to_be_bytes()
+        self.to_le_bytes()
     }
 
     /// Returns a constant raw pointer to the value.
@@ -86,7 +84,7 @@ impl From<[u8; 8]> for Uint64 {
     /// The given bytes are interpreted in big endian order.
     #[inline]
     fn from(bytes: [u8; Self::BYTES]) -> Self {
-        u64::from_be_bytes(bytes).into()
+        u64::from_le_bytes(bytes).into()
     }
 }
 
@@ -138,8 +136,9 @@ impl TryFrom<&str> for Uint64 {
     /// - When encountering invalid non hex-digits
     /// - Upon empty string input or invalid input length in general
     fn try_from(hex: &str) -> Result<Self, Self::Error> {
-        let bytes = <[u8; Self::BYTES]>::from_hex(hex)?;
-        Ok(Self::from(bytes))
+        <[u8; Self::BYTES]>::from_hex(hex)?;
+        let int = u64::from_str_radix(hex, 16).unwrap();
+        Ok(Self(int))
     }
 }
 
@@ -196,7 +195,7 @@ impl std::fmt::LowerHex for Uint64 {
         if f.alternate() {
             std::write!(f, "0x")?;
         }
-        for i in &self.to_fixed_bytes() {
+        for i in &self.to_be_bytes() {
             std::write!(f, "{:02x}", i)?;
         }
         Ok(())
@@ -210,7 +209,7 @@ impl std::fmt::UpperHex for Uint64 {
         if f.alternate() {
             std::write!(f, "0X")?;
         }
-        for i in &self.to_fixed_bytes() {
+        for i in &self.to_be_bytes() {
             std::write!(f, "{:02X}", i)?;
         }
         Ok(())
@@ -232,28 +231,28 @@ impl std::fmt::Display for Uint64 {
 pub trait AsUint64 {
     fn as_uint64(&self) -> Uint64;
 
-    /// Generate `u64` from a utf8 string.
-    /// Deterministic uint64 value for the given utf8 string.
+    /// Returns a u64 to the value.
+    ///
     #[inline]
-    fn from_utf8_str(source: &str) -> Result<u64, ParseIntError> {
-        let source_hash = Sha3_256::digest(source.as_bytes());
-        u64::from_hex(&hex_encode(&source_hash[..8]))
+    fn to_hex(&self) -> String {
+        format!("{:X}", self.as_uint64())
+    }
+
+    /// Generate `u64` from a utf8 string.
+    /// Deterministic u64 value for the given utf8 string.
+    #[inline]
+    fn from_utf8_str(source: &str) -> u64 {
+        let hash = Sha3_256::digest(source.as_bytes());
+        let mut source_hash = [0_u8; 8];
+        source_hash.copy_from_slice(&hash[..8]);
+
+        u64::from_le_bytes(source_hash)
     }
 
     /// Creates a `u64` from a hex string.
     #[inline]
     fn from_hex(hex: &str) -> Result<u64, ParseIntError> {
         u64::from_str_radix(hex, 16)
-    }
-
-    /// Constructs a `u64` from the given bytes array of fixed length.
-    ///
-    /// # Note
-    ///
-    /// The given bytes are interpreted in big endian order.
-    #[inline]
-    fn from_bytes(bytes: [u8; 8]) -> u64 {
-        u64::from_be_bytes(bytes)
     }
 
     /// Get DTO representation with format: `[lower, higher]`
@@ -321,33 +320,33 @@ mod tests {
 
     struct TestVector {
         str: &'static str,
-        value: [u32; 2],
+        dto: [u32; 2],
     }
 
     static HEX_TEST_VECTORS: &[TestVector] = &[
         TestVector {
             str: "0000000000000000",
-            value: [0, 0],
+            dto: [0, 0],
         }, // "0"
         TestVector {
             str: "000000000000A1B2",
-            value: [0xa1b2, 0],
+            dto: [0xa1b2, 0],
         }, // "(0, 8)"
         TestVector {
             str: "0000000012345678",
-            value: [0x12345678, 0],
+            dto: [0x12345678, 0],
         }, // "8"
         TestVector {
             str: "0000ABCD12345678",
-            value: [0x12345678, 0xabcd],
+            dto: [0x12345678, 0xabcd],
         }, //"(8, 16)"
         TestVector {
             str: "1234567890ABCDEF",
-            value: [0x90abcdef, 0x12345678],
+            dto: [0x90abcdef, 0x12345678],
         }, // "16"
         TestVector {
             str: "FFFFFFFFFFFFFFFF",
-            value: [0xffffffff, 0xffffffff],
+            dto: [0xffffffff, 0xffffffff],
         }, // "16 (max value)"
     ];
 
@@ -395,8 +394,8 @@ mod tests {
 
     #[test]
     fn test_should_be_created_from_utf8() {
-        let value = u64::from_utf8_str("ZBEYIC6XHIAK6CMMOJR4L6CJH3FPD6D34D5YAS5S").unwrap();
-        assert_ne!(value, 12385070877040004926_u64);
+        let value = u64::from_utf8_str("VAQXZH7TDE6EMG7KIGJ5KPCHHAEDYK4VIMLZD7VK");
+        assert_eq!(value, 15125179076792208082_u64);
     }
 
     #[cfg(test)]
@@ -407,7 +406,7 @@ mod tests {
         fn test_should_create_from_hex_str() {
             for test_case in HEX_TEST_VECTORS {
                 let value = Uint64::try_from(test_case.str).unwrap();
-                assert_eq!(value.to_dto(), test_case.value);
+                assert_eq!(value.to_dto(), test_case.dto);
             }
         }
 

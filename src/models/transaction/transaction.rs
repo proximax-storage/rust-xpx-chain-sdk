@@ -114,7 +114,7 @@ where
             || self.get_transaction_type() == TransactionType::AggregateComplete
         {
             [
-                generation_hash_bytes[..52].as_ref(),
+                generation_hash_bytes[..32].as_ref(),
                 byte_buffer_without_header,
             ]
             .concat()

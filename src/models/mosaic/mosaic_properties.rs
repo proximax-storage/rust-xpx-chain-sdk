@@ -44,7 +44,6 @@ impl MosaicProperties {
 
     pub(crate) const FLAG_TRANSFERABLE: u8 = 0x02;
 
-
     pub fn create(
         supply_mutable: bool,
         transferable: bool,
@@ -71,8 +70,15 @@ impl MosaicProperties {
     /// Get mosaic flag value in number
     ///
     pub fn get_value(&self) -> u8 {
-        return (if self.supply_mutable { Self::FLAG_SUPPLY_MUTABLE } else { 0 })
-            + (if self.transferable { Self::FLAG_TRANSFERABLE } else { 0 });
+        return (if self.supply_mutable {
+            Self::FLAG_SUPPLY_MUTABLE
+        } else {
+            0
+        }) + (if self.transferable {
+            Self::FLAG_TRANSFERABLE
+        } else {
+            0
+        });
     }
 }
 

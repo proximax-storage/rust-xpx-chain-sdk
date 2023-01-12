@@ -17,8 +17,8 @@ use crate::network::NetworkType;
 ///
 #[typetag::serde]
 pub trait UnresolvedAddress: Sync + Send
-    where
-        Self: fmt::Debug,
+where
+    Self: fmt::Debug,
 {
     fn recipient_to_string(&self) -> String;
     fn unresolved_address_to_bytes(&self, network_type: NetworkType) -> Vec<u8>;
@@ -55,9 +55,9 @@ impl dyn UnresolvedAddress {
     /// Map asset address string to Address or NamespaceId.
     pub fn from_unresolved_address(hex: &str) -> Result<Box<dyn UnresolvedAddress>> {
         ensure!(
-        is_hex(hex),
-        "Input string is not in valid hexadecimal notation."
-    );
+            is_hex(hex),
+            "Input string is not in valid hexadecimal notation."
+        );
 
         let bytes = hex_decode(&hex[0..2]);
         let byte0 = &bytes[0];
@@ -141,14 +141,16 @@ mod tests {
 
     #[test]
     fn test_can_map_hex_str_to_address() {
-        let unresolved = <dyn UnresolvedAddress>::from_unresolved_address(&ADDRESS.encode_as_hex()).unwrap();
+        let unresolved =
+            <dyn UnresolvedAddress>::from_unresolved_address(&ADDRESS.encode_as_hex()).unwrap();
         assert_eq!(unresolved.clone().try_downcast::<Address>().is_ok(), true);
         assert_eq!(unresolved.try_downcast::<NamespaceId>().is_ok(), false);
     }
 
     #[test]
     fn test_can_map_hex_str_to_namespace_id() {
-        let unresolved = <dyn UnresolvedAddress>::from_unresolved_address(&NAMESPACE_ID.to_hex()).unwrap();
+        let unresolved =
+            <dyn UnresolvedAddress>::from_unresolved_address(&NAMESPACE_ID.to_hex()).unwrap();
         assert_eq!(
             unresolved.clone().try_downcast::<NamespaceId>().is_ok(),
             true

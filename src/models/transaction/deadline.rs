@@ -10,8 +10,8 @@ use {
         time::{Duration, SystemTime, UNIX_EPOCH},
     },
     chrono::{
-        {Local, NaiveTime, Timelike},
         prelude::DateTime,
+        {Local, NaiveTime, Timelike},
     },
     serde::{Serialize, Serializer},
 };
@@ -122,8 +122,8 @@ impl From<BlockchainTimestamp> for Deadline {
 
 impl Serialize for Timestamp {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         serializer.serialize_str(&format!("{}", self))
     }

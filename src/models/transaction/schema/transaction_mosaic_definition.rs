@@ -5,8 +5,8 @@
  */
 
 use super::{
-    ArrayAttribute, ScalarAttribute, Schema, schema_common_definition::schema_common_definition,
-    SchemaAttribute, SIZEOF_BYTE, SIZEOF_INT, TableArrayAttribute,
+    schema_common_definition::schema_common_definition, ArrayAttribute, ScalarAttribute, Schema,
+    SchemaAttribute, TableArrayAttribute, SIZEOF_BYTE, SIZEOF_INT,
 };
 
 pub fn mosaic_definition_transaction_schema() -> Schema {
