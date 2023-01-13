@@ -50,7 +50,7 @@ impl RegisterNamespaceTransaction {
             errors_const::ERR_INVALID_NAMESPACE_NAME
         );
 
-        let abs_tx = CommonTransaction::create_from_type(
+        let common = CommonTransaction::create_from_type(
             TransactionType::RegisterNamespace,
             network_type,
             TransactionVersion::NAMESPACE_REGISTRATION,
@@ -61,7 +61,7 @@ impl RegisterNamespaceTransaction {
         let namespace_id = NamespaceId::from_name(namespace_name)?;
 
         Ok(RegisterNamespaceTransaction {
-            common: abs_tx,
+            common,
             namespace_type: NamespaceType::Root,
             namespace_id,
             name: namespace_name.to_owned(),
@@ -87,7 +87,7 @@ impl RegisterNamespaceTransaction {
             errors_const::ERR_EMPTY_NAMESPACE_ID
         );
 
-        let abs_tx = CommonTransaction::create_from_type(
+        let common = CommonTransaction::create_from_type(
             TransactionType::RegisterNamespace,
             network_type,
             TransactionVersion::NAMESPACE_REGISTRATION,
@@ -98,7 +98,7 @@ impl RegisterNamespaceTransaction {
         let namespace_id = generate_namespace_id(namespace_name, parent_id)?;
 
         Ok(Self {
-            common: abs_tx,
+            common,
             namespace_type: NamespaceType::Sub,
             namespace_id,
             name: namespace_name.to_owned(),

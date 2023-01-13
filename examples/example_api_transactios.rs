@@ -19,7 +19,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let transaction_api = client.transaction_api();
 
     let hash_one = TransactionHash::from_str(
-        "CE1196D5665BBE23F6DFFE052EEC292636CB494D4B5576FFEA2130CB77893A6D",
+        "7D08213D5A3E25C1228ADAFA9FBF8910C2CC14382C5D82A414127CD9DC8D6895",
     )
     .unwrap();
 
@@ -66,7 +66,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         embedded: true,
         r#type: vec![TransactionType::Transfer],
         signer_public_key: Some(
-            "5e1d44d8a09b2146cc64f369d4b030ce8df4f6d4bee499aeb62f6d154cf95fa4".to_string(),
+            "c2f93346e27ce6ad1a9f8f5e3066f8326593a406bdf357acb041e2f9ab402efe".to_string(),
         ),
         ..Default::default()
     };

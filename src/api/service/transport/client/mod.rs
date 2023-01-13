@@ -30,6 +30,7 @@ use tower::{
 pub use api_node::ApiNode;
 
 use crate::api::body::BoxBody;
+use crate::api::routes::metadata_v2_routes_api::MetadataV2Routes;
 use crate::api::routes::{
     account_routes_api::AccountRoutes, chain_routes_api::ChainRoutes,
     mosaic_routes_api::MosaicRoutes, namespace_routes_api::NamespaceRoutes,
@@ -304,4 +305,9 @@ impl Client {
     // pub fn metadata_api(&self) -> Box<MetadataRoutes> {
     //     Box::new(MetadataRoutes::new(self.__client()))
     // }
+
+    /// Get MetadataV2 ApiClient routes.
+    pub fn metadata_v2_api(&self) -> Box<MetadataV2Routes> {
+        Box::new(MetadataV2Routes::new(self.__client()))
+    }
 }

@@ -4,7 +4,7 @@ table MetadataModificationBuffer {
     size: uint;
     modificationType: ubyte;
     KEY_SIZE: ubyte;
-    valueSize: [ubyte];
+    VALUE_SIZE: [ubyte];
     key: [ubyte];
     value: [ubyte];
 }
