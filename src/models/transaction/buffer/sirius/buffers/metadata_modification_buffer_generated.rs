@@ -115,7 +115,7 @@ impl flatbuffers::Verifiable for MetadataModificationBuffer<'_> {
             .visit_field::<u8>("modificationType", Self::VT_MODIFICATIONTYPE, false)?
             .visit_field::<u8>("KEY_SIZE", Self::VT_KEY_SIZE, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
-                "valueSize",
+                "VALUE_SIZE",
                 Self::VT_VALUESIZE,
                 false,
             )?
@@ -226,7 +226,7 @@ impl core::fmt::Debug for MetadataModificationBuffer<'_> {
         ds.field("size_", &self.size_());
         ds.field("modificationType", &self.modificationType());
         ds.field("KEY_SIZE", &self.KEY_SIZE());
-        ds.field("valueSize", &self.valueSize());
+        ds.field("VALUE_SIZE", &self.valueSize());
         ds.field("key", &self.key());
         ds.field("value", &self.value());
         ds.finish()

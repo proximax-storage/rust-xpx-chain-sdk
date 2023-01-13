@@ -54,7 +54,7 @@ pub const TRANSACTION_ROUTE: &str = "/transactions/{group}/{transactionId}";
 pub const TRANSACTION_STATUS_ROUTE: &str = "/transactionStatus/{hash}";
 pub const TRANSACTIONS_STATUS_ROUTE: &str = "/transactionStatus";
 pub const ANNOUNCE_TRANSACTION_ROUTE: &str = "/transactions";
-pub const AGGREGATE_TRANSACTIONS_ROUTE: &str = "/transactions/Partial";
+pub const AGGREGATE_TRANSACTIONS_ROUTE: &str = "/transactions/partial";
 pub const ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE: &str = "/transaction/cosignature";
 
 // routes for MetadataService
@@ -62,3 +62,6 @@ pub const METADATA_INFO_ROUTE: &str = "/metadata";
 pub const METADATA_BY_ACCOUNT_ROUTE: &str = "/account/{address_id}/metadata";
 pub const METADATA_BY_MOSAIC_ROUTE: &str = "/mosaic/{mosaic_id}/metadata";
 pub const METADATA_BY_NAMESPACE_ROUTE: &str = "/namespace/{namespace_id}/metadata";
+
+pub const METADATA_V2_INFO_ROUTE: &str = "/metadata_v2/{compositeHash}";
+pub const METADATAS_V2_INFO_ROUTE: &str = "/metadata_v2";

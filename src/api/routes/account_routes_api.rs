@@ -76,7 +76,7 @@ impl AccountRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an `AccountInfo` the account information or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn account_info(&self, account_id: &str) -> Result<AccountInfo> {
         let id = str_to_account_id(account_id)?;
 
@@ -124,7 +124,7 @@ impl AccountRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an vector of `AccountInfo` or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn accounts_info(&self, accounts_id: Vec<&str>) -> Result<Vec<AccountInfo>> {
         valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
 
@@ -179,7 +179,7 @@ impl AccountRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an vector of `AccountName` or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn accounts_names(&self, accounts_id: Vec<&str>) -> Result<Vec<AccountName>> {
         valid_vec_len(&accounts_id, ERR_EMPTY_ADDRESSES_IDS)?;
 
@@ -230,7 +230,7 @@ impl AccountRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an `MultisigAccountInfo` the account information or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn account_multisig(&self, account_id: &str) -> Result<MultisigAccountInfo> {
         let id = str_to_account_id(account_id)?;
 
@@ -274,7 +274,7 @@ impl AccountRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an `MultisigAccountGraphInfo` the account information or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn account_multisig_graph(
         &self,
         account_id: &str,
@@ -330,7 +330,7 @@ impl AccountRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an `AccountProperties` the account information or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn account_properties(&self, address: Address) -> Result<AccountProperties> {
         let mut req =
             __internal_request::ApiRequest::new(Method::GET, ACCOUNT_PROPERTIES_ROUTE.to_string());
@@ -379,7 +379,7 @@ impl AccountRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an vector of `AccountProperties` or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn accounts_properties(
         &self,
         addresses: Vec<Address>,

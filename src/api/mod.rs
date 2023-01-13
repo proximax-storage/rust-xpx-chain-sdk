@@ -8,6 +8,7 @@
 
 pub(crate) use self::dtos::*;
 pub(crate) use self::internally::*;
+pub use self::metadata_query_params::*;
 pub use self::page_query_params::*;
 pub use self::pagination::*;
 pub use self::query_params::*;
@@ -18,6 +19,7 @@ pub use self::transaction_query_params::*;
 mod dtos;
 pub mod error;
 mod internally;
+mod metadata_query_params;
 mod page_query_params;
 pub mod pagination;
 mod query_params;

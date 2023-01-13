@@ -101,7 +101,7 @@ impl TransactionRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an `TransactionStatus` for a given hash or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_transaction_status(
         &self,
         transaction_hash: TransactionHash,
@@ -154,7 +154,7 @@ impl TransactionRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an vector of `TransactionStatus` for a
-    /// given vector of transaction hashes or whose error value is an `Error<Value>` describing the
+    /// given vector of transaction hashes or whose error value is an `Error<VALUE>` describing the
     /// error that occurred.
     pub async fn get_transactions_statuses(
         &self,
@@ -212,7 +212,7 @@ impl TransactionRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an `Box<dyn Transaction>` for given a
-    /// transactionId or hash or whose error value is an `Error<Value>` describing the error that occurred.
+    /// transactionId or hash or whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_transaction(
         &self,
         transaction_hash: TransactionHash,
@@ -290,7 +290,7 @@ impl TransactionRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an `Transactions` for a given vector of
-    /// transactionIds or whose error value is an `Error<Value>` describing the error that occurred.
+    /// transactionIds or whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_transactions(
         &self,
         hashes: Vec<TransactionHash>,
@@ -384,7 +384,7 @@ impl TransactionRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an `AnnounceTransactionInfo` or whose error
-    /// value is an `Error<Value>` describing the error that occurred.
+    /// value is an `Error<VALUE>` describing the error that occurred.
     pub async fn announce(
         &self,
         transaction_signed: &SignedTransaction,

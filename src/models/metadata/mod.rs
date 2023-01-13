@@ -5,5 +5,11 @@
  */
 
 pub use self::metadata::*;
+pub use self::metadata_entry::*;
+pub use self::metadata_v2_type::*;
+pub use self::search_metadata_entry::*;
 
 mod metadata;
+mod metadata_entry;
+mod metadata_v2_type;
+mod search_metadata_entry;

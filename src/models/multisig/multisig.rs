@@ -48,7 +48,10 @@ pub struct CosignatoryModification {
 }
 
 impl CosignatoryModification {
-    pub fn new(modification_type: MultisigModificationType, public_account: PublicAccount) -> Self {
+    pub fn create(
+        modification_type: MultisigModificationType,
+        public_account: PublicAccount,
+    ) -> Self {
         CosignatoryModification {
             modification_type,
             public_account,

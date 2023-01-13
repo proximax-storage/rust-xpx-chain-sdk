@@ -8,10 +8,8 @@ use std::time::Instant;
 
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::api::ApiNode;
-use xpx_chain_sdk::message::PlainMessage;
-use xpx_chain_sdk::transaction::{
-    AggregateTransaction, Deadline, Transaction, TransferTransaction,
-};
+use xpx_chain_sdk::mosaic::{MosaicNonce, MosaicProperties};
+use xpx_chain_sdk::transaction::{Deadline, MosaicDefinitionTransaction};
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
@@ -30,37 +28,24 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let private_key: &str = "26b64cb10f005e5988a36744ca19e20d835ccc7c105aaa5f3b212da593180930";
 
     let account = Account::from_hex_private_key(private_key, network_type).unwrap();
-    let recipient_a = Account::random(network_type).to_address();
-    let recipient_b = Account::random(network_type).to_address();
 
-    let mut transfer_a = TransferTransaction::create(
+    let nonce = MosaicNonce::random();
+
+    let owner_public_account = account.public_account;
+
+    let properties = MosaicProperties::create(true, true, 6, None);
+
+    let transaction = MosaicDefinitionTransaction::create(
         Deadline::default(),
-        recipient_a,
-        vec![],
-        PlainMessage::create("Transfer A From ProximaX Rust SDK"),
+        nonce,
+        owner_public_account,
+        properties,
         network_type,
         None,
     )?;
-    transfer_a.set_aggregate(account.public_account);
+    // println!("{transaction}");
 
-    let mut transfer_b = TransferTransaction::create(
-        Deadline::default(),
-        recipient_b,
-        vec![],
-        PlainMessage::create("Transfer B From ProximaX Rust SDK"),
-        network_type,
-        None,
-    )?;
-    transfer_b.set_aggregate(account.public_account);
-
-    let aggregate_complete = AggregateTransaction::create_complete(
-        Deadline::default(),
-        vec![Box::new(transfer_a), Box::new(transfer_b)],
-        network_type,
-        None,
-    )?;
-
-    let sig_transaction = account.sign_transaction(aggregate_complete, generation_hash)?;
+    let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 
     let response = client.transaction_api().announce(&sig_transaction).await?;
     println!("{response}");
