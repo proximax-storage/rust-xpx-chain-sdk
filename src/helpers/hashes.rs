@@ -25,8 +25,8 @@ construct_fixed_hash! {
 
 impl Serialize for H256 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_str(&self.encode_hex_upper::<String>())
     }
@@ -39,8 +39,8 @@ construct_fixed_hash! {
 
 impl<'de> Deserialize<'de> for H512 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
+        where
+            D: Deserializer<'de>,
     {
         let string = String::deserialize(deserializer)?;
         H512::from_str(string.as_ref()).map_err(|e| D::Error::custom(e))
@@ -66,8 +66,8 @@ impl H200 {
 
 impl<'de> Deserialize<'de> for H200 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
+        where
+            D: Deserializer<'de>,
     {
         let string = String::deserialize(deserializer)?;
         Ok(H200::from_base32(string.as_ref()))
@@ -76,8 +76,8 @@ impl<'de> Deserialize<'de> for H200 {
 
 impl Serialize for H200 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_str(&self.as_base32())
     }

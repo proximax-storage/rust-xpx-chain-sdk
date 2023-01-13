@@ -29,9 +29,9 @@ impl<S> HttpTimeout<S> {
 }
 
 impl<S, ReqBody> Service<Request<ReqBody>> for HttpTimeout<S>
-where
-    S: Service<Request<ReqBody>>,
-    S::Error: Into<crate::Error>,
+    where
+        S: Service<Request<ReqBody>>,
+        S::Error: Into<crate::Error>,
 {
     type Response = S::Response;
     type Error = crate::Error;
@@ -77,9 +77,9 @@ pub(crate) struct ResponseFuture<F> {
 }
 
 impl<F, Res, E> Future for ResponseFuture<F>
-where
-    F: Future<Output = Result<Res, E>>,
-    E: Into<crate::Error>,
+    where
+        F: Future<Output=Result<Res, E>>,
+        E: Into<crate::Error>,
 {
     type Output = Result<Res, crate::Error>;
 

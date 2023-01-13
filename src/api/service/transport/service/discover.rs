@@ -10,8 +10,8 @@ use tower::discover::Change;
 
 use crate::api::transport::ApiNode;
 
-use super::super::service;
 use super::connection::Connection;
+use super::super::service;
 
 type DiscoverResult<K, S, E> = Result<Change<K, S>, E>;
 

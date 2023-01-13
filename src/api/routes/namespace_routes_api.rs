@@ -9,22 +9,22 @@ use {
     http::Method,
 };
 
-use crate::api::error::Error;
-use crate::api::{Client, QueryParam, QueryParams};
 use crate::{
     account::{AccountsId, Address},
     api::{
-        error::Result, internally::valid_vec_len, request as __internal_request, NamespaceInfoDto,
-        NamespaceNameDto,
+        error::Result, internally::valid_vec_len, NamespaceInfoDto, NamespaceNameDto,
+        request as __internal_request,
     },
     errors_const::{ERR_EMPTY_ADDRESSES_IDS, ERR_EMPTY_NAMESPACE_IDS},
     mosaic::UnresolvedMosaicId,
     namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
 };
+use crate::api::{Client, QueryParam, QueryParams};
+use crate::api::error::Error;
 
 use super::{
-    NAMESPACES_FROM_ACCOUNTS_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES, NAMESPACE_NAMES_ROUTE,
-    NAMESPACE_ROUTE,
+    NAMESPACE_NAMES_ROUTE, NAMESPACE_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES,
+    NAMESPACES_FROM_ACCOUNTS_ROUTE,
 };
 
 /// Namespace ApiClient routes.
@@ -46,7 +46,7 @@ impl NamespaceRoutes {
     fn __build_namespace_hierarchy<'a>(
         &'a self,
         ns_info: &'a mut NamespaceInfo,
-    ) -> Pin<Box<dyn Future<Output = ()> + '_>> {
+    ) -> Pin<Box<dyn Future<Output=()> + '_>> {
         Box::pin(async move {
             let info_parent = match &ns_info.parent {
                 Some(info) => info,
@@ -76,7 +76,7 @@ impl NamespaceRoutes {
     fn __build_namespaces_hierarchy<'b>(
         &'b self,
         ns_infos: &'b mut Vec<NamespaceInfo>,
-    ) -> Pin<Box<dyn Future<Output = ()> + 'b>> {
+    ) -> Pin<Box<dyn Future<Output=()> + 'b>> {
         Box::pin(async move {
             for ns_info in ns_infos.iter_mut() {
                 self.__build_namespace_hierarchy(ns_info).await

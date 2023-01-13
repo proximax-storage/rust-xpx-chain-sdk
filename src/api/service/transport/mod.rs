@@ -12,4 +12,4 @@ mod error;
 mod service;
 
 type BoxFuture<T, E> =
-    std::pin::Pin<Box<dyn std::future::Future<Output = Result<T, E>> + Send + 'static>>;
+std::pin::Pin<Box<dyn std::future::Future<Output=Result<T, E>> + Send + 'static>>;

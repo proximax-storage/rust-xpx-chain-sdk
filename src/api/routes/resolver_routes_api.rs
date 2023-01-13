@@ -4,7 +4,6 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::api::Client;
 use crate::{
     api::{
         error::{Error, Result},
@@ -13,6 +12,7 @@ use crate::{
     errors_const::{ERR_INVALID_ASSET_ID, ERR_INVALID_NAMESPACE_ALIASED},
     mosaic::{AssetIdType, MosaicInfo, UnresolvedMosaicId},
 };
+use crate::api::Client;
 
 use super::{mosaic_routes_api::MosaicRoutes, namespace_routes_api::NamespaceRoutes};
 

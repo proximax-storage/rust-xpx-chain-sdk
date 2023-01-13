@@ -6,11 +6,11 @@
 
 use http::Method;
 
-use crate::api::{Client, NodeInfoDto};
 use crate::{
-    api::{error::Result, request as __internal_request, NodeTimeDto},
+    api::{error::Result, NodeTimeDto, request as __internal_request},
     node::{NodeInfo, NodeTime},
 };
+use crate::api::{Client, NodeInfoDto};
 
 use super::{NODE_INFO, NODE_PEERS, NODE_TIME};
 

@@ -8,18 +8,18 @@ use http::Method;
 use http::Request;
 use tower::buffer::Buffer;
 
-use crate::api::body::BoxBody;
-use crate::api::Svc;
 use crate::{
     account::PublicAccount,
+    api::{ExchangeInfoDto, OfferInfoDTOs, request as __internal_request},
     api::error::Result,
-    api::{request as __internal_request, ExchangeInfoDto, OfferInfoDTOs},
     exchange::{OfferInfos, OfferType, UserExchangeInfo},
     mosaic::{AssetIdType, UnresolvedMosaicId},
     network::NetworkType,
 };
+use crate::api::body::BoxBody;
+use crate::api::Svc;
 
-use super::{resolver_routes_api::ResolverRoutes, EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE};
+use super::{EXCHANGE_ROUTE, OFFERS_BY_MOSAIC_ROUTE, resolver_routes_api::ResolverRoutes};
 
 /// Node ApiClient routes.
 ///

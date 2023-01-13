@@ -12,7 +12,7 @@ use {
 };
 
 use crate::{
-    helpers::{hex_decode, is_hex, H200, H256},
+    helpers::{H200, H256, hex_decode, is_hex},
     models::network::*,
 };
 
@@ -377,7 +377,7 @@ mod tests {
 
     #[test]
     #[should_panic(
-        expected = "Address ZCTVW234AQ4TZIDZENGNOZXPRPSDRSFRF has to be 40 characters long"
+    expected = "Address ZCTVW234AQ4TZIDZENGNOZXPRPSDRSFRF has to be 40 characters long"
     )]
     fn test_should_panic_when_the_address_is_not_valid_in_length() {
         Address::from_raw("ZCTVW234AQ4TZIDZENGNOZXPRPSDRSFRF").unwrap();
@@ -482,7 +482,7 @@ mod tests {
     mod tests_valid_encoded_address {
         use super::*;
 
-        // #[test]
+// #[test]
         // fn test_returns_true_for_valid_address_when_generated() {
         //     assert!(Address::is_valid_encoded_address(
         //         Account::random(NetworkType::PrivateTest)

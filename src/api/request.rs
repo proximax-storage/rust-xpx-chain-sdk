@@ -4,16 +4,16 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::header::{CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT};
 use http::{Method, Request, StatusCode};
+use http::header::{CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT};
 use tower::ServiceExt;
 
 use {::std::collections::HashMap, serde_json};
 
 use crate::api;
-use crate::api::body::{boxed_body, BoxBody};
-use crate::api::error::{Error, SiriusError};
 use crate::api::{Client, QueryParam};
+use crate::api::body::{BoxBody, boxed_body};
+use crate::api::error::{Error, SiriusError};
 
 #[derive(Clone)]
 pub(crate) struct ApiRequest {
@@ -55,8 +55,8 @@ impl ApiRequest {
     }
 
     pub async fn execute<U>(self, api: Client) -> api::error::Result<U>
-    where
-        for<'de> U: serde::Deserialize<'de>,
+        where
+                for<'de> U: serde::Deserialize<'de>,
     {
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.

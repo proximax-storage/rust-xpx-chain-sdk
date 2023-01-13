@@ -8,15 +8,15 @@ use std::{
 };
 
 use bytes::Bytes;
-use http::{uri::Uri, HeaderValue};
+use http::{HeaderValue, uri::Uri};
 use hyper::rt::Executor;
 use tower::make::MakeConnection;
 
-use crate::api::transport::service::SharedExec;
 use crate::api::transport::Error;
+use crate::api::transport::service::SharedExec;
 
-use super::super::service;
 use super::Client;
+use super::super::service;
 
 /// Channel builder.
 ///
@@ -41,9 +41,9 @@ impl ApiNode {
     // just used in codegen for a shortcut.
     #[doc(hidden)]
     pub fn new<D>(dst: D) -> Result<Self, Error>
-    where
-        D: TryInto<Self>,
-        D::Error: Into<crate::api::Error>,
+        where
+            D: TryInto<Self>,
+            D::Error: Into<crate::api::Error>,
     {
         let me = dst.try_into().map_err(|e| Error::from_source(e.into()))?;
         Ok(me)
@@ -86,8 +86,8 @@ impl ApiNode {
     /// builder.user_agent("Greeter").expect("Greeter should be a valid header value");
     /// ```
     pub fn user_agent<T>(self, user_agent: T) -> Result<Self, Error>
-    where
-        T: TryInto<HeaderValue>,
+        where
+            T: TryInto<HeaderValue>,
     {
         user_agent
             .try_into()
@@ -220,8 +220,8 @@ impl ApiNode {
     ///
     /// Uses `tokio::spawn` by default.
     pub fn executor<E>(mut self, executor: E) -> Self
-    where
-        E: Executor<Pin<Box<dyn Future<Output = ()> + Send>>> + Send + Sync + 'static,
+        where
+            E: Executor<Pin<Box<dyn Future<Output=()> + Send>>> + Send + Sync + 'static,
     {
         self.executor = SharedExec::new(executor);
         self
@@ -274,11 +274,11 @@ impl ApiNode {
     ///
     /// The [`connect_timeout`](ApiNode::connect_timeout) will still be applied.
     pub async fn connect_with_connector<C>(&self, connector: C) -> Result<Client, Error>
-    where
-        C: MakeConnection<Uri> + Send + 'static,
-        C::Connection: Unpin + Send + 'static,
-        C::Future: Send + 'static,
-        crate::api::Error: From<C::Error> + Send + 'static,
+        where
+            C: MakeConnection<Uri> + Send + 'static,
+            C::Connection: Unpin + Send + 'static,
+            C::Future: Send + 'static,
+            crate::api::Error: From<C::Error> + Send + 'static,
     {
         let connector = service::connector(connector);
 
@@ -299,11 +299,11 @@ impl ApiNode {
     /// See the `uds` example for an example on how to use this function to build channel that
     /// uses a Unix socket transport.
     pub fn connect_with_connector_lazy<C>(&self, connector: C) -> Client
-    where
-        C: MakeConnection<Uri> + Send + 'static,
-        C::Connection: Unpin + Send + 'static,
-        C::Future: Send + 'static,
-        crate::api::Error: From<C::Error> + Send + 'static,
+        where
+            C: MakeConnection<Uri> + Send + 'static,
+            C::Connection: Unpin + Send + 'static,
+            C::Future: Send + 'static,
+            crate::api::Error: From<C::Error> + Send + 'static,
     {
         let connector = service::connector(connector);
 

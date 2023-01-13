@@ -9,7 +9,7 @@ use crate::{
     mosaic::UnresolvedMosaicId, namespace::NamespaceId,
 };
 
-use super::{buffers, schema::alias_transaction_schema, CommonTransaction};
+use super::{buffers, CommonTransaction, schema::alias_transaction_schema};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

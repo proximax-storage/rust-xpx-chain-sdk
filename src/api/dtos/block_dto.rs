@@ -6,14 +6,14 @@
 
 use ::std::str::FromStr;
 
-use crate::network::NetworkType;
 use crate::{
     account::PublicAccount,
     api::error::Result,
     blockchain::BlockInfo,
     helpers::TransactionHash,
-    transaction::{internal::extract_version, BlockchainTimestamp},
+    transaction::{BlockchainTimestamp, internal::extract_version},
 };
+use crate::network::NetworkType;
 
 use super::Uint64Dto;
 
