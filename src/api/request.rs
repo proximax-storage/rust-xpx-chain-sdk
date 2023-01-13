@@ -73,48 +73,23 @@ impl ApiRequest {
             raw_headers.insert(key, val);
         });
 
-        let uri_str = format!("{}", path);
+        let mut uri_str = format!("{}", path);
 
-        // let mut url = Url::parse(&uri_str)
-        //     .map_err(|e| format!("could not parse url: {:?}", e))
-        //     .unwrap();
-        //
-        // if !self.query_params.is_empty() {
-        //     let existing: Vec<(String, String)> = url
-        //         .query_pairs()
-        //         .map(|(a, b)| (a.to_string(), b.to_string()))
-        //         .collect();
-        //
-        //     // final pairs
-        //     let mut pairs: Vec<(String, String)> = Vec::new();
-        //
-        //     // add first existing
-        //     for pair in &existing {
-        //         pairs.push((pair.0.clone(), pair.1.clone()));
-        //     }
-        //
-        //     // add given query to the pairs
-        //     for param in self.query_params.iter() {
-        //         let (key, val) = param.key_value_to_str();
-        //
-        //         pairs.push((key.clone(), val.clone()));
-        //     }
-        //
-        //     // set new pairs
-        //     url.query_pairs_mut()
-        //         .clear()
-        //         .extend_pairs(pairs.iter().map(|(k, v)| (&k[..], &v[..])));
-        // };
+        if !self.query_params.is_empty() {
+            let mut buf = String::from("?");
 
-        // println!("{}",url );
-        // // create request
-        // let builder = api.client.request(self.method, url.as_str()).body(
-        //     self.serialized_body
-        //         .clone()
-        //         .unwrap_or_else(|| "".to_owned()),
-        // );
-        //
-        // let mut req = builder.build()?;
+            // add given query to the pairs
+            for param in self.query_params.iter() {
+                let (key, val) = param.key_value_to_str();
+                buf.push_str((format!("{}={}&", key, val)).as_str());
+            }
+
+            let beta_offset = buf.len();
+
+            // Remove the range up until the β from the string
+            let buf: String = buf.drain(..beta_offset - 1).collect();
+            uri_str.push_str(&format!("{}", buf));
+        };
 
         let mut req = if let Some(body) = self.serialized_body {
             let mut req = Request::builder()

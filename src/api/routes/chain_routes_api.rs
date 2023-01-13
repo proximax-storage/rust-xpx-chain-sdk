@@ -57,7 +57,7 @@ impl ChainRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is the current `Height` of the blockchain or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_block_height(&self) -> Result<HeightInfo> {
         let req = __internal_request::ApiRequest::new(Method::GET, CHAIN_HEIGHT_ROUTE.to_string());
         let dto: Result<HeightInfoDto> = req.execute(self.__client()).await;
@@ -95,7 +95,7 @@ impl ChainRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is `BlockchainScore` or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_block_score(&self) -> Result<BlockchainScore> {
         let req = __internal_request::ApiRequest::new(Method::GET, CHAIN_SCORE_ROUTE.to_string());
 
@@ -129,7 +129,7 @@ impl ChainRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is `StorageInfo` or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_block_storage(&self) -> Result<StorageInfo> {
         let req = __internal_request::ApiRequest::new(Method::GET, CHAIN_STORAGE_ROUTE.to_string());
 
@@ -165,7 +165,7 @@ impl ChainRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an `BlockInfo` the block information or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_block_by_height(&self, height: u64) -> Result<BlockInfo> {
         assert_ne!(height, 0, "Block height should not be zero.");
 
@@ -215,7 +215,7 @@ impl ChainRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an Vector of `BlockInfo` or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_blocks_by_height_with_limit(
         &self,
         height: u64,

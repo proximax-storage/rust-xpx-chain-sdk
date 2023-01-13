@@ -69,7 +69,7 @@ impl MosaicRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an [MosaicInfo] or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_mosaic_info(&self, mosaic_id: MosaicId) -> Result<MosaicInfo> {
         let mut req = __internal_request::ApiRequest::new(Method::GET, MOSAIC_ROUTE.to_string());
 
@@ -118,7 +118,7 @@ impl MosaicRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an verctor of [MosaicInfo] or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_mosaics_info(&self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicInfo>> {
         valid_vec_len(&mosaic_ids, ERR_EMPTY_MOSAIC_IDS)?;
 
@@ -173,7 +173,7 @@ impl MosaicRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an friendly names for mosaics or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_mosaics_names(&self, mosaic_ids: Vec<MosaicId>) -> Result<Vec<MosaicNames>> {
         valid_vec_len(&mosaic_ids, ERR_EMPTY_MOSAIC_IDS)?;
 

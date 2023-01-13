@@ -56,7 +56,7 @@ impl NodeRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an [NodeInfo] or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_node_info(&self) -> Result<NodeInfo> {
         let req = __internal_request::ApiRequest::new(Method::GET, NODE_INFO.to_string());
 
@@ -89,7 +89,7 @@ impl NodeRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an [NodeTime] or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_node_time(&self) -> Result<NodeTime> {
         let req = __internal_request::ApiRequest::new(Method::GET, NODE_TIME.to_string());
 
@@ -121,7 +121,7 @@ impl NodeRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an vector of `NodeInfo` or whose error
-    /// value is an `Error<Value>` describing the error that occurred.
+    /// value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_node_peers(&self) -> Result<Vec<NodeInfo>> {
         let req = __internal_request::ApiRequest::new(Method::GET, NODE_PEERS.to_string());
 

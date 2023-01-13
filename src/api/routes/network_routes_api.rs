@@ -52,7 +52,7 @@ impl NetworkRoutes {
     /// # Returns
     ///
     /// Returns a Future `Result` whose okay value is an `NetworkInfo` or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_network_type(&self) -> Result<NetworkInfo> {
         let req = __internal_request::ApiRequest::new(Method::GET, NETWORK_INFO.to_string());
 
