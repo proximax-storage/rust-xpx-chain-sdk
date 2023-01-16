@@ -78,7 +78,7 @@ impl Transaction for MosaicAliasTransaction {
 
         let mosaic_bytes = self.mosaic_id.to_builder();
 
-        let mosaic_vector = builder.create_vector_direct(&mosaic_bytes);
+        let mosaic_vector = builder.create_vector(&mosaic_bytes);
 
         self.alias_transaction
             .to_serializer(&mut builder, mosaic_vector, MOSAIC_ID_SIZE)

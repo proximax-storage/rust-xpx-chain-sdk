@@ -127,7 +127,7 @@ pub(crate) fn cosignatory_modification_array_to_buffer<'a>(
     for modification in modifications {
         let public_key = &modification.public_account;
 
-        let public_key_vector = builder.create_vector_direct(public_key.to_builder());
+        let public_key_vector = builder.create_vector(public_key.to_builder());
 
         let mut modify_multisig = CosignatoryModificationBufferBuilder::new(builder);
         modify_multisig.add_type_(modification.modification_type.value());
@@ -152,19 +152,19 @@ pub(crate) fn metadata_modification_array_to_buffer<'a>(
             return 0;
         }
 
-        let key_vector = builder.create_vector_direct(modification.key.as_bytes());
+        let key_vector = builder.create_vector(modification.key.as_bytes());
 
         let value_size = modification.value.len() as u16;
 
-        let value_size = builder.create_vector_direct(&value_size.to_le_bytes());
+        let value_size = builder.create_vector(&value_size.to_le_bytes());
 
-        let value_vector = builder.create_vector_direct(modification.value.as_bytes());
+        let value_vector = builder.create_vector(modification.value.as_bytes());
 
         let mut modify_metadata = MetadataModificationBufferBuilder::new(builder);
         modify_metadata.add_size_(modification.size() as u32);
-        modify_metadata.add_modificationType(modification.r#type.value());
-        modify_metadata.add_KEY_SIZE(key_size as u8);
-        modify_metadata.add_valueSize(value_size);
+        modify_metadata.add_modification_type(modification.r#type.value());
+        modify_metadata.add_key_size(key_size as u8);
+        modify_metadata.add_value_size(value_size);
         modify_metadata.add_key(key_vector);
         modify_metadata.add_value(value_vector);
 

@@ -135,13 +135,13 @@ pub(crate) fn exchange_offer_to_array_to_buffer<'a>(
         Vec::with_capacity(offers.len());
 
     for item in offers {
-        let mosaic_vector = builder.create_vector_direct(&item.offer.mosaic.asset_id.to_dto());
+        let mosaic_vector = builder.create_vector(&item.offer.mosaic.asset_id.to_dto());
 
-        let mosaic_amount_vector = builder.create_vector_direct(&item.offer.mosaic.amount.to_dto());
+        let mosaic_amount_vector = builder.create_vector(&item.offer.mosaic.amount.to_dto());
 
-        let cost_vector = builder.create_vector_direct(&item.offer.cost.to_dto());
+        let cost_vector = builder.create_vector(&item.offer.cost.to_dto());
 
-        let account_vector = builder.create_vector_direct(item.owner.to_builder());
+        let account_vector = builder.create_vector(item.owner.to_builder());
 
         let mut add_exchange_offer = buffers::ExchangeOfferBufferBuilder::new(builder);
         add_exchange_offer.add_mosaic_id(mosaic_vector);

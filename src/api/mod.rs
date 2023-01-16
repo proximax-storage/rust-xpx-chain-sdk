@@ -5,6 +5,7 @@
  */
 
 #![allow(dead_code)]
+#![allow(deprecated)]
 
 pub(crate) use self::dtos::*;
 pub(crate) use self::internally::*;

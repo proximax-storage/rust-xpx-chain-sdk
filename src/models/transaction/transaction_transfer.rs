@@ -134,7 +134,7 @@ impl Transaction for TransferTransaction {
             .clone()
             .unwrap_or(Box::new(<dyn Message>::empty_message()));
         // Create message;
-        let payload_vec = _builder.create_vector_direct(&message.payload_to_vec());
+        let payload_vec = _builder.create_vector(&message.payload_to_vec());
 
         let mut message_buffer = buffers::MessageBufferBuilder::new(&mut _builder);
         message_buffer.add_type_(message.message_type().value());
@@ -145,7 +145,7 @@ impl Transaction for TransferTransaction {
             .recipient
             .unresolved_address_to_bytes(self.common.network_type);
 
-        let recipient_vec = _builder.create_vector_direct(&recipient);
+        let recipient_vec = _builder.create_vector(&recipient);
 
         let mosaic_vec = _builder.create_vector(&mosaics_buffer);
 

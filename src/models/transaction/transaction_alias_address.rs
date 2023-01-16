@@ -77,7 +77,7 @@ impl Transaction for AddressAliasTransaction {
 
         let address_bytes = self.address.as_bytes();
 
-        let address_vector = builder.create_vector_direct(address_bytes);
+        let address_vector = builder.create_vector(address_bytes);
 
         self.alias_transaction
             .to_serializer(&mut builder, address_vector, ADDRESS_SIZE)

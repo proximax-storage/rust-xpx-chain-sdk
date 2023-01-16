@@ -5,7 +5,6 @@
  */
 
 #![allow(dead_code)]
-
 pub use self::buffer::sirius::*;
 pub use self::common_transaction::*;
 pub use self::cosignature_signed_transaction::*;
@@ -43,6 +42,7 @@ pub use self::transaction_version::*;
 
 mod cosignature_signed_transaction;
 mod deadline;
+#[allow(deprecated)]
 pub(crate) mod internal;
 mod signed_transaction;
 mod transaction;
@@ -58,9 +58,13 @@ mod transaction_exchange_offer;
 mod transaction_hash_lock;
 mod transaction_hashes;
 mod transaction_info;
+#[allow(deprecated)]
 mod transaction_modify_metadata;
+#[allow(deprecated)]
 mod transaction_modify_metadata_address;
+#[allow(deprecated)]
 mod transaction_modify_metadata_mosaic;
+#[allow(deprecated)]
 mod transaction_modify_metadata_namespace;
 mod transaction_modify_multisig_account;
 mod transaction_mosaic_definition;

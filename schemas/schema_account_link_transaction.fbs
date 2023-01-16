@@ -8,8 +8,8 @@ table AccountLinkTransactionBuffer {
     type: ushort;
     max_fee: [uint];
     deadline:[uint];
-    remoteAccountKey: [ubyte];
-    linkAction: ubyte;
+    remote_account_key: [ubyte];
+    link_action: ubyte;
 }
 
 root_type AccountLinkTransactionBuffer;

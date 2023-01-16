@@ -39,7 +39,7 @@ version = "^0.4"
 version = "^0.4"
 
 [dependencies.flatbuffers]
-version = "^2.1"
+version = "22.10"
 
 [dependencies.num_enum]
 version = "^0.5"
@@ -142,7 +142,7 @@ tokio-test = "0.4"
 tokio = { version = "1.23", features = ["full"] }
 tower = { version = "0.4", features = ["full"] }
 futures = "0.3"
-
+serde = "1.0.152"
 #tower-http = { version = "0.3", features = ["full"] }
 #http = { version = "0.2.8" }
 #hyper = "0.14"

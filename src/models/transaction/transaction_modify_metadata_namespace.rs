@@ -86,7 +86,7 @@ impl Transaction for MetadataNamespaceTransaction {
 
         let namespace_id_bytes = self.namespace_id.to_builder();
 
-        let namespace_id_vector = builder.create_vector_direct(&namespace_id_bytes);
+        let namespace_id_vector = builder.create_vector(&namespace_id_bytes);
 
         self.metadata_transaction.embedded_to_bytes(
             &mut builder,
