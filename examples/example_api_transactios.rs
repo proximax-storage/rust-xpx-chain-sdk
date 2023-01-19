@@ -13,8 +13,8 @@ use xpx_chain_sdk::TransactionHash;
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
-        .connect()
-        .await?;
+        .connect_lazy();
+        // .await?;
 
     let transaction_api = client.transaction_api();
     let hash_one = TransactionHash::from_str(

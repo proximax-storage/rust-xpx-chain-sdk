@@ -1,6 +1,6 @@
 pub(crate) use self::add_origin::AddOrigin;
 pub(crate) use self::connection::Connection;
-pub(crate) use self::connector::connector;
+pub(crate) use self::connector::*;
 pub(crate) use self::discover::DynamicServiceStream;
 pub(crate) use self::executor::SharedExec;
 pub(crate) use self::user_agent::UserAgent;
