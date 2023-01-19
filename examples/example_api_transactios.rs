@@ -18,7 +18,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
     let transaction_api = client.transaction_api();
     let hash_one = TransactionHash::from_str(
-        "77e85ea258a09e11ea7095b27ce9dfd2f27e1f2fe32d7e74a8f9c6e64ed66a3d",
+        "71efc8653e963d715ac277a2b9a534edf664d4053a8e50419e652ba6ae85844c",
     )
     .unwrap();
 
