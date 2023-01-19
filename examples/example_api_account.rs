@@ -125,7 +125,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
             err
         ),
     }
-    sleep(Duration::from_secs(100));
+    sleep(Duration::from_secs(10));
 
     Ok(())
 }
