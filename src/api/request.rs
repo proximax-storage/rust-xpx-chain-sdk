@@ -4,16 +4,16 @@
  * license that can be found in the LICENSE file.
  */
 
+use http::header::{CONTENT_LENGTH, CONTENT_TYPE};
 use http::{Method, Request, StatusCode};
-use http::header::{CONTENT_LENGTH, CONTENT_TYPE, USER_AGENT};
 use tower::ServiceExt;
 
 use {::std::collections::HashMap, serde_json};
 
 use crate::api;
-use crate::api::{Client, QueryParam};
-use crate::api::body::{BoxBody, boxed_body};
+use crate::api::body::{boxed_body, BoxBody};
 use crate::api::error::{Error, SiriusError};
+use crate::api::{Client, QueryParam};
 
 #[derive(Clone)]
 pub(crate) struct ApiRequest {
@@ -55,8 +55,8 @@ impl ApiRequest {
     }
 
     pub async fn execute<U>(self, api: Client) -> api::error::Result<U>
-        where
-                for<'de> U: serde::Deserialize<'de>,
+    where
+        for<'de> U: serde::Deserialize<'de>,
     {
         // raw_headers is for headers we don't know the proper type of (e.g. custom api key
         // headers); headers is for ones we do know the type of.
@@ -91,7 +91,7 @@ impl ApiRequest {
             uri_str.push_str(&format!("{}", buf));
         };
 
-        let mut req = if let Some(body) = self.serialized_body {
+        let req = if let Some(body) = self.serialized_body {
             let mut req = Request::builder()
                 .uri(uri_str.as_str())
                 .method(self.method.clone())
@@ -114,21 +114,13 @@ impl ApiRequest {
                 .unwrap()
         };
 
-        let req_headers = req.headers_mut();
-        req_headers.insert(
-            USER_AGENT,
-            "Rust-SDK"
-                .parse()
-                .map_err(|err| Error::from(format_err!("{}", err)))?,
-        );
-
-        // req_headers.extend(headers);
-
         let resp = api.oneshot(req).await?;
-        // let resp = api.client.execute(req).await?;
 
         let status = resp.status();
 
+        if status.as_u16() > 226 || status.as_u16() < 200 {
+            return Err(Error::from(anyhow!("Internal error statusCode {}", status)));
+        }
         let body = resp.into_body();
 
         let bytes = hyper::body::to_bytes(body).await?;

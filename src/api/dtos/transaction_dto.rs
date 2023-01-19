@@ -9,20 +9,24 @@ use std::fmt::Debug;
 
 use crypto::Signature;
 
+use crate::api::error::Error;
+use crate::helpers::{hex_decode, TransactionHash};
+use crate::namespace::NamespaceId;
+use crate::network::NetworkType;
+use crate::transaction::{
+    BlockchainUpgradeTransaction, CommonTransaction, MetadataTransaction,
+    MetadataV2AccountTransaction, MetadataV2MosaicTransaction, MetadataV2NamespaceTransaction,
+    NetworkConfigTransaction,
+};
 use crate::{
     account::{Address, PublicAccount},
     api::error::Result,
     mosaic::{Mosaic, MosaicId},
     transaction::{
-        BlockchainTimestamp, Deadline, internal::extract_version, LockFundsTransaction,
+        internal::extract_version, BlockchainTimestamp, Deadline, LockFundsTransaction,
         SignedTransaction, Transaction, TransactionInfo, TransactionStatus, TransactionType,
         TransferTransaction,
     },
-};
-use crate::helpers::TransactionHash;
-use crate::network::NetworkType;
-use crate::transaction::{
-    BlockchainUpgradeTransaction, CommonTransaction, NetworkConfigTransaction,
 };
 
 use super::{MessageDto, MosaicDto, Uint64Dto};
@@ -387,5 +391,58 @@ impl TransactionDto for BlockchainUpgradeTransactionInfoDto {
             new_blockchain_version: dto.new_blockchain_version.compact(),
             upgrade_period: dto.upgrade_period.compact(),
         }))
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct MetaDataEntryTransactionDto {
+    #[serde(flatten)]
+    r#abstract: AbstractTransactionDto,
+    pub target_key: String,
+    pub scoped_metadata_key: Uint64Dto,
+    pub value_size_delta: u16,
+    pub value_size: u16,
+    pub value: String,
+    pub target_mosaic_id: Option<Uint64Dto>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct MetaDataEntryTransactionInfoDto {
+    meta: TransactionMetaDto,
+    transaction: MetaDataEntryTransactionDto,
+}
+
+#[typetag::serde]
+impl TransactionDto for MetaDataEntryTransactionInfoDto {
+    fn compact(&self) -> Result<Box<dyn Transaction>> {
+        let dto = self.transaction.clone();
+        let info = self.meta.compact()?;
+        let common = dto.r#abstract.compact(info)?;
+
+        let metadata = MetadataTransaction {
+            target_public_account: PublicAccount::from_public_key(
+                &dto.target_key,
+                common.network_type.clone(),
+            )?,
+            common,
+            scoped_metadata_key: dto.scoped_metadata_key.compact(),
+            value_size_delta: dto.value_size_delta,
+            value: String::from_utf8(hex_decode(&dto.value)).unwrap_or_default(),
+        };
+
+        Ok(match TransactionType::from(dto.r#abstract.r#type) {
+            TransactionType::AccountMetadataV2 => Box::new(MetadataV2AccountTransaction(metadata)),
+            TransactionType::MosaicMetadataV2 => Box::new(MetadataV2MosaicTransaction {
+                metadata,
+                mosaic_id: MosaicId::from(dto.target_mosaic_id.unwrap().compact()),
+            }),
+            TransactionType::NamespaceMetadataV2 => Box::new(MetadataV2NamespaceTransaction {
+                metadata,
+                namespace_id: NamespaceId::from(dto.target_mosaic_id.unwrap().compact()),
+            }),
+            _ => return Err(Error::Failure(anyhow!("Invalid metadata transaction"))),
+        })
     }
 }

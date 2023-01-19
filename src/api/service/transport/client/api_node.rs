@@ -60,8 +60,8 @@ impl ApiNode {
     /// ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     /// ```
     pub fn from_static(s: &'static str) -> Self {
-        let uri = Uri::from_static(s);
-        Self::from(uri)
+        let dst = Uri::from_static(s);
+        Self::from(dst)
     }
 
     /// Convert an `ApiNode` from shared bytes.
@@ -233,7 +233,6 @@ impl ApiNode {
         http.enforce_http(false);
         http.set_nodelay(self.tcp_nodelay);
         http.set_keepalive(self.tcp_keep_alive);
-
         let connector = service::connector(http);
 
         if let Some(connect_timeout) = self.connect_timeout {
@@ -329,7 +328,7 @@ impl From<Uri> for ApiNode {
         Self {
             uri,
             origin: None,
-            user_agent: None,
+            user_agent: Some(HeaderValue::from_static("RustSdk")),
             concurrency_limit: None,
             rate_limit: None,
             timeout: None,

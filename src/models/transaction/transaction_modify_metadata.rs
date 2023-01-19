@@ -57,8 +57,8 @@ impl ModifyMetadataTransaction {
         txn_builder.add_type_(abs_vector.type_vec);
         txn_builder.add_max_fee(abs_vector.max_fee_vec);
         txn_builder.add_deadline(abs_vector.deadline_vec);
-        txn_builder.add_metadataType(self.metadata_type.value());
-        txn_builder.add_metadataId(metadata_vec);
+        txn_builder.add_metadata_type(self.metadata_type.value());
+        txn_builder.add_metadata_id(metadata_vec);
         txn_builder.add_modifications(fb::WIPOffset::new(modification_vec));
         let t = txn_builder.finish();
 

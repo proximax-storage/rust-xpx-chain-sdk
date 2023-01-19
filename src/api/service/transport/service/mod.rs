@@ -6,7 +6,7 @@ pub(crate) use self::executor::SharedExec;
 pub(crate) use self::user_agent::UserAgent;
 
 mod add_origin;
-mod connection;
+pub(crate) mod connection;
 mod connector;
 mod discover;
 pub(crate) mod executor;

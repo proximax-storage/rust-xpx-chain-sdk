@@ -10,30 +10,30 @@ use serde::de::DeserializeOwned;
 
 use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
 
+use crate::api::{
+    request as __internal_request, AccountPropertiesTransactionInfoDto,
+    AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto,
+    AggregateTransactionInfoDto, BlockchainUpgradeTransactionInfoDto, Client,
+    ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto, MetaDataEntryTransactionInfoDto,
+    ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto,
+    MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto,
+    NetworkConfigTransactionInfoDto, Pagination, QueryParam, RegisterNamespaceTransactionInfoDto,
+    RemoveExchangeOfferTransactionInfoDto, TransferTransactionInfoDto,
+};
+use crate::transaction::{Transaction, TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
     api, errors_const, helpers::is_hex, metadata::MetadataModification, mosaic::MosaicProperties,
     multisig::CosignatoryModification, network::NetworkType,
     transaction::TransactionType as Entity,
 };
-use crate::api::{
-    AccountPropertiesTransactionInfoDto, AddExchangeOfferTransactionInfoDto,
-    AddressAliasTransactionInfoDto, AggregateTransactionInfoDto,
-    BlockchainUpgradeTransactionInfoDto, Client, ExchangeOfferTransactionInfoDto,
-    HashLockTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto,
-    MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto,
-    MosaicSupplyChangeTransactionInfoDto, NetworkConfigTransactionInfoDto,
-    Pagination, QueryParam, RegisterNamespaceTransactionInfoDto, RemoveExchangeOfferTransactionInfoDto,
-    request as __internal_request, TransferTransactionInfoDto,
-};
-use crate::transaction::{Transaction, TransactionGroupType, Transactions, TransactionSearch};
 
 use super::{
     CosignatoryModificationDto, MetadataModificationDto, MosaicPropertyDto, TransactionDto,
 };
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
-    where
-        T: Debug,
+where
+    T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())
@@ -144,9 +144,9 @@ pub(crate) fn map_transaction_dto_new(body: Bytes) -> Result<Box<dyn Transaction
 
         // Entity::AccountLink => "AccountLink",
         // Entity::Block => "Block",
-        // Entity::ModifyMetadataAddress => "AddressMetadata",
-        // Entity::ModifyMetadataMosaic => "MosaicMetadata",
-        // Entity::ModifyMetadataNamespace => "NamespaceMetadata",
+        Entity::AccountMetadataV2 | Entity::MosaicMetadataV2 | Entity::NamespaceMetadataV2 => {
+            ser_callback::<MetaDataEntryTransactionInfoDto>(value_dto)
+        }
         Entity::BlockchainUpgrade => ser_callback::<BlockchainUpgradeTransactionInfoDto>(value_dto),
         // Entity::NemesisBlock => "NemesisBlock:",
         Entity::NetworkConfigEntityType => {
@@ -161,98 +161,14 @@ pub(crate) fn map_transaction_dto_new(body: Bytes) -> Result<Box<dyn Transaction
     Ok(entity_dto)
 }
 
-pub(crate) fn map_transaction_dto(body: Bytes) -> Result<String> {
-    let mut value_dto: Value = serde_json::from_slice(&body)?;
-
-    let entity_type: Entity = (value_dto["transaction"]["type"].as_u64().unwrap() as u16).into();
-
-    let entity_dto = match entity_type {
-        Entity::AccountLink => "AccountLink",
-        Entity::AccountRestrictionAddress => "AccountProperties",
-        Entity::AccountRestrictionMosaic => "AccountProperties",
-        Entity::AccountRestrictionOperation => "AccountProperties",
-        Entity::AddressAlias => "AddressAlias",
-        Entity::AggregateBonded => "Aggregate",
-        Entity::AggregateComplete => "Aggregate",
-        Entity::AddExchangeOffer => "AddExchangeOffer",
-        Entity::ExchangeOffer => "ExchangeOffer",
-        Entity::RemoveExchangeOffer => "RemoveExchangeOffer",
-        Entity::Block => "Block",
-        Entity::ModifyMetadataAddress => "AddressMetadata",
-        Entity::ModifyMetadataMosaic => "MosaicMetadata",
-        Entity::ModifyMetadataNamespace => "NamespaceMetadata",
-        Entity::BlockchainUpgrade => "BlockchainUpgrade",
-        Entity::HashLock => "HashLock",
-        Entity::MultisigAccountModify => "ModifyMultisigAccount",
-        Entity::MosaicAlias => "MosaicAlias",
-        Entity::MosaicDefinition => "MosaicDefinition",
-        Entity::MosaicSupplyChange => "MosaicSupplyChange",
-        Entity::RegisterNamespace => "RegisterNamespace",
-        Entity::NemesisBlock => "NemesisBlock:",
-        Entity::NetworkConfigEntityType => "NetworkConfigEntityType",
-        Entity::SecretLock => "SecretLock",
-        Entity::SecretProof => "SecretProof",
-        Entity::Transfer => "Transfer",
-        _ => errors_const::ERR_UNKNOWN_BLOCKCHAIN_TYPE,
-    };
-
-    if entity_type == Entity::AggregateBonded || entity_type == Entity::AggregateComplete {
-        parse_meta_ws(&mut value_dto)?
-    }
-
-    if value_dto["meta"].is_null() {
-        Ok(parse_meta(value_dto, entity_dto))
-    } else {
-        Ok(parse_entity_type_dto(value_dto, entity_dto))
-    }
-}
-
-fn parse_meta_ws(value_dto: &mut Value) -> Result<()> {
-    if let Some(v) = value_dto["transaction"]["transactions"].as_array_mut() {
-        let mut meta_value: Vec<Value> = vec![];
-
-        for item in v.iter_mut() {
-            if item["meta"].is_null() {
-                let meta = r#""meta": {}, "transaction":"#;
-                let parse_meta_srt = format!("{}", item).replace(r#""transaction":"#, meta);
-
-                let parse_meta: Value = serde_json::from_str(&parse_meta_srt)?;
-                meta_value.push(parse_meta)
-            } else {
-                let parse_meta: Value = serde_json::from_str(&*format!("{}", item))?;
-                meta_value.push(parse_meta)
-            }
-        }
-        v.clear();
-        v.append(&mut meta_value)
-    };
-    Ok(())
-}
-
-fn parse_meta(value_dto: Value, entity_dto: &str) -> String {
-    let meta = r#"{"meta": {}, "transaction":"#;
-
-    let parse_meta = format!("{}", value_dto).replace(r#"{"transaction":"#, meta);
-
-    parse_entity_type_dto(parse_meta.parse().unwrap(), entity_dto)
-}
-
-fn parse_entity_type_dto(value_dto: Value, entity_dto: &str) -> String {
-    let info_dto = format!("{{\"{}TransactionInfoDto\":{{\"meta\":", entity_dto);
-
-    format!("{}", value_dto)
-        .replace(r#"{"meta":"#, &info_dto)
-        .replace("}}", r#"}}}"#)
-}
-
 pub(crate) fn map_aggregate_transactions_dto(
     transactions: Vec<Value>,
 ) -> Result<Vec<Box<dyn TransactionDto>>> {
     let mut txs_dto: Vec<Box<dyn TransactionDto>> = vec![];
     for item in transactions.into_iter() {
         let body: Bytes = Bytes::from(item.to_string());
-        let map_dto = map_transaction_dto(body)?;
-        txs_dto.push(serde_json::from_str(&map_dto)?);
+        let map_dto = map_transaction_dto_new(body)?;
+        txs_dto.push(map_dto);
     }
 
     Ok(txs_dto)

@@ -4,12 +4,13 @@
  * license that can be found in the LICENSE file.
  */
 
-use super::Uint64Dto;
 use crate::account::Address;
 use crate::api::Pagination;
 use crate::helpers::hex_decode;
 use crate::metadata::{MetadataEntry, MetadataV2Type, SearchMetadataEntry};
 use crate::AsUint64;
+
+use super::Uint64Dto;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

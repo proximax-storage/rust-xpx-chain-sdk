@@ -98,7 +98,7 @@ impl Transaction for AccountPropertiesMosaicTransaction {
 
             let mut modification_buffer =
                 buffers::PropertyModificationBufferBuilder::new(&mut builder);
-            modification_buffer.add_modificationType(modification.modification_type.value());
+            modification_buffer.add_modification_type(modification.modification_type.value());
             modification_buffer.add_value(v_asset_id);
 
             modifications_buffer.push(modification_buffer.finish());
@@ -117,8 +117,8 @@ impl Transaction for AccountPropertiesMosaicTransaction {
         txn_builder.add_type_(abs_vector.type_vec);
         txn_builder.add_max_fee(abs_vector.max_fee_vec);
         txn_builder.add_deadline(abs_vector.deadline_vec);
-        txn_builder.add_propertyType(self.property_type.value());
-        txn_builder.add_modificationCount(self.modifications.len() as u8);
+        txn_builder.add_property_type(self.property_type.value());
+        txn_builder.add_modification_count(self.modifications.len() as u8);
         txn_builder.add_modifications(v_modifications);
 
         let t = txn_builder.finish();

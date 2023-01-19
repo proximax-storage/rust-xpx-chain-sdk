@@ -3,7 +3,7 @@ use std::task::{Context, Poll};
 use http::{header::USER_AGENT, HeaderValue, Request};
 use tower_service::Service;
 
-const SIRIUS_USER_AGENT: &str = concat!("sirius/", env!("CARGO_PKG_VERSION"));
+const SIRIUS_USER_AGENT: &str = concat!("/", env!("CARGO_PKG_VERSION"));
 
 #[derive(Debug)]
 pub(crate) struct UserAgent<T> {
@@ -17,7 +17,7 @@ impl<T> UserAgent<T> {
             .map(|value| {
                 let mut buf = Vec::new();
                 buf.extend(value.as_bytes());
-                buf.push(b' ');
+                // buf.push(b' ');
                 buf.extend(SIRIUS_USER_AGENT.as_bytes());
                 HeaderValue::from_bytes(&buf).expect("user-agent should be valid")
             })

@@ -12,14 +12,13 @@ use xpx_chain_sdk::TransactionHash;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
+    let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
         .connect()
         .await?;
 
     let transaction_api = client.transaction_api();
-
     let hash_one = TransactionHash::from_str(
-        "7D08213D5A3E25C1228ADAFA9FBF8910C2CC14382C5D82A414127CD9DC8D6895",
+        "77e85ea258a09e11ea7095b27ce9dfd2f27e1f2fe32d7e74a8f9c6e64ed66a3d",
     )
     .unwrap();
 

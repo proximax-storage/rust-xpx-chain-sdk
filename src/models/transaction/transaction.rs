@@ -56,11 +56,11 @@ impl<'b> AbsVector<'b> {
         let network_type: fb::UOffsetT = common.network_type.value() as u32;
 
         let version_vec = (network_type << 24) + *common.version as fb::UOffsetT;
-        let signature_vec = builder.create_vector_direct(&[0u8; SIGNATURE_SIZE]);
-        let signer_vec = builder.create_vector_direct(&[0u8; SIGNER_SIZE]);
-        let deadline_vec = builder.create_vector_direct(&deadline.to_dto());
+        let signature_vec = builder.create_vector(&[0u8; SIGNATURE_SIZE]);
+        let signer_vec = builder.create_vector(&[0u8; SIGNER_SIZE]);
+        let deadline_vec = builder.create_vector(&deadline.to_dto());
 
-        let max_fee_vec = builder.create_vector_direct(&max_fee.to_dto());
+        let max_fee_vec = builder.create_vector(&max_fee.to_dto());
 
         AbsVector {
             signature_vec,

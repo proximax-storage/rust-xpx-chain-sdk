@@ -4,9 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::fmt;
+
 use crate::account::Address;
 use crate::metadata::MetadataV2Type;
-use std::fmt;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

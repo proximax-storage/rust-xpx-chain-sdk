@@ -86,7 +86,7 @@ impl Transaction for MetadataMosaicTransaction {
 
         let mosaic_id_bytes = self.mosaic_id.to_builder();
 
-        let mosaic_id_vector = builder.create_vector_direct(&mosaic_id_bytes);
+        let mosaic_id_vector = builder.create_vector(&mosaic_id_bytes);
 
         self.metadata_transaction
             .embedded_to_bytes(&mut builder, mosaic_id_vector, MOSAIC_ID_SIZE)

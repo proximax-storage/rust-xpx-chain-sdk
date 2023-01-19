@@ -1,0 +1,20 @@
+namespace Sirius.Buffers;
+
+table MetadataV2TransactionBuffer {
+    size: uint;
+    signature: [ubyte];
+    signer: [ubyte];
+    version: uint;
+    type: ushort;
+    max_fee: [uint];
+    deadline:[uint];
+    target_key: [ubyte];
+    scoped_metadata_key: [uint];
+    /// In case of address it is empty array. In case of mosaic or namespace id it is 8 byte array(or 2 uint32 array)
+    target_id: [ubyte];
+    value_size_delta: [ubyte];
+    value_size: [ubyte];
+    value: [ubyte];
+}
+
+root_type MetadataV2TransactionBuffer;

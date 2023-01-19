@@ -4,11 +4,13 @@
  * license that can be found in the LICENSE file.
  */
 
+#[allow(deprecated)]
 pub use self::metadata::*;
 pub use self::metadata_entry::*;
 pub use self::metadata_v2_type::*;
 pub use self::search_metadata_entry::*;
 
+#[deprecated(since = "0.1.2", note = "use `metadata_entry` instead")]
 mod metadata;
 mod metadata_entry;
 mod metadata_v2_type;

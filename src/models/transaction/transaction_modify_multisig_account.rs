@@ -101,7 +101,7 @@ impl Transaction for ModifyMultisigAccountTransaction {
         txn_builder.add_deadline(abs_vector.deadline_vec);
 
         txn_builder.add_min_removal_delta(self.min_removal_delta);
-        txn_builder.add__minApprovalDelta(self.min_approval_delta);
+        txn_builder.add_min_approval_delta(self.min_approval_delta);
         txn_builder.add_num_modifications(self.modifications.len() as u8);
         txn_builder.add_modifications(fb::WIPOffset::new(modification_vector));
 
