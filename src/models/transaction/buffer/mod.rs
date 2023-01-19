@@ -13,6 +13,7 @@ pub mod sirius {
         pub use self::lock_funds_transaction_buffer_generated::*;
         pub use self::message_buffer_generated::*;
         pub use self::metadata_modification_buffer_generated::*;
+        pub use self::metadata_v2_transaction_buffer_generated::*;
         pub use self::modify_metadata_transaction_buffer_generated::*;
         pub use self::modify_multisig_account_transaction_buffer_generated::*;
         pub use self::mosaic_buffer_generated::*;
@@ -36,6 +37,7 @@ pub mod sirius {
         mod lock_funds_transaction_buffer_generated;
         mod message_buffer_generated;
         mod metadata_modification_buffer_generated;
+        mod metadata_v2_transaction_buffer_generated;
         mod modify_metadata_transaction_buffer_generated;
         mod modify_multisig_account_transaction_buffer_generated;
         mod mosaic_buffer_generated;

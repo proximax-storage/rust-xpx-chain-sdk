@@ -62,3 +62,7 @@ pub const ERR_METADATA_EMPTY_ADDRESSES: &str = "list adresses ids must not by em
 pub const ERR_METADATA_EMPTY_MOSAIC_IDS: &str = "list mosaics ids must not by empty.";
 pub const ERR_METADATA_EMPTY_NAMESPACE_IDS: &str = "list namespaces ids must not by empty.";
 pub const ERR_METADATA_EMPTY_MODIFICATIONS: &str = "modifications must not empty.";
+
+// Metadata v2 errors
+pub const ERR_METADATA_VALUE_IS_THE_SAME: &str = "new value is the same.";
+pub const ERR_METADATA_INVALID_SCOPED_METADATA_KEY_TYPE: &str = "invalid scopedMetadataKey type.";
