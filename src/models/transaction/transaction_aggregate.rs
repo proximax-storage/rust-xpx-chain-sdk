@@ -136,7 +136,7 @@ impl Transaction for AggregateTransaction {
             txsb.append(&mut tx_byte)
         }
 
-        let tx_vec = _builder.create_vector_direct(&txsb);
+        let tx_vec = _builder.create_vector(&txsb);
 
         let abs_vector = self.common.build_vector(&mut _builder);
 
@@ -149,7 +149,7 @@ impl Transaction for AggregateTransaction {
         txn_builder.add_type_(abs_vector.type_vec);
         txn_builder.add_max_fee(abs_vector.max_fee_vec);
         txn_builder.add_deadline(abs_vector.deadline_vec);
-        txn_builder.add_transactionsSize(txsb.len() as u32);
+        txn_builder.add_transactions_size(txsb.len() as u32);
         txn_builder.add_transactions(tx_vec);
 
         let t = txn_builder.finish();

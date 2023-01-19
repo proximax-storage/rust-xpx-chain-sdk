@@ -14,7 +14,6 @@ extern crate fixed_hash;
 extern crate flatbuffers as fb;
 #[macro_use]
 extern crate serde;
-
 extern crate xpx_chain_crypto as crypto;
 
 pub use self::helpers::hashes::*;

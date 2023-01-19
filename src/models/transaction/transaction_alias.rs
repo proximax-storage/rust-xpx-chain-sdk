@@ -38,7 +38,7 @@ impl AliasTransaction {
         alias_vec: fb::WIPOffset<fb::Vector<u8>>,
         alias_size: usize,
     ) -> Vec<u8> {
-        let namespace_vec = builder.create_vector_direct(&self.namespace_id.to_dto());
+        let namespace_vec = builder.create_vector(&self.namespace_id.to_dto());
 
         let abs_vector = self.common.build_vector(builder);
 

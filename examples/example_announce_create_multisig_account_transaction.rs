@@ -4,9 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
-use anyhow::anyhow;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+
+use anyhow::anyhow;
 
 use xpx_chain_sdk::account::{Account, PublicAccount};
 use xpx_chain_sdk::api::{ApiNode, Client};
@@ -23,7 +24,7 @@ use xpx_chain_sdk::TransactionHash;
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let start = Instant::now();
 
-    let client = ApiNode::from_static("http://api-2.testnet2.xpxsirius.io:3000")
+    let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
         .connect()
         .await?;
 

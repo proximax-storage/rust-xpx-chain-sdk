@@ -132,7 +132,7 @@ pub(crate) fn remove_exchange_offer_to_array_to_buffer<'a>(
         Vec::with_capacity(offers.len());
 
     for item in offers {
-        let mosaic_vector = builder.create_vector_direct(&item.asset_id.to_dto());
+        let mosaic_vector = builder.create_vector(&item.asset_id.to_dto());
 
         let mut add_exchange_offer = buffers::RemoveExchangeOfferBufferBuilder::new(builder);
         add_exchange_offer.add_mosaic_id(mosaic_vector);

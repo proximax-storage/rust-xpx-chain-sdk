@@ -37,14 +37,17 @@ impl Connection {
         C::Future: Unpin + Send,
         C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
-        let settings = Builder::new().executor(endpoint.executor.clone()).clone();
+        let settings = Builder::new()
+            // .http2_only(false)
+            .executor(endpoint.executor.clone())
+            .clone();
 
         let stack = ServiceBuilder::new()
+            .layer_fn(|s| UserAgent::new(s, endpoint.user_agent.clone()))
             .layer_fn(|s| {
                 let origin = endpoint.origin.as_ref().unwrap_or(&endpoint.uri).clone();
                 AddOrigin::new(s, origin)
             })
-            .layer_fn(|s| UserAgent::new(s, endpoint.user_agent.clone()))
             // .layer_fn(|s| HttpTimeout::new(s, endpoint.timeout))
             .option_layer(endpoint.concurrency_limit.map(ConcurrencyLimitLayer::new))
             .option_layer(endpoint.rate_limit.map(|(l, d)| RateLimitLayer::new(l, d)))
@@ -93,8 +96,8 @@ impl Service<Request> for Connection {
         Service::poll_ready(&mut self.inner, cx).map_err(Into::into)
     }
 
-    fn call(&mut self, req: Request) -> Self::Future {
-        self.inner.call(req)
+    fn call(&mut self, request: Request) -> Self::Future {
+        self.inner.call(request)
     }
 }
 

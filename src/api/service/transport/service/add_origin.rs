@@ -3,7 +3,7 @@ use std::task::{Context, Poll};
 use futures_core::future::BoxFuture;
 use http::uri::Authority;
 use http::uri::Scheme;
-use http::{Request, Uri};
+use http::{HeaderValue, Request, Uri};
 use tower_service::Service;
 
 #[derive(Debug)]
@@ -58,8 +58,13 @@ where
             uri.scheme = self.scheme.clone();
             uri.authority = self.authority.clone();
 
-            http::Uri::from_parts(uri).expect("valid uri")
+            Uri::from_parts(uri).expect("valid uri")
         };
+        head.headers.append(
+            "Host",
+            HeaderValue::from_bytes(head.uri.host().as_ref().unwrap().as_bytes())
+                .expect("host header should be valid"),
+        );
 
         let request = Request::from_parts(head, body);
 

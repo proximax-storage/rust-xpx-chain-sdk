@@ -84,7 +84,7 @@ impl Transaction for MetadataAddressTransaction {
 
         let address_bytes = self.address.as_bytes();
 
-        let address_vector = builder.create_vector_direct(address_bytes);
+        let address_vector = builder.create_vector(address_bytes);
 
         self.metadata_transaction
             .embedded_to_bytes(&mut builder, address_vector, ADDRESS_SIZE)
