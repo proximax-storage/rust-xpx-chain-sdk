@@ -182,15 +182,6 @@ impl Client {
         let svc = Connection::connect(connector, endpoint)
             .await
             .map_err(super::Error::from_source)?;
-        //
-        // // // Map the request to a new request
-        // let plomo = svc
-        //     .boxed_clone()
-        //     .map_request(|id: u64| id)
-        //     .ready()
-        //     .await?
-        //     .call(id)
-        //     .await;
 
         let (svc, worker) = Buffer::pair(Either::A(svc), buffer_size);
         executor.execute(Box::pin(worker));
