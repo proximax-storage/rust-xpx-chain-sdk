@@ -1,0 +1,26 @@
+namespace Sirius.Buffers;
+
+table MetadataModificationBuffer {
+    size: uint;
+    modification_type: ubyte;
+    key_size: ubyte;
+    value_size: [ubyte];
+    key: [ubyte];
+    value: [ubyte];
+}
+
+table ModifyMetadataTransactionBuffer {
+    size: uint;
+    signature: [ubyte];
+    signer: [ubyte];
+    version: uint;
+    type: ushort;
+    max_fee: [uint];
+    deadline:[uint];
+    metadata_type: ubyte;
+    /// In case of address it is 25 bytes array. In case of mosaic or namespace it is 8 byte array(or 2 uint32 array)
+    metadata_id: [ubyte];
+    modifications: [MetadataModificationBuffer];
+}
+
+root_type ModifyMetadataTransactionBuffer;
