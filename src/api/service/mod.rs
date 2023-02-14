@@ -1,6 +1,5 @@
 pub use self::transport::*;
 
-pub mod body;
 pub(crate) mod transport;
 
 pub(crate) type Error = Box<dyn std::error::Error + Send + Sync>;

@@ -4,6 +4,24 @@
  * license that can be found in the LICENSE file.
  */
 
+//! This code is a Rust implementation of a custom data type called `NetworkType` which represents a type of network
+//! for a Sirius blockchain. It has several variant options such as PublicTest, Public, Private, PrivateTest, MijinTest,
+//! and Mijin.
+//!
+//! The `NetworkType` enum implements several functions including:
+//!
+//!     `value` which returns the numeric value of the network type
+//!     `prefix` which returns a prefix character for the network type
+//!     `to_bytes` which returns the network type as a byte array
+//!     `from_transaction_version` which returns the network type from a transaction version
+//!
+//! The `TryFrom` trait is also implemented for the `NetworkType` enum to allow for converting a u8 or char value into a
+//! `NetworkType`. If the conversion fails, an error message is returned.
+//!
+//! Finally, the Display and Debug traits are implemented for NetworkType to allow for custom formatting of its value
+//! when displayed.
+//!
+
 use std::{convert::TryFrom, fmt};
 
 #[allow(non_camel_case_types)]
@@ -95,7 +113,7 @@ impl fmt::Debug for NetworkType {
     }
 }
 
-/// Returns a 'NetworkType' for the given u8 value.
+/// Returns a `NetworkType` for the given u8 value.
 ///
 /// Throws an Err UNKNOWN_NETWORK_TYPE when the type is unknown.
 impl TryFrom<u8> for NetworkType {
