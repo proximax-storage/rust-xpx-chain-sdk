@@ -79,7 +79,7 @@ version = "^0.4"
 version = "^1.1"
 
 [dependencies.tokio-tungstenite]
-version = "^0.17"
+version = "0.18.0"
 
 [dependencies.futures-util]
 version = "0.3"
@@ -134,6 +134,12 @@ version = "0.1"
 
 [dependencies.tracing-subscriber]
 version = "0.3"
+
+[dependencies.tokio-tower]
+version = "0.7.0-rc3"
+
+[dependencies.futures-sink]
+version = "0.3.26"
 
 [features]
 default = ["account", "namespace", "mosaic", "transaction"]

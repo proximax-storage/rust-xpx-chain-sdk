@@ -8,7 +8,6 @@ use std::fmt;
 use pin_project::pin_project;
 use tower::make::MakeService;
 use tower_service::Service;
-use tracing::trace;
 
 use crate::api::Error;
 
@@ -104,7 +103,7 @@ impl<M, Target, S, Request> Service<Request> for Reconnect<M, Target>
                                 return Poll::Ready(Err(e.into()));
                             } else {
                                 let error = e.into();
-                                tracing::debug!("reconnect::poll_ready: {:?}", error);
+                                debug!("reconnect::poll_ready: {:?}", error);
                                 self.error = Some(error);
                                 break;
                             }
@@ -143,7 +142,7 @@ impl<M, Target, S, Request> Service<Request> for Reconnect<M, Target>
     fn call(&mut self, request: Request) -> Self::Future {
         trace!("Reconnect::call");
         if let Some(error) = self.error.take() {
-            tracing::debug!("error: {}", error);
+            debug!("error: {}", error);
             return ResponseFuture::error(error);
         }
 

@@ -1,5 +1,3 @@
-pub use hyper::{Body, Uri};
-
 #[doc(inline)]
 // #[cfg(feature = "node")]
 pub use self::client::{ApiNode, Client};

@@ -17,13 +17,13 @@ use tower::{
 use tower::load::Load;
 use tower_service::Service;
 
-use crate::api::{body::BoxBody, transport::ApiNode};
+use crate::api::{transport::ApiNode};
 
 use super::{AddOrigin, reconnect::Reconnect, UserAgent};
 use super::super::BoxFuture;
 
-pub(crate) type Request = http::Request<BoxBody>;
-pub(crate) type Response = http::Response<hyper::Body>;
+pub(crate) type Request = hyper::Request<hyper::Body>;
+pub(crate) type Response = hyper::Response<hyper::Body>;
 
 pub struct Connection {
     inner: BoxService<Request, Response, crate::api::Error>,

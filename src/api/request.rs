@@ -5,13 +5,12 @@
  */
 
 use http::header::{CONTENT_LENGTH, CONTENT_TYPE};
-use http::{Method, Request, StatusCode};
+use http::{Method, StatusCode};
 use tower::ServiceExt;
 
 use {::std::collections::HashMap, serde_json};
 
 use crate::api;
-use crate::api::body::{boxed_body, BoxBody};
 use crate::api::error::{Error, SiriusError};
 use crate::api::{Client, QueryParam};
 
@@ -92,10 +91,10 @@ impl ApiRequest {
         };
 
         let req = if let Some(body) = self.serialized_body {
-            let mut req = Request::builder()
+            let mut req = hyper::Request::builder()
                 .uri(uri_str.as_str())
                 .method(self.method.clone())
-                .body(boxed_body(body.clone()))
+                .body(hyper::Body::from(body.clone()))
                 .unwrap();
             req.headers_mut().insert(
                 CONTENT_TYPE,
@@ -107,10 +106,10 @@ impl ApiRequest {
             req.headers_mut().insert(CONTENT_LENGTH, body.len().into());
             req
         } else {
-            Request::builder()
+            hyper::Request::builder()
                 .uri(uri_str.as_str())
                 .method(self.method.clone())
-                .body(BoxBody::default())
+                .body(hyper::Body::empty())
                 .unwrap()
         };
 

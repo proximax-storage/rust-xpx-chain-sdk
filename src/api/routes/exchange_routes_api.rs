@@ -5,7 +5,6 @@
  */
 
 use http::Method;
-use http::Request;
 use tower::buffer::Buffer;
 
 use crate::{
