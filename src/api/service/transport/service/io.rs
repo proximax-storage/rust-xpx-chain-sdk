@@ -6,8 +6,9 @@ use hyper::client::connect::{Connected as HyperConnected, Connection};
 use tokio::io::{AsyncRead, AsyncWrite, ReadBuf};
 
 pub(in crate::api::service::transport) trait Io:
-AsyncRead + AsyncWrite + Send + 'static
-{}
+    AsyncRead + AsyncWrite + Send + 'static
+{
+}
 
 impl<T> Io for T where T: AsyncRead + AsyncWrite + Send + 'static {}
 

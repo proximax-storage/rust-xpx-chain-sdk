@@ -10,15 +10,12 @@ use std::{
 
 use bytes::Bytes;
 use http::uri::{InvalidUri, Uri};
-
 use hyper::client::connect::Connection as HyperConnection;
 use hyper::rt::Executor;
-
 use tokio::{
     io::{AsyncRead, AsyncWrite},
     sync::mpsc::{channel, Sender},
 };
-
 use tower::{
     balance::p2c::Balance,
     buffer::{self, Buffer},

@@ -17,8 +17,8 @@ use crate::network::NetworkType;
 ///
 #[typetag::serde]
 pub trait UnresolvedAddress: Sync + Send
-    where
-        Self: fmt::Debug,
+where
+    Self: fmt::Debug,
 {
     fn recipient_to_string(&self) -> String;
     fn unresolved_address_to_bytes(&self, network_type: NetworkType) -> Vec<u8>;

@@ -28,8 +28,8 @@ impl<T> UserAgent<T> {
 }
 
 impl<T, ReqBody> Service<Request<ReqBody>> for UserAgent<T>
-    where
-        T: Service<Request<ReqBody>>,
+where
+    T: Service<Request<ReqBody>>,
 {
     type Response = T::Response;
     type Error = T::Error;
@@ -65,7 +65,7 @@ mod tests {
     fn prepends_custom_user_agent_to_default() {
         assert_eq!(
             UserAgent::new(Svc, Some(HeaderValue::from_static("Greeter 1.1"))).user_agent,
-            HeaderValue::from_str(&format!("Greeter 1.1 {}", SIRIUS_USER_AGENT)).unwrap()
+            HeaderValue::from_str(&format!("Greeter 1.1{}", SIRIUS_USER_AGENT)).unwrap()
         )
     }
 }

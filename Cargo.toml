@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-sdk"
-version = "0.5.1"
+version = "0.5.2"
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["ProxymaX Core Development Team", "Eleazar Garrido <eleazartovar123@gmail.com>"]
@@ -39,7 +39,7 @@ version = "^0.4"
 version = "^0.4"
 
 [dependencies.flatbuffers]
-version = "22.10"
+version = "23.1"
 
 [dependencies.num_enum]
 version = "^0.5"
@@ -93,7 +93,7 @@ version = "0.3"
 version = "1.0"
 
 [dependencies.tokio]
-version = "1.24"
+version = "1.26"
 features = ["rt"]
 default_features = false
 
@@ -136,7 +136,7 @@ version = "0.1"
 version = "0.3"
 
 [dependencies.tokio-tower]
-version = "0.7.0-rc3"
+version = "0.7.0-rc4"
 
 [dependencies.futures-sink]
 version = "0.3.26"
@@ -151,7 +151,7 @@ transaction = []
 [dev-dependencies]
 lazy_static = "1.4"
 tokio-test = "0.4"
-tokio = { version = "1.23", features = ["full"] }
+tokio = { version = "1.26", features = ["full"] }
 tower = { version = "0.4", features = ["full"] }
 futures = "0.3"
 serde = "1.0.152"

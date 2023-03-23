@@ -7,9 +7,9 @@ pub(crate) use hyper::rt::Executor;
 struct TokioExec;
 
 impl<F> Executor<F> for TokioExec
-    where
-        F: Future + Send + 'static,
-        F::Output: Send + 'static,
+where
+    F: Future + Send + 'static,
+    F::Output: Send + 'static,
 {
     fn execute(&self, fut: F) {
         tokio::spawn(fut);
@@ -23,8 +23,8 @@ pub(crate) struct SharedExec {
 
 impl SharedExec {
     pub(crate) fn new<E>(exec: E) -> Self
-        where
-            E: Executor<BoxFuture<'static, ()>> + Send + Sync + 'static,
+    where
+        E: Executor<BoxFuture<'static, ()>> + Send + Sync + 'static,
     {
         Self {
             inner: Arc::new(exec),

@@ -6,13 +6,13 @@
 
 use http::Method;
 
+use crate::api::routes::const_routes::{BLOCK_BY_HEIGHT_ROUTE, BLOCK_INFO_ROUTE};
+use crate::api::{BlockInfoDto, Client};
+use crate::blockchain::BlockInfo;
 use crate::{
-    api::{BlockchainScoreDto, error::Result, HeightInfoDto, request as __internal_request},
+    api::{error::Result, request as __internal_request, BlockchainScoreDto, HeightInfoDto},
     blockchain::{BlockchainScore, HeightInfo, StorageInfo},
 };
-use crate::api::{BlockInfoDto, Client};
-use crate::api::routes::const_routes::{BLOCK_BY_HEIGHT_ROUTE, BLOCK_INFO_ROUTE};
-use crate::blockchain::BlockInfo;
 
 use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
 

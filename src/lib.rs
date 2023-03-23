@@ -5,9 +5,6 @@
  */
 
 #[macro_use]
-extern crate tracing;
-
-#[macro_use]
 extern crate anyhow;
 extern crate core;
 #[macro_use]
@@ -17,6 +14,8 @@ extern crate fixed_hash;
 extern crate flatbuffers as fb;
 #[macro_use]
 extern crate serde;
+#[macro_use]
+extern crate tracing;
 extern crate xpx_chain_crypto as crypto;
 
 pub use self::helpers::hashes::*;

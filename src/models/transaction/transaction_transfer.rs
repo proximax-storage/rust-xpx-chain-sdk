@@ -12,15 +12,15 @@ use {::std::fmt, serde_json::Value};
 
 use crate::{
     account::{PublicAccount, UnresolvedAddress},
-    AsUint64,
     message::Message,
     models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
     mosaic::Mosaic,
     network::NetworkType,
+    AsUint64,
 };
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline, schema::transfer_transaction_schema,
+    buffers, deadline::Deadline, schema::transfer_transaction_schema, CommonTransaction,
     Transaction, TransactionType, TransactionVersion,
 };
 
@@ -209,8 +209,8 @@ pub mod tests {
 
         use lazy_static::lazy_static;
 
-        use crate::account::{Address, UnresolvedAddress};
         use crate::account::tests::TESTING_ACCOUNT;
+        use crate::account::{Address, UnresolvedAddress};
         use crate::helpers::GenerationHash;
         use crate::message::{Message, PlainMessage};
         use crate::mosaic::Mosaic;
@@ -240,7 +240,7 @@ pub mod tests {
                 NETWORK_TYPE,
                 None,
             )
-                .unwrap();
+            .unwrap();
 
             assert_eq!(transfer_transaction.common.max_fee, None);
         }
@@ -255,7 +255,7 @@ pub mod tests {
                 NETWORK_TYPE,
                 Some(1),
             )
-                .unwrap();
+            .unwrap();
 
             assert_eq!(transfer_transaction.common.max_fee, Some(1));
         }
@@ -270,7 +270,7 @@ pub mod tests {
                 NETWORK_TYPE,
                 None,
             )
-                .unwrap();
+            .unwrap();
 
             assert_eq!(
                 transfer_transaction.message.as_ref().unwrap().payload(),
@@ -293,7 +293,7 @@ pub mod tests {
                 .sign_with(TESTING_ACCOUNT.clone(), *GENERATION_HASH)
                 .unwrap();
 
-            assert_eq!(&signed_transaction.payload[236..signed_transaction.payload.len()], "31000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F0D000000746573742D6D657373616765");
+            assert_eq!(&signed_transaction.payload[236..signed_transaction.payload.len()], "33000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F0D000000746573742D6D657373616765");
         }
 
         #[test]
@@ -306,7 +306,7 @@ pub mod tests {
                 NETWORK_TYPE,
                 None,
             )
-                .unwrap();
+            .unwrap();
 
             assert_eq!(transfer_transaction.message.as_ref().unwrap().payload(), "");
             assert_eq!(transfer_transaction.mosaics.len(), 0);
@@ -328,7 +328,7 @@ pub mod tests {
 
             assert_eq!(
                 &signed_transaction.payload[236..signed_transaction.payload.len()],
-                "31000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F01000000"
+                "33000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F01000000"
             );
         }
 
@@ -342,7 +342,7 @@ pub mod tests {
                 NetworkType::PublicTest,
                 None,
             )
-                .unwrap();
+            .unwrap();
 
             assert_eq!(
                 transfer_transaction.to_serializer().len(),
