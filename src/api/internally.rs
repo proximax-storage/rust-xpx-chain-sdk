@@ -17,8 +17,8 @@ use crate::api::{
     ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto, MetaDataEntryTransactionInfoDto,
     ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto,
     MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto,
-    NetworkConfigTransactionInfoDto, Pagination, QueryParam, RegisterNamespaceTransactionInfoDto,
-    RemoveExchangeOfferTransactionInfoDto, TransferTransactionInfoDto,
+    NetworkConfigTransactionInfoDto, Pagination, RegisterNamespaceTransactionInfoDto,
+    RemoveExchangeOfferTransactionInfoDto, TransactionQueryParams, TransferTransactionInfoDto,
 };
 use crate::transaction::{Transaction, TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
@@ -222,13 +222,11 @@ pub(crate) fn metadata_dto_vec_to_struct(
 pub(crate) async fn __internal_get_transactions(
     client: Client,
     route: &str,
-    query_params: Vec<QueryParam>,
+    query_params: TransactionQueryParams,
 ) -> api::error::Result<TransactionSearch> {
     let mut req = __internal_request::ApiRequest::new(Method::GET, route.to_string());
 
-    for query_param in query_params {
-        req = req.with_query_param(query_param);
-    }
+    req = req.with_query_param(query_params.to_query_string());
 
     let body_value = req.execute(client).await?;
     value_to_transaction_search(body_value)
@@ -238,14 +236,14 @@ pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
     client: Client,
     route: &str,
     group_type: TransactionGroupType,
-    query_params: Vec<QueryParam>,
+    query_params: Option<TransactionQueryParams>,
 ) -> api::error::Result<TransactionSearch> {
     let mut req = __internal_request::ApiRequest::new(Method::GET, route.to_string());
 
     req = req.with_path_param("group".to_string(), group_type.to_string());
 
-    for query_param in query_params {
-        req = req.with_query_param(query_param);
+    if let Some(query) = query_params {
+        req = req.with_query_param(query.to_query_string());
     }
 
     let body_value = req.execute(client).await?;

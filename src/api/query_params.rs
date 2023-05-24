@@ -42,19 +42,6 @@ pub struct QueryParam {
     pub value: Value,
 }
 
-impl QueryParam {
-    pub fn key_value_to_str(&self) -> (String, String) {
-        let value = match self.value.clone() {
-            Value::String(value) => value,
-            Value::Number(value) => value.to_string(),
-            Value::Bool(value) => value.to_string(),
-            _ => panic!(""),
-        };
-
-        (self.name.to_owned(), value)
-    }
-}
-
 /// The `QueryParams` structure describes pagination params for requests.
 #[derive(Clone, Debug, Serialize)]
 pub struct QueryParams {
@@ -68,16 +55,6 @@ pub struct QueryParams {
 }
 
 impl QueryParams {
-    pub fn create(id: Option<String>, page_size: Option<u16>, order: Option<Order>) -> Self {
-        Self {
-            id,
-            page_size: page_size
-                .map(|item| if item >= 10 && item <= 100 { item } else { 10 })
-                .unwrap_or(10),
-            order: order.unwrap_or(Order::DESC),
-        }
-    }
-
     pub fn to_query_params(&self) -> Vec<QueryParam> {
         let binding = serde_json::to_value(&self).unwrap();
         let object = binding.as_object().unwrap();

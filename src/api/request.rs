@@ -12,15 +12,14 @@ use {::std::collections::HashMap, serde_json};
 
 use crate::api;
 use crate::api::error::{Error, SiriusError};
-use crate::api::{Client, QueryParam};
+use crate::api::Client;
 
 #[derive(Clone)]
 pub(crate) struct ApiRequest {
     method: Method,
     path: String,
-    query_params: Vec<QueryParam>,
+    query_params: Option<String>,
     path_params: HashMap<String, String>,
-    header_params: HashMap<String, String>,
     // TODO: multiple body params are possible technically, but not supported here.
     serialized_body: Option<String>,
 }
@@ -30,9 +29,8 @@ impl ApiRequest {
         ApiRequest {
             method,
             path,
-            query_params: vec![],
+            query_params: None,
             path_params: HashMap::new(),
-            header_params: HashMap::new(),
             serialized_body: None,
         }
     }
@@ -42,8 +40,8 @@ impl ApiRequest {
         self
     }
 
-    pub fn with_query_param(mut self, param: QueryParam) -> Self {
-        self.query_params.push(param);
+    pub fn with_query_param(mut self, param: String) -> Self {
+        self.query_params = Some(param);
         self
     }
 
@@ -57,10 +55,6 @@ impl ApiRequest {
     where
         for<'de> U: serde::Deserialize<'de>,
     {
-        // raw_headers is for headers we don't know the proper type of (e.g. custom api key
-        // headers); headers is for ones we do know the type of.
-        let mut raw_headers = HashMap::new();
-
         let mut path = self.path;
 
         self.path_params.into_iter().for_each(|(key, val)| {
@@ -68,26 +62,10 @@ impl ApiRequest {
             path = path.replace(&format!("{{{}}}", key), &val);
         });
 
-        self.header_params.into_iter().for_each(|(key, val)| {
-            raw_headers.insert(key, val);
-        });
-
         let mut uri_str = format!("{}", path);
 
-        if !self.query_params.is_empty() {
-            let mut buf = String::from("?");
-
-            // add given query to the pairs
-            for param in self.query_params.iter() {
-                let (key, val) = param.key_value_to_str();
-                buf.push_str((format!("{}={}&", key, val)).as_str());
-            }
-
-            let beta_offset = buf.len();
-
-            // Remove the range up until the β from the string
-            let buf: String = buf.drain(..beta_offset - 1).collect();
-            uri_str.push_str(&format!("{}", buf));
+        if let Some(params) = self.query_params {
+            uri_str.push_str(&format!("?{}", params));
         };
 
         let req = if let Some(body) = self.serialized_body {

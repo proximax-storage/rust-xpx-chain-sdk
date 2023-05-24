@@ -4,93 +4,55 @@
  * license that can be found in the LICENSE file.
  */
 
-use serde_json::Value;
-
-use crate::api::{OrderV2, QueryParam};
+use crate::api::OrderV2;
 use crate::metadata::MetadataV2Type;
 use crate::mosaic::UnresolvedMosaicId;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 pub struct MetadataSortingField(&'static str);
 
-impl MetadataSortingField {
-    pub const VALUE: MetadataSortingField = MetadataSortingField("metadataEntry.value");
-    pub const VALUE_SIZE: MetadataSortingField = MetadataSortingField("metadataEntry.VALUE_SIZE");
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
-pub struct MetadataFieldOrder {
-    pub order: OrderV2,
-    pub sorting_field: MetadataSortingField,
-}
-
-impl MetadataFieldOrder {
-    pub fn set_ascending(sorting_field: MetadataSortingField) -> Self {
-        Self {
-            order: OrderV2::ASC,
-            sorting_field,
-        }
-    }
-
-    pub fn set_descending(sorting_field: MetadataSortingField) -> Self {
-        Self {
-            order: OrderV2::DESC,
-            sorting_field,
-        }
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Builder, Serialize)]
+#[builder(setter(into), create_empty = "empty")]
 #[serde(rename_all = "camelCase")]
 pub struct MetadataQueryParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub page_size: Option<u16>,
+    #[builder(default)]
+    pub(crate) page_size: Option<u16>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub page_number: Option<u16>,
+    #[builder(default)]
+    pub(crate) page_number: Option<u16>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata_type: Option<MetadataV2Type>,
+    #[builder(default)]
+    pub(crate) metadata_type: Option<MetadataV2Type>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub order: Option<OrderV2>,
+    #[builder(default)]
+    pub(crate) order: Option<OrderV2>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort_field: Option<MetadataSortingField>,
+    #[builder(default)]
+    pub(crate) sort_field: Option<MetadataSortingField>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_address: Option<String>,
+    #[builder(default)]
+    pub(crate) source_address: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub target_id: Option<Box<dyn UnresolvedMosaicId>>,
+    #[builder(default)]
+    pub(crate) target_id: Option<Box<dyn UnresolvedMosaicId>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub target_key: Option<String>,
+    #[builder(default)]
+    pub(crate) target_key: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub scoped_metadata_key: Option<u64>,
+    #[builder(default)]
+    pub(crate) scoped_metadata_key: Option<u64>,
 }
 
 impl MetadataQueryParams {
-    pub fn update_field_order(&mut self, transaction_field_order: MetadataFieldOrder) {
-        self.sort_field = Some(transaction_field_order.sorting_field);
+    pub fn build() -> MetadataQueryParamsBuilder {
+        MetadataQueryParamsBuilder::empty()
     }
 
-    pub fn to_query_params(&self) -> Vec<QueryParam> {
-        let binding = serde_json::to_value(&self).unwrap();
-        let object = binding.as_object().unwrap();
-
-        let mut query_param = vec![];
-
-        for (key, value) in object {
-            if let Value::Array(mut value_vec) = value.clone() {
-                value_vec.dedup();
-                for value in value_vec {
-                    query_param.push(QueryParam {
-                        name: format!(r"{key}[]"),
-                        value: value.clone(),
-                    })
-                }
-            } else {
-                query_param.push(QueryParam {
-                    name: key.into(),
-                    value: value.clone(),
-                })
-            }
-        }
-        query_param
+    /// Serializes a `MetadataQueryParams` into a query string.
+    ///
+    pub fn to_query_string(&self) -> String {
+        qs::to_string(self).unwrap()
     }
 }
 

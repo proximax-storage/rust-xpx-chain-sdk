@@ -41,10 +41,11 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         ),
     }
 
-    let mut query_params = MetadataQueryParams::default();
-    query_params.metadata_type = Some(MetadataV2Type::MetadataAccount);
-    query_params.target_key =
-        Some("0255B89B9E03B68459DB040C11EE7EAEF7656BB4F7DD64EF0BD63D447F4DABAA".to_owned());
+    let mut query_params = MetadataQueryParams::build()
+        .metadata_type(MetadataV2Type::MetadataAccount)
+        .target_key("0255B89B9E03B68459DB040C11EE7EAEF7656BB4F7DD64EF0BD63D447F4DABAA".to_owned())
+        .build()
+        .unwrap();
 
     let result = metadata_v2_api.search_metadata(Some(query_params)).await;
     match result {

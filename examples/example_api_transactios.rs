@@ -12,9 +12,9 @@ use xpx_chain_sdk::TransactionHash;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-    let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
-        .connect_lazy();
-        // .await?;
+    let client =
+        ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000").connect_lazy();
+    // .await?;
 
     let transaction_api = client.transaction_api();
     let hash_one = TransactionHash::from_str(
@@ -61,14 +61,12 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         ),
     }
 
-    let txn_query_params = TransactionQueryParams {
-        embedded: true,
-        r#type: vec![TransactionType::Transfer],
-        signer_public_key: Some(
-            "c2f93346e27ce6ad1a9f8f5e3066f8326593a406bdf357acb041e2f9ab402efe".to_string(),
-        ),
-        ..Default::default()
-    };
+    let txn_query_params = TransactionQueryParams::build()
+        .public_key("c2f93346e27ce6ad1a9f8f5e3066f8326593a406bdf357acb041e2f9ab402efe".to_string())
+        .r#type(vec![TransactionType::Transfer])
+        .embedded(true)
+        .build()
+        .unwrap();
 
     // Returns a [Transaction] information given a transactionId or hash.
     let account_info = transaction_api
@@ -84,28 +82,28 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
             err
         ),
     }
-
-    // Returns a [Transaction] information given a transactionId or hash.
-    let account_info = transaction_api.get_transaction_status(hash_one).await;
-    match account_info {
-        Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling transaction_api->get_transaction_status: {}\n",
-            err
-        ),
-    }
-
-    // Returns a [Transaction] information given a transactionId or hash.
-    let account_info = transaction_api
-        .get_transactions_statuses(vec![hash_one, hash_two])
-        .await;
-    match account_info {
-        Ok(resp) => println!("{:#?}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling transaction_api->get_transactions_statuses: {}\n",
-            err
-        ),
-    };
+    //
+    // // Returns a [Transaction] information given a transactionId or hash.
+    // let account_info = transaction_api.get_transaction_status(hash_one).await;
+    // match account_info {
+    //     Ok(resp) => println!("{}", resp),
+    //     Err(err) => eprintln!(
+    //         "Exception when calling transaction_api->get_transaction_status: {}\n",
+    //         err
+    //     ),
+    // }
+    //
+    // // Returns a [Transaction] information given a transactionId or hash.
+    // let account_info = transaction_api
+    //     .get_transactions_statuses(vec![hash_one, hash_two])
+    //     .await;
+    // match account_info {
+    //     Ok(resp) => println!("{:#?}", resp),
+    //     Err(err) => eprintln!(
+    //         "Exception when calling transaction_api->get_transactions_statuses: {}\n",
+    //         err
+    //     ),
+    // };
 
     Ok(())
 }

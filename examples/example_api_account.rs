@@ -101,18 +101,18 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         ),
     }
 
-    let txn_query_params = TransactionQueryParams {
-        page_size: Some(15),
-        page_number: Some(1),
-        r#type: vec![
+    let txn_query_params = TransactionQueryParams::build()
+        .page_size(10)
+        .page_number(1)
+        .r#type(vec![
             TransactionType::AggregateComplete,
             TransactionType::Transfer,
-        ],
-        embedded: true,
-        order: Some(OrderV2::DESC),
-        first_level: false,
-        ..Default::default()
-    };
+        ])
+        .embedded(true)
+        .order(OrderV2::DESC)
+        .first_level(false)
+        .build()
+        .unwrap();
 
     // Returns the [configurable properties] for a given vector of addresses.
     let accounts_properties = account_api

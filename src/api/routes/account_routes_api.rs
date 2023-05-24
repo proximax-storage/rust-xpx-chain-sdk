@@ -4,14 +4,12 @@
  * license that can be found in the LICENSE file.
  */
 
-use serde_json::json;
-
 use {::std::collections::HashMap, http::Method};
 
 use crate::api::routes::const_routes::{
     AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
 };
-use crate::api::{Client, QueryParam, TransactionQueryParams, __internal_get_transactions};
+use crate::api::{Client, TransactionQueryParams, __internal_get_transactions};
 use crate::transaction::{AggregateTransaction, TransactionSearch};
 use crate::{
     account::{AccountInfo, AccountName, AccountProperties, AccountsId, Address, PublicAccount},
@@ -418,19 +416,17 @@ impl AccountRoutes {
         public_account: PublicAccount,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<TransactionSearch> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(mut query_params) = txn_query_params {
-            query_params.public_key = Some(public_account.public_key_to_hex());
-            query_params_vec.append(&mut query_params.to_query_params());
+        let query_params = if let Some(mut params) = txn_query_params {
+            params.public_key = Some(public_account.public_key_to_hex());
+            params
         } else {
-            query_params_vec.push(QueryParam {
-                name: "publicKey".to_string(),
-                value: json!(public_account.public_key_to_hex()),
-            });
-        }
+            TransactionQueryParams::build()
+                .public_key(public_account.public_key_to_hex())
+                .build()
+                .unwrap()
+        };
 
-        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params_vec).await
+        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params).await
     }
 
     /// Get incoming transactions
@@ -443,19 +439,17 @@ impl AccountRoutes {
         public_account: PublicAccount,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<TransactionSearch> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(mut query_params) = txn_query_params {
-            query_params.recipient_address = Some(public_account.address_str());
-            query_params_vec.append(&mut query_params.to_query_params());
+        let query_params = if let Some(mut params) = txn_query_params {
+            params.recipient_address = Some(public_account.address_str());
+            params
         } else {
-            query_params_vec.push(QueryParam {
-                name: "recipientAddress".to_string(),
-                value: json!(public_account.address_str()),
-            });
-        }
+            TransactionQueryParams::build()
+                .recipient_address(public_account.address_str())
+                .build()
+                .unwrap()
+        };
 
-        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params_vec).await
+        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params).await
     }
 
     /// Get outgoing transactions
@@ -468,19 +462,17 @@ impl AccountRoutes {
         public_account: PublicAccount,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<TransactionSearch> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(mut query_params) = txn_query_params {
-            query_params.signer_public_key = Some(public_account.public_key_to_hex());
-            query_params_vec.append(&mut query_params.to_query_params());
+        let query_params = if let Some(mut params) = txn_query_params {
+            params.signer_public_key = Some(public_account.public_key_to_hex());
+            params
         } else {
-            query_params_vec.push(QueryParam {
-                name: "signerPublicKey".to_string(),
-                value: json!(public_account.public_key_to_hex()),
-            });
-        }
+            TransactionQueryParams::build()
+                .signer_public_key(public_account.public_key_to_hex())
+                .build()
+                .unwrap()
+        };
 
-        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params_vec).await
+        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params).await
     }
 
     /// Get Unconfirmed transactions
@@ -492,22 +484,20 @@ impl AccountRoutes {
         public_account: PublicAccount,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<TransactionSearch> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(mut query_params) = txn_query_params {
-            query_params.signer_public_key = Some(public_account.public_key_to_hex());
-            query_params_vec.append(&mut query_params.to_query_params());
+        let query_params = if let Some(mut params) = txn_query_params {
+            params.signer_public_key = Some(public_account.public_key_to_hex());
+            params
         } else {
-            query_params_vec.push(QueryParam {
-                name: "signerPublicKey".to_string(),
-                value: json!(public_account.public_key_to_hex()),
-            });
-        }
+            TransactionQueryParams::build()
+                .signer_public_key(public_account.public_key_to_hex())
+                .build()
+                .unwrap()
+        };
 
         __internal_get_transactions(
             self.__client(),
             TRANSACTIONS_UNCONFIRMED_ROUTE,
-            query_params_vec,
+            query_params,
         )
         .await
     }
@@ -521,29 +511,23 @@ impl AccountRoutes {
         public_account: PublicAccount,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<Vec<AggregateTransaction>> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(mut query_params) = txn_query_params {
-            query_params.signer_public_key = Some(public_account.public_key_to_hex());
-            query_params_vec.append(&mut query_params.to_query_params());
+        let query_params = if let Some(mut params) = txn_query_params {
+            params.signer_public_key = Some(public_account.public_key_to_hex());
+            params
         } else {
-            query_params_vec.push(QueryParam {
-                name: "signerPublicKey".to_string(),
-                value: json!(public_account.public_key_to_hex()),
-            });
-        }
+            TransactionQueryParams::build()
+                .signer_public_key(public_account.public_key_to_hex())
+                .build()
+                .unwrap()
+        };
 
-        __internal_get_transactions(
-            self.__client(),
-            AGGREGATE_TRANSACTIONS_ROUTE,
-            query_params_vec,
-        )
-        .await
-        .map(|txns| {
-            txns.transactions
-                .into_iter()
-                .map(|item| *item.downcast::<AggregateTransaction>())
-                .collect::<Vec<_>>()
-        })
+        __internal_get_transactions(self.__client(), AGGREGATE_TRANSACTIONS_ROUTE, query_params)
+            .await
+            .map(|txns| {
+                txns.transactions
+                    .into_iter()
+                    .map(|item| *item.downcast::<AggregateTransaction>())
+                    .collect::<Vec<_>>()
+            })
     }
 }

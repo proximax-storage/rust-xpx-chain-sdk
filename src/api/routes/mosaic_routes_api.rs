@@ -204,10 +204,8 @@ impl MosaicRoutes {
 
         req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_hex());
 
-        if let Some(query_params) = query_params {
-            for query_param in query_params.to_query_params() {
-                req = req.with_query_param(query_param);
-            }
+        if let Some(params) = query_params {
+            req = req.with_query_param(params.to_query_string());
         }
 
         let dto: Vec<MosaicRichListDTO> = req.execute(self.__client()).await?;

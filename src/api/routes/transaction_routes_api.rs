@@ -17,7 +17,7 @@ use crate::api::request::ApiRequest;
 use crate::api::routes::const_routes::{ANNOUNCE_TRANSACTION_ROUTE, TRANSACTIONS_BY_GROUP_ROUTE};
 use crate::api::{
     __internal_get_transaction, __internal_get_transactions_by_group_with_pagination,
-    value_to_transaction, Client, QueryParam, TransactionQueryParams,
+    value_to_transaction, Client, TransactionQueryParams,
 };
 use crate::transaction::{TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
@@ -236,17 +236,11 @@ impl TransactionRoutes {
         group_type: TransactionGroupType,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<TransactionSearch> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(query_params) = txn_query_params {
-            query_params_vec.append(&mut query_params.to_query_params());
-        }
-
         __internal_get_transactions_by_group_with_pagination(
             self.__client(),
             TRANSACTIONS_BY_GROUP_ROUTE,
             group_type,
-            query_params_vec,
+            txn_query_params,
         )
         .await
     }
