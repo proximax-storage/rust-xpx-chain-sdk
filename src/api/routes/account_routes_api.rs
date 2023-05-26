@@ -420,7 +420,7 @@ impl AccountRoutes {
             params.public_key = Some(public_account.public_key_to_hex());
             params
         } else {
-            TransactionQueryParams::build()
+            TransactionQueryParams::create()
                 .public_key(public_account.public_key_to_hex())
                 .build()
                 .unwrap()
@@ -440,11 +440,11 @@ impl AccountRoutes {
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<TransactionSearch> {
         let query_params = if let Some(mut params) = txn_query_params {
-            params.recipient_address = Some(public_account.address_str());
+            params.recipient_address = Some(public_account.address_as_string());
             params
         } else {
-            TransactionQueryParams::build()
-                .recipient_address(public_account.address_str())
+            TransactionQueryParams::create()
+                .recipient_address(public_account.address_as_string())
                 .build()
                 .unwrap()
         };
@@ -466,7 +466,7 @@ impl AccountRoutes {
             params.signer_public_key = Some(public_account.public_key_to_hex());
             params
         } else {
-            TransactionQueryParams::build()
+            TransactionQueryParams::create()
                 .signer_public_key(public_account.public_key_to_hex())
                 .build()
                 .unwrap()
@@ -488,7 +488,7 @@ impl AccountRoutes {
             params.signer_public_key = Some(public_account.public_key_to_hex());
             params
         } else {
-            TransactionQueryParams::build()
+            TransactionQueryParams::create()
                 .signer_public_key(public_account.public_key_to_hex())
                 .build()
                 .unwrap()
@@ -515,7 +515,7 @@ impl AccountRoutes {
             params.signer_public_key = Some(public_account.public_key_to_hex());
             params
         } else {
-            TransactionQueryParams::build()
+            TransactionQueryParams::create()
                 .signer_public_key(public_account.public_key_to_hex())
                 .build()
                 .unwrap()

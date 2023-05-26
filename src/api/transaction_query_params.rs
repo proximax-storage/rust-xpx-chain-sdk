@@ -10,68 +10,46 @@ use crate::transaction::{Height, TransactionType};
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 pub struct TransactionSortingField(&'static str);
 
-#[derive(Clone, Debug, Eq, PartialEq, Builder, Serialize)]
-#[builder(setter(into), create_empty = "empty")]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Builder, Serialize)]
+#[builder(setter(into, strip_option), default, create_empty = "empty")]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionQueryParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     pub(crate) page_size: Option<u16>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     pub(crate) page_number: Option<u16>,
     pub(crate) r#type: Vec<TransactionType>,
-    #[builder(default)]
     pub(crate) embedded: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     pub(crate) order: Option<OrderV2>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     pub(crate) sort_field: Option<TransactionSortingField>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     pub(crate) to_height: Option<Height>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     pub(crate) from_height: Option<Height>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     pub(crate) height: Option<Height>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     pub(crate) signer_public_key: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     pub(crate) recipient_address: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     address: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
     pub(crate) public_key: Option<String>,
     #[builder(default = "true")]
     pub(crate) first_level: bool, // default true,
 }
 
 impl TransactionQueryParams {
-    pub fn build() -> TransactionQueryParamsBuilder {
-        TransactionQueryParamsBuilder::empty()
+    pub fn create() -> TransactionQueryParamsBuilder {
+        TransactionQueryParamsBuilder::default()
     }
 
     /// Serializes a `TransactionQueryParams` into a query string.
     ///
     pub fn to_query_string(&self) -> String {
         qs::to_string(self).unwrap()
-    }
-}
-
-impl Default for TransactionQueryParams {
-    #[inline]
-    fn default() -> Self {
-        TransactionQueryParamsBuilder::default()
-            .first_level(true)
-            .build()
-            .unwrap()
     }
 }

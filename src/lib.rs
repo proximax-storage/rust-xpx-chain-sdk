@@ -19,6 +19,9 @@ extern crate serde;
 extern crate serde_qs as qs;
 #[macro_use]
 extern crate tracing;
+#[macro_use]
+extern crate thiserror;
+
 extern crate xpx_chain_crypto as crypto;
 
 pub use self::helpers::hashes::*;

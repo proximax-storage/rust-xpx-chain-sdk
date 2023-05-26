@@ -6,8 +6,6 @@
 
 use std::any::Any;
 
-use anyhow::Result;
-
 use {::std::fmt, serde_json::Value};
 
 use crate::{
@@ -24,45 +22,71 @@ use super::{
     Transaction, TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+/// It defines a structure for Sirius transfer transactions with recipient information, mosaic data, and message content.
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(create_empty = "empty", build_fn(error = "crate::api::error::Error"))]
 #[serde(rename_all = "camelCase")]
 pub struct TransferTransaction {
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
     pub common: CommonTransaction,
     /// If the bit 0 of byte 0 is not set (like in 0x90), then it is a regular address.
     /// Else (e.g. 0x91) it represents a namespace id which starts at byte 1.
+    #[builder(setter(custom))]
     pub recipient: Box<dyn UnresolvedAddress>,
     /// The array of mosaics sent to the recipient.
     /// If the most significant bit of byte 0 is set, a
     /// namespace_id (alias) is used instead of a instead of a mosaic_id corresponds to a mosaic_id.
+    #[builder(default)]
     pub mosaics: Vec<Mosaic>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub message: Option<Box<dyn Message>>,
+    /// Represents the message included in the transaction.
+    #[builder(setter(custom), default = "Box::new(<dyn Message>::empty_message())")]
+    pub message: Box<dyn Message>,
+}
+
+impl TransferTransactionBuilder {
+    /// The recipient method sets the recipient field.
+    pub fn recipient<R: 'static + UnresolvedAddress>(
+        &mut self,
+        value: R,
+    ) -> &mut TransferTransactionBuilder {
+        self.recipient = Some(Box::new(value));
+        self
+    }
+
+    /// The message method sets the message field.
+    pub fn message<M: 'static + Message>(&mut self, value: M) -> &mut TransferTransactionBuilder {
+        self.message = Some(Box::new(value));
+        self
+    }
+
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut TransferTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut TransferTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
 }
 
 impl TransferTransaction {
     /// Create a transfer transaction object.
-    pub fn create<M: 'static + Message, R: 'static + UnresolvedAddress>(
-        deadline: Deadline,
-        recipient: R,
-        mosaics: Vec<Mosaic>,
-        message: M,
-        network_type: NetworkType,
-        max_fee: Option<u64>,
-    ) -> Result<Self> {
+    pub fn create(network_type: NetworkType) -> TransferTransactionBuilder {
         let common = CommonTransaction::create_from_type(
             TransactionType::Transfer,
             network_type,
             TransactionVersion::TRANSFER,
-            Some(deadline),
-            max_fee,
+            Some(Default::default()),
+            None,
         );
-
-        Ok(Self {
-            common,
-            recipient: Box::new(recipient),
-            mosaics,
-            message: Some(Box::new(message)),
-        })
+        TransferTransactionBuilder {
+            common: Some(common),
+            ..Default::default()
+        }
     }
 
     /// The String notation for the set recipient.
@@ -82,12 +106,7 @@ impl TransferTransaction {
     }
 
     pub fn message_size(&self) -> usize {
-        self.message
-            .clone()
-            .unwrap_or(Box::new(<dyn Message>::empty_message()))
-            .payload_to_vec()
-            .len()
-            + 1
+        self.message.clone().payload_to_vec().len() + 1
     }
 }
 
@@ -129,15 +148,11 @@ impl Transaction for TransferTransaction {
             mosaics_buffer.push(mosaic_buffer.finish());
         }
 
-        let message = self
-            .message
-            .clone()
-            .unwrap_or(Box::new(<dyn Message>::empty_message()));
         // Create message;
-        let payload_vec = _builder.create_vector(&message.payload_to_vec());
+        let payload_vec = _builder.create_vector(&self.message.payload_to_vec());
 
         let mut message_buffer = buffers::MessageBufferBuilder::new(&mut _builder);
-        message_buffer.add_type_(message.message_type().value());
+        message_buffer.add_type_(self.message.message_type().value());
         message_buffer.add_payload(payload_vec);
         let message_vec = message_buffer.finish();
 
@@ -216,7 +231,7 @@ pub mod tests {
         use crate::mosaic::Mosaic;
         use crate::namespace::NamespaceId;
         use crate::network::NetworkType;
-        use crate::transaction::{Deadline, Transaction, TransferTransaction};
+        use crate::transaction::{Transaction, TransferTransaction};
 
         const NETWORK_TYPE: NetworkType = NetworkType::PublicTest;
 
@@ -232,48 +247,39 @@ pub mod tests {
 
         #[test]
         fn should_default_max_fee_field_be_set_to_none() {
-            let transfer_transaction = TransferTransaction::create(
-                Deadline::default(),
-                Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap(),
-                vec![],
-                PlainMessage::create("test-message"),
-                NETWORK_TYPE,
-                None,
-            )
-            .unwrap();
+            let transfer_transaction = TransferTransaction::create(NETWORK_TYPE)
+                .recipient(Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap())
+                .message(PlainMessage::create("test-message"))
+                .build()
+                .unwrap();
 
             assert_eq!(transfer_transaction.common.max_fee, None);
         }
 
         #[test]
         fn should_filled_max_fee_override_transaction_max_fee() {
-            let transfer_transaction = TransferTransaction::create(
-                Deadline::default(),
-                Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap(),
-                vec![],
-                PlainMessage::create("test-message"),
-                NETWORK_TYPE,
-                Some(1),
-            )
-            .unwrap();
+            let transfer_transaction = TransferTransaction::create(NETWORK_TYPE)
+                .recipient(Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap())
+                .message(PlainMessage::create("test-message"))
+                .max_fee(1)
+                .build()
+                .unwrap();
 
             assert_eq!(transfer_transaction.common.max_fee, Some(1));
         }
 
         #[test]
         fn should_create_complete_an_transfer_transaction_and_sign_it_without_mosaics() {
-            let transfer_transaction = TransferTransaction::create(
-                Deadline::default(),
-                Address::from_raw("VDI5IS-5YXT5G-LRT5RS-S3EZIB-4QOAI2-6GLWR2-TDK7").unwrap(),
-                vec![],
-                PlainMessage::create("test-message"),
-                NETWORK_TYPE,
-                None,
-            )
-            .unwrap();
+            let transfer_transaction = TransferTransaction::create(NETWORK_TYPE)
+                .recipient(
+                    Address::from_raw("VDI5IS-5YXT5G-LRT5RS-S3EZIB-4QOAI2-6GLWR2-TDK7").unwrap(),
+                )
+                .message(PlainMessage::create("test-message"))
+                .build()
+                .unwrap();
 
             assert_eq!(
-                transfer_transaction.message.as_ref().unwrap().payload(),
+                transfer_transaction.message.as_ref().payload(),
                 "test-message"
             );
             assert_eq!(transfer_transaction.mosaics.len(), 0);
@@ -293,22 +299,20 @@ pub mod tests {
                 .sign_with(TESTING_ACCOUNT.clone(), *GENERATION_HASH)
                 .unwrap();
 
-            assert_eq!(&signed_transaction.payload[236..signed_transaction.payload.len()], "33000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F0D000000746573742D6D657373616765");
+            assert_eq!(&signed_transaction.payload[236..signed_transaction.payload.len()], "34000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F0D000000746573742D6D657373616765");
         }
 
         #[test]
         fn should_create_complete_an_transfer_transaction_with_empty_message() {
-            let transfer_transaction = TransferTransaction::create(
-                Deadline::default(),
-                Address::from_raw("VDI5IS-5YXT5G-LRT5RS-S3EZIB-4QOAI2-6GLWR2-TDK7").unwrap(),
-                vec![],
-                <dyn Message>::empty_message(),
-                NETWORK_TYPE,
-                None,
-            )
-            .unwrap();
+            let transfer_transaction = TransferTransaction::create(NETWORK_TYPE)
+                .recipient(
+                    Address::from_raw("VDI5IS-5YXT5G-LRT5RS-S3EZIB-4QOAI2-6GLWR2-TDK7").unwrap(),
+                )
+                .message(<dyn Message>::empty_message())
+                .build()
+                .unwrap();
 
-            assert_eq!(transfer_transaction.message.as_ref().unwrap().payload(), "");
+            assert_eq!(transfer_transaction.message.as_ref().payload(), "");
             assert_eq!(transfer_transaction.mosaics.len(), 0);
             assert!(transfer_transaction
                 .recipient
@@ -328,21 +332,17 @@ pub mod tests {
 
             assert_eq!(
                 &signed_transaction.payload[236..signed_transaction.payload.len()],
-                "33000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F01000000"
+                "34000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F01000000"
             );
         }
 
         #[test]
         fn should_return_154_for_transfer_transaction_with_1_mosaic_and_message_xpx() {
-            let transfer_transaction = TransferTransaction::create(
-                Deadline::default(),
-                Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap(),
-                vec![],
-                PlainMessage::create("XPX"),
-                NetworkType::PublicTest,
-                None,
-            )
-            .unwrap();
+            let transfer_transaction = TransferTransaction::create(NETWORK_TYPE)
+                .recipient(Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap())
+                .message(PlainMessage::create("XPX"))
+                .build()
+                .unwrap();
 
             assert_eq!(
                 transfer_transaction.to_serializer().len(),

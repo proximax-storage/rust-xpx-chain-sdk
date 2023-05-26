@@ -9,7 +9,7 @@ use {
     serde_json::Value,
 };
 
-use crate::api::error::Error::Failure;
+use crate::api::error::Error;
 use crate::{
     account::{
         AccountInfo, AccountLinkType, AccountName, AccountProperties,
@@ -177,7 +177,7 @@ impl TransactionDto for AccountPropertiesTransactionInfoDto {
                 modifications,
             }))
         } else {
-            Err(Failure(format_err!("invalid AccountPropertyType")))
+            Err(Error::from(format_err!("invalid AccountPropertyType")))
         }
     }
 }

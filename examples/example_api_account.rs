@@ -101,7 +101,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         ),
     }
 
-    let txn_query_params = TransactionQueryParams::build()
+    let txn_query_params = TransactionQueryParams::create()
         .page_size(10)
         .page_number(1)
         .r#type(vec![

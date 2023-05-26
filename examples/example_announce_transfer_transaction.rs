@@ -9,7 +9,7 @@ use std::time::Instant;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::message::PlainMessage;
-use xpx_chain_sdk::transaction::{Deadline, TransferTransaction};
+use xpx_chain_sdk::transaction::TransferTransaction;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
@@ -30,15 +30,14 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let account = Account::from_hex_private_key(private_key, network_type).unwrap();
     let recipient = Account::random(network_type).to_address();
 
-    let transaction = TransferTransaction::create(
-        Deadline::default(),
-        recipient,
-        vec![],
-        PlainMessage::create("Sirius chain Rust sdk"),
-        network_type,
-        None,
-    )?;
-    // println!("{transaction}");
+    let transaction = TransferTransaction::create(network_type)
+        .recipient(recipient)
+        .message(PlainMessage::create("Sirius chain Rust sdk"))
+        .max_fee(1000)
+        .build()
+        .unwrap();
+
+    println!("{transaction}");
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 

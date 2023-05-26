@@ -40,7 +40,7 @@ impl PublicAccount {
     /// Get the `Address` in an raw address string format.
     ///
     /// Example: TATNE7Q5BITMUTRRN6IB4I7FLSDRDWZA37JGO5Q
-    pub fn address_str(&self) -> String {
+    pub fn address_as_string(&self) -> String {
         self.address.address_str()
     }
 
@@ -129,7 +129,7 @@ mod tests {
             PublicAccount::from_public_key(PUBLIC_KEY, NetworkType::PrivateTest).unwrap();
         assert_eq!(public_account.public_key_to_hex(), PUBLIC_KEY);
         assert_eq!(
-            public_account.address_str(),
+            public_account.address_as_string(),
             "WARNASAS2BIAB6LMFA3FPMGBPGIJGK6IJHPRCU4F"
         );
     }

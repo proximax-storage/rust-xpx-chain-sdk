@@ -23,6 +23,9 @@ xpx-chain-crypto = { git = "https://github.com/proximax-storage/rust-xpx-crypto"
 [dependencies.anyhow]
 version = "^1"
 
+[dependencies.thiserror]
+version = "1.0"
+
 [dependencies.fixed-hash]
 version = "0.8"
 

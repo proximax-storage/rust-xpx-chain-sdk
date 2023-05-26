@@ -11,6 +11,7 @@ use crypto::Signature;
 
 use crate::api::error::Error;
 use crate::helpers::{hex_decode, TransactionHash};
+use crate::message::Message;
 use crate::namespace::NamespaceId;
 use crate::network::NetworkType;
 use crate::transaction::{
@@ -68,7 +69,7 @@ pub(crate) struct AbstractTransactionDto {
     /// * 0x90 (MIJIN_TEST) - PRIVATE test network.
     pub version: u32,
     pub r#type: u16,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "maxFee", skip_serializing_if = "Option::is_none")]
     pub max_fee: Option<Uint64Dto>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deadline: Option<Uint64Dto>,
@@ -270,7 +271,11 @@ impl TransactionDto for TransferTransactionInfoDto {
             common,
             recipient: Box::new(recipient),
             mosaics,
-            message: dto.message.map(|item| item.compact()),
+            message: dto
+                .message
+                .map_or(Box::new(<dyn Message>::empty_message()), |item| {
+                    item.compact()
+                }),
         }))
     }
 }
@@ -442,7 +447,7 @@ impl TransactionDto for MetaDataEntryTransactionInfoDto {
                 metadata,
                 namespace_id: NamespaceId::from(dto.target_mosaic_id.unwrap().compact()),
             }),
-            _ => return Err(Error::Failure(anyhow!("Invalid metadata transaction"))),
+            _ => return Err(Error::from(anyhow!("Invalid metadata transaction"))),
         })
     }
 }

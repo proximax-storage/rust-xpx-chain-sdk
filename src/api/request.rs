@@ -91,6 +91,9 @@ impl ApiRequest {
                 .unwrap()
         };
 
+        println!("`uri_str` \t{}", uri_str);
+        println!();
+
         let resp = api.oneshot(req).await?;
 
         let status = resp.status();
