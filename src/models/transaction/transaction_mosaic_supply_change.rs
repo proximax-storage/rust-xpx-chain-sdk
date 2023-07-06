@@ -12,51 +12,67 @@ use {::std::fmt, serde_json::Value};
 
 use crate::{
     account::PublicAccount,
-    AsUint64,
     models::consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
     mosaic::{MosaicSupplyType, UnresolvedMosaicId},
     network::NetworkType,
+    AsUint64,
 };
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline,
-    schema::mosaic_supply_change_transaction_schema, Transaction, TransactionType, TransactionVersion,
+    buffers, deadline::Deadline, schema::mosaic_supply_change_transaction_schema,
+    CommonTransaction, Transaction, TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(create_empty = "empty", build_fn(error = "crate::api::error::Error"))]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicSupplyChangeTransaction {
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
     pub common: CommonTransaction,
     pub supply_type: MosaicSupplyType,
+    #[builder(setter(custom))]
     pub asset_id: Box<dyn UnresolvedMosaicId>,
     pub delta: u64,
 }
 
+impl MosaicSupplyChangeTransactionBuilder {
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut MosaicSupplyChangeTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut MosaicSupplyChangeTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
+
+    /// The asset_id method sets the asset_id field.
+    pub fn asset_id<M: 'static + UnresolvedMosaicId>(
+        &mut self,
+        value: M,
+    ) -> &mut MosaicSupplyChangeTransactionBuilder {
+        self.asset_id = Some(Box::new(value));
+        self
+    }
+}
+
 impl MosaicSupplyChangeTransaction {
-    pub fn create(
-        deadline: Deadline,
-        supply_type: MosaicSupplyType,
-        asset_id: impl UnresolvedMosaicId + 'static,
-        delta: u64,
-        network_type: NetworkType,
-        max_fee: Option<u64>,
-    ) -> Result<Self> {
-        let abs_tx = CommonTransaction::create_from_type(
+    /// Build a MosaicSupplyChangeTransaction transaction object.
+    pub fn builder(network_type: NetworkType) -> MosaicSupplyChangeTransactionBuilder {
+        let common = CommonTransaction::create_from_type(
             TransactionType::MosaicSupplyChange,
             network_type,
             TransactionVersion::MOSAIC_SUPPLY_CHANGE,
-            Some(deadline),
-            max_fee,
+            Some(Default::default()),
+            None,
         );
-
-        let id = Box::new(asset_id);
-
-        Ok(Self {
-            common: abs_tx,
-            supply_type,
-            asset_id: id,
-            delta,
-        })
+        MosaicSupplyChangeTransactionBuilder {
+            common: Some(common),
+            ..Default::default()
+        }
     }
 }
 

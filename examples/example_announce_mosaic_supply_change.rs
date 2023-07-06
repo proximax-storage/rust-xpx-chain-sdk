@@ -9,7 +9,7 @@ use std::time::Instant;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::mosaic::{MosaicId, MosaicSupplyType};
-use xpx_chain_sdk::transaction::{Deadline, MosaicSupplyChangeTransaction};
+use xpx_chain_sdk::transaction::MosaicSupplyChangeTransaction;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
@@ -31,17 +31,15 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
     let supply_type = MosaicSupplyType::Increase;
 
-    let asset_id = MosaicId::try_from_hex("1EE407A9FD01578E")?;
+    let asset_id = MosaicId::try_from_hex("50AB95DA731C128D")?;
 
-    let transaction = MosaicSupplyChangeTransaction::create(
-        Deadline::default(),
-        supply_type,
-        asset_id,
-        100000,
-        network_type,
-        None,
-    )?;
-    // println!("{transaction}");
+    let transaction = MosaicSupplyChangeTransaction::builder(network_type)
+        .supply_type(supply_type)
+        .asset_id(asset_id)
+        .delta(100000)
+        .build()?;
+
+    println!("{transaction}");
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 

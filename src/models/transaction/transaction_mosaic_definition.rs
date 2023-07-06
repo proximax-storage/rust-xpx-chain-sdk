@@ -18,45 +18,62 @@ use crate::{
 };
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline,
-    internal::mosaic_property_array_to_buffer, schema::mosaic_definition_transaction_schema, Transaction, TransactionType,
+    buffers, deadline::Deadline, internal::mosaic_property_array_to_buffer,
+    schema::mosaic_definition_transaction_schema, CommonTransaction, Transaction, TransactionType,
     TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(create_empty = "empty", build_fn(error = "crate::api::error::Error"))]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicDefinitionTransaction {
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
     pub common: CommonTransaction,
     pub properties: MosaicProperties,
     pub mosaic_nonce: MosaicNonce,
+    #[builder(setter(name = "owner_public_account", custom))]
     pub mosaic_id: MosaicId,
 }
 
+impl MosaicDefinitionTransactionBuilder {
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut MosaicDefinitionTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut MosaicDefinitionTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
+
+    pub fn owner_public_account(
+        &mut self,
+        value: PublicAccount,
+    ) -> &mut MosaicDefinitionTransactionBuilder {
+        let nonce = self.mosaic_nonce.unwrap_or(MosaicNonce::random());
+        let mosaic_id = MosaicId::create_from_nonce(nonce, value);
+        self.mosaic_id = Some(mosaic_id);
+        self
+    }
+}
+
 impl MosaicDefinitionTransaction {
-    pub fn create(
-        deadline: Deadline,
-        nonce: MosaicNonce,
-        owner_public_account: PublicAccount,
-        properties: MosaicProperties,
-        network_type: NetworkType,
-        max_fee: Option<u64>,
-    ) -> Result<Self> {
-        let abs_tx = CommonTransaction::create_from_type(
+    /// Build a MosaicDefinitionTransaction transaction object.
+    pub fn builder(network_type: NetworkType) -> MosaicDefinitionTransactionBuilder {
+        let common = CommonTransaction::create_from_type(
             TransactionType::MosaicDefinition,
             network_type,
             TransactionVersion::MOSAIC_DEFINITION,
-            Some(deadline),
-            max_fee,
+            Some(Default::default()),
+            None,
         );
-
-        let mosaic_id = MosaicId::create_from_nonce(nonce, owner_public_account);
-
-        Ok(Self {
-            common: abs_tx,
-            properties,
-            mosaic_nonce: nonce,
-            mosaic_id,
-        })
+        MosaicDefinitionTransactionBuilder {
+            common: Some(common),
+            ..Default::default()
+        }
     }
 }
 

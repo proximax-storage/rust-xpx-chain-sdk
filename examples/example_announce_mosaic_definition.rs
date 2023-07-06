@@ -9,7 +9,7 @@ use std::time::Instant;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::mosaic::{MosaicNonce, MosaicProperties};
-use xpx_chain_sdk::transaction::{Deadline, MosaicDefinitionTransaction};
+use xpx_chain_sdk::transaction::MosaicDefinitionTransaction;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
@@ -35,15 +35,11 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
     let properties = MosaicProperties::create(true, true, 6, None);
 
-    let transaction = MosaicDefinitionTransaction::create(
-        Deadline::default(),
-        nonce,
-        owner_public_account,
-        properties,
-        network_type,
-        None,
-    )?;
-    // println!("{transaction}");
+    let transaction = MosaicDefinitionTransaction::builder(network_type)
+        .properties(properties)
+        .mosaic_nonce(nonce)
+        .owner_public_account(owner_public_account)
+        .build()?;
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 

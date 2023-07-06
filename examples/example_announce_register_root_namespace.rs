@@ -8,7 +8,7 @@ use std::time::Instant;
 
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::api::ApiNode;
-use xpx_chain_sdk::transaction::{Deadline, RegisterNamespaceTransaction};
+use xpx_chain_sdk::transaction::RegisterNamespaceTransaction;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
