@@ -5,6 +5,7 @@
  */
 
 use std::time::Duration;
+
 use xpx_chain_sdk::api::ApiNode;
 
 #[tokio::main]
