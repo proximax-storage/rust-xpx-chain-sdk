@@ -27,13 +27,13 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let network_type = chain.network_type;
     let generation_hash = chain.generation_hash;
 
-    let private_key: &str = "970F8FE51765D1E426C0FE895B7B217FB47C39D049C68EEDFD71FB523812DF10";
+    let private_key: &str = "26b64cb10f005e5988a36744ca19e20d835ccc7c105aaa5f3b212da593180930";
 
     // Create an [Account] from a given Private key.
     let account = Account::from_hex_private_key(private_key, network_type)?;
 
-    let mosaic_id = MosaicId::try_from_hex("2111AB580BD93748")?;
-    let mut metadata_txn = MetadataV2MosaicTransaction::create(
+    let mosaic_id = MosaicId::try_from_hex("50AB95DA731C128D")?;
+    let mut metadata_txn = MetadataV2MosaicTransaction::builder(
         Deadline::default(),
         account.public_account,
         mosaic_id,
@@ -45,12 +45,9 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     )?;
     metadata_txn.set_aggregate(account.public_account);
 
-    let transaction = AggregateTransaction::create_complete(
-        Deadline::default(),
-        vec![Box::new(metadata_txn)],
-        network_type,
-        None,
-    )?;
+    let transaction = AggregateTransaction::builder_complete(network_type)
+        .inner_transactions(vec![Box::new(metadata_txn)])
+        .build()?;
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 

@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-sdk"
-version = "0.5.2"
+version = "0.5.3"
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["ProxymaX Core Development Team", "Eleazar Garrido <eleazartovar123@gmail.com>"]
@@ -165,11 +165,3 @@ transaction = []
 lazy_static = "1.4"
 tokio-test = "0.4"
 tokio = { version = "1.26", features = ["full"] }
-tower = { version = "0.4", features = ["full"] }
-futures = "0.3"
-serde = "1.0.152"
-#tower-http = { version = "0.3", features = ["full"] }
-#http = { version = "0.2.8" }
-#hyper = "0.14"
-#tracing = "0.1"
-#tracing-subscriber = "0.3.16"

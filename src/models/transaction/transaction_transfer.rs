@@ -307,7 +307,7 @@ pub mod tests {
                 .sign_with(TESTING_ACCOUNT.clone(), *GENERATION_HASH)
                 .unwrap();
 
-            assert_eq!(&signed_transaction.payload[236..signed_transaction.payload.len()], "34000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F0D000000746573742D6D657373616765");
+            assert_eq!(&signed_transaction.payload[236..signed_transaction.payload.len()], "35000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F0D000000746573742D6D657373616765");
         }
 
         #[test]
@@ -340,7 +340,7 @@ pub mod tests {
 
             assert_eq!(
                 &signed_transaction.payload[236..signed_transaction.payload.len()],
-                "34000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F01000000"
+                "35000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F01000000"
             );
         }
 

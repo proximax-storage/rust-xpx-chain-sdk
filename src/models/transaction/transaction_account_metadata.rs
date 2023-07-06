@@ -14,8 +14,8 @@ use crate::account::PublicAccount;
 use crate::errors_const;
 use crate::network::NetworkType;
 use crate::transaction::{
-    build_metadata_common, build_scoped_metadata_key, CommonTransaction, Deadline,
-    MetadataTransaction, Transaction, TransactionType, TransactionVersion,
+    build_scoped_metadata_key, CommonTransaction, Deadline, MetadataTransaction, Transaction,
+    TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -23,7 +23,7 @@ use crate::transaction::{
 pub struct MetadataV2AccountTransaction(pub(crate) MetadataTransaction);
 
 impl MetadataV2AccountTransaction {
-    pub fn create<T: fmt::Display + 'static>(
+    pub fn builder<T: fmt::Display + 'static>(
         deadline: Deadline,
         account: PublicAccount,
         scoped_key: T,
@@ -51,8 +51,13 @@ impl MetadataV2AccountTransaction {
 
         let old_value = old_value.unwrap_or_default();
 
-        let metadata =
-            build_metadata_common(common, account, new_value, old_value, scoped_metadata_key)?;
+        let metadata = MetadataTransaction::builder(
+            common,
+            account,
+            new_value,
+            old_value,
+            scoped_metadata_key,
+        )?;
 
         Ok(Self(metadata))
     }

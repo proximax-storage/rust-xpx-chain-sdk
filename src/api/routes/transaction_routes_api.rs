@@ -320,7 +320,7 @@ impl TransactionRoutes {
     ///    account::{Account, Address},
     ///    message::PlainMessage,
     ///    mosaic::Mosaic,
-    ///    transaction::{Deadline, TransferTransaction}
+    ///    transaction::{TransferTransaction}
     ///};
     ///
     ///const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
@@ -335,26 +335,20 @@ impl TransactionRoutes {
     /// let network_type = chain.network_type;
     /// let generation_hash = chain.generation_hash;
     ///
-    ///    // Deadline default 1 hour
-    ///    // let deadline = Deadline::new(1, 0, 0);
-    ///    let deadline = Deadline::default();
-    ///
     ///    let account = Account::from_hex_private_key(PRIVATE_KEY, network_type).unwrap();
     ///
     ///    let recipient = Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap();
     ///
     ///    let message = PlainMessage::create("Transfer From ProximaX Rust SDK");
     ///
-    ///    let transfer_transaction = TransferTransaction::builder(
-    ///        deadline,
-    ///        recipient,
-    ///        vec![Mosaic::xpx(1)],
-    ///        message,
-    ///        network_type,
-    ///        None
-    ///    );
+    ///    let transfer_transaction = TransferTransaction::builder(network_type)
+    ///         .recipient(recipient)
+    ///         .mosaics(vec![Mosaic::xpx(1)])
+    ///         .message(message)
+    ///         .max_fee(1000)
+    ///         .build();
     ///
-    ///    if let Err(err) = &transfer_transaction {
+    ///    if let Err(ref err) = transfer_transaction {
     ///        panic!("{}", err)
     ///    }
     ///

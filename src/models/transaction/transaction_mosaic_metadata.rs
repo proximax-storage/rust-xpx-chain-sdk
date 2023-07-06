@@ -16,8 +16,8 @@ use crate::models::consts::MOSAICS_SIZE;
 use crate::mosaic::{MosaicId, UnresolvedMosaicId};
 use crate::network::NetworkType;
 use crate::transaction::{
-    build_metadata_common, build_scoped_metadata_key, CommonTransaction, Deadline,
-    MetadataTransaction, Transaction, TransactionType, TransactionVersion,
+    build_scoped_metadata_key, CommonTransaction, Deadline, MetadataTransaction, Transaction,
+    TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -28,7 +28,7 @@ pub struct MetadataV2MosaicTransaction {
 }
 
 impl MetadataV2MosaicTransaction {
-    pub fn create<T: fmt::Display + 'static>(
+    pub fn builder<T: fmt::Display + 'static>(
         deadline: Deadline,
         account: PublicAccount,
         mosaic_id: MosaicId,
@@ -57,8 +57,13 @@ impl MetadataV2MosaicTransaction {
 
         let old_value = old_value.unwrap_or_default();
 
-        let metadata =
-            build_metadata_common(common, account, new_value, old_value, scoped_metadata_key)?;
+        let metadata = MetadataTransaction::builder(
+            common,
+            account,
+            new_value,
+            old_value,
+            scoped_metadata_key,
+        )?;
 
         Ok(Self {
             metadata,

@@ -59,7 +59,6 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         CosignatoryModification::create(MultisigModificationType::Add, cosignatory_three),
     ];
 
-    let deadline = Deadline::default();
     let mut multisig_account_transaction = ModifyMultisigAccountTransaction::builder(network_type)
         .min_approval_delta(min_approval_delta)
         .min_removal_delta(min_removal_delta)
@@ -68,13 +67,9 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
     multisig_account_transaction.set_aggregate(account.public_account);
 
-    let transaction = AggregateTransaction::create_bonded(
-        deadline,
-        vec![Box::new(multisig_account_transaction)],
-        network_type,
-        None,
-    )?;
-
+    let transaction = AggregateTransaction::builder_bonded(network_type)
+        .inner_transactions(vec![Box::new(multisig_account_transaction)])
+        .build()?;
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 
     let _ = lock_fund(

@@ -102,8 +102,8 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     }
 
     let txn_query_params = TransactionQueryParams::create()
-        .page_size(10)
-        .page_number(1)
+        .page_size(10_u16)
+        .page_number(1_u16)
         .r#type(vec![
             TransactionType::AggregateComplete,
             TransactionType::Transfer,

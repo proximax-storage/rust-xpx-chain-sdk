@@ -410,6 +410,7 @@ pub(crate) struct MetaDataEntryTransactionDto {
     pub value_size: u16,
     pub value: String,
     pub target_mosaic_id: Option<Uint64Dto>,
+    pub target_namespace_id: Option<Uint64Dto>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -445,7 +446,7 @@ impl TransactionDto for MetaDataEntryTransactionInfoDto {
             }),
             TransactionType::NamespaceMetadataV2 => Box::new(MetadataV2NamespaceTransaction {
                 metadata,
-                namespace_id: NamespaceId::from(dto.target_mosaic_id.unwrap().compact()),
+                namespace_id: NamespaceId::from(dto.target_namespace_id.unwrap().compact()),
             }),
             _ => return Err(Error::from(anyhow!("Invalid metadata transaction"))),
         })

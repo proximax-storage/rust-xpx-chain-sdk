@@ -9,9 +9,7 @@ use std::time::Instant;
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::message::PlainMessage;
-use xpx_chain_sdk::transaction::{
-    AggregateTransaction, Deadline, Transaction, TransferTransaction,
-};
+use xpx_chain_sdk::transaction::{AggregateTransaction, Transaction, TransferTransaction};
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {

@@ -31,7 +31,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     // Create an [Account] from a given Private key.
     let account = Account::from_hex_private_key(private_key, network_type)?;
 
-    let mut metadata_txn = MetadataV2AccountTransaction::create(
+    let mut metadata_txn = MetadataV2AccountTransaction::builder(
         Deadline::default(),
         account.public_account,
         "Rust SDK",
@@ -42,12 +42,9 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     )?;
     metadata_txn.set_aggregate(account.public_account);
 
-    let transaction = AggregateTransaction::create_complete(
-        Deadline::default(),
-        vec![Box::new(metadata_txn)],
-        network_type,
-        None,
-    )?;
+    let transaction = AggregateTransaction::builder_complete(network_type)
+        .inner_transactions(vec![Box::new(metadata_txn)])
+        .build()?;
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 
