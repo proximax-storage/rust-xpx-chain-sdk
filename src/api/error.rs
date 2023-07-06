@@ -4,8 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::api;
 use std::result;
+
+use crate::api;
 
 /// Result type of all Websocket library calls.
 pub type Result<T> = result::Result<T, Error>;
