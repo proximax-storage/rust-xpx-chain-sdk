@@ -12,55 +12,86 @@ use {::std::any::Any, serde_json::Value};
 
 use crate::{
     account::PublicAccount,
-    errors_const::ERR_EMPTY_MODIFICATIONS,
+    errors_const,
     models::consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE},
     multisig::CosignatoryModification,
     network::NetworkType,
 };
 
 use super::{
-    buffers, CommonTransaction,
-    Deadline, internal::cosignatory_modification_array_to_buffer, schema::modify_multisig_account_transaction_schema, Transaction,
+    buffers, internal::cosignatory_modification_array_to_buffer,
+    schema::modify_multisig_account_transaction_schema, CommonTransaction, Deadline, Transaction,
     TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(
+    create_empty = "empty",
+    build_fn(validate = "Self::validate", error = "crate::api::error::Error")
+)]
 #[serde(rename_all = "camelCase")]
 pub struct ModifyMultisigAccountTransaction {
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
     pub common: CommonTransaction,
     pub min_removal_delta: i8,
     pub min_approval_delta: i8,
     pub modifications: Vec<CosignatoryModification>,
 }
 
-impl ModifyMultisigAccountTransaction {
-    pub fn create(
-        deadline: Deadline,
-        min_approval_delta: i8,
-        min_removal_delta: i8,
-        modifications: Vec<CosignatoryModification>,
-        network_type: NetworkType,
-        max_fee: Option<u64>,
-    ) -> Result<Self> {
-        ensure!(
-            !modifications.is_empty() && min_approval_delta != 0 && min_removal_delta != 0,
-            ERR_EMPTY_MODIFICATIONS
-        );
+impl ModifyMultisigAccountTransactionBuilder {
+    fn validate(&self) -> Result<()> {
+        if let Some(ref modifications) = self.modifications {
+            ensure!(
+                !modifications.is_empty(),
+                errors_const::ERR_EMPTY_MODIFICATIONS
+            );
+        }
 
+        if let Some(min_approval_delta) = self.min_approval_delta {
+            ensure!(
+                min_approval_delta != 0,
+                errors_const::ERR_EMPTY_MODIFICATIONS
+            );
+        }
+
+        if let Some(min_removal_delta) = self.min_removal_delta {
+            ensure!(
+                min_removal_delta != 0,
+                errors_const::ERR_EMPTY_MODIFICATIONS
+            );
+        }
+
+        Ok(())
+    }
+
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut ModifyMultisigAccountTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut ModifyMultisigAccountTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
+}
+
+impl ModifyMultisigAccountTransaction {
+    /// Build a transfer transaction object.
+    pub fn builder(network_type: NetworkType) -> ModifyMultisigAccountTransactionBuilder {
         let common = CommonTransaction::create_from_type(
             TransactionType::MultisigAccountModify,
             network_type,
             TransactionVersion::MULTISIG_ACCOUNT_MODIFICATION,
-            Some(deadline),
-            max_fee,
+            Some(Default::default()),
+            None,
         );
-
-        Ok(Self {
-            common,
-            min_removal_delta,
-            min_approval_delta,
-            modifications,
-        })
+        ModifyMultisigAccountTransactionBuilder {
+            common: Some(common),
+            ..Default::default()
+        }
     }
 }
 

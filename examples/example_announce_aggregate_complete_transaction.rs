@@ -33,24 +33,16 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let recipient_a = Account::random(network_type).to_address();
     let recipient_b = Account::random(network_type).to_address();
 
-    let mut transfer_a = TransferTransaction::builder(
-        Deadline::default(),
-        recipient_a,
-        vec![],
-        PlainMessage::create("Transfer A From ProximaX Rust SDK"),
-        network_type,
-        None,
-    )?;
+    let mut transfer_a = TransferTransaction::builder(network_type)
+        .recipient(recipient_a)
+        .message(PlainMessage::create("Transfer A From ProximaX Rust SDK"))
+        .build()?;
     transfer_a.set_aggregate(account.public_account);
 
-    let mut transfer_b = TransferTransaction::builder(
-        Deadline::default(),
-        recipient_b,
-        vec![],
-        PlainMessage::create("Transfer B From ProximaX Rust SDK"),
-        network_type,
-        None,
-    )?;
+    let mut transfer_b = TransferTransaction::builder(network_type)
+        .recipient(recipient_b)
+        .message(PlainMessage::create("Transfer B From ProximaX Rust SDK"))
+        .build()?;
     transfer_b.set_aggregate(account.public_account);
 
     let transaction = AggregateTransaction::create_complete(

@@ -60,14 +60,12 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     ];
 
     let deadline = Deadline::default();
-    let mut multisig_account_transaction = ModifyMultisigAccountTransaction::create(
-        deadline,
-        min_approval_delta,
-        min_removal_delta,
-        modifications,
-        network_type,
-        None,
-    )?;
+    let mut multisig_account_transaction = ModifyMultisigAccountTransaction::builder(network_type)
+        .min_approval_delta(min_approval_delta)
+        .min_removal_delta(min_removal_delta)
+        .modifications(modifications)
+        .build()?;
+
     multisig_account_transaction.set_aggregate(account.public_account);
 
     let transaction = AggregateTransaction::create_bonded(
@@ -142,7 +140,7 @@ async fn lock_fund(
         if let Ok(status) = response {
             println!("LockFundsTransaction Status: {}", status.group);
             if !status.is_success() {
-                return Err(xpx_chain_sdk::api::error::Error::Failure(anyhow!(
+                return Err(xpx_chain_sdk::api::error::Error::Other(anyhow!(
                     status.status
                 )));
             } else if status.is_confirmed() {
@@ -151,7 +149,7 @@ async fn lock_fund(
         }
 
         if i == 6 {
-            return Err(xpx_chain_sdk::api::error::Error::Failure(anyhow!(
+            return Err(xpx_chain_sdk::api::error::Error::Other(anyhow!(
                 "time out."
             )));
         }
