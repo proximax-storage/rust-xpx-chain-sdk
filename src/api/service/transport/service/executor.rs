@@ -17,7 +17,7 @@ where
 }
 
 #[derive(Clone)]
-pub(crate) struct SharedExec {
+pub struct SharedExec {
     inner: Arc<dyn Executor<BoxFuture<'static, ()>> + Send + Sync + 'static>,
 }
 
