@@ -6,8 +6,6 @@
 
 use std::any::Any;
 
-use anyhow::Result;
-
 use {::std::fmt, serde_json::Value};
 
 use crate::{

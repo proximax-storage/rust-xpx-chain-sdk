@@ -45,12 +45,9 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         .build()?;
     transfer_b.set_aggregate(account.public_account);
 
-    let transaction = AggregateTransaction::create_complete(
-        Deadline::default(),
-        vec![Box::new(transfer_a), Box::new(transfer_b)],
-        network_type,
-        None,
-    )?;
+    let transaction = AggregateTransaction::builder_complete(network_type)
+        .inner_transactions(vec![Box::new(transfer_a), Box::new(transfer_b)])
+        .build()?;
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 
