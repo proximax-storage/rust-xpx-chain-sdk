@@ -74,8 +74,8 @@ impl TransferTransactionBuilder {
 }
 
 impl TransferTransaction {
-    /// Create a transfer transaction object.
-    pub fn create(network_type: NetworkType) -> TransferTransactionBuilder {
+    /// Build a transfer transaction object.
+    pub fn builder(network_type: NetworkType) -> TransferTransactionBuilder {
         let common = CommonTransaction::create_from_type(
             TransactionType::Transfer,
             network_type,
@@ -107,6 +107,14 @@ impl TransferTransaction {
 
     pub fn message_size(&self) -> usize {
         self.message.clone().payload_to_vec().len() + 1
+    }
+}
+
+impl TryFrom<TransferTransactionBuilder> for TransferTransaction {
+    type Error = crate::api::error::Error;
+
+    fn try_from(builder: TransferTransactionBuilder) -> Result<Self, Self::Error> {
+        builder.build()
     }
 }
 
@@ -247,7 +255,7 @@ pub mod tests {
 
         #[test]
         fn should_default_max_fee_field_be_set_to_none() {
-            let transfer_transaction = TransferTransaction::create(NETWORK_TYPE)
+            let transfer_transaction = TransferTransaction::builder(NETWORK_TYPE)
                 .recipient(Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap())
                 .message(PlainMessage::create("test-message"))
                 .build()
@@ -258,7 +266,7 @@ pub mod tests {
 
         #[test]
         fn should_filled_max_fee_override_transaction_max_fee() {
-            let transfer_transaction = TransferTransaction::create(NETWORK_TYPE)
+            let transfer_transaction = TransferTransaction::builder(NETWORK_TYPE)
                 .recipient(Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap())
                 .message(PlainMessage::create("test-message"))
                 .max_fee(1)
@@ -270,7 +278,7 @@ pub mod tests {
 
         #[test]
         fn should_create_complete_an_transfer_transaction_and_sign_it_without_mosaics() {
-            let transfer_transaction = TransferTransaction::create(NETWORK_TYPE)
+            let transfer_transaction = TransferTransaction::builder(NETWORK_TYPE)
                 .recipient(
                     Address::from_raw("VDI5IS-5YXT5G-LRT5RS-S3EZIB-4QOAI2-6GLWR2-TDK7").unwrap(),
                 )
@@ -304,7 +312,7 @@ pub mod tests {
 
         #[test]
         fn should_create_complete_an_transfer_transaction_with_empty_message() {
-            let transfer_transaction = TransferTransaction::create(NETWORK_TYPE)
+            let transfer_transaction = TransferTransaction::builder(NETWORK_TYPE)
                 .recipient(
                     Address::from_raw("VDI5IS-5YXT5G-LRT5RS-S3EZIB-4QOAI2-6GLWR2-TDK7").unwrap(),
                 )
@@ -338,7 +346,7 @@ pub mod tests {
 
         #[test]
         fn should_return_154_for_transfer_transaction_with_1_mosaic_and_message_xpx() {
-            let transfer_transaction = TransferTransaction::create(NETWORK_TYPE)
+            let transfer_transaction = TransferTransaction::builder(NETWORK_TYPE)
                 .recipient(Address::from_raw("VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU").unwrap())
                 .message(PlainMessage::create("XPX"))
                 .build()

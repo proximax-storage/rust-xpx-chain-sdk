@@ -21,6 +21,7 @@ pub const ERR_WRONG_BIT_NAMESPACE_ID: &str = "Namespace_id doesn't have 64th bit
 pub const ERR_EMPTY_NAMESPACE_IDS: &str = "Namespace ids vec must not by empty";
 pub const ERR_EMPTY_NAMESPACE_NAME: &str = "Namespace name must not by empty";
 pub const ERR_INVALID_NAMESPACE_NAME: &str = "Namespace name is invalid";
+pub const ERR_INVALID_LEN_NAMESPACE_NAME: &str = "Namespace len name is invalid";
 
 // Mosaic errors
 pub const ERR_EMPTY_MOSAIC_IDS: &str = "Mosaics ids vec must not by empty";

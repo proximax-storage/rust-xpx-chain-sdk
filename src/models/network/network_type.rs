@@ -25,7 +25,7 @@
 use std::{convert::TryFrom, fmt};
 
 #[allow(non_camel_case_types)]
-#[derive(Clone, Copy, Eq, PartialEq, Serialize, Deserialize, Hash)]
+#[derive(Clone, Copy, Eq, PartialEq, Serialize, Deserialize, Hash, strum::Display)]
 #[serde(rename_all = "camelCase")]
 #[repr(u8)]
 pub enum NetworkType {
@@ -100,12 +100,12 @@ impl NetworkType {
         NetworkType::try_from((version >> 24) as u8)
     }
 }
-
-impl fmt::Display for NetworkType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", &self)
-    }
-}
+//
+// impl fmt::Display for NetworkType {
+//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+//         write!(f, "{:?}", &self)
+//     }
+// }
 
 impl fmt::Debug for NetworkType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

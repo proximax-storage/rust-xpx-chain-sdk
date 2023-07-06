@@ -30,12 +30,11 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let account = Account::from_hex_private_key(private_key, network_type).unwrap();
     let recipient = Account::random(network_type).to_address();
 
-    let transaction = TransferTransaction::create(network_type)
+    let transaction = TransferTransaction::builder(network_type)
         .recipient(recipient)
         .message(PlainMessage::create("Sirius chain Rust sdk"))
         .max_fee(1000)
-        .build()
-        .unwrap();
+        .build()?;
 
     println!("{transaction}");
 

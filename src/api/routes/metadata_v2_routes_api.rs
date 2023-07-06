@@ -64,12 +64,13 @@ impl MetadataV2Routes {
 
     pub async fn search_metadata(
         &self,
-        query_params: Option<MetadataQueryParams>,
+        query_params: Option<impl Into<MetadataQueryParams>>,
     ) -> Result<SearchMetadataEntry> {
         let mut req =
             __internal_request::ApiRequest::new(Method::GET, METADATAS_V2_INFO_ROUTE.to_string());
 
         if let Some(params) = query_params {
+            let params = params.into();
             req = req.with_query_param(params.to_query_string());
         }
 

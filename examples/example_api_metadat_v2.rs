@@ -14,38 +14,37 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         .await?;
 
     let metadata_v2_api = client.metadata_v2_api();
+    //
+    // // Get the node information.
+    // let result = metadata_v2_api
+    //     .get_metadata_v2_info("650E314F4A497F3FF37669FBD5D8E50EEDDBB3430C5C27B453214A9B1D43288C")
+    //     .await;
+    // match result {
+    //     Ok(resp) => println!("{}", resp),
+    //     Err(err) => eprintln!(
+    //         "Exception when calling metadata_v2_api->get_metadata_v2_info: {}\n",
+    //         err
+    //     ),
+    // }
+    //
+    // let result = metadata_v2_api
+    //     .get_metadatas_v2_info(vec![
+    //         "D54146ABED5E29D1F5B1D7FDAB36C807AD7B82B3D8E2E251DC32F84CE3E56730",
+    //         "544F408D38BB884193241E32EE19D9870D332B1C38FBDFA9DF9BC7650F02FD38",
+    //     ])
+    //     .await;
+    // match result {
+    //     Ok(resp) => println!("{:#?}", resp),
+    //     Err(err) => eprintln!(
+    //         "Exception when calling metadata_v2_api->get_metadatas_v2_info: {}\n",
+    //         err
+    //     ),
+    // }
 
-    // Get the node information.
-    let result = metadata_v2_api
-        .get_metadata_v2_info("650E314F4A497F3FF37669FBD5D8E50EEDDBB3430C5C27B453214A9B1D43288C")
-        .await;
-    match result {
-        Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling metadata_v2_api->get_metadata_v2_info: {}\n",
-            err
-        ),
-    }
-
-    let result = metadata_v2_api
-        .get_metadatas_v2_info(vec![
-            "D54146ABED5E29D1F5B1D7FDAB36C807AD7B82B3D8E2E251DC32F84CE3E56730",
-            "544F408D38BB884193241E32EE19D9870D332B1C38FBDFA9DF9BC7650F02FD38",
-        ])
-        .await;
-    match result {
-        Ok(resp) => println!("{:#?}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling metadata_v2_api->get_metadatas_v2_info: {}\n",
-            err
-        ),
-    }
-
-    let mut query_params = MetadataQueryParams::build()
+    let query_params: MetadataQueryParams = MetadataQueryParams::builder()
         .metadata_type(MetadataV2Type::MetadataAccount)
-        .target_key("0255B89B9E03B68459DB040C11EE7EAEF7656BB4F7DD64EF0BD63D447F4DABAA".to_owned())
-        .build()
-        .unwrap();
+        .page_size(Some(10_u16))
+        .try_into()?;
 
     let result = metadata_v2_api.search_metadata(Some(query_params)).await;
     match result {

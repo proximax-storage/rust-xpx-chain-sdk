@@ -33,7 +33,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let recipient_a = Account::random(network_type).to_address();
     let recipient_b = Account::random(network_type).to_address();
 
-    let mut transfer_a = TransferTransaction::create(
+    let mut transfer_a = TransferTransaction::builder(
         Deadline::default(),
         recipient_a,
         vec![],
@@ -43,7 +43,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     )?;
     transfer_a.set_aggregate(account.public_account);
 
-    let mut transfer_b = TransferTransaction::create(
+    let mut transfer_b = TransferTransaction::builder(
         Deadline::default(),
         recipient_b,
         vec![],

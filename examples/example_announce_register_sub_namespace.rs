@@ -29,15 +29,11 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
     let account = Account::from_hex_private_key(private_key, network_type)?;
 
-    let parent_id = NamespaceId::from_name("rust_namespace")?;
+    let parent_id = NamespaceId::from_name("block_namespace")?;
 
-    let transaction = RegisterNamespaceTransaction::create_sub(
-        Deadline::default(),
-        "sub_namespace",
-        parent_id,
-        network_type,
-        None,
-    )?;
+    let transaction =
+        RegisterNamespaceTransaction::builder_sub("sub_namespace", parent_id, network_type)
+            .build()?;
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 

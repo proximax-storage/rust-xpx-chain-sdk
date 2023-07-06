@@ -345,7 +345,7 @@ impl TransactionRoutes {
     ///
     ///    let message = PlainMessage::create("Transfer From ProximaX Rust SDK");
     ///
-    ///    let transfer_transaction = TransferTransaction::create(
+    ///    let transfer_transaction = TransferTransaction::builder(
     ///        deadline,
     ///        recipient,
     ///        vec![Mosaic::xpx(1)],

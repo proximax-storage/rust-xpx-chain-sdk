@@ -12,7 +12,11 @@ use crate::mosaic::UnresolvedMosaicId;
 pub struct MetadataSortingField(&'static str);
 
 #[derive(Clone, Debug, PartialEq, Builder, Serialize)]
-#[builder(setter(into), create_empty = "empty")]
+#[builder(
+    setter(into),
+    create_empty = "empty",
+    build_fn(error = "crate::api::error::Error")
+)]
 #[serde(rename_all = "camelCase")]
 pub struct MetadataQueryParams {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -45,8 +49,10 @@ pub struct MetadataQueryParams {
 }
 
 impl MetadataQueryParams {
-    pub fn build() -> MetadataQueryParamsBuilder {
-        MetadataQueryParamsBuilder::empty()
+    /// Build a `MetadataQueryParams` from the defaults
+    #[must_use]
+    pub fn builder() -> MetadataQueryParamsBuilder {
+        MetadataQueryParamsBuilder::default()
     }
 
     /// Serializes a `MetadataQueryParams` into a query string.
@@ -56,19 +62,10 @@ impl MetadataQueryParams {
     }
 }
 
-impl Default for MetadataQueryParams {
-    #[inline]
-    fn default() -> Self {
-        MetadataQueryParams {
-            page_size: None,
-            page_number: None,
-            metadata_type: None,
-            order: None,
-            sort_field: None,
-            source_address: None,
-            target_id: None,
-            target_key: None,
-            scoped_metadata_key: None,
-        }
+impl TryFrom<&mut MetadataQueryParamsBuilder> for MetadataQueryParams {
+    type Error = crate::api::error::Error;
+
+    fn try_from(builder: &mut MetadataQueryParamsBuilder) -> Result<Self, Self::Error> {
+        builder.build()
     }
 }

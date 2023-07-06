@@ -26,6 +26,7 @@ pub struct CommonTransaction {
     pub signature: Option<Signature>,
 
     /// The 'PublicAccount' of the entity signer formatted as hexadecimal.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub signer: Option<PublicAccount>,
 
     /// The transaction version.
