@@ -3,26 +3,17 @@
 use std::{
     fmt,
     future::Future,
-    hash::Hash,
     pin::Pin,
     task::{Context, Poll},
 };
 
 use bytes::Bytes;
+use futures_util::future;
 use http::uri::{InvalidUri, Uri};
 use hyper::client::connect::Connection as HyperConnection;
-use hyper::rt::Executor;
-use tokio::{
-    io::{AsyncRead, AsyncWrite},
-    sync::mpsc::{channel, Sender},
-};
-use tower::{
-    balance::p2c::Balance,
-    buffer::{self, Buffer},
-    discover::{Change, Discover},
-    util::{BoxService, Either},
-    Service,
-};
+use tokio::io::{AsyncRead, AsyncWrite};
+use tower::util::BoxCloneService;
+use tower::Service;
 
 pub use api_node::ApiNode;
 
@@ -35,11 +26,11 @@ use crate::api::routes::{
 };
 use crate::api::transport::service::connection::{Request, Response};
 
-use super::service::{Connection, DynamicServiceStream, SharedExec};
+use super::service::Connection;
 
 mod api_node;
 
-pub type Svc = Either<Connection, BoxService<Request, Response, crate::api::Error>>;
+pub type Svc = BoxCloneService<Request, Response, crate::api::Error>;
 
 const DEFAULT_BUFFER_SIZE: usize = 1024;
 
@@ -68,14 +59,14 @@ const DEFAULT_BUFFER_SIZE: usize = 1024;
 /// cloning the `Channel` type is cheap and encouraged.
 #[derive(Clone)]
 pub struct Client {
-    pub svc: Buffer<Svc, Request>,
+    pub svc: Svc,
 }
 
 /// A future that resolves to an HTTP response.
 ///
 /// This is returned by the `Service::call` on [`Channel`].
 pub struct ResponseFuture {
-    inner: buffer::future::ResponseFuture<<Svc as Service<Request>>::Future>,
+    inner: future::BoxFuture<'static, Result<Response, crate::api::Error>>,
 }
 
 impl Client {
@@ -106,99 +97,34 @@ impl Client {
         Ok(Self::builder(uri))
     }
 
-    /// Balance a list of [`ApiNode`]'s.
-    ///
-    /// This creates a [`Channel`] that will load balance across all the
-    /// provided endpoints.
-    pub fn balance_list(list: impl Iterator<Item = ApiNode>) -> Self {
-        let (client, tx) = Self::balance_channel(DEFAULT_BUFFER_SIZE);
-        list.for_each(|endpoint| {
-            tx.try_send(Change::Insert(endpoint.uri.clone(), endpoint))
-                .unwrap();
-        });
-
-        client
-    }
-
-    /// Balance a list of [`ApiNode`]'s.
-    ///
-    /// This creates a [`Channel`] that will listen to a stream of change events and will add or remove provided endpoints.
-    pub fn balance_channel<K>(capacity: usize) -> (Self, Sender<Change<K, ApiNode>>)
-    where
-        K: Hash + Eq + Send + Clone + 'static,
-    {
-        Self::balance_channel_with_executor(capacity, SharedExec::tokio())
-    }
-
-    /// Balance a list of [`ApiNode`]'s.
-    ///
-    /// This creates a [`Channel`] that will listen to a stream of change events and will add or remove provided endpoints.
-    ///
-    /// The [`Channel`] will use the given executor to spawn async tasks.
-    pub fn balance_channel_with_executor<K, E>(
-        capacity: usize,
-        executor: E,
-    ) -> (Self, Sender<Change<K, ApiNode>>)
-    where
-        K: Hash + Eq + Send + Clone + 'static,
-        E: Executor<Pin<Box<dyn Future<Output = ()> + Send>>> + Send + Sync + 'static,
-    {
-        let (tx, rx) = channel(capacity);
-        let list = DynamicServiceStream::new(rx);
-        (Self::balance(list, DEFAULT_BUFFER_SIZE, executor), tx)
-    }
-
     pub(crate) fn new<C>(connector: C, endpoint: ApiNode) -> Self
     where
-        C: Service<Uri> + Send + 'static,
+        C: Service<Uri> + Send + 'static + Clone + Sync,
         C::Error: Into<crate::api::Error> + Send,
         C::Future: Unpin + Send,
         C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
-        let buffer_size = endpoint.buffer_size.unwrap_or(DEFAULT_BUFFER_SIZE);
-        let executor = endpoint.executor.clone();
-
         let svc = Connection::lazy(connector, endpoint);
-        let (svc, worker) = Buffer::pair(Either::A(svc), buffer_size);
-        executor.execute(Box::pin(worker));
 
-        Client { svc }
+        Client {
+            svc: BoxCloneService::new(svc),
+        }
     }
 
     pub(crate) async fn connect<C>(connector: C, endpoint: ApiNode) -> Result<Self, super::Error>
     where
-        C: Service<Uri> + Send + 'static,
+        C: Service<Uri> + Send + 'static + Clone + Sync,
         C::Error: Into<crate::api::Error> + Send,
         C::Future: Unpin + Send,
         C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
-        let buffer_size = endpoint.buffer_size.unwrap_or(DEFAULT_BUFFER_SIZE);
-        let executor = endpoint.executor.clone();
-
         let svc = Connection::connect(connector, endpoint)
             .await
             .map_err(super::Error::from_source)?;
 
-        let (svc, worker) = Buffer::pair(Either::A(svc), buffer_size);
-        executor.execute(Box::pin(worker));
-
-        Ok(Client { svc })
-    }
-
-    pub(crate) fn balance<D, E>(discover: D, buffer_size: usize, executor: E) -> Self
-    where
-        D: Discover<Service = Connection> + Unpin + Send + 'static,
-        D::Error: Into<crate::api::Error>,
-        D::Key: Hash + Send + Clone,
-        E: Executor<futures_core::future::BoxFuture<'static, ()>> + Send + Sync + 'static,
-    {
-        let svc = Balance::new(discover);
-
-        let svc = BoxService::new(svc);
-        let (svc, worker) = Buffer::pair(Either::B(svc), buffer_size);
-        executor.execute(Box::pin(worker));
-
-        Client { svc }
+        Ok(Client {
+            svc: BoxCloneService::new(svc),
+        })
     }
 }
 
@@ -214,6 +140,7 @@ impl Service<Request> for Client {
     fn call(&mut self, request: Request) -> Self::Future {
         let inner = Service::call(&mut self.svc, request);
 
+        // future::ready(Ok(svc))
         ResponseFuture { inner }
     }
 }

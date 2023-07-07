@@ -9,7 +9,6 @@ use std::{
 
 use bytes::Bytes;
 use http::{uri::Uri, HeaderValue};
-use tower::make::MakeConnection;
 
 use crate::api::{
     self,
@@ -51,15 +50,13 @@ pub struct ApiNode {
     ///
     /// [`Request::set_timeout`]: crate::Request::set_timeout
     #[builder(setter(strip_option), default)]
-    timeout: Option<Duration>,
+    pub(crate) timeout: Option<Duration>,
     /// Apply a concurrency limit to each request.
     #[builder(setter(strip_option), default)]
     pub(crate) concurrency_limit: Option<usize>,
     /// Apply a rate limit to each request.
     #[builder(setter(strip_option), default)]
     pub(crate) rate_limit: Option<(u64, Duration)>,
-    #[builder(setter(strip_option), default)]
-    pub(crate) buffer_size: Option<usize>,
     /// Set whether TCP keepalive messages are enabled on accepted connections.
     ///
     /// If `None` is specified, keepalive is disabled, otherwise the duration
@@ -145,18 +142,10 @@ impl ApiNode {
         Ok(Self::from(uri))
     }
 
-    pub fn buffer_size(self, size: usize) -> Self {
-        ApiNode {
-            buffer_size: Some(size),
-            ..self
-        }
-    }
-
     /// Create a channel from this config.
     pub async fn connect(&self) -> Result<Client, Error> {
         let connector = self.__build_connector();
-        self.__build_client::<hyper::client::HttpConnector>(connector)
-            .await
+        self.__build_client(connector).await
     }
 
     /// Create a channel from this config.
@@ -175,7 +164,7 @@ impl ApiNode {
         }
     }
 
-    fn __build_connector(&self) -> service::Connector<hyper::client::HttpConnector> {
+    fn __build_connector(&self) -> service::Connector {
         let mut http = hyper::client::HttpConnector::new();
         http.enforce_http(false);
         http.set_nodelay(self.tcp_nodelay);
@@ -185,13 +174,7 @@ impl ApiNode {
         connector
     }
 
-    async fn __build_client<C>(&self, connector: service::Connector<C>) -> Result<Client, Error>
-    where
-        C: MakeConnection<Uri> + Send + 'static,
-        C::Connection: Unpin + Send + 'static,
-        C::Future: Send + 'static,
-        api::Error: From<C::Error> + Send + 'static,
-    {
+    async fn __build_client(&self, connector: service::Connector) -> Result<Client, Error> {
         if let Some(connect_timeout) = self.connect_timeout {
             let mut connector = hyper_timeout::TimeoutConnector::new(connector);
             connector.set_connect_timeout(Some(connect_timeout));
@@ -199,44 +182,6 @@ impl ApiNode {
         } else {
             Client::connect(connector, self.clone()).await
         }
-    }
-
-    /// Connect with a custom connector.
-    ///
-    /// This allows you to build a [Channel](struct.Channel.html) that uses a non-HTTP transport.
-    /// See the `uds` example for an example on how to use this function to build channel that
-    /// uses a Unix socket transport.
-    ///
-    /// The [`connect_timeout`](ApiNode::connect_timeout) will still be applied.
-    pub async fn connect_with_connector<C>(&self, connector: C) -> Result<Client, Error>
-    where
-        C: MakeConnection<Uri> + Send + 'static,
-        C::Connection: Unpin + Send + 'static,
-        C::Future: Send + 'static,
-        api::Error: From<C::Error> + Send + 'static,
-    {
-        let connector = service::connector(connector);
-
-        self.__build_client::<C>(connector).await
-    }
-
-    /// Connect with a custom connector lazily.
-    ///
-    /// This allows you to build a [Channel](struct.Channel.html) that uses a non-HTTP transport
-    /// connect to it lazily.
-    ///
-    /// See the `uds` example for an example on how to use this function to build channel that
-    /// uses a Unix socket transport.
-    pub fn connect_with_connector_lazy<C>(&self, connector: C) -> Client
-    where
-        C: MakeConnection<Uri> + Send + 'static,
-        C::Connection: Unpin + Send + 'static,
-        C::Future: Send + 'static,
-        api::Error: From<C::Error> + Send + 'static,
-    {
-        let connector = service::connector(connector);
-
-        Client::new(connector, self.clone())
     }
 
     /// Get the ApiNode uri.
@@ -262,7 +207,6 @@ impl From<Uri> for ApiNode {
             concurrency_limit: None,
             rate_limit: None,
             timeout: None,
-            buffer_size: None,
             tcp_keep_alive: None,
             tcp_nodelay: true,
             connect_timeout: None,

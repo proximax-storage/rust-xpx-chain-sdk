@@ -2,6 +2,7 @@ use std::{future::Future, sync::Arc};
 
 use futures_core::future::BoxFuture;
 pub(crate) use hyper::rt::Executor;
+use tracing::Instrument;
 
 #[derive(Copy, Clone)]
 struct TokioExec;
@@ -11,8 +12,9 @@ where
     F: Future + Send + 'static,
     F::Output: Send + 'static,
 {
+    #[inline]
     fn execute(&self, fut: F) {
-        tokio::spawn(fut);
+        tokio::spawn(fut.in_current_span());
     }
 }
 

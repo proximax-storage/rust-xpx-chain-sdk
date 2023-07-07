@@ -6,10 +6,12 @@
 
 use std::time::Duration;
 
-use xpx_chain_sdk::api::ApiNode;
+use xpx_chain_sdk::api::{trace_init, ApiNode};
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let _t = trace_init();
+
     let client = ApiNode::builder()
         .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
         // .timeout(Duration::from_secs(1))

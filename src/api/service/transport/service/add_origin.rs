@@ -6,7 +6,7 @@ use http::uri::Scheme;
 use http::{HeaderValue, Request, Uri};
 use tower_service::Service;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct AddOrigin<T> {
     inner: T,
     scheme: Option<Scheme>,

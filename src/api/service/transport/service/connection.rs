@@ -4,40 +4,36 @@ use std::{
 };
 
 use http::Uri;
-use hyper::client::conn::Builder;
 use hyper::client::connect::Connection as HyperConnection;
-use hyper::client::service::Connect as HyperConnect;
 use tokio::io::{AsyncRead, AsyncWrite};
 use tower::load::Load;
-use tower::{
-    layer::Layer,
-    limit::{concurrency::ConcurrencyLimitLayer, rate::RateLimitLayer},
-    util::BoxService,
-    ServiceBuilder, ServiceExt,
-};
+use tower::util::BoxCloneService;
+use tower::{layer::Layer, limit::concurrency::ConcurrencyLimitLayer, ServiceBuilder, ServiceExt};
 use tower_service::Service;
 
+use crate::api::transport::service::http_timeout::HttpTimeout;
 use crate::api::transport::ApiNode;
 
 use super::super::BoxFuture;
-use super::{reconnect::Reconnect, AddOrigin, UserAgent};
+use super::{AddOrigin, UserAgent};
 
 pub(crate) type Request = hyper::Request<hyper::Body>;
 pub(crate) type Response = hyper::Response<hyper::Body>;
 
+#[derive(Clone)]
 pub struct Connection {
-    inner: BoxService<Request, Response, crate::api::Error>,
+    inner: BoxCloneService<Request, Response, crate::api::Error>,
 }
 
 impl Connection {
     fn new<C>(connector: C, endpoint: ApiNode, is_lazy: bool) -> Self
     where
-        C: Service<Uri> + Send + 'static,
+        C: Service<Uri> + Send + 'static + Clone + Sync,
         C::Error: Into<crate::api::Error> + Send,
         C::Future: Unpin + Send,
         C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
-        let settings = Builder::new().executor(endpoint.executor.clone()).clone();
+        let executor = endpoint.executor.clone();
 
         let stack = ServiceBuilder::new()
             .layer_fn(|s| UserAgent::new(s, endpoint.user_agent.clone()))
@@ -45,18 +41,20 @@ impl Connection {
                 let origin = endpoint.origin.as_ref().unwrap_or(&endpoint.uri).clone();
                 AddOrigin::new(s, origin)
             })
-            // .layer_fn(|s| HttpTimeout::new(s, endpoint.timeout))
+            .layer_fn(|s| HttpTimeout::new(s, endpoint.timeout))
             .option_layer(endpoint.concurrency_limit.map(ConcurrencyLimitLayer::new))
-            .option_layer(endpoint.rate_limit.map(|(l, d)| RateLimitLayer::new(l, d)))
+            // .option_layer(endpoint.rate_limit.map(|(l, d)| RateLimitLayer::new(l, d)))
             .into_inner();
 
-        let connector = HyperConnect::new(connector, settings);
-        let conn = Reconnect::new(connector, endpoint.uri.clone(), is_lazy);
+        let svc = hyper::Client::builder()
+            .executor(executor)
+            .build::<C, hyper::Body>(connector);
+        // let conn = Reconnect::new(connector, endpoint.uri.clone(), is_lazy);
 
-        let inner = stack.layer(conn);
+        let inner = stack.layer(svc);
 
         Self {
-            inner: BoxService::new(inner),
+            inner: BoxCloneService::new(inner),
         }
     }
 
@@ -65,7 +63,7 @@ impl Connection {
         endpoint: ApiNode,
     ) -> Result<Self, crate::api::Error>
     where
-        C: Service<Uri> + Send + 'static,
+        C: Service<Uri> + Send + 'static + Clone + Sync,
         C::Error: Into<crate::api::Error> + Send,
         C::Future: Unpin + Send,
         C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
@@ -75,7 +73,7 @@ impl Connection {
 
     pub(crate) fn lazy<C>(connector: C, endpoint: ApiNode) -> Self
     where
-        C: Service<Uri> + Send + 'static,
+        C: Service<Uri> + Send + 'static + Clone + Sync,
         C::Error: Into<crate::api::Error> + Send,
         C::Future: Unpin + Send,
         C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,

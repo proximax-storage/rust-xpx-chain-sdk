@@ -11,16 +11,17 @@ use tower_service::Service;
 use super::super::BoxFuture;
 use super::io::BoxedIo;
 
-pub(crate) fn connector<C>(inner: C) -> Connector<C> {
+pub(crate) fn connector(inner: hyper::client::HttpConnector) -> Connector {
     Connector::new(inner)
 }
 
-pub(crate) struct Connector<C> {
-    inner: C,
+#[derive(Clone)]
+pub struct Connector {
+    inner: hyper::client::HttpConnector,
 }
 
-impl<C> Connector<C> {
-    pub(crate) fn new(inner: C) -> Self {
+impl Connector {
+    pub(crate) fn new(inner: hyper::client::HttpConnector) -> Self {
         Self { inner }
     }
 
@@ -57,13 +58,7 @@ impl<C> Connector<C> {
     }
 }
 
-impl<C> Service<Uri> for Connector<C>
-where
-    C: MakeConnection<Uri>,
-    C::Connection: Unpin + Send + 'static,
-    C::Future: Send + 'static,
-    crate::api::Error: From<C::Error> + Send + 'static,
-{
+impl Service<Uri> for Connector {
     type Response = BoxedIo;
     type Error = crate::api::Error;
     type Future = BoxFuture<Self::Response, Self::Error>;

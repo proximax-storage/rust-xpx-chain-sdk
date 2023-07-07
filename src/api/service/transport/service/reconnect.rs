@@ -11,10 +11,11 @@ use tower_service::Service;
 
 use crate::api::Error;
 
+/// Wrapper for a service that automatically reconnects in case of connection errors.
 pub(crate) struct Reconnect<M, Target>
 where
-    M: Service<Target>,
-    M::Error: Into<Error>,
+    M: Service<Target> + Clone,
+    M::Error: Into<Error> + Clone,
 {
     mk_service: M,
     state: State<M::Future, M::Response>,
@@ -24,6 +25,7 @@ where
     is_lazy: bool,
 }
 
+/// Possible states of the `Reconnect` service.
 #[derive(Debug)]
 enum State<F, S> {
     Idle,
@@ -33,9 +35,10 @@ enum State<F, S> {
 
 impl<M, Target> Reconnect<M, Target>
 where
-    M: Service<Target>,
-    M::Error: Into<Error>,
+    M: Service<Target> + Clone,
+    M::Error: Into<Error> + Clone,
 {
+    /// Creates a new `Reconnect` service wrapper.
     pub(crate) fn new(mk_service: M, target: Target, is_lazy: bool) -> Self {
         Reconnect {
             mk_service,
@@ -50,12 +53,12 @@ where
 
 impl<M, Target, S, Request> Service<Request> for Reconnect<M, Target>
 where
-    M: Service<Target, Response = S>,
-    S: Service<Request>,
+    M: Service<Target, Response = S> + Clone,
+    S: Service<Request> + Clone,
     M::Future: Unpin,
     Error: From<M::Error> + From<S::Error>,
     Target: Clone,
-    <M as tower_service::Service<Target>>::Error: Into<crate::api::Error>,
+    <M as tower_service::Service<Target>>::Error: Into<crate::api::Error> + Clone,
 {
     type Response = S::Response;
     type Error = Error;
@@ -69,7 +72,7 @@ where
         }
 
         loop {
-            match self.state {
+            match &mut self.state {
                 State::Idle => {
                     trace!("poll_ready; idle");
                     match self.mk_service.poll_ready(cx) {
@@ -84,7 +87,7 @@ where
                     self.state = State::Connecting(fut);
                     continue;
                 }
-                State::Connecting(ref mut f) => {
+                State::Connecting(f) => {
                     trace!("poll_ready; connecting");
                     match Pin::new(f).poll(cx) {
                         Poll::Ready(Ok(service)) => {
@@ -110,7 +113,7 @@ where
                         }
                     }
                 }
-                State::Connected(ref mut inner) => {
+                State::Connected(inner) => {
                     trace!("poll_ready; connected");
 
                     self.has_been_connected = true;
@@ -146,9 +149,9 @@ where
             return ResponseFuture::error(error);
         }
 
-        let service = match self.state {
-            State::Connected(ref mut service) => service,
-            _ => panic!("service not ready; poll_ready must be called first"),
+        let mut service = match &mut self.state {
+            State::Connected(service) => service.clone(),
+            _ => panic!("service not ready; poll_readymust be called first"),
         };
 
         let fut = service.call(request);
@@ -158,11 +161,11 @@ where
 
 impl<M, Target> fmt::Debug for Reconnect<M, Target>
 where
-    M: Service<Target> + fmt::Debug,
+    M: Service<Target> + fmt::Debug + Clone,
     M::Future: fmt::Debug,
     M::Response: fmt::Debug,
     Target: fmt::Debug,
-    <M as tower_service::Service<Target>>::Error: Into<Error>,
+    <M as tower_service::Service<Target>>::Error: Into<Error> + Clone,
 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct("Reconnect")
@@ -178,27 +181,19 @@ where
 #[derive(Debug)]
 pub(crate) struct ResponseFuture<F> {
     #[pin]
-    inner: Inner<F>,
-}
-
-#[pin_project(project = InnerProj)]
-#[derive(Debug)]
-enum Inner<F> {
-    Future(#[pin] F),
-    Error(Option<crate::api::Error>),
+    inner: F,
 }
 
 impl<F> ResponseFuture<F> {
     pub(crate) fn new(inner: F) -> Self {
-        ResponseFuture {
-            inner: Inner::Future(inner),
-        }
+        ResponseFuture { inner }
     }
 
     pub(crate) fn error(error: crate::api::Error) -> Self {
-        ResponseFuture {
-            inner: Inner::Error(Some(error)),
-        }
+        unimplemented!()
+        // ResponseFuture {
+        //     inner: futures_util::future::err(error),
+        // }
     }
 }
 
@@ -210,14 +205,6 @@ where
     type Output = Result<T, Error>;
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        //self.project().inner.poll(cx).map_err(Into::into)
-        let me = self.project();
-        match me.inner.project() {
-            InnerProj::Future(fut) => fut.poll(cx).map_err(Into::into),
-            InnerProj::Error(e) => {
-                let e = e.take().expect("Polled after ready.");
-                Poll::Ready(Err(e))
-            }
-        }
+        self.project().inner.poll(cx).map_err(Into::into)
     }
 }

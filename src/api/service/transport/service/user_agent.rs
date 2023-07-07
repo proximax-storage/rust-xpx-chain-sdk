@@ -5,7 +5,7 @@ use tower_service::Service;
 
 const SIRIUS_USER_AGENT: &str = concat!("/", env!("CARGO_PKG_VERSION"));
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct UserAgent<T> {
     inner: T,
     user_agent: HeaderValue,

@@ -12,7 +12,7 @@ pub(in crate::api::service::transport) trait Io:
 
 impl<T> Io for T where T: AsyncRead + AsyncWrite + Send + 'static {}
 
-pub(crate) struct BoxedIo(Pin<Box<dyn Io>>);
+pub struct BoxedIo(Pin<Box<dyn Io>>);
 
 impl BoxedIo {
     pub(in crate::api::service::transport) fn new<I: Io>(io: I) -> Self {
