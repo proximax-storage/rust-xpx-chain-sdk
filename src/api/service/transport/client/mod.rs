@@ -59,7 +59,7 @@ const DEFAULT_BUFFER_SIZE: usize = 1024;
 /// cloning the `Channel` type is cheap and encouraged.
 #[derive(Clone)]
 pub struct Client {
-    pub svc: Svc,
+    svc: Svc,
 }
 
 /// A future that resolves to an HTTP response.
@@ -139,8 +139,6 @@ impl Service<Request> for Client {
 
     fn call(&mut self, request: Request) -> Self::Future {
         let inner = Service::call(&mut self.svc, request);
-
-        // future::ready(Ok(svc))
         ResponseFuture { inner }
     }
 }

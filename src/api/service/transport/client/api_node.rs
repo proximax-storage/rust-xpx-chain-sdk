@@ -76,6 +76,12 @@ pub struct ApiNode {
     connect_timeout: Option<Duration>,
     #[builder(setter(custom), default = "service::SharedExec::tokio()")]
     pub(crate) executor: service::SharedExec,
+    /// Determines the maximum number of retries allowed and is used to control the retry logic
+    /// based on the remaining retry attempts.
+    ///
+    /// Defaults 3 retries.
+    #[builder(setter(strip_option), default = "Some(3)")]
+    pub(crate) max_num_retry: Option<usize>,
 }
 
 impl ApiNodeBuilder {
@@ -211,6 +217,7 @@ impl From<Uri> for ApiNode {
             tcp_nodelay: true,
             connect_timeout: None,
             executor: service::SharedExec::tokio(),
+            max_num_retry: Some(3),
         }
     }
 }

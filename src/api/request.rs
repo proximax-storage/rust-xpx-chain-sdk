@@ -12,6 +12,7 @@ use {::std::collections::HashMap, serde_json};
 
 use crate::api;
 use crate::api::error::{Error, SiriusError};
+use crate::api::service::service::ReplayBody;
 use crate::api::Client;
 
 #[derive(Clone)]
@@ -72,7 +73,7 @@ impl ApiRequest {
             let mut req = hyper::Request::builder()
                 .uri(uri_str.as_str())
                 .method(self.method.clone())
-                .body(hyper::Body::from(body.clone()))
+                .body(ReplayBody::try_new(hyper::Body::from(body.clone()), 8).unwrap())
                 .unwrap();
             req.headers_mut().insert(
                 CONTENT_TYPE,
@@ -87,7 +88,7 @@ impl ApiRequest {
             hyper::Request::builder()
                 .uri(uri_str.as_str())
                 .method(self.method.clone())
-                .body(hyper::Body::empty())
+                .body(ReplayBody::try_new(hyper::Body::empty(), 8).unwrap())
                 .unwrap()
         };
 

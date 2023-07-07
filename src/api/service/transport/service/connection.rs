@@ -12,12 +12,13 @@ use tower::{layer::Layer, limit::concurrency::ConcurrencyLimitLayer, ServiceBuil
 use tower_service::Service;
 
 use crate::api::transport::service::http_timeout::HttpTimeout;
+use crate::api::transport::service::{retry, ReplayBody};
 use crate::api::transport::ApiNode;
 
 use super::super::BoxFuture;
 use super::{AddOrigin, UserAgent};
 
-pub(crate) type Request = hyper::Request<hyper::Body>;
+pub(crate) type Request = hyper::Request<ReplayBody>;
 pub(crate) type Response = hyper::Response<hyper::Body>;
 
 #[derive(Clone)]
@@ -26,7 +27,7 @@ pub struct Connection {
 }
 
 impl Connection {
-    fn new<C>(connector: C, endpoint: ApiNode, is_lazy: bool) -> Self
+    fn new<C>(connector: C, endpoint: ApiNode) -> Self
     where
         C: Service<Uri> + Send + 'static + Clone + Sync,
         C::Error: Into<crate::api::Error> + Send,
@@ -46,12 +47,16 @@ impl Connection {
             // .option_layer(endpoint.rate_limit.map(|(l, d)| RateLimitLayer::new(l, d)))
             .into_inner();
 
-        let svc = hyper::Client::builder()
+        // let conn = HyperConnect::new(connector, settings);
+        let connector = hyper::Client::builder()
             .executor(executor)
-            .build::<C, hyper::Body>(connector);
-        // let conn = Reconnect::new(connector, endpoint.uri.clone(), is_lazy);
+            .build::<C, ReplayBody>(connector);
 
-        let inner = stack.layer(svc);
+        let policy = retry::RetryPolicy(endpoint.max_num_retry.unwrap_or(3));
+
+        let conn = tower::retry::Retry::new(policy, connector);
+
+        let inner = stack.layer(conn);
 
         Self {
             inner: BoxCloneService::new(inner),
@@ -68,7 +73,7 @@ impl Connection {
         C::Future: Unpin + Send,
         C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
-        Self::new(connector, endpoint, false).ready_oneshot().await
+        Self::new(connector, endpoint).ready_oneshot().await
     }
 
     pub(crate) fn lazy<C>(connector: C, endpoint: ApiNode) -> Self
@@ -78,7 +83,7 @@ impl Connection {
         C::Future: Unpin + Send,
         C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
     {
-        Self::new(connector, endpoint, true)
+        Self::new(connector, endpoint)
     }
 }
 

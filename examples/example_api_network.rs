@@ -13,16 +13,13 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let _t = trace_init();
 
     let client = ApiNode::builder()
-        .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
+        .uri("http://bctestnet3.brimstone.xpxsirius.io:300")
         // .timeout(Duration::from_secs(1))
-        .connect_timeout(Duration::from_secs(5))
+        .connect_timeout(Duration::from_secs(1))
+        .max_num_retry(10)
         .build()?
         .connect()
         .await?;
-
-    // let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
-    //     .connect()
-    //     .await?;
 
     let network_api = client.network_api();
 

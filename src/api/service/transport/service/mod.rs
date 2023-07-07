@@ -2,6 +2,7 @@ pub(crate) use self::add_origin::AddOrigin;
 pub(crate) use self::connection::Connection;
 pub(crate) use self::connector::*;
 pub(crate) use self::executor::SharedExec;
+pub use self::replay::*;
 pub(crate) use self::user_agent::UserAgent;
 
 mod add_origin;
@@ -12,6 +13,8 @@ pub(crate) mod http_timeout;
 mod io;
 // mod reconnect;
 
+mod replay;
+mod retry;
 mod user_agent;
 
 // pub use self::router::Routes;
