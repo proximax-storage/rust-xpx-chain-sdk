@@ -28,17 +28,7 @@ pub struct ApiNode {
         default = "Uri::from_static(\"http:://127.0.0.1:3000\")"
     )]
     pub(crate) uri: Uri,
-    /// Set a custom origin.
-    ///
-    /// Override the `origin`, mainly useful when you are reaching a Server/LoadBalancer
-    /// which serves multiple services at the same time.
-    /// It will play the role of SNI (Server Name Indication).
     #[builder(setter(strip_option), default)]
-    pub(crate) origin: Option<Uri>,
-    #[builder(
-        setter(strip_option),
-        default = "Some(HeaderValue::from_static(\"RustSdk\"))"
-    )]
     pub(crate) user_agent: Option<HeaderValue>,
     /// Apply a timeout to each request.
     ///
@@ -161,13 +151,9 @@ impl ApiNode {
     pub fn connect_lazy(&self) -> Client {
         let connector = self.__build_connector();
 
-        if let Some(connect_timeout) = self.connect_timeout {
-            let mut connector = hyper_timeout::TimeoutConnector::new(connector);
-            connector.set_connect_timeout(Some(connect_timeout));
-            Client::new(connector, self.clone())
-        } else {
-            Client::new(connector, self.clone())
-        }
+        let mut connector = hyper_timeout::TimeoutConnector::new(connector);
+        connector.set_connect_timeout(self.connect_timeout);
+        Client::new(connector, self.clone())
     }
 
     fn __build_connector(&self) -> service::Connector {
@@ -181,13 +167,9 @@ impl ApiNode {
     }
 
     async fn __build_client(&self, connector: service::Connector) -> Result<Client, Error> {
-        if let Some(connect_timeout) = self.connect_timeout {
-            let mut connector = hyper_timeout::TimeoutConnector::new(connector);
-            connector.set_connect_timeout(Some(connect_timeout));
-            Client::connect(connector, self.clone()).await
-        } else {
-            Client::connect(connector, self.clone()).await
-        }
+        let mut connector = hyper_timeout::TimeoutConnector::new(connector);
+        connector.set_connect_timeout(self.connect_timeout);
+        Client::connect(connector, self.clone()).await
     }
 
     /// Get the ApiNode uri.
@@ -208,7 +190,6 @@ impl From<Uri> for ApiNode {
     fn from(uri: Uri) -> Self {
         Self {
             uri,
-            origin: None,
             user_agent: Some(HeaderValue::from_static("RustSdk")),
             concurrency_limit: None,
             rate_limit: None,

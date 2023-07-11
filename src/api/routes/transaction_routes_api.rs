@@ -29,6 +29,7 @@ use crate::{
     },
     TransactionHash,
 };
+use crate::api::transport::service::Connection;
 
 use super::{
     AGGREGATE_TRANSACTIONS_ROUTE, ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, TRANSACTIONS_ROUTE,
@@ -38,16 +39,16 @@ use super::{
 /// Transaction ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct TransactionRoutes(Client);
+pub struct TransactionRoutes(Connection);
 
 /// Transaction related endpoints.
 ///
 impl TransactionRoutes {
-    pub(crate) fn new(client: Client) -> Self {
+    pub(crate) fn new(client: Connection) -> Self {
         TransactionRoutes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __client(&self) -> Connection {
         self.0.clone()
     }
 

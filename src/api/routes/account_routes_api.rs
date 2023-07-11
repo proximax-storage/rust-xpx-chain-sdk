@@ -9,6 +9,7 @@ use {::std::collections::HashMap, http::Method};
 use crate::api::routes::const_routes::{
     AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
 };
+use crate::api::transport::service::Connection;
 use crate::api::{Client, TransactionQueryParams, __internal_get_transactions};
 use crate::transaction::{AggregateTransaction, TransactionSearch};
 use crate::{
@@ -31,16 +32,16 @@ use super::{
 /// Account ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct AccountRoutes(Client);
+pub struct AccountRoutes(Connection);
 
 /// Account related endpoints.
 ///
 impl AccountRoutes {
-    pub fn new(client: Client) -> Self {
+    pub fn new(client: Connection) -> Self {
         AccountRoutes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __connection(&self) -> Connection {
         self.0.clone()
     }
 
@@ -82,7 +83,8 @@ impl AccountRoutes {
 
         req = req.with_path_param("address_id".to_string(), id);
 
-        let dto: Result<AccountInfoDto> = req.execute(self.__client()).await;
+        let connection = self.__connection();
+        let dto: Result<AccountInfoDto> = req.execute(connection).await;
 
         Ok(dto?.compact()?)
     }
@@ -132,7 +134,9 @@ impl AccountRoutes {
 
         req = req.with_body_param(&accounts);
 
-        let dto: Vec<AccountInfoDto> = req.execute(self.__client()).await?;
+        let connection = self.__connection();
+
+        let dto: Vec<AccountInfoDto> = req.execute(connection).await?;
 
         let mut accounts_info: Vec<AccountInfo> = vec![];
         for account_dto in dto.into_iter() {
@@ -188,7 +192,9 @@ impl AccountRoutes {
 
         req = req.with_body_param(&accounts);
 
-        let dto: Vec<AccountNamesDto> = req.execute(self.__client()).await?;
+        let connection = self.__connection();
+
+        let dto: Vec<AccountNamesDto> = req.execute(connection).await?;
 
         let mut accounts_names: Vec<AccountName> = vec![];
         for accounts_dto in dto.into_iter() {
@@ -237,7 +243,9 @@ impl AccountRoutes {
 
         req = req.with_path_param("address_id".to_string(), id);
 
-        let dto: Result<MultisigAccountInfoDto> = req.execute(self.__client()).await;
+        let connection = self.__connection();
+
+        let dto: Result<MultisigAccountInfoDto> = req.execute(connection).await;
 
         Ok(dto?.compact()?)
     }
@@ -286,7 +294,9 @@ impl AccountRoutes {
 
         req = req.with_path_param("address_id".to_string(), id);
 
-        let dto: Result<Vec<MultisigAccountGraphInfoDto>> = req.execute(self.__client()).await;
+        let connection = self.__connection();
+
+        let dto: Result<Vec<MultisigAccountGraphInfoDto>> = req.execute(connection).await;
 
         let mut multisig_accounts: HashMap<i16, Vec<MultisigAccountInfo>> = HashMap::new();
         for graph_info_dto in dto?.into_iter() {
@@ -335,7 +345,9 @@ impl AccountRoutes {
 
         req = req.with_path_param("address_id".to_string(), address.address_str());
 
-        let dto: Result<AccountPropertiesInfoDto> = req.execute(self.__client()).await;
+        let connection = self.__connection();
+
+        let dto: Result<AccountPropertiesInfoDto> = req.execute(connection).await;
 
         dto?.compact()
     }
@@ -398,7 +410,8 @@ impl AccountRoutes {
 
         req = req.with_body_param(&accounts);
 
-        let dto: Result<Vec<AccountPropertiesInfoDto>> = req.execute(self.__client()).await;
+        let connection = self.__connection();
+        let dto: Result<Vec<AccountPropertiesInfoDto>> = req.execute(connection).await;
 
         let mut accounts_properties: Vec<AccountProperties> = vec![];
         for properties_dto in dto?.into_iter() {
@@ -426,7 +439,9 @@ impl AccountRoutes {
                 .unwrap()
         };
 
-        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params).await
+        let connection = self.__connection();
+
+        __internal_get_transactions(connection, TRANSACTIONS_ROUTE, query_params).await
     }
 
     /// Get incoming transactions
@@ -449,7 +464,9 @@ impl AccountRoutes {
                 .unwrap()
         };
 
-        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params).await
+        let connection = self.__connection();
+
+        __internal_get_transactions(connection, TRANSACTIONS_ROUTE, query_params).await
     }
 
     /// Get outgoing transactions
@@ -472,7 +489,9 @@ impl AccountRoutes {
                 .unwrap()
         };
 
-        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params).await
+        let connection = self.__connection();
+
+        __internal_get_transactions(connection, TRANSACTIONS_ROUTE, query_params).await
     }
 
     /// Get Unconfirmed transactions
@@ -494,12 +513,9 @@ impl AccountRoutes {
                 .unwrap()
         };
 
-        __internal_get_transactions(
-            self.__client(),
-            TRANSACTIONS_UNCONFIRMED_ROUTE,
-            query_params,
-        )
-        .await
+        let connection = self.__connection();
+
+        __internal_get_transactions(connection, TRANSACTIONS_UNCONFIRMED_ROUTE, query_params).await
     }
 
     /// Get aggregate bonded transactions information
@@ -521,7 +537,8 @@ impl AccountRoutes {
                 .unwrap()
         };
 
-        __internal_get_transactions(self.__client(), AGGREGATE_TRANSACTIONS_ROUTE, query_params)
+        let connection = self.__connection();
+        __internal_get_transactions(connection, AGGREGATE_TRANSACTIONS_ROUTE, query_params)
             .await
             .map(|txns| {
                 txns.transactions

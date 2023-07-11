@@ -17,22 +17,23 @@ use crate::{
     errors_const::ERR_EMPTY_MOSAIC_IDS,
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},
 };
+use crate::api::transport::service::Connection;
 
 use super::{MOSAICS_ROUTE, MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE};
 
 /// Mosaic ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct MosaicRoutes(Client);
+pub struct MosaicRoutes(Connection);
 
 /// Mosaic related endpoints.
 ///
 impl MosaicRoutes {
-    pub(crate) fn new(client: Client) -> Self {
+    pub(crate) fn new(client: Connection) -> Self {
         MosaicRoutes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __client(&self) -> Connection {
         self.0.clone()
     }
 

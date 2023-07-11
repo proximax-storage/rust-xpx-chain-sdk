@@ -5,6 +5,7 @@
  */
 
 use std::result;
+use tower::BoxError;
 
 use crate::api;
 
@@ -32,6 +33,8 @@ pub enum Error {
     BuildUninitializedField(#[from] derive_builder::UninitializedFieldError),
     #[error(transparent)]
     Other(#[from] anyhow::Error),
+    #[error("{0}")]
+    Tower(#[from] BoxError),
 }
 
 impl From<&'static str> for Error {

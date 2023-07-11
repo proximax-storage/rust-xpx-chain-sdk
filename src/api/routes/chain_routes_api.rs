@@ -13,22 +13,23 @@ use crate::{
     api::{error::Result, request as __internal_request, BlockchainScoreDto, HeightInfoDto},
     blockchain::{BlockchainScore, HeightInfo, StorageInfo},
 };
+use crate::api::transport::service::Connection;
 
 use super::{CHAIN_HEIGHT_ROUTE, CHAIN_SCORE_ROUTE, CHAIN_STORAGE_ROUTE};
 
 /// Chain ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct ChainRoutes(Client);
+pub struct ChainRoutes(Connection);
 
 /// Chain related endpoints.
 ///
 impl ChainRoutes {
-    pub(crate) fn new(client: Client) -> Self {
+    pub(crate) fn new(client: Connection) -> Self {
         ChainRoutes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __client(&self) -> Connection {
         self.0.clone()
     }
 

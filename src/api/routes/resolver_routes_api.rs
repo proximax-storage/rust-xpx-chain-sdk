@@ -13,26 +13,27 @@ use crate::{
     errors_const::{ERR_INVALID_ASSET_ID, ERR_INVALID_NAMESPACE_ALIASED},
     mosaic::{AssetIdType, MosaicInfo, UnresolvedMosaicId},
 };
+use crate::api::transport::service::Connection;
 
 use super::{mosaic_routes_api::MosaicRoutes, namespace_routes_api::NamespaceRoutes};
 
 /// Node ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct ResolverRoutes(Client, NamespaceRoutes, MosaicRoutes);
+pub struct ResolverRoutes(Connection, NamespaceRoutes, MosaicRoutes);
 
 /// Resolver related endpoints.
 ///
 impl ResolverRoutes {
     pub(crate) fn new(
-        client: Client,
+        client: Connection,
         namespace_routes: NamespaceRoutes,
         mosaic_routes: MosaicRoutes,
     ) -> Self {
         ResolverRoutes(client, namespace_routes, mosaic_routes)
     }
 
-    fn __client(&self) -> Client {
+    fn __client(&self) -> Connection {
         self.0.clone()
     }
 

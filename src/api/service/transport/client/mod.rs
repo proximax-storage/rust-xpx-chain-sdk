@@ -24,13 +24,11 @@ use crate::api::routes::{
     node_routes_api::NodeRoutes, resolver_routes_api::ResolverRoutes,
     transaction_routes_api::TransactionRoutes,
 };
-use crate::api::transport::service::connection::{Request, Response};
+use crate::api::transport::service::connection::{Request, Response, TimeoutConnector};
 
 use super::service::Connection;
 
 mod api_node;
-
-pub type Svc = BoxCloneService<Request, Response, crate::api::Error>;
 
 const DEFAULT_BUFFER_SIZE: usize = 1024;
 
@@ -59,7 +57,7 @@ const DEFAULT_BUFFER_SIZE: usize = 1024;
 /// cloning the `Channel` type is cheap and encouraged.
 #[derive(Clone)]
 pub struct Client {
-    svc: Svc,
+    inner: Connection,
 }
 
 /// A future that resolves to an HTTP response.
@@ -97,77 +95,30 @@ impl Client {
         Ok(Self::builder(uri))
     }
 
-    pub(crate) fn new<C>(connector: C, endpoint: ApiNode) -> Self
-    where
-        C: Service<Uri> + Send + 'static + Clone + Sync,
-        C::Error: Into<crate::api::Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+    pub(crate) fn new(connector: TimeoutConnector, endpoint: ApiNode) -> Self
     {
         let svc = Connection::lazy(connector, endpoint);
 
         Client {
-            svc: BoxCloneService::new(svc),
+            inner: svc,
         }
     }
 
-    pub(crate) async fn connect<C>(connector: C, endpoint: ApiNode) -> Result<Self, super::Error>
-    where
-        C: Service<Uri> + Send + 'static + Clone + Sync,
-        C::Error: Into<crate::api::Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
+    pub(crate) async fn connect(connector: TimeoutConnector, endpoint: ApiNode) -> Result<Self, super::Error>
     {
         let svc = Connection::connect(connector, endpoint)
             .await
             .map_err(super::Error::from_source)?;
 
         Ok(Client {
-            svc: BoxCloneService::new(svc),
+            inner: svc,
         })
     }
 }
 
-impl Service<Request> for Client {
-    type Response = Response;
-    type Error = super::Error;
-    type Future = ResponseFuture;
-
-    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
-        Service::poll_ready(&mut self.svc, cx).map_err(super::Error::from_source)
-    }
-
-    fn call(&mut self, request: Request) -> Self::Future {
-        let inner = Service::call(&mut self.svc, request);
-        ResponseFuture { inner }
-    }
-}
-
-impl Future for ResponseFuture {
-    type Output = Result<Response, super::Error>;
-
-    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        let val = futures_util::ready!(Pin::new(&mut self.inner).poll(cx))
-            .map_err(super::Error::from_source)?;
-        Ok(val).into()
-    }
-}
-
-impl fmt::Debug for Client {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Channel").finish()
-    }
-}
-
-impl fmt::Debug for ResponseFuture {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("ResponseFuture").finish()
-    }
-}
-
 impl Client {
-    fn __client(&self) -> Client {
-        self.clone()
+    fn __client(&self) -> Connection {
+        self.inner.clone()
     }
 
     /// Get Account ApiClient routes.
@@ -231,5 +182,42 @@ impl Client {
     /// Get MetadataV2 ApiClient routes.
     pub fn metadata_v2_api(&self) -> Box<MetadataV2Routes> {
         Box::new(MetadataV2Routes::new(self.__client()))
+    }
+}
+
+impl Service<Request> for Client {
+    type Response = Response;
+    type Error = super::Error;
+    type Future = ResponseFuture;
+
+    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        Service::poll_ready(&mut self.inner, cx).map_err(super::Error::from_source)
+    }
+
+    fn call(&mut self, request: Request) -> Self::Future {
+        let inner = Service::call(&mut self.inner, request);
+        ResponseFuture { inner }
+    }
+}
+
+impl Future for ResponseFuture {
+    type Output = Result<Response, super::Error>;
+
+    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        let val = futures_util::ready!(Pin::new(&mut self.inner).poll(cx))
+            .map_err(super::Error::from_source)?;
+        Ok(val).into()
+    }
+}
+
+impl fmt::Debug for Client {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Channel").finish()
+    }
+}
+
+impl fmt::Debug for ResponseFuture {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("ResponseFuture").finish()
     }
 }

@@ -3,86 +3,75 @@ use std::{
     task::{Context, Poll},
 };
 
-use http::Uri;
+use http::{HeaderValue, Uri};
+use http::uri::{Authority, Scheme};
 use hyper::client::connect::Connection as HyperConnection;
 use tokio::io::{AsyncRead, AsyncWrite};
 use tower::load::Load;
 use tower::util::BoxCloneService;
-use tower::{layer::Layer, limit::concurrency::ConcurrencyLimitLayer, ServiceBuilder, ServiceExt};
+use tower::{
+    layer::Layer, limit::concurrency::ConcurrencyLimitLayer, BoxError, ServiceBuilder, ServiceExt,
+};
 use tower_service::Service;
 
 use crate::api::transport::service::http_timeout::HttpTimeout;
-use crate::api::transport::service::{retry, ReplayBody};
+use crate::api::transport::service::{retry, Connector, ReplayBody};
 use crate::api::transport::ApiNode;
 
 use super::super::BoxFuture;
 use super::{AddOrigin, UserAgent};
 
-pub(crate) type Request = hyper::Request<ReplayBody>;
-pub(crate) type Response = hyper::Response<hyper::Body>;
+pub type Request = hyper::Request<ReplayBody>;
+pub type Response = hyper::Response<hyper::Body>;
+pub type TimeoutConnector = hyper_timeout::TimeoutConnector<Connector>;
 
 #[derive(Clone)]
 pub struct Connection {
-    inner: BoxCloneService<Request, Response, crate::api::Error>,
+    // inner: BoxCloneService<Request, Response, crate::api::Error>,
+    inner:  hyper::Client<TimeoutConnector, ReplayBody>,
+    scheme: Option<Scheme>,
+    authority: Option<Authority>,
 }
 
 impl Connection {
-    fn new<C>(connector: C, endpoint: ApiNode) -> Self
-    where
-        C: Service<Uri> + Send + 'static + Clone + Sync,
-        C::Error: Into<crate::api::Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
-    {
+    fn new(connector: TimeoutConnector, endpoint: ApiNode) -> Self {
         let executor = endpoint.executor.clone();
-
-        let stack = ServiceBuilder::new()
-            .layer_fn(|s| UserAgent::new(s, endpoint.user_agent.clone()))
-            .layer_fn(|s| {
-                let origin = endpoint.origin.as_ref().unwrap_or(&endpoint.uri).clone();
-                AddOrigin::new(s, origin)
-            })
-            .layer_fn(|s| HttpTimeout::new(s, endpoint.timeout))
-            .option_layer(endpoint.concurrency_limit.map(ConcurrencyLimitLayer::new))
-            // .option_layer(endpoint.rate_limit.map(|(l, d)| RateLimitLayer::new(l, d)))
-            .into_inner();
-
-        // let conn = HyperConnect::new(connector, settings);
-        let connector = hyper::Client::builder()
+        let inner = hyper::Client::builder()
             .executor(executor)
-            .build::<C, ReplayBody>(connector);
+            .build::<TimeoutConnector, ReplayBody>(connector);
 
-        let policy = retry::RetryPolicy(endpoint.max_num_retry.unwrap_or(3));
+        // let stack = ServiceBuilder::new()
+        //     .boxed_clone()
+        //     .layer_fn(|s| UserAgent::new(s, endpoint.user_agent.clone()))
+        //     .layer_fn(|s| AddOrigin::new(s, endpoint.uri.clone()))
+        //     .layer_fn(|s| HttpTimeout::new(s, endpoint.timeout))
+        //     .option_layer(endpoint.concurrency_limit.map(ConcurrencyLimitLayer::new))
+        //     // .option_layer(endpoint.rate_limit.map(|(l, d)| RateLimitLayer::new(l, d)))
+        //     .into_inner();
+        //
+        // let policy = retry::RetryPolicy(endpoint.max_num_retry.unwrap_or(3));
+        // let conn = tower::retry::Retry::new(policy, inner);
+        // let inner = stack.layer(conn);
 
-        let conn = tower::retry::Retry::new(policy, connector);
-
-        let inner = stack.layer(conn);
+        let http::uri::Parts {
+            scheme, authority, ..
+        } = endpoint.uri.into_parts();
 
         Self {
-            inner: BoxCloneService::new(inner),
+            inner,
+            scheme,
+            authority,
         }
     }
 
-    pub(crate) async fn connect<C>(
-        connector: C,
+    pub(crate) async fn connect(
+        connector: TimeoutConnector,
         endpoint: ApiNode,
-    ) -> Result<Self, crate::api::Error>
-    where
-        C: Service<Uri> + Send + 'static + Clone + Sync,
-        C::Error: Into<crate::api::Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
-    {
+    ) -> Result<Self, crate::api::Error> {
         Self::new(connector, endpoint).ready_oneshot().await
     }
 
-    pub(crate) fn lazy<C>(connector: C, endpoint: ApiNode) -> Self
-    where
-        C: Service<Uri> + Send + 'static + Clone + Sync,
-        C::Error: Into<crate::api::Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
-    {
+    pub(crate) fn lazy(connector: TimeoutConnector, endpoint: ApiNode) -> Self {
         Self::new(connector, endpoint)
     }
 }
@@ -97,7 +86,36 @@ impl Service<Request> for Connection {
     }
 
     fn call(&mut self, request: Request) -> Self::Future {
-        self.inner.call(request)
+        if self.scheme.is_none() || self.authority.is_none() {
+            let err = crate::api::transport::Error::new_invalid_uri();
+            return Box::pin(async move { Err::<Self::Response, _>(err.into()) });
+        }
+
+        // Split the request into the head and the body.
+        let (mut head, body) = request.into_parts();
+
+        // Update the the request URI
+        head.uri = {
+            // Split the request URI into parts.
+            let mut uri: http::uri::Parts = head.uri.into();
+            // Update the URI parts, setting hte scheme and authority
+            uri.scheme = self.scheme.clone();
+            uri.authority = self.authority.clone();
+
+            Uri::from_parts(uri).expect("valid uri")
+        };
+        head.headers.append(
+            "Host",
+            HeaderValue::from_bytes(head.uri.host().as_ref().unwrap().as_bytes())
+                .expect("host header should be valid"),
+        );
+
+        let request = Request::from_parts(head, body);
+
+        let fut = self.inner.call(request);
+
+        Box::pin(async move { fut.await.map_err(Into::into) })
+
     }
 }
 

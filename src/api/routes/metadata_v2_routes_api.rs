@@ -11,20 +11,21 @@ use crate::api::routes::const_routes::{METADATAS_V2_INFO_ROUTE, METADATA_V2_INFO
 use crate::api::{Client, MetadataQueryParams, MetadataV2InfoDTO, SearchMetadataV2InfoDTO};
 use crate::metadata::{MetadataEntry, SearchMetadataEntry};
 use crate::{api::error::Result, api::request as __internal_request};
+use crate::api::transport::service::Connection;
 
 /// Namespace ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct MetadataV2Routes(Client);
+pub struct MetadataV2Routes(Connection);
 
 /// Account related endpoints.
 ///
 impl MetadataV2Routes {
-    pub(crate) fn new(client: Client) -> Self {
+    pub(crate) fn new(client: Connection) -> Self {
         MetadataV2Routes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __client(&self) -> Connection {
         self.0.clone()
     }
 

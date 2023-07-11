@@ -13,7 +13,7 @@ use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
 use crate::api::{
     request as __internal_request, AccountPropertiesTransactionInfoDto,
     AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto,
-    AggregateTransactionInfoDto, BlockchainUpgradeTransactionInfoDto, Client,
+    AggregateTransactionInfoDto, BlockchainUpgradeTransactionInfoDto,
     ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto, MetaDataEntryTransactionInfoDto,
     ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto,
     MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto,
@@ -26,6 +26,7 @@ use crate::{
     multisig::CosignatoryModification, network::NetworkType,
     transaction::TransactionType as Entity,
 };
+use crate::api::transport::service::Connection;
 
 use super::{
     CosignatoryModificationDto, MetadataModificationDto, MosaicPropertyDto, TransactionDto,
@@ -220,7 +221,7 @@ pub(crate) fn metadata_dto_vec_to_struct(
 }
 
 pub(crate) async fn __internal_get_transactions(
-    client: Client,
+    connection: Connection,
     route: &str,
     query_params: TransactionQueryParams,
 ) -> api::error::Result<TransactionSearch> {
@@ -228,12 +229,12 @@ pub(crate) async fn __internal_get_transactions(
 
     req = req.with_query_param(query_params.to_query_string());
 
-    let body_value = req.execute(client).await?;
+    let body_value = req.execute(connection).await?;
     value_to_transaction_search(body_value)
 }
 
 pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
-    client: Client,
+    connection: Connection,
     route: &str,
     group_type: TransactionGroupType,
     query_params: Option<TransactionQueryParams>,
@@ -246,15 +247,15 @@ pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
         req = req.with_query_param(query.to_query_string());
     }
 
-    let body_value = req.execute(client).await?;
+    let body_value = req.execute(connection).await?;
     value_to_transaction_search(body_value)
 }
 
 pub(crate) async fn __internal_get_transaction(
-    client: Client,
+    connection: Connection,
     req: __internal_request::ApiRequest,
 ) -> api::error::Result<Box<dyn Transaction>> {
-    let body_value: Value = req.execute(client).await?;
+    let body_value: Value = req.execute(connection).await?;
 
     let transaction_dto = map_transaction_dto_new(Bytes::from(format!("{}", body_value)))?;
 

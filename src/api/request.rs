@@ -14,6 +14,7 @@ use crate::api;
 use crate::api::error::{Error, SiriusError};
 use crate::api::service::service::ReplayBody;
 use crate::api::Client;
+use crate::api::transport::service::Connection;
 
 #[derive(Clone)]
 pub(crate) struct ApiRequest {
@@ -52,28 +53,29 @@ impl ApiRequest {
         self
     }
 
-    pub async fn execute<U>(self, api: Client) -> api::error::Result<U>
+    pub async fn execute<U>(&self, connection: Connection) -> api::error::Result<U>
     where
         for<'de> U: serde::Deserialize<'de>,
     {
-        let mut path = self.path;
+        let mut path = self.path.to_owned();
 
-        self.path_params.into_iter().for_each(|(key, val)| {
+        self.path_params.iter().for_each(|(key, val)| {
             // replace {id} with the value of the id path param
             path = path.replace(&format!("{{{}}}", key), &val);
         });
 
         let mut uri_str = format!("{}", path);
 
-        if let Some(params) = self.query_params {
+        if let Some(ref params) = self.query_params {
             uri_str.push_str(&format!("?{}", params));
         };
 
-        let req = if let Some(body) = self.serialized_body {
+        let req = if let Some(ref body) = self.serialized_body {
+            let max_body_len = body.len();
             let mut req = hyper::Request::builder()
                 .uri(uri_str.as_str())
                 .method(self.method.clone())
-                .body(ReplayBody::try_new(hyper::Body::from(body.clone()), 8).unwrap())
+                .body(ReplayBody::try_new(hyper::Body::from(body.clone()), max_body_len).unwrap())
                 .unwrap();
             req.headers_mut().insert(
                 CONTENT_TYPE,
@@ -92,7 +94,7 @@ impl ApiRequest {
                 .unwrap()
         };
 
-        let resp = api.oneshot(req).await?;
+        let resp = connection.oneshot(req).await?;
 
         let status = resp.status();
 

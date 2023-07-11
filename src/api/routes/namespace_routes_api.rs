@@ -21,6 +21,7 @@ use crate::{
     mosaic::UnresolvedMosaicId,
     namespace::{NamespaceId, NamespaceIds, NamespaceInfo, NamespaceName},
 };
+use crate::api::transport::service::Connection;
 
 use super::{
     NAMESPACES_FROM_ACCOUNTS_ROUTE, NAMESPACES_FROM_ACCOUNT_ROUTES, NAMESPACE_NAMES_ROUTE,
@@ -30,16 +31,16 @@ use super::{
 /// Namespace ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NamespaceRoutes(Client);
+pub struct NamespaceRoutes(Connection);
 
 /// Namespace related endpoints.
 ///
 impl NamespaceRoutes {
-    pub(crate) fn new(client: Client) -> Self {
+    pub(crate) fn new(client: Connection) -> Self {
         NamespaceRoutes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __client(&self) -> Connection {
         self.0.clone()
     }
 
