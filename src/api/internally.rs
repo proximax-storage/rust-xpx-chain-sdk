@@ -5,36 +5,36 @@
  */
 
 use anyhow::Result;
-use http::Method;
+use hyper::Method;
 use serde::de::DeserializeOwned;
 
 use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
 
-use crate::api::{
-    request as __internal_request, AccountPropertiesTransactionInfoDto,
-    AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto,
-    AggregateTransactionInfoDto, BlockchainUpgradeTransactionInfoDto,
-    ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto, MetaDataEntryTransactionInfoDto,
-    ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto,
-    MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto,
-    NetworkConfigTransactionInfoDto, Pagination, RegisterNamespaceTransactionInfoDto,
-    RemoveExchangeOfferTransactionInfoDto, TransactionQueryParams, TransferTransactionInfoDto,
-};
-use crate::transaction::{Transaction, TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
     api, errors_const, helpers::is_hex, metadata::MetadataModification, mosaic::MosaicProperties,
     multisig::CosignatoryModification, network::NetworkType,
     transaction::TransactionType as Entity,
 };
+use crate::api::{
+    AccountPropertiesTransactionInfoDto, AddExchangeOfferTransactionInfoDto,
+    AddressAliasTransactionInfoDto, AggregateTransactionInfoDto,
+    BlockchainUpgradeTransactionInfoDto, ExchangeOfferTransactionInfoDto,
+    HashLockTransactionInfoDto, MetaDataEntryTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto,
+    MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto,
+    MosaicSupplyChangeTransactionInfoDto, NetworkConfigTransactionInfoDto,
+    Pagination, RegisterNamespaceTransactionInfoDto, RemoveExchangeOfferTransactionInfoDto,
+    request as __internal_request, TransactionQueryParams, TransferTransactionInfoDto,
+};
 use crate::api::transport::service::Connection;
+use crate::transaction::{Transaction, TransactionGroupType, Transactions, TransactionSearch};
 
 use super::{
     CosignatoryModificationDto, MetadataModificationDto, MosaicPropertyDto, TransactionDto,
 };
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
-where
-    T: Debug,
+    where
+        T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())

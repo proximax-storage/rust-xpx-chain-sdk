@@ -83,7 +83,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         network_type,
         generation_hash,
     )
-    .await?;
+        .await?;
 
     let response = client
         .transaction_api()

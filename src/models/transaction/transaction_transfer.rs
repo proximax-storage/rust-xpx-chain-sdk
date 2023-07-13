@@ -10,15 +10,15 @@ use {::std::fmt, serde_json::Value};
 
 use crate::{
     account::{PublicAccount, UnresolvedAddress},
+    AsUint64,
     message::Message,
     models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
     mosaic::Mosaic,
     network::NetworkType,
-    AsUint64,
 };
 
 use super::{
-    buffers, deadline::Deadline, schema::transfer_transaction_schema, CommonTransaction,
+    buffers, CommonTransaction, deadline::Deadline, schema::transfer_transaction_schema,
     Transaction, TransactionType, TransactionVersion,
 };
 
@@ -232,8 +232,8 @@ pub mod tests {
 
         use lazy_static::lazy_static;
 
-        use crate::account::tests::TESTING_ACCOUNT;
         use crate::account::{Address, UnresolvedAddress};
+        use crate::account::tests::TESTING_ACCOUNT;
         use crate::helpers::GenerationHash;
         use crate::message::{Message, PlainMessage};
         use crate::mosaic::Mosaic;

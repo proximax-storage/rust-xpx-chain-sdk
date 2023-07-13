@@ -13,16 +13,16 @@ use {
 /// which represents different types of transactions in a blockchain system.
 /// Each transaction type variant is assigned a decimal value and a hexadecimal value using the repr attribute.
 #[derive(
-    Debug,
-    Clone,
-    Copy,
-    Eq,
-    PartialEq,
-    Serialize_repr,
-    Deserialize_repr,
-    IntoPrimitive,
-    FromPrimitive,
-    strum::Display,
+Debug,
+Clone,
+Copy,
+Eq,
+PartialEq,
+Serialize_repr,
+Deserialize_repr,
+IntoPrimitive,
+FromPrimitive,
+strum::Display,
 )]
 #[repr(u16)]
 pub enum TransactionType {

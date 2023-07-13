@@ -54,8 +54,8 @@ impl fmt::Display for MetadataV2Type {
 
 impl Serialize for MetadataV2Type {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         serializer.serialize_u8(self.value())
     }

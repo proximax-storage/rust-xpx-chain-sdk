@@ -4,13 +4,13 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::Method;
+use hyper::Method;
 
-use crate::api::{Client, NodeInfoDto};
 use crate::{
-    api::{error::Result, request as __internal_request, NodeTimeDto},
+    api::{error::Result, NodeTimeDto, request as __internal_request},
     node::{NodeInfo, NodeTime},
 };
+use crate::api::NodeInfoDto;
 use crate::api::transport::service::Connection;
 
 use super::{NODE_INFO, NODE_PEERS, NODE_TIME};

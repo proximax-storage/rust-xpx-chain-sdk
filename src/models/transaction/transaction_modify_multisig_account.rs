@@ -19,15 +19,15 @@ use crate::{
 };
 
 use super::{
-    buffers, internal::cosignatory_modification_array_to_buffer,
-    schema::modify_multisig_account_transaction_schema, CommonTransaction, Deadline, Transaction,
+    buffers, CommonTransaction,
+    Deadline, internal::cosignatory_modification_array_to_buffer, schema::modify_multisig_account_transaction_schema, Transaction,
     TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Builder, Deserialize)]
 #[builder(
-    create_empty = "empty",
-    build_fn(validate = "Self::validate", error = "crate::api::error::Error")
+create_empty = "empty",
+build_fn(validate = "Self::validate", error = "crate::api::error::Error")
 )]
 #[serde(rename_all = "camelCase")]
 pub struct ModifyMultisigAccountTransaction {

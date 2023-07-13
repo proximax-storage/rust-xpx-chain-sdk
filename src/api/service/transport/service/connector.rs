@@ -2,14 +2,14 @@ use std::fmt;
 use std::sync::Arc;
 use std::task::{Context, Poll};
 
-use http::Uri;
+use hyper::Uri;
 use tokio_rustls::rustls::{ClientConfig, OwnedTrustAnchor, RootCertStore};
 use tokio_rustls::TlsConnector as RustlsConnector;
 use tower::make::MakeConnection;
-use tower_service::Service;
+use tower::Service;
 
-use super::super::BoxFuture;
 use super::io::BoxedIo;
+use super::super::BoxFuture;
 
 pub(crate) fn connector(inner: hyper::client::HttpConnector) -> Connector {
     Connector::new(inner)

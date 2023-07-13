@@ -4,29 +4,29 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::collections::HashMap, http::Method};
+use {::std::collections::HashMap, hyper::Method};
 
-use crate::api::routes::const_routes::{
-    AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
-};
-use crate::api::transport::service::Connection;
-use crate::api::{Client, TransactionQueryParams, __internal_get_transactions};
-use crate::transaction::{AggregateTransaction, TransactionSearch};
 use crate::{
     account::{AccountInfo, AccountName, AccountProperties, AccountsId, Address, PublicAccount},
     api::{
-        error::Result,
-        internally::{str_to_account_id, valid_vec_len},
-        request as __internal_request, AccountInfoDto, AccountNamesDto, AccountPropertiesInfoDto,
-        MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
+        AccountInfoDto,
+        AccountNamesDto,
+        AccountPropertiesInfoDto, error::Result, internally::{str_to_account_id, valid_vec_len}, MultisigAccountGraphInfoDto,
+        MultisigAccountInfoDto, request as __internal_request,
     },
     errors_const::ERR_EMPTY_ADDRESSES_IDS,
     multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
 };
+use crate::api::{__internal_get_transactions, TransactionQueryParams};
+use crate::api::routes::const_routes::{
+    AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
+};
+use crate::api::transport::service::Connection;
+use crate::transaction::{AggregateTransaction, TransactionSearch};
 
 use super::{
-    ACCOUNTS_PROPERTIES_ROUTE, ACCOUNTS_ROUTE, ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE,
-    ACCOUNT_ROUTE, MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE,
+    ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE, ACCOUNT_ROUTE, ACCOUNTS_PROPERTIES_ROUTE,
+    ACCOUNTS_ROUTE, MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE,
 };
 
 /// Account ApiClient routes.

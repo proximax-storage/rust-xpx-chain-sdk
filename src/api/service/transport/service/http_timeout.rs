@@ -6,15 +6,15 @@ use std::{
     time::Duration,
 };
 
-use http::{HeaderMap, HeaderValue, Request};
+use hyper::http::{HeaderMap, HeaderValue, Request};
 use pin_project::pin_project;
 use tokio::time::Sleep;
-use tower_service::Service;
+use tower::Service;
 
 pub(crate) const HTTP_TIMEOUT_HEADER: &str = "grpc-timeout";
 
 #[derive(Debug, Clone)]
-pub(crate) struct HttpTimeout<S> {
+pub struct HttpTimeout<S> {
     inner: S,
     server_timeout: Option<Duration>,
 }
@@ -29,9 +29,9 @@ impl<S> HttpTimeout<S> {
 }
 
 impl<S, ReqBody> Service<Request<ReqBody>> for HttpTimeout<S>
-where
-    S: Service<Request<ReqBody>>,
-    S::Error: Into<crate::api::Error>,
+    where
+        S: Service<Request<ReqBody>>,
+        S::Error: Into<crate::api::Error>,
 {
     type Response = S::Response;
     type Error = crate::api::Error;
@@ -69,7 +69,7 @@ where
 }
 
 #[pin_project]
-pub(crate) struct ResponseFuture<F> {
+pub struct ResponseFuture<F> {
     #[pin]
     inner: F,
     #[pin]
@@ -77,9 +77,9 @@ pub(crate) struct ResponseFuture<F> {
 }
 
 impl<F, Res, E> Future for ResponseFuture<F>
-where
-    F: Future<Output = Result<Res, E>>,
-    E: Into<crate::api::Error>,
+    where
+        F: Future<Output=Result<Res, E>>,
+        E: Into<crate::api::Error>,
 {
     type Output = Result<Res, crate::api::Error>;
 

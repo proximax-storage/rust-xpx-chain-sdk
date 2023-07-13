@@ -5,6 +5,7 @@
  */
 
 use std::result;
+
 use tower::BoxError;
 
 use crate::api;

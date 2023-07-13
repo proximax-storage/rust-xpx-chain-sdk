@@ -11,23 +11,23 @@ use anyhow::Result;
 use {::std::fmt, serde_json::Value};
 
 use crate::{
+    AsUint64,
     errors_const,
     models::consts::REGISTER_NAMESPACE_HEADER_SIZE,
     mosaic::UnresolvedMosaicId,
     namespace::{generate_namespace_id, NamespaceId, NamespaceType},
     network::NetworkType,
-    AsUint64,
 };
 
 use super::{
-    buffers, schema::register_namespace_transaction_schema, CommonTransaction, Deadline,
+    buffers, CommonTransaction, Deadline, schema::register_namespace_transaction_schema,
     Transaction, TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Builder, Deserialize)]
 #[builder(
-    create_empty = "empty",
-    build_fn(validate = "Self::validate", error = "crate::api::error::Error")
+create_empty = "empty",
+build_fn(validate = "Self::validate", error = "crate::api::error::Error")
 )]
 #[serde(rename_all = "camelCase")]
 pub struct RegisterNamespaceTransaction {

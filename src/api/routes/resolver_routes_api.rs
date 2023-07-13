@@ -4,7 +4,6 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::api::Client;
 use crate::{
     api::{
         error::{Error, Result},

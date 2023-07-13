@@ -2,21 +2,18 @@
 
 use std::{
     fmt,
-    future::Future,
-    pin::Pin,
     task::{Context, Poll},
 };
 
 use bytes::Bytes;
 use futures_util::future;
-use http::uri::{InvalidUri, Uri};
-use hyper::client::connect::Connection as HyperConnection;
-use tokio::io::{AsyncRead, AsyncWrite};
-use tower::util::BoxCloneService;
+use hyper::http::uri::InvalidUri;
+use hyper::Uri;
 use tower::Service;
 
 pub use api_node::ApiNode;
 
+use crate::api;
 use crate::api::routes::{
     account_routes_api::AccountRoutes, chain_routes_api::ChainRoutes,
     metadata_v2_routes_api::MetadataV2Routes, mosaic_routes_api::MosaicRoutes,
@@ -58,13 +55,6 @@ const DEFAULT_BUFFER_SIZE: usize = 1024;
 #[derive(Clone)]
 pub struct Client {
     inner: Connection,
-}
-
-/// A future that resolves to an HTTP response.
-///
-/// This is returned by the `Service::call` on [`Channel`].
-pub struct ResponseFuture {
-    inner: future::BoxFuture<'static, Result<Response, crate::api::Error>>,
 }
 
 impl Client {
@@ -187,37 +177,22 @@ impl Client {
 
 impl Service<Request> for Client {
     type Response = Response;
-    type Error = super::Error;
-    type Future = ResponseFuture;
+    type Error = api::error::Error;
+    type Future = future::BoxFuture<'static, Result<Self::Response, Self::Error>>;
 
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
-        Service::poll_ready(&mut self.inner, cx).map_err(super::Error::from_source)
+        self.inner.poll_ready(cx).map_err(Into::into)
     }
 
     fn call(&mut self, request: Request) -> Self::Future {
-        let inner = Service::call(&mut self.inner, request);
-        ResponseFuture { inner }
+        let fut = self.inner.call(request);
+        Box::pin(async move { fut.await.map_err(Into::into) })
     }
 }
 
-impl Future for ResponseFuture {
-    type Output = Result<Response, super::Error>;
-
-    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        let val = futures_util::ready!(Pin::new(&mut self.inner).poll(cx))
-            .map_err(super::Error::from_source)?;
-        Ok(val).into()
-    }
-}
 
 impl fmt::Debug for Client {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Channel").finish()
-    }
-}
-
-impl fmt::Debug for ResponseFuture {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("ResponseFuture").finish()
     }
 }

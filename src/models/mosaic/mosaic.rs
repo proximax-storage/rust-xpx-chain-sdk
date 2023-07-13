@@ -208,7 +208,7 @@ mod tests {
 
     #[test]
     #[should_panic(
-        expected = "Invalid divisibility 8, the divisibility must be in the range of 0 and 6."
+    expected = "Invalid divisibility 8, the divisibility must be in the range of 0 and 6."
     )]
     fn test_try_create_with_relative_should_return_panic() {
         let id = MosaicId::from(LO_HI);

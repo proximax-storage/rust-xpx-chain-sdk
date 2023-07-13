@@ -4,8 +4,8 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::header::{CONTENT_LENGTH, CONTENT_TYPE};
-use http::{Method, StatusCode};
+use hyper::{Method, StatusCode};
+use hyper::header::{CONTENT_LENGTH, CONTENT_TYPE};
 use tower::ServiceExt;
 
 use {::std::collections::HashMap, serde_json};
@@ -13,7 +13,6 @@ use {::std::collections::HashMap, serde_json};
 use crate::api;
 use crate::api::error::{Error, SiriusError};
 use crate::api::service::service::ReplayBody;
-use crate::api::Client;
 use crate::api::transport::service::Connection;
 
 #[derive(Clone)]
@@ -54,8 +53,8 @@ impl ApiRequest {
     }
 
     pub async fn execute<U>(&self, connection: Connection) -> api::error::Result<U>
-    where
-        for<'de> U: serde::Deserialize<'de>,
+        where
+                for<'de> U: serde::Deserialize<'de>,
     {
         let mut path = self.path.to_owned();
 

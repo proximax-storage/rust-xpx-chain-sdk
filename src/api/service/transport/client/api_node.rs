@@ -8,11 +8,12 @@ use std::{
 };
 
 use bytes::Bytes;
-use http::{uri::Uri, HeaderValue};
+use hyper::header::HeaderValue;
+use hyper::Uri;
 
 use crate::api::{
     self,
-    transport::{service, Error},
+    transport::{Error, service},
 };
 
 use super::Client;
@@ -24,8 +25,8 @@ use super::Client;
 #[builder(create_empty = "empty", build_fn(error = "crate::api::error::Error"))]
 pub struct ApiNode {
     #[builder(
-        setter(custom),
-        default = "Uri::from_static(\"http:://127.0.0.1:3000\")"
+    setter(custom),
+    default = "Uri::from_static(\"http:://127.0.0.1:3000\")"
     )]
     pub(crate) uri: Uri,
     #[builder(setter(strip_option), default)]
@@ -72,6 +73,8 @@ pub struct ApiNode {
     /// Defaults 3 retries.
     #[builder(setter(strip_option), default = "Some(3)")]
     pub(crate) max_num_retry: Option<usize>,
+    #[builder(setter(strip_option), default = "true")]
+    pub(crate) retry_service_unavailable_requests: bool,
 }
 
 impl ApiNodeBuilder {
@@ -86,8 +89,8 @@ impl ApiNodeBuilder {
     ///
     /// Uses `tokio::spawn` by default.
     pub fn executor<E>(mut self, executor: E) -> Self
-    where
-        E: hyper::rt::Executor<Pin<Box<dyn Future<Output = ()> + Send>>> + Send + Sync + 'static,
+        where
+            E: hyper::rt::Executor<Pin<Box<dyn Future<Output=()> + Send>>> + Send + Sync + 'static,
     {
         self.executor = Some(service::SharedExec::new(executor));
         self
@@ -104,9 +107,9 @@ impl ApiNode {
     // just used in codegen for a shortcut.
     #[doc(hidden)]
     pub fn new<D>(dst: D) -> Result<Self, Error>
-    where
-        D: TryInto<Self>,
-        D::Error: Into<api::Error>,
+        where
+            D: TryInto<Self>,
+            D::Error: Into<api::Error>,
     {
         let me = dst.try_into().map_err(|e| Error::from_source(e.into()))?;
         Ok(me)
@@ -175,7 +178,8 @@ impl ApiNode {
     /// Get the ApiNode uri.
     ///
     /// ```
-    /// # use xpx_chain_sdk::api::ApiNode;
+    /// # use hyper::Uri;
+    /// use xpx_chain_sdk::api::ApiNode;
     /// # use http::Uri;
     /// let node = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     ///
@@ -199,6 +203,7 @@ impl From<Uri> for ApiNode {
             connect_timeout: None,
             executor: service::SharedExec::tokio(),
             max_num_retry: Some(3),
+            retry_service_unavailable_requests: true,
         }
     }
 }

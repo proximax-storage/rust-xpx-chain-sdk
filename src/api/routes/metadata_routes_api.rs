@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::sync::Arc, http::Method};
+use {::std::sync::Arc, hyper::Method};
 
 use crate::{
     account::Address,

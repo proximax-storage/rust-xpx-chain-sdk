@@ -3,7 +3,6 @@ pub(crate) use self::connection::Connection;
 pub(crate) use self::connector::*;
 pub(crate) use self::executor::SharedExec;
 pub use self::replay::*;
-pub(crate) use self::user_agent::UserAgent;
 
 mod add_origin;
 pub(crate) mod connection;

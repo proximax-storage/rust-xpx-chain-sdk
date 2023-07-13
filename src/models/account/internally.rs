@@ -11,7 +11,7 @@ use ripemd::Ripemd160;
 use sha3::{Digest, Sha3_256};
 
 use crate::{
-    helpers::{is_hex, H200, H256},
+    helpers::{H200, H256, is_hex},
     network::NetworkType,
 };
 

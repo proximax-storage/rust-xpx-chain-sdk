@@ -9,8 +9,8 @@ use {
     std::{collections::HashMap, fmt},
 };
 
-use crate::helpers::TransactionHash;
 use crate::{account::PublicAccount, errors_const::ERR_UNKNOWN_TYPE};
+use crate::helpers::TransactionHash;
 
 /// The type of the modification:
 /// * 0 - Add cosignatory.

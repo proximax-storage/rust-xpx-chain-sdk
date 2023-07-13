@@ -8,10 +8,10 @@ use std::any::{Any, TypeId};
 use std::fmt;
 use std::str::FromStr;
 
+use crate::{AsUint64, errors_const};
 use crate::models::{account::PublicAccount, consts::METADATA_V2_HEADER_SIZE};
-use crate::{errors_const, AsUint64};
 
-use super::{buffers, schema::modify_metadata_v2_transaction_schema, CommonTransaction};
+use super::{buffers, CommonTransaction, schema::modify_metadata_v2_transaction_schema};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

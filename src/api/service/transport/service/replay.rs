@@ -1,11 +1,13 @@
-use crate::api::Error;
-use bytes::{Buf, BufMut, Bytes, BytesMut};
-use futures_core::ready;
-use http::HeaderMap;
-use http_body::{Body, SizeHint};
-use parking_lot::Mutex;
 use std::{collections::VecDeque, io::IoSlice, pin::Pin, sync::Arc, task::Context, task::Poll};
+
+use bytes::{Buf, BufMut, Bytes, BytesMut};
+use futures_util::ready;
+use hyper::body::{Body, HttpBody, SizeHint};
+use hyper::http::HeaderMap;
+use parking_lot::Mutex;
 use thiserror::Error;
+
+use crate::api::Error;
 
 /// Wraps an HTTP body type and lazily buffers data as it is read from the inner
 /// body.
@@ -156,7 +158,7 @@ impl ReplayBody {
     }
 }
 
-impl Body for ReplayBody {
+impl HttpBody for ReplayBody {
     type Data = Data;
     type Error = Error;
 
@@ -499,8 +501,9 @@ impl BodyState {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use http::{HeaderMap, HeaderValue};
+
+    use super::*;
 
     #[tokio::test]
     async fn replays_one_chunk() {
@@ -958,8 +961,8 @@ mod tests {
     }
 
     async fn chunk<T>(body: &mut T) -> Option<String>
-    where
-        T: http_body::Body + Unpin,
+        where
+            T: http_body::Body + Unpin,
     {
         tracing::trace!("waiting for a body chunk...");
         let chunk = body
@@ -972,9 +975,9 @@ mod tests {
     }
 
     async fn body_to_string<T>(mut body: T) -> String
-    where
-        T: http_body::Body + Unpin,
-        T::Error: std::fmt::Debug,
+        where
+            T: http_body::Body + Unpin,
+            T::Error: std::fmt::Debug,
     {
         let mut s = String::new();
         while let Some(chunk) = chunk(&mut body).await {

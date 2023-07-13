@@ -13,19 +13,19 @@ use xpx_chain_sdk::TransactionHash;
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let client =
-        ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000").connect_lazy();
+        ApiNode::from_static("http://demo-api-1.edlx.io:3000").connect_lazy();
     // .await?;
 
     let transaction_api = client.transaction_api();
     let hash_one = TransactionHash::from_str(
-        "0CCEE6DC659DA34CADF8BA75659DE1521E610AF79E43DF509FCE2FE1E9DC8104",
+        "3328112E050F53D46A3E8C43C02094433BE6B0309162BA12412D1332DA1858AD",
     )
-    .unwrap();
+        .unwrap();
 
     let hash_two = TransactionHash::from_str(
         "4E86FB6372C3783E6EA28F48DBB600B727C0BC8C9BD81CE6CC9DCB9520230990",
     )
-    .unwrap();
+        .unwrap();
 
     // Returns a [Transaction] information given a transactionId or hash.
     let account_info = transaction_api.get_any_transaction(hash_one).await;

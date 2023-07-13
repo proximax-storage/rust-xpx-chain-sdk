@@ -13,9 +13,9 @@ pub struct MetadataSortingField(&'static str);
 
 #[derive(Clone, Debug, PartialEq, Builder, Serialize)]
 #[builder(
-    setter(into),
-    create_empty = "empty",
-    build_fn(error = "crate::api::error::Error")
+setter(into),
+create_empty = "empty",
+build_fn(error = "crate::api::error::Error")
 )]
 #[serde(rename_all = "camelCase")]
 pub struct MetadataQueryParams {

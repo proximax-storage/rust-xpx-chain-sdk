@@ -1,7 +1,7 @@
 use std::task::{Context, Poll};
 
-use http::{header::USER_AGENT, HeaderValue, Request};
-use tower_service::Service;
+use hyper::http::{header::USER_AGENT, HeaderValue, Request};
+use tower::Service;
 
 const SIRIUS_USER_AGENT: &str = concat!("/", env!("CARGO_PKG_VERSION"));
 
@@ -28,8 +28,8 @@ impl<T> UserAgent<T> {
 }
 
 impl<T, ReqBody> Service<Request<ReqBody>> for UserAgent<T>
-where
-    T: Service<Request<ReqBody>>,
+    where
+        T: Service<Request<ReqBody>>,
 {
     type Response = T::Response;
     type Error = T::Error;

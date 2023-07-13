@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-sdk"
-version = "0.5.3"
+version = "0.5.4"
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["ProxymaX Core Development Team", "Eleazar Garrido <eleazartovar123@gmail.com>"]
@@ -81,43 +81,25 @@ version = "^0.4"
 [dependencies.bytes]
 version = "^1.1"
 
-[dependencies.tokio-tungstenite]
-version = "0.18.0"
-
 [dependencies.futures-util]
 version = "0.3"
 default-features = false
 features = ["async-await", "sink", "std"]
 
-[dependencies.futures-core]
-version = "0.3"
-
 [dependencies.pin-project]
 version = "1.0"
 
 [dependencies.tokio]
-version = "1.26"
+version = "1.29"
 features = ["rt"]
 default_features = false
 
 [dependencies.tokio-rustls]
-version = "0.23"
-
-[dependencies.tokio-stream]
-version = "0.1"
+version = "0.24"
 
 [dependencies.tower]
 version = "0.4"
-features = ["retry", "limit", "util", "timeout", "buffer", "reconnect"]
-
-[dependencies.tower-service]
-version = "0.3"
-
-[dependencies.http]
-version = "0.2"
-
-[dependencies.http-body]
-version = "0.4"
+features = ["retry", "limit", "util", "timeout", "reconnect"]
 
 [dependencies.hyper]
 version = "0.14"
@@ -135,15 +117,6 @@ version = "2.2"
 [dependencies.tracing]
 version = "0.1"
 
-[dependencies.tracing-subscriber]
-version = "0.3"
-
-[dependencies.tokio-tower]
-version = "0.7.0-rc4"
-
-[dependencies.futures-sink]
-version = "0.3.26"
-
 [dependencies.derive_builder]
 version = "0.12"
 
@@ -155,7 +128,7 @@ version = "0.25"
 features = ["derive"]
 
 [dependencies.parking_lot]
-version= "0.12"
+version = "0.12"
 
 [features]
 default = ["account", "namespace", "mosaic", "transaction"]

@@ -4,14 +4,14 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::Method;
+use hyper::Method;
 use serde_json::json;
 
-use crate::api::routes::const_routes::{METADATAS_V2_INFO_ROUTE, METADATA_V2_INFO_ROUTE};
-use crate::api::{Client, MetadataQueryParams, MetadataV2InfoDTO, SearchMetadataV2InfoDTO};
-use crate::metadata::{MetadataEntry, SearchMetadataEntry};
 use crate::{api::error::Result, api::request as __internal_request};
+use crate::api::{MetadataQueryParams, MetadataV2InfoDTO, SearchMetadataV2InfoDTO};
+use crate::api::routes::const_routes::{METADATA_V2_INFO_ROUTE, METADATAS_V2_INFO_ROUTE};
 use crate::api::transport::service::Connection;
+use crate::metadata::{MetadataEntry, SearchMetadataEntry};
 
 /// Namespace ApiClient routes.
 ///

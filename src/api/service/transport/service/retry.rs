@@ -1,6 +1,9 @@
-use crate::api::transport::service::connection::{Request, Response};
 use futures_util::future;
+use hyper::http::StatusCode;
+use tower::BoxError;
 use tower::retry::Policy;
+
+use crate::api::transport::service::connection::{Request, Response};
 
 /// RetryPolicy represents a custom retry policy for requests.
 ///
@@ -18,9 +21,26 @@ use tower::retry::Policy;
 /// In summary, the internal usize parameter in RetryPolicy determines the maximum number of retries allowed and
 /// is used to control the retry logic based on the remaining retry attempts.
 #[derive(Debug, Clone)]
-pub struct RetryPolicy(pub usize);
+pub struct RetryPolicy {
+    pub max_num_retry: usize,
+    pub retry_service_unavailable_requests: bool,
+}
 
-impl Policy<Request, Response, hyper::Error> for RetryPolicy {
+impl RetryPolicy {
+    pub fn is_retry(&self) -> Option<future::Ready<RetryPolicy>> {
+        if self.max_num_retry > 0 {
+            // Try again!
+            Some(future::ready(RetryPolicy {
+                max_num_retry: self.max_num_retry - 1,
+                retry_service_unavailable_requests: self.retry_service_unavailable_requests,
+            }))
+        } else {
+            None
+        }
+    }
+}
+
+impl Policy<Request, Response, BoxError> for RetryPolicy {
     type Future = future::Ready<Self>;
 
     /// Determines whether a retry should be performed based on the result of the previous request.
@@ -39,30 +59,29 @@ impl Policy<Request, Response, hyper::Error> for RetryPolicy {
     /// * `Some`: If the result is an error (`Err`), indicating that a retry may be performed.
     ///           It contains a future that resolves to a new instance of `RetryPolicy` with a
     ///           decremented retry count, indicating the intention to retry.
-    fn retry(&self, _: &Request, result: Result<&Response, &hyper::Error>) -> Option<Self::Future> {
+    fn retry(&self, _: &Request, result: Result<&Response, &BoxError>) -> Option<Self::Future> {
         match result {
-            Ok(_) => {
-                // Treat all `Response`s as success,
-                // so don't retry...
-                None
+            Ok(res) => {
+                let status = res.status();
+
+                match status {
+                    StatusCode::SERVICE_UNAVAILABLE => {
+                        tracing::debug!("retry service_unavailable");
+                        if self.retry_service_unavailable_requests {
+                            self.is_retry()
+                        } else {
+                            None
+                        }
+                    }
+                    _ => None,
+                }
             }
             Err(err) => {
                 tracing::debug!("error: {}", err);
 
-                // if err.is_connect() {
-                //     // If it's a connection error, don't retry.
-                //     return None;
-                // }
-
                 // Treat all other errors as failures...
                 // But we limit the number of attempts...
-                if self.0 > 0 {
-                    // Try again!
-                    Some(future::ready(RetryPolicy(self.0 - 1)))
-                } else {
-                    // Used all our attempts, no retry...
-                    None
-                }
+                self.is_retry()
             }
         }
     }
