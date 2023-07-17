@@ -1,6 +1,5 @@
 use futures_util::future;
 use hyper::http::StatusCode;
-use tower::BoxError;
 use tower::retry::Policy;
 
 use crate::api::transport::service::connection::{Request, Response};
@@ -27,6 +26,13 @@ pub struct RetryPolicy {
 }
 
 impl RetryPolicy {
+    pub fn new(max_num_retry: usize, retry_service_unavailable: bool) -> Self {
+        Self {
+            max_num_retry,
+            retry_service_unavailable_requests: retry_service_unavailable,
+        }
+    }
+
     pub fn is_retry(&self) -> Option<future::Ready<RetryPolicy>> {
         if self.max_num_retry > 0 {
             // Try again!
@@ -40,7 +46,7 @@ impl RetryPolicy {
     }
 }
 
-impl Policy<Request, Response, BoxError> for RetryPolicy {
+impl Policy<Request, Response, hyper::Error> for RetryPolicy {
     type Future = future::Ready<Self>;
 
     /// Determines whether a retry should be performed based on the result of the previous request.
@@ -59,7 +65,7 @@ impl Policy<Request, Response, BoxError> for RetryPolicy {
     /// * `Some`: If the result is an error (`Err`), indicating that a retry may be performed.
     ///           It contains a future that resolves to a new instance of `RetryPolicy` with a
     ///           decremented retry count, indicating the intention to retry.
-    fn retry(&self, _: &Request, result: Result<&Response, &BoxError>) -> Option<Self::Future> {
+    fn retry(&self, _: &Request, result: Result<&Response, &hyper::Error>) -> Option<Self::Future> {
         match result {
             Ok(res) => {
                 let status = res.status();
@@ -79,9 +85,13 @@ impl Policy<Request, Response, BoxError> for RetryPolicy {
             Err(err) => {
                 tracing::debug!("error: {}", err);
 
+                // if err.is_connect() {
+                self.is_retry()
+                // } else {
+                //     None
+                // }
                 // Treat all other errors as failures...
                 // But we limit the number of attempts...
-                self.is_retry()
             }
         }
     }
