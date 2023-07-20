@@ -4,35 +4,36 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::Method;
+use hyper::Method;
 
-use crate::api::routes::const_routes::{MOSAIC_LEVY_ROUTE, MOSAIC_RICH_LIST_ROUTE};
-use crate::api::{Client, MosaicLevyDTO, MosaicRichListDTO, PageQueryParams};
-use crate::mosaic::{MosaicLevy, MosaicRichList, UnresolvedMosaicId};
 use crate::{
     api::{
-        error::Result, internally::valid_vec_len, request as __internal_request, MosaicInfoDto,
-        MosaicNamesDto,
+        error::Result, internally::valid_vec_len, MosaicInfoDto, MosaicNamesDto,
+        request as __internal_request,
     },
     errors_const::ERR_EMPTY_MOSAIC_IDS,
     mosaic::{MosaicId, MosaicIds, MosaicInfo, MosaicNames},
 };
+use crate::api::{MosaicLevyDTO, MosaicRichListDTO, PageQueryParams};
+use crate::api::routes::const_routes::{MOSAIC_LEVY_ROUTE, MOSAIC_RICH_LIST_ROUTE};
+use crate::api::transport::service::Connection;
+use crate::mosaic::{MosaicLevy, MosaicRichList, UnresolvedMosaicId};
 
-use super::{MOSAICS_ROUTE, MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE};
+use super::{MOSAIC_NAMES_ROUTE, MOSAIC_ROUTE, MOSAICS_ROUTE};
 
 /// Mosaic ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct MosaicRoutes(Client);
+pub struct MosaicRoutes(Connection);
 
 /// Mosaic related endpoints.
 ///
 impl MosaicRoutes {
-    pub(crate) fn new(client: Client) -> Self {
+    pub(crate) fn new(client: Connection) -> Self {
         MosaicRoutes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __client(&self) -> Connection {
         self.0.clone()
     }
 
@@ -204,10 +205,8 @@ impl MosaicRoutes {
 
         req = req.with_path_param("mosaicId".to_string(), mosaic_id.to_hex());
 
-        if let Some(query_params) = query_params {
-            for query_param in query_params.to_query_params() {
-                req = req.with_query_param(query_param);
-            }
+        if let Some(params) = query_params {
+            req = req.with_query_param(params.to_query_string());
         }
 
         let dto: Vec<MosaicRichListDTO> = req.execute(self.__client()).await?;

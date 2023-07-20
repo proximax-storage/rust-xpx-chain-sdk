@@ -8,12 +8,12 @@ use std::{
 };
 
 use bytes::Bytes;
-use http::{uri::Uri, HeaderValue};
-use tower::make::MakeConnection;
+use hyper::header::HeaderValue;
+use hyper::Uri;
 
 use crate::api::{
     self,
-    transport::{service, Error},
+    transport::{Error, service},
 };
 
 use super::Client;
@@ -21,29 +21,95 @@ use super::Client;
 /// Channel builder.
 ///
 /// This struct is used to build and configure HTTP clients.
-#[derive(Clone)]
+#[derive(Clone, Builder)]
+#[builder(create_empty = "empty", build_fn(error = "crate::api::error::Error"))]
 pub struct ApiNode {
+    #[builder(
+    setter(custom),
+    default = "Uri::from_static(\"http:://127.0.0.1:3000\")"
+    )]
     pub(crate) uri: Uri,
-    pub(crate) origin: Option<Uri>,
+    #[builder(setter(strip_option), default)]
     pub(crate) user_agent: Option<HeaderValue>,
+    /// Apply a timeout to each request.
+    ///
+    /// # Notes
+    ///
+    /// This does **not** set the timeout metadata (`http-timeout` header) on
+    /// the request, meaning the server will not be informed of this timeout,
+    /// for that use [`Request::set_timeout`].
+    ///
+    /// [`Request::set_timeout`]: crate::Request::set_timeout
+    #[builder(setter(strip_option), default)]
     pub(crate) timeout: Option<Duration>,
+    /// Apply a concurrency limit to each request.
+    #[builder(setter(strip_option), default)]
     pub(crate) concurrency_limit: Option<usize>,
+    /// Apply a rate limit to each request.
+    #[builder(setter(strip_option), default)]
     pub(crate) rate_limit: Option<(u64, Duration)>,
-    pub(crate) buffer_size: Option<usize>,
+    /// Set whether TCP keepalive messages are enabled on accepted connections.
+    ///
+    /// If `None` is specified, keepalive is disabled, otherwise the duration
+    /// specified will be the time to remain idle before sending TCP keepalive
+    /// probes.
+    ///
+    /// Default is no keepalive (`None`)
+    #[builder(setter(strip_option), default)]
     pub(crate) tcp_keep_alive: Option<Duration>,
+    /// Set the value of `TCP_NODELAY` option for accepted connections. Enabled by default.
+    #[builder(default = "true")]
     pub(crate) tcp_nodelay: bool,
-    pub(crate) connect_timeout: Option<Duration>,
+    /// Apply a timeout to connecting to the uri.
+    ///
+    /// Defaults to no timeout.
+    #[builder(setter(strip_option), default)]
+    connect_timeout: Option<Duration>,
+    #[builder(setter(custom), default = "service::SharedExec::tokio()")]
     pub(crate) executor: service::SharedExec,
+    /// Determines the maximum number of retries allowed and is used to control the retry logic
+    /// based on the remaining retry attempts.
+    ///
+    /// Defaults 3 retries.
+    #[builder(setter(strip_option), default = "Some(3)")]
+    pub(crate) max_num_retry: Option<usize>,
+    #[builder(setter(strip_option), default = "true")]
+    pub(crate) retry_service_unavailable_requests: bool,
+}
+
+impl ApiNodeBuilder {
+    /// The uri method sets the uri field.
+    pub fn uri<R: Into<String>>(&mut self, value: R) -> &mut Self {
+        let dst = Uri::from_maybe_shared(value.into()).unwrap_or_default();
+        self.uri = Some(dst);
+        self
+    }
+
+    /// Sets the executor used to spawn async tasks.
+    ///
+    /// Uses `tokio::spawn` by default.
+    pub fn executor<E>(mut self, executor: E) -> Self
+        where
+            E: hyper::rt::Executor<Pin<Box<dyn Future<Output=()> + Send>>> + Send + Sync + 'static,
+    {
+        self.executor = Some(service::SharedExec::new(executor));
+        self
+    }
 }
 
 impl ApiNode {
+    /// Build a ApiNode object.
+    pub fn builder() -> ApiNodeBuilder {
+        ApiNodeBuilder::default()
+    }
+
     // FIXME: determine if we want to expose this or not. This is really
     // just used in codegen for a shortcut.
     #[doc(hidden)]
     pub fn new<D>(dst: D) -> Result<Self, Error>
-    where
-        D: TryInto<Self>,
-        D::Error: Into<api::Error>,
+        where
+            D: TryInto<Self>,
+            D::Error: Into<api::Error>,
     {
         let me = dst.try_into().map_err(|e| Error::from_source(e.into()))?;
         Ok(me)
@@ -75,163 +141,10 @@ impl ApiNode {
         Ok(Self::from(uri))
     }
 
-    /// Set a custom user-agent header.
-    ///
-    /// `user_agent` will be prepended to Sirius default user-agent string (`sirius/x.x.x`).
-    /// It must be a value that can be converted into a valid  `http::HeaderValue` or building
-    /// the ApiNode will fail.
-    /// ```
-    /// # use xpx_chain_sdk::api::ApiNode;
-    /// # let mut builder = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
-    /// builder.user_agent("Greeter").expect("Greeter should be a valid header value");
-    /// ```
-    pub fn user_agent<T>(self, user_agent: T) -> Result<Self, Error>
-    where
-        T: TryInto<HeaderValue>,
-    {
-        user_agent
-            .try_into()
-            .map(|ua| ApiNode {
-                user_agent: Some(ua),
-                ..self
-            })
-            .map_err(|_| Error::new_invalid_user_agent())
-    }
-
-    /// Set a custom origin.
-    ///
-    /// Override the `origin`, mainly useful when you are reaching a Server/LoadBalancer
-    /// which serves multiple services at the same time.
-    /// It will play the role of SNI (Server Name Indication).
-    ///
-    /// ```
-    /// # use xpx_chain_sdk::api::ApiNode;
-    /// # let mut builder = ApiNode::from_static("https://proxy.com");
-    /// builder.origin("http://api-1.testnet2.xpxsirius.io:3000".parse().expect("http://example.com must be a valid URI"));
-    /// // origin: "http://api-1.testnet2.xpxsirius.io:3000"
-    /// ```
-    pub fn origin(self, origin: Uri) -> Self {
-        ApiNode {
-            origin: Some(origin),
-            ..self
-        }
-    }
-
-    /// Apply a timeout to each request.
-    ///
-    /// ```
-    /// # use xpx_chain_sdk::api::ApiNode;
-    /// # use std::time::Duration;
-    /// # let mut builder = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
-    /// builder.timeout(Duration::from_secs(5));
-    /// ```
-    ///
-    /// # Notes
-    ///
-    /// This does **not** set the timeout metadata (`http-timeout` header) on
-    /// the request, meaning the server will not be informed of this timeout,
-    /// for that use [`Request::set_timeout`].
-    ///
-    /// [`Request::set_timeout`]: crate::Request::set_timeout
-    pub fn timeout(self, dur: Duration) -> Self {
-        ApiNode {
-            timeout: Some(dur),
-            ..self
-        }
-    }
-
-    /// Apply a timeout to connecting to the uri.
-    ///
-    /// Defaults to no timeout.
-    ///
-    /// ```
-    /// # use xpx_chain_sdk::api::ApiNode;
-    /// # use std::time::Duration;
-    /// # let mut builder = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
-    /// builder.connect_timeout(Duration::from_secs(5));
-    /// ```
-    pub fn connect_timeout(self, dur: Duration) -> Self {
-        ApiNode {
-            connect_timeout: Some(dur),
-            ..self
-        }
-    }
-
-    /// Set whether TCP keepalive messages are enabled on accepted connections.
-    ///
-    /// If `None` is specified, keepalive is disabled, otherwise the duration
-    /// specified will be the time to remain idle before sending TCP keepalive
-    /// probes.
-    ///
-    /// Default is no keepalive (`None`)
-    ///
-    pub fn tcp_keep_alive(self, tcp_keep_alive: Option<Duration>) -> Self {
-        ApiNode {
-            tcp_keep_alive,
-            ..self
-        }
-    }
-
-    /// Apply a concurrency limit to each request.
-    ///
-    /// ```
-    /// # use xpx_chain_sdk::api::ApiNode;
-    /// # let mut builder = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
-    /// builder.concurrency_limit(256);
-    /// ```
-    pub fn concurrency_limit(self, limit: usize) -> Self {
-        ApiNode {
-            concurrency_limit: Some(limit),
-            ..self
-        }
-    }
-
-    /// Apply a rate limit to each request.
-    ///
-    /// ```
-    /// # use xpx_chain_sdk::api::ApiNode;
-    /// # use std::time::Duration;
-    /// # let mut builder = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
-    /// builder.rate_limit(32, Duration::from_secs(1));
-    /// ```
-    pub fn rate_limit(self, limit: u64, duration: Duration) -> Self {
-        ApiNode {
-            rate_limit: Some((limit, duration)),
-            ..self
-        }
-    }
-
-    /// Set the value of `TCP_NODELAY` option for accepted connections. Enabled by default.
-    pub fn tcp_nodelay(self, enabled: bool) -> Self {
-        ApiNode {
-            tcp_nodelay: enabled,
-            ..self
-        }
-    }
-
-    pub fn buffer_size(self, size: usize) -> Self {
-        ApiNode {
-            buffer_size: Some(size),
-            ..self
-        }
-    }
-
-    /// Sets the executor used to spawn async tasks.
-    ///
-    /// Uses `tokio::spawn` by default.
-    pub fn executor<E>(mut self, executor: E) -> Self
-    where
-        E: hyper::rt::Executor<Pin<Box<dyn Future<Output = ()> + Send>>> + Send + Sync + 'static,
-    {
-        self.executor = service::SharedExec::new(executor);
-        self
-    }
-
     /// Create a channel from this config.
     pub async fn connect(&self) -> Result<Client, Error> {
         let connector = self.__build_connector();
-        self.__build_client::<hyper::client::HttpConnector>(connector)
-            .await
+        self.__build_client(connector).await
     }
 
     /// Create a channel from this config.
@@ -241,16 +154,12 @@ impl ApiNode {
     pub fn connect_lazy(&self) -> Client {
         let connector = self.__build_connector();
 
-        if let Some(connect_timeout) = self.connect_timeout {
-            let mut connector = hyper_timeout::TimeoutConnector::new(connector);
-            connector.set_connect_timeout(Some(connect_timeout));
-            Client::new(connector, self.clone())
-        } else {
-            Client::new(connector, self.clone())
-        }
+        let mut connector = hyper_timeout::TimeoutConnector::new(connector);
+        connector.set_connect_timeout(self.connect_timeout);
+        Client::new(connector, self.clone())
     }
 
-    fn __build_connector(&self) -> service::Connector<hyper::client::HttpConnector> {
+    fn __build_connector(&self) -> service::Connector {
         let mut http = hyper::client::HttpConnector::new();
         http.enforce_http(false);
         http.set_nodelay(self.tcp_nodelay);
@@ -260,64 +169,17 @@ impl ApiNode {
         connector
     }
 
-    async fn __build_client<C>(&self, connector: service::Connector<C>) -> Result<Client, Error>
-    where
-        C: MakeConnection<Uri> + Send + 'static,
-        C::Connection: Unpin + Send + 'static,
-        C::Future: Send + 'static,
-        api::Error: From<C::Error> + Send + 'static,
-    {
-        if let Some(connect_timeout) = self.connect_timeout {
-            let mut connector = hyper_timeout::TimeoutConnector::new(connector);
-            connector.set_connect_timeout(Some(connect_timeout));
-            Client::connect(connector, self.clone()).await
-        } else {
-            Client::connect(connector, self.clone()).await
-        }
-    }
-
-    /// Connect with a custom connector.
-    ///
-    /// This allows you to build a [Channel](struct.Channel.html) that uses a non-HTTP transport.
-    /// See the `uds` example for an example on how to use this function to build channel that
-    /// uses a Unix socket transport.
-    ///
-    /// The [`connect_timeout`](ApiNode::connect_timeout) will still be applied.
-    pub async fn connect_with_connector<C>(&self, connector: C) -> Result<Client, Error>
-    where
-        C: MakeConnection<Uri> + Send + 'static,
-        C::Connection: Unpin + Send + 'static,
-        C::Future: Send + 'static,
-        api::Error: From<C::Error> + Send + 'static,
-    {
-        let connector = service::connector(connector);
-
-        self.__build_client::<C>(connector).await
-    }
-
-    /// Connect with a custom connector lazily.
-    ///
-    /// This allows you to build a [Channel](struct.Channel.html) that uses a non-HTTP transport
-    /// connect to it lazily.
-    ///
-    /// See the `uds` example for an example on how to use this function to build channel that
-    /// uses a Unix socket transport.
-    pub fn connect_with_connector_lazy<C>(&self, connector: C) -> Client
-    where
-        C: MakeConnection<Uri> + Send + 'static,
-        C::Connection: Unpin + Send + 'static,
-        C::Future: Send + 'static,
-        api::Error: From<C::Error> + Send + 'static,
-    {
-        let connector = service::connector(connector);
-
-        Client::new(connector, self.clone())
+    async fn __build_client(&self, connector: service::Connector) -> Result<Client, Error> {
+        let mut connector = hyper_timeout::TimeoutConnector::new(connector);
+        connector.set_connect_timeout(self.connect_timeout);
+        Client::connect(connector, self.clone()).await
     }
 
     /// Get the ApiNode uri.
     ///
     /// ```
-    /// # use xpx_chain_sdk::api::ApiNode;
+    /// # use hyper::Uri;
+    /// use xpx_chain_sdk::api::ApiNode;
     /// # use http::Uri;
     /// let node = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     ///
@@ -332,16 +194,16 @@ impl From<Uri> for ApiNode {
     fn from(uri: Uri) -> Self {
         Self {
             uri,
-            origin: None,
             user_agent: Some(HeaderValue::from_static("RustSdk")),
             concurrency_limit: None,
             rate_limit: None,
             timeout: None,
-            buffer_size: None,
             tcp_keep_alive: None,
             tcp_nodelay: true,
             connect_timeout: None,
             executor: service::SharedExec::tokio(),
+            max_num_retry: Some(3),
+            retry_service_unavailable_requests: true,
         }
     }
 }

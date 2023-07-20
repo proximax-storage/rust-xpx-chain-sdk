@@ -5,35 +5,36 @@
  */
 
 use anyhow::Result;
-use http::Method;
+use hyper::Method;
 use serde::de::DeserializeOwned;
 
 use {::std::fmt::Debug, bytes::Bytes, serde_json::Value};
 
-use crate::api::{
-    request as __internal_request, AccountPropertiesTransactionInfoDto,
-    AddExchangeOfferTransactionInfoDto, AddressAliasTransactionInfoDto,
-    AggregateTransactionInfoDto, BlockchainUpgradeTransactionInfoDto, Client,
-    ExchangeOfferTransactionInfoDto, HashLockTransactionInfoDto, MetaDataEntryTransactionInfoDto,
-    ModifyMultisigAccountTransactionInfoDto, MosaicAliasTransactionInfoDto,
-    MosaicDefinitionTransactionInfoDto, MosaicSupplyChangeTransactionInfoDto,
-    NetworkConfigTransactionInfoDto, Pagination, QueryParam, RegisterNamespaceTransactionInfoDto,
-    RemoveExchangeOfferTransactionInfoDto, TransferTransactionInfoDto,
-};
-use crate::transaction::{Transaction, TransactionGroupType, TransactionSearch, Transactions};
 use crate::{
     api, errors_const, helpers::is_hex, metadata::MetadataModification, mosaic::MosaicProperties,
     multisig::CosignatoryModification, network::NetworkType,
     transaction::TransactionType as Entity,
 };
+use crate::api::{
+    AccountPropertiesTransactionInfoDto, AddExchangeOfferTransactionInfoDto,
+    AddressAliasTransactionInfoDto, AggregateTransactionInfoDto,
+    BlockchainUpgradeTransactionInfoDto, ExchangeOfferTransactionInfoDto,
+    HashLockTransactionInfoDto, MetaDataEntryTransactionInfoDto, ModifyMultisigAccountTransactionInfoDto,
+    MosaicAliasTransactionInfoDto, MosaicDefinitionTransactionInfoDto,
+    MosaicSupplyChangeTransactionInfoDto, NetworkConfigTransactionInfoDto,
+    Pagination, RegisterNamespaceTransactionInfoDto, RemoveExchangeOfferTransactionInfoDto,
+    request as __internal_request, TransactionQueryParams, TransferTransactionInfoDto,
+};
+use crate::api::transport::service::Connection;
+use crate::transaction::{Transaction, TransactionGroupType, Transactions, TransactionSearch};
 
 use super::{
     CosignatoryModificationDto, MetadataModificationDto, MosaicPropertyDto, TransactionDto,
 };
 
 pub(crate) fn valid_vec_len<T>(vector: &[T], msg: &str) -> Result<()>
-where
-    T: Debug,
+    where
+        T: Debug,
 {
     ensure!(!vector.is_empty(), "{}. {:?}", msg, vector);
     Ok(())
@@ -220,43 +221,41 @@ pub(crate) fn metadata_dto_vec_to_struct(
 }
 
 pub(crate) async fn __internal_get_transactions(
-    client: Client,
+    connection: Connection,
     route: &str,
-    query_params: Vec<QueryParam>,
+    query_params: TransactionQueryParams,
 ) -> api::error::Result<TransactionSearch> {
     let mut req = __internal_request::ApiRequest::new(Method::GET, route.to_string());
 
-    for query_param in query_params {
-        req = req.with_query_param(query_param);
-    }
+    req = req.with_query_param(query_params.to_query_string());
 
-    let body_value = req.execute(client).await?;
+    let body_value = req.execute(connection).await?;
     value_to_transaction_search(body_value)
 }
 
 pub(crate) async fn __internal_get_transactions_by_group_with_pagination(
-    client: Client,
+    connection: Connection,
     route: &str,
     group_type: TransactionGroupType,
-    query_params: Vec<QueryParam>,
+    query_params: Option<TransactionQueryParams>,
 ) -> api::error::Result<TransactionSearch> {
     let mut req = __internal_request::ApiRequest::new(Method::GET, route.to_string());
 
     req = req.with_path_param("group".to_string(), group_type.to_string());
 
-    for query_param in query_params {
-        req = req.with_query_param(query_param);
+    if let Some(query) = query_params {
+        req = req.with_query_param(query.to_query_string());
     }
 
-    let body_value = req.execute(client).await?;
+    let body_value = req.execute(connection).await?;
     value_to_transaction_search(body_value)
 }
 
 pub(crate) async fn __internal_get_transaction(
-    client: Client,
+    connection: Connection,
     req: __internal_request::ApiRequest,
 ) -> api::error::Result<Box<dyn Transaction>> {
-    let body_value: Value = req.execute(client).await?;
+    let body_value: Value = req.execute(connection).await?;
 
     let transaction_dto = map_transaction_dto_new(Bytes::from(format!("{}", body_value)))?;
 

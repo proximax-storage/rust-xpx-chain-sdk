@@ -4,18 +4,22 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::message::PlainMessage;
-use xpx_chain_sdk::transaction::{Deadline, TransferTransaction};
+use xpx_chain_sdk::transaction::TransferTransaction;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let start = Instant::now();
 
-    let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
+    let client = ApiNode::builder()
+        .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
+        // .timeout(Duration::from_secs(1))
+        .connect_timeout(Duration::from_secs(5))
+        .build()?
         .connect()
         .await?;
 
@@ -30,15 +34,13 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let account = Account::from_hex_private_key(private_key, network_type).unwrap();
     let recipient = Account::random(network_type).to_address();
 
-    let transaction = TransferTransaction::create(
-        Deadline::default(),
-        recipient,
-        vec![],
-        PlainMessage::create("Sirius chain Rust sdk"),
-        network_type,
-        None,
-    )?;
-    // println!("{transaction}");
+    let transaction = TransferTransaction::builder(network_type)
+        .recipient(recipient)
+        .message(PlainMessage::create("Sirius chain Rust sdk"))
+        .max_fee(1000)
+        .build()?;
+
+    println!("{transaction}");
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 

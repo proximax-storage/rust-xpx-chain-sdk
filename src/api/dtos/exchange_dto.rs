@@ -17,7 +17,7 @@ use crate::{
             RemoveOffer, UserExchangeInfo,
         },
         mosaic::{Mosaic, MosaicId, UnresolvedMosaicId},
-        namespace::{NamespaceId, NAMESPACE_BIT},
+        namespace::{NAMESPACE_BIT, NamespaceId},
         network::NetworkType,
         transaction::{
             AddExchangeOfferTransaction, ExchangeOfferTransaction, RemoveExchangeOfferTransaction,

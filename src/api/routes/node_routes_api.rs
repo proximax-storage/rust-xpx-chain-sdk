@@ -4,29 +4,30 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::Method;
+use hyper::Method;
 
-use crate::api::{Client, NodeInfoDto};
 use crate::{
-    api::{error::Result, request as __internal_request, NodeTimeDto},
+    api::{error::Result, NodeTimeDto, request as __internal_request},
     node::{NodeInfo, NodeTime},
 };
+use crate::api::NodeInfoDto;
+use crate::api::transport::service::Connection;
 
 use super::{NODE_INFO, NODE_PEERS, NODE_TIME};
 
 /// Node ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NodeRoutes(Client);
+pub struct NodeRoutes(Connection);
 
 /// Node related endpoints.
 ///
 impl NodeRoutes {
-    pub(crate) fn new(client: Client) -> Self {
+    pub(crate) fn new(client: Connection) -> Self {
         NodeRoutes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __client(&self) -> Connection {
         self.0.clone()
     }
 

@@ -1,13 +1,12 @@
 use std::task::{Context, Poll};
 
-use futures_core::future::BoxFuture;
-use http::uri::Authority;
-use http::uri::Scheme;
-use http::{HeaderValue, Request, Uri};
-use tower_service::Service;
+use futures_util::future::BoxFuture;
+use hyper::http::{HeaderValue, Request, Uri};
+use hyper::http::uri::{Authority, Parts, Scheme};
+use tower::Service;
 
-#[derive(Debug)]
-pub(crate) struct AddOrigin<T> {
+#[derive(Debug, Clone)]
+pub struct AddOrigin<T> {
     inner: T,
     scheme: Option<Scheme>,
     authority: Option<Authority>,
@@ -15,7 +14,7 @@ pub(crate) struct AddOrigin<T> {
 
 impl<T> AddOrigin<T> {
     pub(crate) fn new(inner: T, origin: Uri) -> Self {
-        let http::uri::Parts {
+        let Parts {
             scheme, authority, ..
         } = origin.into_parts();
 
@@ -28,10 +27,10 @@ impl<T> AddOrigin<T> {
 }
 
 impl<T, ReqBody> Service<Request<ReqBody>> for AddOrigin<T>
-where
-    T: Service<Request<ReqBody>>,
-    T::Future: Send + 'static,
-    T::Error: Into<crate::api::Error>,
+    where
+        T: Service<Request<ReqBody>>,
+        T::Future: Send + 'static,
+        T::Error: Into<crate::api::Error>,
 {
     type Response = T::Response;
     type Error = crate::api::Error;
@@ -53,7 +52,7 @@ where
         // Update the the request URI
         head.uri = {
             // Split the request URI into parts.
-            let mut uri: http::uri::Parts = head.uri.into();
+            let mut uri: Parts = head.uri.into();
             // Update the URI parts, setting hte scheme and authority
             uri.scheme = self.scheme.clone();
             uri.authority = self.authority.clone();

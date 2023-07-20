@@ -4,20 +4,22 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::message::PlainMessage;
-use xpx_chain_sdk::transaction::{
-    AggregateTransaction, Deadline, Transaction, TransferTransaction,
-};
+use xpx_chain_sdk::transaction::{AggregateTransaction, Transaction, TransferTransaction};
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let start = Instant::now();
 
-    let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
+    let client = ApiNode::builder()
+        .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
+        // .timeout(Duration::from_secs(1))
+        .connect_timeout(Duration::from_secs(5))
+        .build()?
         .connect()
         .await?;
 
@@ -33,32 +35,21 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let recipient_a = Account::random(network_type).to_address();
     let recipient_b = Account::random(network_type).to_address();
 
-    let mut transfer_a = TransferTransaction::create(
-        Deadline::default(),
-        recipient_a,
-        vec![],
-        PlainMessage::create("Transfer A From ProximaX Rust SDK"),
-        network_type,
-        None,
-    )?;
+    let mut transfer_a = TransferTransaction::builder(network_type)
+        .recipient(recipient_a)
+        .message(PlainMessage::create("Transfer A From ProximaX Rust SDK"))
+        .build()?;
     transfer_a.set_aggregate(account.public_account);
 
-    let mut transfer_b = TransferTransaction::create(
-        Deadline::default(),
-        recipient_b,
-        vec![],
-        PlainMessage::create("Transfer B From ProximaX Rust SDK"),
-        network_type,
-        None,
-    )?;
+    let mut transfer_b = TransferTransaction::builder(network_type)
+        .recipient(recipient_b)
+        .message(PlainMessage::create("Transfer B From ProximaX Rust SDK"))
+        .build()?;
     transfer_b.set_aggregate(account.public_account);
 
-    let transaction = AggregateTransaction::create_complete(
-        Deadline::default(),
-        vec![Box::new(transfer_a), Box::new(transfer_b)],
-        network_type,
-        None,
-    )?;
+    let transaction = AggregateTransaction::builder_complete(network_type)
+        .inner_transactions(vec![Box::new(transfer_a), Box::new(transfer_b)])
+        .build()?;
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 

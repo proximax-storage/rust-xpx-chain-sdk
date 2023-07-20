@@ -4,12 +4,18 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::time::Duration;
+
 use xpx_chain_sdk::api::{ApiNode, PageQueryParams};
 use xpx_chain_sdk::mosaic::MosaicId;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-    let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
+    let client = ApiNode::builder()
+        .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
+        // .timeout(Duration::from_secs(1))
+        .connect_timeout(Duration::from_secs(5))
+        .build()?
         .connect()
         .await?;
 

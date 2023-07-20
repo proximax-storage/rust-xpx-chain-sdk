@@ -4,45 +4,44 @@
  * license that can be found in the LICENSE file.
  */
 
-use serde_json::json;
+use {::std::collections::HashMap, hyper::Method};
 
-use {::std::collections::HashMap, http::Method};
-
-use crate::api::routes::const_routes::{
-    AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
-};
-use crate::api::{Client, QueryParam, TransactionQueryParams, __internal_get_transactions};
-use crate::transaction::{AggregateTransaction, TransactionSearch};
 use crate::{
     account::{AccountInfo, AccountName, AccountProperties, AccountsId, Address, PublicAccount},
     api::{
-        error::Result,
-        internally::{str_to_account_id, valid_vec_len},
-        request as __internal_request, AccountInfoDto, AccountNamesDto, AccountPropertiesInfoDto,
-        MultisigAccountGraphInfoDto, MultisigAccountInfoDto,
+        AccountInfoDto,
+        AccountNamesDto,
+        AccountPropertiesInfoDto, error::Result, internally::{str_to_account_id, valid_vec_len}, MultisigAccountGraphInfoDto,
+        MultisigAccountInfoDto, request as __internal_request,
     },
     errors_const::ERR_EMPTY_ADDRESSES_IDS,
     multisig::{MultisigAccountGraphInfo, MultisigAccountInfo},
 };
+use crate::api::{__internal_get_transactions, TransactionQueryParams};
+use crate::api::routes::const_routes::{
+    AGGREGATE_TRANSACTIONS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_UNCONFIRMED_ROUTE,
+};
+use crate::api::transport::service::Connection;
+use crate::transaction::{AggregateTransaction, TransactionSearch};
 
 use super::{
-    ACCOUNTS_PROPERTIES_ROUTE, ACCOUNTS_ROUTE, ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE,
-    ACCOUNT_ROUTE, MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE,
+    ACCOUNT_NAMES_ROUTE, ACCOUNT_PROPERTIES_ROUTE, ACCOUNT_ROUTE, ACCOUNTS_PROPERTIES_ROUTE,
+    ACCOUNTS_ROUTE, MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE, MULTISIG_ACCOUNT_ROUTE,
 };
 
 /// Account ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct AccountRoutes(Client);
+pub struct AccountRoutes(Connection);
 
 /// Account related endpoints.
 ///
 impl AccountRoutes {
-    pub fn new(client: Client) -> Self {
+    pub fn new(client: Connection) -> Self {
         AccountRoutes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __connection(&self) -> Connection {
         self.0.clone()
     }
 
@@ -84,7 +83,8 @@ impl AccountRoutes {
 
         req = req.with_path_param("address_id".to_string(), id);
 
-        let dto: Result<AccountInfoDto> = req.execute(self.__client()).await;
+        let connection = self.__connection();
+        let dto: Result<AccountInfoDto> = req.execute(connection).await;
 
         Ok(dto?.compact()?)
     }
@@ -134,7 +134,9 @@ impl AccountRoutes {
 
         req = req.with_body_param(&accounts);
 
-        let dto: Vec<AccountInfoDto> = req.execute(self.__client()).await?;
+        let connection = self.__connection();
+
+        let dto: Vec<AccountInfoDto> = req.execute(connection).await?;
 
         let mut accounts_info: Vec<AccountInfo> = vec![];
         for account_dto in dto.into_iter() {
@@ -190,7 +192,9 @@ impl AccountRoutes {
 
         req = req.with_body_param(&accounts);
 
-        let dto: Vec<AccountNamesDto> = req.execute(self.__client()).await?;
+        let connection = self.__connection();
+
+        let dto: Vec<AccountNamesDto> = req.execute(connection).await?;
 
         let mut accounts_names: Vec<AccountName> = vec![];
         for accounts_dto in dto.into_iter() {
@@ -239,7 +243,9 @@ impl AccountRoutes {
 
         req = req.with_path_param("address_id".to_string(), id);
 
-        let dto: Result<MultisigAccountInfoDto> = req.execute(self.__client()).await;
+        let connection = self.__connection();
+
+        let dto: Result<MultisigAccountInfoDto> = req.execute(connection).await;
 
         Ok(dto?.compact()?)
     }
@@ -288,7 +294,9 @@ impl AccountRoutes {
 
         req = req.with_path_param("address_id".to_string(), id);
 
-        let dto: Result<Vec<MultisigAccountGraphInfoDto>> = req.execute(self.__client()).await;
+        let connection = self.__connection();
+
+        let dto: Result<Vec<MultisigAccountGraphInfoDto>> = req.execute(connection).await;
 
         let mut multisig_accounts: HashMap<i16, Vec<MultisigAccountInfo>> = HashMap::new();
         for graph_info_dto in dto?.into_iter() {
@@ -337,7 +345,9 @@ impl AccountRoutes {
 
         req = req.with_path_param("address_id".to_string(), address.address_str());
 
-        let dto: Result<AccountPropertiesInfoDto> = req.execute(self.__client()).await;
+        let connection = self.__connection();
+
+        let dto: Result<AccountPropertiesInfoDto> = req.execute(connection).await;
 
         dto?.compact()
     }
@@ -400,7 +410,8 @@ impl AccountRoutes {
 
         req = req.with_body_param(&accounts);
 
-        let dto: Result<Vec<AccountPropertiesInfoDto>> = req.execute(self.__client()).await;
+        let connection = self.__connection();
+        let dto: Result<Vec<AccountPropertiesInfoDto>> = req.execute(connection).await;
 
         let mut accounts_properties: Vec<AccountProperties> = vec![];
         for properties_dto in dto?.into_iter() {
@@ -418,19 +429,19 @@ impl AccountRoutes {
         public_account: PublicAccount,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<TransactionSearch> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(mut query_params) = txn_query_params {
-            query_params.public_key = Some(public_account.public_key_to_hex());
-            query_params_vec.append(&mut query_params.to_query_params());
+        let query_params = if let Some(mut params) = txn_query_params {
+            params.public_key = Some(public_account.public_key_to_hex());
+            params
         } else {
-            query_params_vec.push(QueryParam {
-                name: "publicKey".to_string(),
-                value: json!(public_account.public_key_to_hex()),
-            });
-        }
+            TransactionQueryParams::create()
+                .public_key(public_account.public_key_to_hex())
+                .build()
+                .unwrap()
+        };
 
-        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params_vec).await
+        let connection = self.__connection();
+
+        __internal_get_transactions(connection, TRANSACTIONS_ROUTE, query_params).await
     }
 
     /// Get incoming transactions
@@ -443,19 +454,19 @@ impl AccountRoutes {
         public_account: PublicAccount,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<TransactionSearch> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(mut query_params) = txn_query_params {
-            query_params.recipient_address = Some(public_account.address_str());
-            query_params_vec.append(&mut query_params.to_query_params());
+        let query_params = if let Some(mut params) = txn_query_params {
+            params.recipient_address = Some(public_account.address_as_string());
+            params
         } else {
-            query_params_vec.push(QueryParam {
-                name: "recipientAddress".to_string(),
-                value: json!(public_account.address_str()),
-            });
-        }
+            TransactionQueryParams::create()
+                .recipient_address(public_account.address_as_string())
+                .build()
+                .unwrap()
+        };
 
-        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params_vec).await
+        let connection = self.__connection();
+
+        __internal_get_transactions(connection, TRANSACTIONS_ROUTE, query_params).await
     }
 
     /// Get outgoing transactions
@@ -468,19 +479,19 @@ impl AccountRoutes {
         public_account: PublicAccount,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<TransactionSearch> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(mut query_params) = txn_query_params {
-            query_params.signer_public_key = Some(public_account.public_key_to_hex());
-            query_params_vec.append(&mut query_params.to_query_params());
+        let query_params = if let Some(mut params) = txn_query_params {
+            params.signer_public_key = Some(public_account.public_key_to_hex());
+            params
         } else {
-            query_params_vec.push(QueryParam {
-                name: "signerPublicKey".to_string(),
-                value: json!(public_account.public_key_to_hex()),
-            });
-        }
+            TransactionQueryParams::create()
+                .signer_public_key(public_account.public_key_to_hex())
+                .build()
+                .unwrap()
+        };
 
-        __internal_get_transactions(self.__client(), TRANSACTIONS_ROUTE, query_params_vec).await
+        let connection = self.__connection();
+
+        __internal_get_transactions(connection, TRANSACTIONS_ROUTE, query_params).await
     }
 
     /// Get Unconfirmed transactions
@@ -492,24 +503,19 @@ impl AccountRoutes {
         public_account: PublicAccount,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<TransactionSearch> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(mut query_params) = txn_query_params {
-            query_params.signer_public_key = Some(public_account.public_key_to_hex());
-            query_params_vec.append(&mut query_params.to_query_params());
+        let query_params = if let Some(mut params) = txn_query_params {
+            params.signer_public_key = Some(public_account.public_key_to_hex());
+            params
         } else {
-            query_params_vec.push(QueryParam {
-                name: "signerPublicKey".to_string(),
-                value: json!(public_account.public_key_to_hex()),
-            });
-        }
+            TransactionQueryParams::create()
+                .signer_public_key(public_account.public_key_to_hex())
+                .build()
+                .unwrap()
+        };
 
-        __internal_get_transactions(
-            self.__client(),
-            TRANSACTIONS_UNCONFIRMED_ROUTE,
-            query_params_vec,
-        )
-        .await
+        let connection = self.__connection();
+
+        __internal_get_transactions(connection, TRANSACTIONS_UNCONFIRMED_ROUTE, query_params).await
     }
 
     /// Get aggregate bonded transactions information
@@ -521,29 +527,24 @@ impl AccountRoutes {
         public_account: PublicAccount,
         txn_query_params: Option<TransactionQueryParams>,
     ) -> Result<Vec<AggregateTransaction>> {
-        let mut query_params_vec: Vec<QueryParam> = vec![];
-
-        if let Some(mut query_params) = txn_query_params {
-            query_params.signer_public_key = Some(public_account.public_key_to_hex());
-            query_params_vec.append(&mut query_params.to_query_params());
+        let query_params = if let Some(mut params) = txn_query_params {
+            params.signer_public_key = Some(public_account.public_key_to_hex());
+            params
         } else {
-            query_params_vec.push(QueryParam {
-                name: "signerPublicKey".to_string(),
-                value: json!(public_account.public_key_to_hex()),
-            });
-        }
+            TransactionQueryParams::create()
+                .signer_public_key(public_account.public_key_to_hex())
+                .build()
+                .unwrap()
+        };
 
-        __internal_get_transactions(
-            self.__client(),
-            AGGREGATE_TRANSACTIONS_ROUTE,
-            query_params_vec,
-        )
-        .await
-        .map(|txns| {
-            txns.transactions
-                .into_iter()
-                .map(|item| *item.downcast::<AggregateTransaction>())
-                .collect::<Vec<_>>()
-        })
+        let connection = self.__connection();
+        __internal_get_transactions(connection, AGGREGATE_TRANSACTIONS_ROUTE, query_params)
+            .await
+            .map(|txns| {
+                txns.transactions
+                    .into_iter()
+                    .map(|item| *item.downcast::<AggregateTransaction>())
+                    .collect::<Vec<_>>()
+            })
     }
 }

@@ -6,15 +6,15 @@ use std::{
     time::Duration,
 };
 
-// use crate::metadata::HTTP_TIMEOUT_HEADER;
-// use crate::util::{OptionPin, OptionPinProj};
-use http::{HeaderMap, HeaderValue, Request};
+use hyper::http::{HeaderMap, HeaderValue, Request};
 use pin_project::pin_project;
 use tokio::time::Sleep;
-use tower_service::Service;
+use tower::Service;
+
+pub(crate) const HTTP_TIMEOUT_HEADER: &str = "grpc-timeout";
 
 #[derive(Debug, Clone)]
-pub(crate) struct HttpTimeout<S> {
+pub struct HttpTimeout<S> {
     inner: S,
     server_timeout: Option<Duration>,
 }
@@ -31,10 +31,10 @@ impl<S> HttpTimeout<S> {
 impl<S, ReqBody> Service<Request<ReqBody>> for HttpTimeout<S>
     where
         S: Service<Request<ReqBody>>,
-        S::Error: Into<crate::Error>,
+        S::Error: Into<crate::api::Error>,
 {
     type Response = S::Response;
-    type Error = crate::Error;
+    type Error = crate::api::Error;
     type Future = ResponseFuture<S::Future>;
 
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
@@ -62,26 +62,26 @@ impl<S, ReqBody> Service<Request<ReqBody>> for HttpTimeout<S>
             inner: self.inner.call(req),
             sleep: timeout_duration
                 .map(tokio::time::sleep)
-                .map(OptionPin::Some)
-                .unwrap_or(OptionPin::None),
+                .map(Some)
+                .unwrap_or(None),
         }
     }
 }
 
 #[pin_project]
-pub(crate) struct ResponseFuture<F> {
+pub struct ResponseFuture<F> {
     #[pin]
     inner: F,
     #[pin]
-    sleep: OptionPin<Sleep>,
+    sleep: Option<Sleep>,
 }
 
 impl<F, Res, E> Future for ResponseFuture<F>
     where
         F: Future<Output=Result<Res, E>>,
-        E: Into<crate::Error>,
+        E: Into<crate::api::Error>,
 {
-    type Output = Result<Res, crate::Error>;
+    type Output = Result<Res, crate::api::Error>;
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         let this = self.project();
@@ -90,7 +90,7 @@ impl<F, Res, E> Future for ResponseFuture<F>
             return Poll::Ready(result.map_err(Into::into));
         }
 
-        if let OptionPinProj::Some(sleep) = this.sleep.project() {
+        if let Some(sleep) = this.sleep.as_pin_mut() {
             futures_util::ready!(sleep.poll(cx));
             return Poll::Ready(Err(TimeoutExpired(()).into()));
         }

@@ -4,18 +4,22 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::mosaic::{MosaicNonce, MosaicProperties};
-use xpx_chain_sdk::transaction::{Deadline, MosaicDefinitionTransaction};
+use xpx_chain_sdk::transaction::MosaicDefinitionTransaction;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let start = Instant::now();
 
-    let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
+    let client = ApiNode::builder()
+        .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
+        // .timeout(Duration::from_secs(1))
+        .connect_timeout(Duration::from_secs(5))
+        .build()?
         .connect()
         .await?;
 
@@ -35,15 +39,11 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
     let properties = MosaicProperties::create(true, true, 6, None);
 
-    let transaction = MosaicDefinitionTransaction::create(
-        Deadline::default(),
-        nonce,
-        owner_public_account,
-        properties,
-        network_type,
-        None,
-    )?;
-    // println!("{transaction}");
+    let transaction = MosaicDefinitionTransaction::builder(network_type)
+        .properties(properties)
+        .mosaic_nonce(nonce)
+        .owner_public_account(owner_public_account)
+        .build()?;
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 

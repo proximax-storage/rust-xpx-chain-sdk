@@ -4,17 +4,22 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::thread::sleep;
 use std::time::Duration;
 
 use xpx_chain_sdk::account::{Address, PublicAccount};
-use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::api::{OrderV2, TransactionQueryParams};
+use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::transaction::TransactionType;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-    let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
+    let client = ApiNode::builder()
+        .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
+        // .timeout(Duration::from_secs(1))
+        .connect_timeout(Duration::from_secs(5))
+        .max_num_retry(2)
+        .concurrency_limit(100)
+        .build()?
         .connect()
         .await?;
 
@@ -41,11 +46,11 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
     let account_api = client.account_api();
 
-    for _i in 0..3 {
+    for _i in 0..100 {
         let account_api = account_api.clone();
 
         tokio::spawn(async move {
-            let req = account_api.account_info(account_id_one).await;
+            let req = account_api.account_info(account_id_one).await.unwrap();
             println!("{:?}", req);
         });
     }
@@ -101,18 +106,18 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         ),
     }
 
-    let txn_query_params = TransactionQueryParams {
-        page_size: Some(15),
-        page_number: Some(1),
-        r#type: vec![
+    let txn_query_params = TransactionQueryParams::create()
+        .page_size(10_u16)
+        .page_number(1_u16)
+        .r#type(vec![
             TransactionType::AggregateComplete,
             TransactionType::Transfer,
-        ],
-        embedded: true,
-        order: Some(OrderV2::DESC),
-        first_level: false,
-        ..Default::default()
-    };
+        ])
+        .embedded(true)
+        .order(OrderV2::DESC)
+        .first_level(false)
+        .build()
+        .unwrap();
 
     // Returns the [configurable properties] for a given vector of addresses.
     let accounts_properties = account_api
@@ -125,7 +130,6 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
             err
         ),
     }
-    sleep(Duration::from_secs(10));
 
     Ok(())
 }

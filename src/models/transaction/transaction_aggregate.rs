@@ -21,68 +21,80 @@ use crate::{
 
 use super::{
     buffers,
-    internal::{sign_transaction_with_cosignatures, to_aggregate_transaction_bytes},
-    schema::aggregate_transaction_schema,
-    CommonTransaction, Deadline, SignedTransaction, Transaction, TransactionType,
-    TransactionVersion, Transactions,
+    CommonTransaction,
+    Deadline,
+    internal::{sign_transaction_with_cosignatures, to_aggregate_transaction_bytes}, schema::aggregate_transaction_schema, SignedTransaction, Transaction, Transactions,
+    TransactionType, TransactionVersion,
 };
 
 /// AggregateTransaction:
 /// Transaction that combines multiple transactions together.
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(
+create_empty = "empty",
+build_fn(validate = "Self::validate", error = "crate::api::error::Error")
+)]
+#[serde(rename_all = "camelCase")]
 pub struct AggregateTransaction {
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
     pub common: CommonTransaction,
     /// An array of transaction cosignatures.
+    #[builder(default)]
     pub cosignatures: Vec<Cosignature>,
     /// The array of transactions initiated by different accounts.
     pub inner_transactions: Transactions,
 }
 
-impl AggregateTransaction {
-    pub fn create_complete(
-        deadline: Deadline,
-        inner_txs: Vec<Box<dyn Transaction>>,
-        network_type: NetworkType,
-        max_fee: Option<u64>,
-    ) -> Result<AggregateTransaction> {
-        ensure!(!inner_txs.is_empty(), ERR_EMPTY_INNER_TRANSACTION);
+impl AggregateTransactionBuilder {
+    fn validate(&self) -> Result<()> {
+        if let Some(ref inner_transactions) = self.inner_transactions {
+            ensure!(!inner_transactions.is_empty(), ERR_EMPTY_INNER_TRANSACTION);
+        }
 
+        Ok(())
+    }
+
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut AggregateTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut AggregateTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
+}
+
+impl AggregateTransaction {
+    pub fn builder_complete(network_type: NetworkType) -> AggregateTransactionBuilder {
         let common = CommonTransaction::create_from_type(
             TransactionType::AggregateComplete,
             network_type,
             TransactionVersion::AGGREGATE_COMPLETE,
-            Some(deadline),
-            max_fee,
+            Some(Default::default()),
+            None,
         );
-
-        Ok(Self {
-            common,
-            cosignatures: vec![],
-            inner_transactions: inner_txs,
-        })
+        AggregateTransactionBuilder {
+            common: Some(common),
+            ..Default::default()
+        }
     }
 
-    pub fn create_bonded(
-        deadline: Deadline,
-        inner_txs: Vec<Box<dyn Transaction>>,
-        network_type: NetworkType,
-        max_fee: Option<u64>,
-    ) -> Result<Self> {
-        ensure!(!inner_txs.is_empty(), ERR_EMPTY_INNER_TRANSACTION);
-
+    pub fn builder_bonded(network_type: NetworkType) -> AggregateTransactionBuilder {
         let common = CommonTransaction::create_from_type(
             TransactionType::AggregateBonded,
             network_type,
             TransactionVersion::AGGREGATE_BONDED,
-            Some(deadline),
-            max_fee,
+            Some(Default::default()),
+            None,
         );
-
-        Ok(Self {
-            common,
-            cosignatures: vec![],
-            inner_transactions: inner_txs,
-        })
+        AggregateTransactionBuilder {
+            common: Some(common),
+            ..Default::default()
+        }
     }
 
     pub fn sign_with_cosignatories(

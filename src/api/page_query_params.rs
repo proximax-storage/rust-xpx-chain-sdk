@@ -4,12 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
-use serde_json::json;
-
-use crate::api::QueryParam;
-
 /// The query params structure describes pagination by page number and page size.
 ///
+#[derive(Clone, Debug, Eq, PartialEq, Builder, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PageQueryParams {
     // Page number should be non negative number, otherwise 0 (first page).
     pub page: u16,
@@ -29,17 +27,10 @@ impl PageQueryParams {
         PageQueryParams { page, page_size }
     }
 
-    pub fn to_query_params(&self) -> Vec<QueryParam> {
-        vec![
-            QueryParam {
-                name: "pageSize".to_string(),
-                value: json!(self.page_size),
-            },
-            QueryParam {
-                name: "page".to_string(),
-                value: json!(self.page),
-            },
-        ]
+    /// Serializes a `PageQueryParams` into a query string.
+    ///
+    pub fn to_query_string(&self) -> String {
+        qs::to_string(self).unwrap()
     }
 }
 

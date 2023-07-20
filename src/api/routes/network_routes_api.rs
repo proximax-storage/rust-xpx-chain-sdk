@@ -4,26 +4,26 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::Method;
+use hyper::Method;
 
-use crate::api::routes::const_routes::NETWORK_INFO;
-use crate::api::Client;
 use crate::api::{error::Result, request as __internal_request};
+use crate::api::routes::const_routes::NETWORK_INFO;
+use crate::api::transport::service::Connection;
 use crate::network::NetworkInfo;
 
 /// Network ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct NetworkRoutes(Client);
+pub struct NetworkRoutes(Connection);
 
 /// Network related endpoints.
 ///
 impl NetworkRoutes {
-    pub(crate) fn new(client: Client) -> Self {
+    pub(crate) fn new(client: Connection) -> Self {
         NetworkRoutes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __connection(&self) -> Connection {
         self.0.clone()
     }
 
@@ -55,7 +55,7 @@ impl NetworkRoutes {
     /// whose error value is an `Error<VALUE>` describing the error that occurred.
     pub async fn get_network_type(&self) -> Result<NetworkInfo> {
         let req = __internal_request::ApiRequest::new(Method::GET, NETWORK_INFO.to_string());
-
-        req.execute(self.__client()).await
+        // let connection = self.__connection();
+        req.execute(self.__connection()).await
     }
 }

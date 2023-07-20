@@ -24,7 +24,11 @@ use xpx_chain_sdk::TransactionHash;
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let start = Instant::now();
 
-    let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
+    let client = ApiNode::builder()
+        .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
+        // .timeout(Duration::from_secs(1))
+        .connect_timeout(Duration::from_secs(5))
+        .build()?
         .connect()
         .await?;
 
@@ -59,24 +63,17 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         CosignatoryModification::create(MultisigModificationType::Add, cosignatory_three),
     ];
 
-    let deadline = Deadline::default();
-    let mut multisig_account_transaction = ModifyMultisigAccountTransaction::create(
-        deadline,
-        min_approval_delta,
-        min_removal_delta,
-        modifications,
-        network_type,
-        None,
-    )?;
+    let mut multisig_account_transaction = ModifyMultisigAccountTransaction::builder(network_type)
+        .min_approval_delta(min_approval_delta)
+        .min_removal_delta(min_removal_delta)
+        .modifications(modifications)
+        .build()?;
+
     multisig_account_transaction.set_aggregate(account.public_account);
 
-    let transaction = AggregateTransaction::create_bonded(
-        deadline,
-        vec![Box::new(multisig_account_transaction)],
-        network_type,
-        None,
-    )?;
-
+    let transaction = AggregateTransaction::builder_bonded(network_type)
+        .inner_transactions(vec![Box::new(multisig_account_transaction)])
+        .build()?;
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 
     let _ = lock_fund(
@@ -86,7 +83,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         network_type,
         generation_hash,
     )
-    .await?;
+        .await?;
 
     let response = client
         .transaction_api()
@@ -142,7 +139,7 @@ async fn lock_fund(
         if let Ok(status) = response {
             println!("LockFundsTransaction Status: {}", status.group);
             if !status.is_success() {
-                return Err(xpx_chain_sdk::api::error::Error::Failure(anyhow!(
+                return Err(xpx_chain_sdk::api::error::Error::Other(anyhow!(
                     status.status
                 )));
             } else if status.is_confirmed() {
@@ -151,7 +148,7 @@ async fn lock_fund(
         }
 
         if i == 6 {
-            return Err(xpx_chain_sdk::api::error::Error::Failure(anyhow!(
+            return Err(xpx_chain_sdk::api::error::Error::Other(anyhow!(
                 "time out."
             )));
         }

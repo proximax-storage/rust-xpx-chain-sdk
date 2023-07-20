@@ -4,29 +4,28 @@
  * license that can be found in the LICENSE file.
  */
 
-use http::Method;
+use hyper::Method;
 use serde_json::json;
 
-use crate::api::routes::const_routes::{METADATAS_V2_INFO_ROUTE, METADATA_V2_INFO_ROUTE};
-use crate::api::{
-    Client, MetadataQueryParams, MetadataV2InfoDTO, QueryParam, SearchMetadataV2InfoDTO,
-};
-use crate::metadata::{MetadataEntry, SearchMetadataEntry};
 use crate::{api::error::Result, api::request as __internal_request};
+use crate::api::{MetadataQueryParams, MetadataV2InfoDTO, SearchMetadataV2InfoDTO};
+use crate::api::routes::const_routes::{METADATA_V2_INFO_ROUTE, METADATAS_V2_INFO_ROUTE};
+use crate::api::transport::service::Connection;
+use crate::metadata::{MetadataEntry, SearchMetadataEntry};
 
 /// Namespace ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct MetadataV2Routes(Client);
+pub struct MetadataV2Routes(Connection);
 
 /// Account related endpoints.
 ///
 impl MetadataV2Routes {
-    pub(crate) fn new(client: Client) -> Self {
+    pub(crate) fn new(client: Connection) -> Self {
         MetadataV2Routes(client)
     }
 
-    fn __client(&self) -> Client {
+    fn __client(&self) -> Connection {
         self.0.clone()
     }
 
@@ -66,17 +65,14 @@ impl MetadataV2Routes {
 
     pub async fn search_metadata(
         &self,
-        query_params: Option<MetadataQueryParams>,
+        query_params: Option<impl Into<MetadataQueryParams>>,
     ) -> Result<SearchMetadataEntry> {
         let mut req =
             __internal_request::ApiRequest::new(Method::GET, METADATAS_V2_INFO_ROUTE.to_string());
 
-        if let Some(query_params) = query_params {
-            let mut query_params_vec: Vec<QueryParam> = vec![];
-            query_params_vec.append(&mut query_params.to_query_params());
-            for query_param in query_params_vec {
-                req = req.with_query_param(query_param);
-            }
+        if let Some(params) = query_params {
+            let params = params.into();
+            req = req.with_query_param(params.to_query_string());
         }
 
         let dto: SearchMetadataV2InfoDTO = req.execute(self.__client()).await?;

@@ -17,8 +17,8 @@ use crate::mosaic::UnresolvedMosaicId;
 use crate::namespace::NamespaceId;
 use crate::network::NetworkType;
 use crate::transaction::{
-    build_metadata_common, build_scoped_metadata_key, CommonTransaction, Deadline,
-    MetadataTransaction, Transaction, TransactionType, TransactionVersion,
+    build_scoped_metadata_key, CommonTransaction, Deadline, MetadataTransaction, Transaction,
+    TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -29,6 +29,49 @@ pub struct MetadataV2NamespaceTransaction {
 }
 
 impl MetadataV2NamespaceTransaction {
+    pub fn builder<T: fmt::Display + 'static>(
+        deadline: Deadline,
+        account: PublicAccount,
+        namespace_id: NamespaceId,
+        scoped_key: T,
+        new_value: &str,
+        old_value: Option<&str>,
+        network_type: NetworkType,
+        max_fee: Option<u64>,
+    ) -> Result<Self> {
+        if let Some(old) = old_value {
+            ensure!(
+                new_value != old,
+                errors_const::ERR_METADATA_VALUE_IS_THE_SAME
+            );
+        }
+
+        let scoped_metadata_key = build_scoped_metadata_key(scoped_key)?;
+
+        let common = CommonTransaction::create_from_type(
+            TransactionType::NamespaceMetadataV2,
+            network_type,
+            TransactionVersion::NAMESPACE_METADATA_V2,
+            Some(deadline),
+            max_fee,
+        );
+
+        let old_value = old_value.unwrap_or_default();
+
+        let metadata = MetadataTransaction::builder(
+            common,
+            account,
+            new_value,
+            old_value,
+            scoped_metadata_key,
+        )?;
+
+        Ok(Self {
+            metadata,
+            namespace_id,
+        })
+    }
+
     pub fn create<T: fmt::Display + 'static>(
         deadline: Deadline,
         account: PublicAccount,
@@ -58,8 +101,13 @@ impl MetadataV2NamespaceTransaction {
 
         let old_value = old_value.unwrap_or_default();
 
-        let metadata =
-            build_metadata_common(common, account, new_value, old_value, scoped_metadata_key)?;
+        let metadata = MetadataTransaction::builder(
+            common,
+            account,
+            new_value,
+            old_value,
+            scoped_metadata_key,
+        )?;
 
         Ok(Self {
             metadata,

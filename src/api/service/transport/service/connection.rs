@@ -1,113 +1,84 @@
-use std::{
-    fmt,
-    task::{Context, Poll},
-};
+use std::task::{Context, Poll};
 
-use http::Uri;
-use hyper::client::conn::Builder;
-use hyper::client::connect::Connection as HyperConnection;
-use hyper::client::service::Connect as HyperConnect;
-use tokio::io::{AsyncRead, AsyncWrite};
-use tower::load::Load;
-use tower::{
-    layer::Layer,
-    limit::{concurrency::ConcurrencyLimitLayer, rate::RateLimitLayer},
-    util::BoxService,
-    ServiceBuilder, ServiceExt,
-};
-use tower_service::Service;
+use futures_util::future;
+use tower::limit::ConcurrencyLimit;
+use tower::{ServiceBuilder, ServiceExt};
+// use tower::load::Load;
+use tower::retry::Retry;
+use tower::Service;
 
+use crate::api::service::service::retry::RetryPolicy;
+use crate::api::transport::service::http_timeout::HttpTimeout;
+use crate::api::transport::service::{Connector, ReplayBody};
 use crate::api::transport::ApiNode;
 
-use super::super::BoxFuture;
-use super::{reconnect::Reconnect, AddOrigin, UserAgent};
+use super::AddOrigin;
 
-pub(crate) type Request = hyper::Request<hyper::Body>;
-pub(crate) type Response = hyper::Response<hyper::Body>;
+pub type Request = hyper::Request<ReplayBody>;
+pub type Response = hyper::Response<hyper::Body>;
+pub type TimeoutConnector = hyper_timeout::TimeoutConnector<Connector>;
+pub type ConnectionInnerSvc = AddOrigin<
+    HttpTimeout<ConcurrencyLimit<Retry<RetryPolicy, hyper::Client<TimeoutConnector, ReplayBody>>>>,
+>;
 
+#[derive(Clone)]
 pub struct Connection {
-    inner: BoxService<Request, Response, crate::api::Error>,
+    inner: ConnectionInnerSvc,
 }
 
 impl Connection {
-    fn new<C>(connector: C, endpoint: ApiNode, is_lazy: bool) -> Self
-    where
-        C: Service<Uri> + Send + 'static,
-        C::Error: Into<crate::api::Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
-    {
-        let settings = Builder::new().executor(endpoint.executor.clone()).clone();
+    fn new(connector: TimeoutConnector, endpoint: ApiNode) -> Self {
+        let executor = endpoint.executor.clone();
+        let svc = hyper::Client::builder()
+            .executor(executor)
+            .build::<TimeoutConnector, ReplayBody>(connector);
 
-        let stack = ServiceBuilder::new()
-            .layer_fn(|s| UserAgent::new(s, endpoint.user_agent.clone()))
-            .layer_fn(|s| {
-                let origin = endpoint.origin.as_ref().unwrap_or(&endpoint.uri).clone();
-                AddOrigin::new(s, origin)
-            })
-            // .layer_fn(|s| HttpTimeout::new(s, endpoint.timeout))
-            .option_layer(endpoint.concurrency_limit.map(ConcurrencyLimitLayer::new))
-            .option_layer(endpoint.rate_limit.map(|(l, d)| RateLimitLayer::new(l, d)))
-            .into_inner();
+        let inner = ServiceBuilder::new()
+            // .load_shed()
+            .layer_fn(|s| AddOrigin::new(s, endpoint.uri.clone()))
+            .layer_fn(|s| HttpTimeout::new(s, endpoint.timeout))
+            .concurrency_limit(endpoint.concurrency_limit.unwrap_or(100))
+            // .option_layer(endpoint.rate_limit.map(|(l, d)| RateLimitLayer::new(l, d)))
+            .retry(RetryPolicy::new(
+                endpoint.max_num_retry.unwrap_or_default(),
+                endpoint.retry_service_unavailable_requests,
+            ))
+            .service(svc);
 
-        let connector = HyperConnect::new(connector, settings);
-        let conn = Reconnect::new(connector, endpoint.uri.clone(), is_lazy);
-
-        let inner = stack.layer(conn);
-
-        Self {
-            inner: BoxService::new(inner),
-        }
+        Self { inner }
     }
 
-    pub(crate) async fn connect<C>(
-        connector: C,
+    pub(crate) async fn connect(
+        connector: TimeoutConnector,
         endpoint: ApiNode,
-    ) -> Result<Self, crate::api::Error>
-    where
-        C: Service<Uri> + Send + 'static,
-        C::Error: Into<crate::api::Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
-    {
-        Self::new(connector, endpoint, false).ready_oneshot().await
+    ) -> Result<Self, crate::api::error::Error> {
+        Self::new(connector, endpoint).ready_oneshot().await
     }
 
-    pub(crate) fn lazy<C>(connector: C, endpoint: ApiNode) -> Self
-    where
-        C: Service<Uri> + Send + 'static,
-        C::Error: Into<crate::api::Error> + Send,
-        C::Future: Unpin + Send,
-        C::Response: AsyncRead + AsyncWrite + HyperConnection + Unpin + Send + 'static,
-    {
-        Self::new(connector, endpoint, true)
+    pub(crate) fn lazy(connector: TimeoutConnector, endpoint: ApiNode) -> Self {
+        Self::new(connector, endpoint)
     }
 }
 
 impl Service<Request> for Connection {
     type Response = Response;
-    type Error = crate::api::Error;
-    type Future = BoxFuture<Self::Response, Self::Error>;
+    type Error = crate::api::error::Error;
+    type Future = future::BoxFuture<'static, Result<Self::Response, Self::Error>>;
 
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         Service::poll_ready(&mut self.inner, cx).map_err(Into::into)
     }
 
     fn call(&mut self, request: Request) -> Self::Future {
-        self.inner.call(request)
+        let fut = self.inner.call(request);
+        Box::pin(async move { fut.await.map_err(Into::into) })
     }
 }
-
-impl Load for Connection {
-    type Metric = usize;
-
-    fn load(&self) -> Self::Metric {
-        0
-    }
-}
-
-impl fmt::Debug for Connection {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Connection").finish()
-    }
-}
+//
+// impl Load for Connection {
+//     type Metric = usize;
+//
+//     fn load(&self) -> Self::Metric {
+//         0
+//     }
+// }

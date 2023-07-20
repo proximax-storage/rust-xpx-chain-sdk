@@ -7,7 +7,7 @@ pub use self::error::Error;
 pub(crate) mod client;
 
 mod error;
-mod service;
+pub(crate) mod service;
 
 type BoxFuture<T, E> =
-    std::pin::Pin<Box<dyn std::future::Future<Output = Result<T, E>> + Send + 'static>>;
+std::pin::Pin<Box<dyn std::future::Future<Output=Result<T, E>> + Send + 'static>>;

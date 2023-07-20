@@ -26,6 +26,7 @@ pub struct CommonTransaction {
     pub signature: Option<Signature>,
 
     /// The 'PublicAccount' of the entity signer formatted as hexadecimal.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub signer: Option<PublicAccount>,
 
     /// The transaction version.
@@ -83,7 +84,7 @@ impl CommonTransaction {
                 && transaction_info.hash.is_some()
                 && transaction_info.merkle_component_hash.is_some()
                 && transaction_info.hash.unwrap_or_default()
-                    == transaction_info.merkle_component_hash.unwrap_or_default()
+                == transaction_info.merkle_component_hash.unwrap_or_default()
         } else {
             false
         }
@@ -103,7 +104,7 @@ impl CommonTransaction {
                 && transaction_info.hash.is_some()
                 && transaction_info.merkle_component_hash.is_some()
                 && transaction_info.hash.unwrap_or_default()
-                    != transaction_info.merkle_component_hash.unwrap_or_default()
+                != transaction_info.merkle_component_hash.unwrap_or_default()
         } else {
             false
         }

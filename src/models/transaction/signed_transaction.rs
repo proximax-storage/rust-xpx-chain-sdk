@@ -46,9 +46,9 @@ impl SignedTransaction {
         self.hash
     }
 
-    pub fn type_to_string(&self) -> String {
-        self.entity_type.to_string()
-    }
+    // pub fn type_to_string(&self) -> String {
+    //     self.entity_type.to_string()
+    // }
 
     pub fn as_value(&self) -> Value {
         serde_json::from_str(&format!("{}", self)).unwrap()

@@ -8,10 +8,10 @@ use std::any::{Any, TypeId};
 use std::fmt;
 use std::str::FromStr;
 
+use crate::{AsUint64, errors_const};
 use crate::models::{account::PublicAccount, consts::METADATA_V2_HEADER_SIZE};
-use crate::{errors_const, AsUint64};
 
-use super::{buffers, schema::modify_metadata_v2_transaction_schema, CommonTransaction};
+use super::{buffers, CommonTransaction, schema::modify_metadata_v2_transaction_schema};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -24,6 +24,27 @@ pub struct MetadataTransaction {
 }
 
 impl MetadataTransaction {
+    pub(crate) fn builder(
+        common: CommonTransaction,
+        account: PublicAccount,
+        new_value: &str,
+        old_value: &str,
+        scoped_metadata_key: u64,
+    ) -> anyhow::Result<MetadataTransaction> {
+        let mut metadata = MetadataTransaction {
+            common,
+            target_public_account: account,
+            scoped_metadata_key,
+            value_size_delta: (new_value.len() - old_value.len()) as u16,
+            value: new_value.to_owned(),
+        };
+
+        let value = factory_value(new_value, old_value);
+
+        metadata.value = String::from_utf8(value)?;
+        Ok(metadata)
+    }
+
     pub(crate) fn size(&self) -> usize {
         METADATA_V2_HEADER_SIZE + self.value.len()
     }
@@ -87,27 +108,6 @@ pub(crate) fn build_scoped_metadata_key<T: fmt::Display + 'static>(
             errors_const::ERR_METADATA_INVALID_SCOPED_METADATA_KEY_TYPE
         ));
     })
-}
-
-pub(crate) fn build_metadata_common(
-    common: CommonTransaction,
-    account: PublicAccount,
-    new_value: &str,
-    old_value: &str,
-    scoped_metadata_key: u64,
-) -> anyhow::Result<MetadataTransaction> {
-    let mut metadata = MetadataTransaction {
-        common,
-        target_public_account: account,
-        scoped_metadata_key,
-        value_size_delta: (new_value.len() - old_value.len()) as u16,
-        value: new_value.to_owned(),
-    };
-
-    let value = factory_value(new_value, old_value);
-
-    metadata.value = String::from_utf8(value)?;
-    Ok(metadata)
 }
 
 pub(crate) fn factory_value(new_value: &str, old_value: &str) -> Vec<u8> {

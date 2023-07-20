@@ -9,23 +9,23 @@ use fb::FlatBufferBuilder;
 
 use crate::{
     account::Account,
+    AsUint64,
     errors_const::ERR_EMPTY_TRANSACTION_SIGNER,
-    helpers::{hex_decode, hex_encode, u32_to_array_u8, TransactionHash},
+    helpers::{hex_decode, hex_encode, TransactionHash, u32_to_array_u8},
     metadata::MetadataModification,
     models::consts::{
         SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE, TRANSACTION_HEADER_SIZE, TYPE_SIZE, VERSION_SIZE,
     },
     mosaic::MosaicProperty,
     multisig::CosignatoryModification,
-    AsUint64,
 };
 
 use super::{
+    AggregateTransaction,
     buffers::{
         CosignatoryModificationBuffer, CosignatoryModificationBufferBuilder,
         MetadataModificationBuffer, MetadataModificationBufferBuilder, MosaicPropertyBuilder,
-    },
-    AggregateTransaction, SignedTransaction, Transaction, TransactionVersion,
+    }, SignedTransaction, Transaction, TransactionVersion,
 };
 
 pub(crate) fn extract_version(version: u32) -> TransactionVersion {

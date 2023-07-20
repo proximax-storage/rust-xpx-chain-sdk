@@ -24,87 +24,130 @@ use super::{
     Transaction, TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(
+create_empty = "empty",
+build_fn(validate = "Self::validate", error = "crate::api::error::Error")
+)]
 #[serde(rename_all = "camelCase")]
 pub struct RegisterNamespaceTransaction {
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
     pub common: CommonTransaction,
     pub namespace_type: NamespaceType,
     pub namespace_id: NamespaceId,
+    #[builder(private)]
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(setter(strip_option))]
     pub duration: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(setter(strip_option), default)]
     pub parent_id: Option<NamespaceId>,
 }
 
-impl RegisterNamespaceTransaction {
-    pub fn create_root(
-        deadline: Deadline,
-        namespace_name: &str,
-        duration: u64,
-        network_type: NetworkType,
-        max_fee: Option<u64>,
-    ) -> Result<RegisterNamespaceTransaction> {
+impl RegisterNamespaceTransactionBuilder {
+    fn validate(&self) -> Result<()> {
+        let namespace_name = self
+            .name
+            .clone()
+            .ok_or(anyhow!(errors_const::ERR_EMPTY_NAMESPACE_NAME))?;
+
         ensure!(
-            !namespace_name.is_empty() && namespace_name.len() <= 16,
-            errors_const::ERR_INVALID_NAMESPACE_NAME
+            !namespace_name.is_empty(),
+            errors_const::ERR_EMPTY_NAMESPACE_NAME
         );
 
-        let common = CommonTransaction::create_from_type(
-            TransactionType::RegisterNamespace,
-            network_type,
-            TransactionVersion::NAMESPACE_REGISTRATION,
-            Some(deadline),
-            max_fee,
-        );
+        if self.namespace_type == Some(NamespaceType::Root) {
+            ensure!(
+                namespace_name.len() <= 16,
+                errors_const::ERR_INVALID_LEN_NAMESPACE_NAME
+            );
+        } else if self.namespace_type == Some(NamespaceType::Sub) {
+            ensure!(
+                namespace_name.len() <= 64,
+                errors_const::ERR_INVALID_LEN_NAMESPACE_NAME
+            );
+            let parent_id = self
+                .parent_id
+                .unwrap_or_default()
+                .ok_or(anyhow!(errors_const::ERR_EMPTY_NAMESPACE_ID))?;
 
-        let namespace_id = NamespaceId::from_name(namespace_name)?;
+            ensure!(
+                parent_id.to_u64() != 0,
+                errors_const::ERR_EMPTY_NAMESPACE_ID
+            );
+        }
 
-        Ok(RegisterNamespaceTransaction {
-            common,
-            namespace_type: NamespaceType::Root,
-            namespace_id,
-            name: namespace_name.to_owned(),
-            duration: Some(duration),
-            parent_id: None,
-        })
+        Ok(())
     }
 
-    pub fn create_sub(
-        deadline: Deadline,
-        namespace_name: &str,
-        parent_id: NamespaceId,
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut RegisterNamespaceTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut RegisterNamespaceTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
+}
+
+impl RegisterNamespaceTransaction {
+    pub fn builder_root(
+        namespace_name: impl Into<String>,
         network_type: NetworkType,
-        max_fee: Option<u64>,
-    ) -> Result<Self> {
-        ensure!(
-            !namespace_name.is_empty() && namespace_name.len() <= 64,
-            errors_const::ERR_INVALID_NAMESPACE_NAME
-        );
-
-        ensure!(
-            parent_id.to_u64() != 0,
-            errors_const::ERR_EMPTY_NAMESPACE_ID
-        );
-
+    ) -> RegisterNamespaceTransactionBuilder {
         let common = CommonTransaction::create_from_type(
             TransactionType::RegisterNamespace,
             network_type,
             TransactionVersion::NAMESPACE_REGISTRATION,
-            Some(deadline),
-            max_fee,
+            Some(Default::default()),
+            None,
         );
 
-        let namespace_id = generate_namespace_id(namespace_name, parent_id)?;
+        let namespace_name = namespace_name.into();
 
-        Ok(Self {
-            common,
-            namespace_type: NamespaceType::Sub,
-            namespace_id,
-            name: namespace_name.to_owned(),
-            duration: None,
-            parent_id: Some(parent_id),
-        })
+        let namespace_id = NamespaceId::from_name(namespace_name.as_str()).unwrap_or_default();
+
+        RegisterNamespaceTransactionBuilder {
+            common: Some(common),
+            namespace_id: Some(namespace_id),
+            name: Some(namespace_name),
+            namespace_type: Some(NamespaceType::Root),
+            ..Default::default()
+        }
+    }
+
+    pub fn builder_sub(
+        namespace_name: impl Into<String>,
+        parent_id: NamespaceId,
+        network_type: NetworkType,
+    ) -> RegisterNamespaceTransactionBuilder {
+        let common = CommonTransaction::create_from_type(
+            TransactionType::RegisterNamespace,
+            network_type,
+            TransactionVersion::NAMESPACE_REGISTRATION,
+            Some(Default::default()),
+            None,
+        );
+
+        let namespace_name = namespace_name.into();
+
+        let namespace_id =
+            generate_namespace_id(namespace_name.as_str(), parent_id).unwrap_or_default();
+
+        RegisterNamespaceTransactionBuilder {
+            common: Some(common),
+            namespace_id: Some(namespace_id),
+            name: Some(namespace_name),
+            parent_id: Some(Some(parent_id)),
+            duration: Some(Default::default()),
+            namespace_type: Some(NamespaceType::Sub),
+            ..Default::default()
+        }
     }
 }
 

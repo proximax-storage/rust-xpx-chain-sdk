@@ -4,18 +4,22 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use xpx_chain_sdk::account::Account;
 use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::namespace::NamespaceId;
-use xpx_chain_sdk::transaction::{Deadline, RegisterNamespaceTransaction};
+use xpx_chain_sdk::transaction::RegisterNamespaceTransaction;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let start = Instant::now();
 
-    let client = ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000")
+    let client = ApiNode::builder()
+        .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
+        // .timeout(Duration::from_secs(1))
+        .connect_timeout(Duration::from_secs(5))
+        .build()?
         .connect()
         .await?;
 
@@ -29,15 +33,11 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
     let account = Account::from_hex_private_key(private_key, network_type)?;
 
-    let parent_id = NamespaceId::from_name("rust_namespace")?;
+    let parent_id = NamespaceId::from_name("block_namespace")?;
 
-    let transaction = RegisterNamespaceTransaction::create_sub(
-        Deadline::default(),
-        "sub_namespace",
-        parent_id,
-        network_type,
-        None,
-    )?;
+    let transaction =
+        RegisterNamespaceTransaction::builder_sub("sub_namespace", parent_id, network_type)
+            .build()?;
 
     let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 

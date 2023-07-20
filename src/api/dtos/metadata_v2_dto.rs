@@ -6,9 +6,9 @@
 
 use crate::account::Address;
 use crate::api::Pagination;
+use crate::AsUint64;
 use crate::helpers::hex_decode;
 use crate::metadata::{MetadataEntry, MetadataV2Type, SearchMetadataEntry};
-use crate::AsUint64;
 
 use super::Uint64Dto;
 

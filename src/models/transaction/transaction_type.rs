@@ -9,17 +9,20 @@ use {
     serde_repr::*,
 };
 
-/// The entity type:
+/// The provided code defines the `TransactionType` enum,
+/// which represents different types of transactions in a blockchain system.
+/// Each transaction type variant is assigned a decimal value and a hexadecimal value using the repr attribute.
 #[derive(
-    Debug,
-    Clone,
-    Copy,
-    Eq,
-    PartialEq,
-    Serialize_repr,
-    Deserialize_repr,
-    IntoPrimitive,
-    FromPrimitive,
+Debug,
+Clone,
+Copy,
+Eq,
+PartialEq,
+Serialize_repr,
+Deserialize_repr,
+IntoPrimitive,
+FromPrimitive,
+strum::Display,
 )]
 #[repr(u16)]
 pub enum TransactionType {
@@ -217,26 +220,24 @@ pub enum TransactionType {
 }
 
 impl TransactionType {
+    /// Returns the decimal value of the transaction type.
     pub fn value(self) -> u16 {
         self.into()
     }
 
+    /// Converts the transaction type into a little-endian byte array.
     pub fn to_bytes(self) -> [u8; 2] {
         self.value().to_le_bytes()
     }
 
+    /// Returns the hexadecimal representation of the transaction type.
     pub fn to_hex(&self) -> String {
         format!("{:#X}", self.value())
     }
 }
 
-impl core::fmt::Display for TransactionType {
-    fn fmt(&self, e: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(e, "{:?}", &self)
-    }
-}
-
 impl From<TransactionType> for [u8; 2] {
+    /// Converts the `TransactionType` into a byte array.
     fn from(value: TransactionType) -> Self {
         value.to_bytes()
     }

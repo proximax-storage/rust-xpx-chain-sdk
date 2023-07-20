@@ -8,14 +8,17 @@
 extern crate anyhow;
 extern crate core;
 #[macro_use]
+extern crate derive_builder;
+#[macro_use]
 extern crate erased_serde;
 #[macro_use]
 extern crate fixed_hash;
 extern crate flatbuffers as fb;
 #[macro_use]
 extern crate serde;
+extern crate serde_qs as qs;
 #[macro_use]
-extern crate tracing;
+extern crate thiserror;
 extern crate xpx_chain_crypto as crypto;
 
 pub use self::helpers::hashes::*;
