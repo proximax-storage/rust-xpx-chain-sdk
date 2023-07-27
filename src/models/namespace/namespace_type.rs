@@ -10,15 +10,15 @@
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum NamespaceType {
-    Root,
-    Sub,
+	Root,
+	Sub,
 }
 
 impl From<u8> for NamespaceType {
-    fn from(num: u8) -> Self {
-        match num {
-            1 => NamespaceType::Sub,
-            _ => NamespaceType::Root,
-        }
-    }
+	fn from(num: u8) -> Self {
+		match num {
+			1 => NamespaceType::Sub,
+			_ => NamespaceType::Root,
+		}
+	}
 }

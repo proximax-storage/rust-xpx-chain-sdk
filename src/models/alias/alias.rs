@@ -13,29 +13,29 @@ use num_enum::IntoPrimitive;
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, IntoPrimitive)]
 #[repr(u8)]
 pub enum AccountLinkAction {
-    AccountLink,
-    AccountUnlink,
+	AccountLink,
+	AccountUnlink,
 }
 
 impl AccountLinkAction {
-    pub fn value(self) -> u8 {
-        self.into()
-    }
+	pub fn value(self) -> u8 {
+		self.into()
+	}
 }
 
 impl From<u8> for AccountLinkAction {
-    fn from(num: u8) -> Self {
-        match num {
-            1 => AccountLinkAction::AccountUnlink,
-            _ => AccountLinkAction::AccountLink,
-        }
-    }
+	fn from(num: u8) -> Self {
+		match num {
+			1 => AccountLinkAction::AccountUnlink,
+			_ => AccountLinkAction::AccountLink,
+		}
+	}
 }
 
 impl std::fmt::Display for AccountLinkAction {
-    fn fmt(&self, e: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
-    }
+	fn fmt(&self, e: &mut std::fmt::Formatter) -> std::fmt::Result {
+		write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
+	}
 }
 
 /// The alias type:
@@ -45,32 +45,32 @@ impl std::fmt::Display for AccountLinkAction {
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, IntoPrimitive)]
 #[repr(u8)]
 pub enum AliasType {
-    NoneAliasType,
-    MosaicAliasType,
-    AddressAliasType,
+	NoneAliasType,
+	MosaicAliasType,
+	AddressAliasType,
 }
 
 impl AliasType {
-    pub fn value(self) -> u8 {
-        self.into()
-    }
+	pub fn value(self) -> u8 {
+		self.into()
+	}
 }
 
 impl From<u8> for AliasType {
-    fn from(num: u8) -> Self {
-        use AliasType::*;
-        match num {
-            1 => MosaicAliasType,
-            2 => AddressAliasType,
-            _ => NoneAliasType,
-        }
-    }
+	fn from(num: u8) -> Self {
+		use AliasType::*;
+		match num {
+			1 => MosaicAliasType,
+			2 => AddressAliasType,
+			_ => NoneAliasType,
+		}
+	}
 }
 
 impl std::fmt::Display for AliasType {
-    fn fmt(&self, e: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
-    }
+	fn fmt(&self, e: &mut std::fmt::Formatter) -> std::fmt::Result {
+		write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
+	}
 }
 
 /// The alias action:
@@ -79,27 +79,27 @@ impl std::fmt::Display for AliasType {
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, IntoPrimitive)]
 #[repr(u8)]
 pub enum AliasActionType {
-    AliasLink,
-    AliasUnlink,
+	AliasLink,
+	AliasUnlink,
 }
 
 impl AliasActionType {
-    pub fn value(self) -> u8 {
-        self.into()
-    }
+	pub fn value(self) -> u8 {
+		self.into()
+	}
 }
 
 impl From<u8> for AliasActionType {
-    fn from(num: u8) -> Self {
-        match num {
-            1 => AliasActionType::AliasUnlink,
-            _ => AliasActionType::AliasLink,
-        }
-    }
+	fn from(num: u8) -> Self {
+		match num {
+			1 => AliasActionType::AliasUnlink,
+			_ => AliasActionType::AliasLink,
+		}
+	}
 }
 
 impl std::fmt::Display for AliasActionType {
-    fn fmt(&self, e: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
-    }
+	fn fmt(&self, e: &mut std::fmt::Formatter) -> std::fmt::Result {
+		write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
+	}
 }

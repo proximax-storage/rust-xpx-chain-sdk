@@ -21,15 +21,15 @@ pub(super) const XPX_MIN_VALUE: u64 = 1;
 pub(super) const PRX_XPX_U64: u64 = 13_833_723_942_089_965_046;
 
 pub(super) fn generate_mosaic_id(nonce: MosaicNonce, owner_public_id: PublicAccount) -> MosaicId {
-    let mut hash = Sha3_256::default();
+	let mut hash = Sha3_256::default();
 
-    hash.update(*nonce);
+	hash.update(*nonce);
 
-    let owner_bytes: [u8; 32] = owner_public_id.public_key.to_bytes();
+	let owner_bytes: [u8; 32] = owner_public_id.public_key.to_bytes();
 
-    hash.update(owner_bytes);
+	hash.update(owner_bytes);
 
-    let hash_to_array = hash.finalize();
+	let hash_to_array = hash.finalize();
 
-    MosaicId(array_u8_to_u64(hash_to_array.as_slice()) ^ NAMESPACE_BIT)
+	MosaicId(array_u8_to_u64(hash_to_array.as_slice()) ^ NAMESPACE_BIT)
 }

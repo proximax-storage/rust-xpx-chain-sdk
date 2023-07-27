@@ -15,25 +15,25 @@ use crate::errors_const::ERR_INVALID_MOSAIC_PROPERTY_ID;
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, IntoPrimitive)]
 #[repr(u8)]
 pub enum MosaicPropertyId {
-    MosaicFlags,
-    Divisibility,
-    Duration,
+	MosaicFlags,
+	Divisibility,
+	Duration,
 }
 
 impl MosaicPropertyId {
-    pub fn value(self) -> u8 {
-        self.into()
-    }
+	pub fn value(self) -> u8 {
+		self.into()
+	}
 }
 
 impl From<u8> for MosaicPropertyId {
-    fn from(id: u8) -> Self {
-        use MosaicPropertyId::*;
-        assert!(id <= 2, "{}", ERR_INVALID_MOSAIC_PROPERTY_ID);
-        match id {
-            1 => Divisibility,
-            2 => Duration,
-            _ => MosaicFlags,
-        }
-    }
+	fn from(id: u8) -> Self {
+		use MosaicPropertyId::*;
+		assert!(id <= 2, "{}", ERR_INVALID_MOSAIC_PROPERTY_ID);
+		match id {
+			1 => Divisibility,
+			2 => Duration,
+			_ => MosaicFlags,
+		}
+	}
 }

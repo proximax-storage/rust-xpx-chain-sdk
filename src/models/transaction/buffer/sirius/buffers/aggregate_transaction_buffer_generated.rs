@@ -17,345 +17,320 @@ pub enum AggregateTransactionBufferOffset {}
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct AggregateTransactionBuffer<'a> {
-    pub _tab: flatbuffers::Table<'a>,
+	pub _tab: flatbuffers::Table<'a>,
 }
 
 impl<'a> flatbuffers::Follow<'a> for AggregateTransactionBuffer<'a> {
-    type Inner = AggregateTransactionBuffer<'a>;
-    #[inline]
-    unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
-    }
+	type Inner = AggregateTransactionBuffer<'a>;
+	#[inline]
+	unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
+		Self { _tab: flatbuffers::Table::new(buf, loc) }
+	}
 }
 
 impl<'a> AggregateTransactionBuffer<'a> {
-    pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-    pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-    pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-    pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-    pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-    pub const VT_MAX_FEE: flatbuffers::VOffsetT = 14;
-    pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-    pub const VT_TRANSACTIONS_SIZE: flatbuffers::VOffsetT = 18;
-    pub const VT_TRANSACTIONS: flatbuffers::VOffsetT = 20;
+	pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
+	pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
+	pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
+	pub const VT_VERSION: flatbuffers::VOffsetT = 10;
+	pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
+	pub const VT_MAX_FEE: flatbuffers::VOffsetT = 14;
+	pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
+	pub const VT_TRANSACTIONS_SIZE: flatbuffers::VOffsetT = 18;
+	pub const VT_TRANSACTIONS: flatbuffers::VOffsetT = 20;
 
-    #[inline]
-    pub unsafe fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
-        AggregateTransactionBuffer { _tab: table }
-    }
-    #[allow(unused_mut)]
-    pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-        _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-        args: &'args AggregateTransactionBufferArgs<'args>,
-    ) -> flatbuffers::WIPOffset<AggregateTransactionBuffer<'bldr>> {
-        let mut builder = AggregateTransactionBufferBuilder::new(_fbb);
-        if let Some(x) = args.transactions {
-            builder.add_transactions(x);
-        }
-        builder.add_transactions_size(args.transactions_size);
-        if let Some(x) = args.deadline {
-            builder.add_deadline(x);
-        }
-        if let Some(x) = args.max_fee {
-            builder.add_max_fee(x);
-        }
-        builder.add_version(args.version);
-        if let Some(x) = args.signer {
-            builder.add_signer(x);
-        }
-        if let Some(x) = args.signature {
-            builder.add_signature(x);
-        }
-        builder.add_size_(args.size_);
-        builder.add_type_(args.type_);
-        builder.finish()
-    }
+	#[inline]
+	pub unsafe fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+		AggregateTransactionBuffer { _tab: table }
+	}
+	#[allow(unused_mut)]
+	pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
+		_fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
+		args: &'args AggregateTransactionBufferArgs<'args>,
+	) -> flatbuffers::WIPOffset<AggregateTransactionBuffer<'bldr>> {
+		let mut builder = AggregateTransactionBufferBuilder::new(_fbb);
+		if let Some(x) = args.transactions {
+			builder.add_transactions(x);
+		}
+		builder.add_transactions_size(args.transactions_size);
+		if let Some(x) = args.deadline {
+			builder.add_deadline(x);
+		}
+		if let Some(x) = args.max_fee {
+			builder.add_max_fee(x);
+		}
+		builder.add_version(args.version);
+		if let Some(x) = args.signer {
+			builder.add_signer(x);
+		}
+		if let Some(x) = args.signature {
+			builder.add_signature(x);
+		}
+		builder.add_size_(args.size_);
+		builder.add_type_(args.type_);
+		builder.finish()
+	}
 
-    #[inline]
-    pub fn size_(&self) -> u32 {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(AggregateTransactionBuffer::VT_SIZE_, Some(0))
-                .unwrap()
-        }
-    }
-    #[inline]
-    pub fn signature(&self) -> Option<flatbuffers::Vector<'a, u8>> {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AggregateTransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
-        }
-    }
-    #[inline]
-    pub fn signer(&self) -> Option<flatbuffers::Vector<'a, u8>> {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AggregateTransactionBuffer::VT_SIGNER,
-                    None,
-                )
-        }
-    }
-    #[inline]
-    pub fn version(&self) -> u32 {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(AggregateTransactionBuffer::VT_VERSION, Some(0))
-                .unwrap()
-        }
-    }
-    #[inline]
-    pub fn type_(&self) -> u16 {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u16>(AggregateTransactionBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
-    }
-    #[inline]
-    pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AggregateTransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
-        }
-    }
-    #[inline]
-    pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AggregateTransactionBuffer::VT_DEADLINE,
-                    None,
-                )
-        }
-    }
-    #[inline]
-    pub fn transactions_size(&self) -> u32 {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(AggregateTransactionBuffer::VT_TRANSACTIONS_SIZE, Some(0))
-                .unwrap()
-        }
-    }
-    #[inline]
-    pub fn transactions(&self) -> Option<flatbuffers::Vector<'a, u8>> {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AggregateTransactionBuffer::VT_TRANSACTIONS,
-                    None,
-                )
-        }
-    }
+	#[inline]
+	pub fn size_(&self) -> u32 {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe { self._tab.get::<u32>(AggregateTransactionBuffer::VT_SIZE_, Some(0)).unwrap() }
+	}
+	#[inline]
+	pub fn signature(&self) -> Option<flatbuffers::Vector<'a, u8>> {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+				AggregateTransactionBuffer::VT_SIGNATURE,
+				None,
+			)
+		}
+	}
+	#[inline]
+	pub fn signer(&self) -> Option<flatbuffers::Vector<'a, u8>> {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+				AggregateTransactionBuffer::VT_SIGNER,
+				None,
+			)
+		}
+	}
+	#[inline]
+	pub fn version(&self) -> u32 {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe { self._tab.get::<u32>(AggregateTransactionBuffer::VT_VERSION, Some(0)).unwrap() }
+	}
+	#[inline]
+	pub fn type_(&self) -> u16 {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe { self._tab.get::<u16>(AggregateTransactionBuffer::VT_TYPE_, Some(0)).unwrap() }
+	}
+	#[inline]
+	pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+				AggregateTransactionBuffer::VT_MAX_FEE,
+				None,
+			)
+		}
+	}
+	#[inline]
+	pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+				AggregateTransactionBuffer::VT_DEADLINE,
+				None,
+			)
+		}
+	}
+	#[inline]
+	pub fn transactions_size(&self) -> u32 {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab
+				.get::<u32>(AggregateTransactionBuffer::VT_TRANSACTIONS_SIZE, Some(0))
+				.unwrap()
+		}
+	}
+	#[inline]
+	pub fn transactions(&self) -> Option<flatbuffers::Vector<'a, u8>> {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+				AggregateTransactionBuffer::VT_TRANSACTIONS,
+				None,
+			)
+		}
+	}
 }
 
 impl flatbuffers::Verifiable for AggregateTransactionBuffer<'_> {
-    #[inline]
-    fn run_verifier(
-        v: &mut flatbuffers::Verifier,
-        pos: usize,
-    ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
-        v.visit_table(pos)?
-            .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
-                "signature",
-                Self::VT_SIGNATURE,
-                false,
-            )?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
-                "signer",
-                Self::VT_SIGNER,
-                false,
-            )?
-            .visit_field::<u32>("version", Self::VT_VERSION, false)?
-            .visit_field::<u16>("type_", Self::VT_TYPE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
-                "max_fee",
-                Self::VT_MAX_FEE,
-                false,
-            )?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
-                "deadline",
-                Self::VT_DEADLINE,
-                false,
-            )?
-            .visit_field::<u32>("transactions_size", Self::VT_TRANSACTIONS_SIZE, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
-                "transactions",
-                Self::VT_TRANSACTIONS,
-                false,
-            )?
-            .finish();
-        Ok(())
-    }
+	#[inline]
+	fn run_verifier(
+		v: &mut flatbuffers::Verifier,
+		pos: usize,
+	) -> Result<(), flatbuffers::InvalidFlatbuffer> {
+		use self::flatbuffers::Verifiable;
+		v.visit_table(pos)?
+			.visit_field::<u32>("size_", Self::VT_SIZE_, false)?
+			.visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+				"signature",
+				Self::VT_SIGNATURE,
+				false,
+			)?
+			.visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+				"signer",
+				Self::VT_SIGNER,
+				false,
+			)?
+			.visit_field::<u32>("version", Self::VT_VERSION, false)?
+			.visit_field::<u16>("type_", Self::VT_TYPE_, false)?
+			.visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+				"max_fee",
+				Self::VT_MAX_FEE,
+				false,
+			)?
+			.visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+				"deadline",
+				Self::VT_DEADLINE,
+				false,
+			)?
+			.visit_field::<u32>("transactions_size", Self::VT_TRANSACTIONS_SIZE, false)?
+			.visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+				"transactions",
+				Self::VT_TRANSACTIONS,
+				false,
+			)?
+			.finish();
+		Ok(())
+	}
 }
 
 pub struct AggregateTransactionBufferArgs<'a> {
-    pub size_: u32,
-    pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-    pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-    pub version: u32,
-    pub type_: u16,
-    pub max_fee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-    pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-    pub transactions_size: u32,
-    pub transactions: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+	pub size_: u32,
+	pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+	pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+	pub version: u32,
+	pub type_: u16,
+	pub max_fee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+	pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+	pub transactions_size: u32,
+	pub transactions: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
 }
 
 impl<'a> Default for AggregateTransactionBufferArgs<'a> {
-    #[inline]
-    fn default() -> Self {
-        AggregateTransactionBufferArgs {
-            size_: 0,
-            signature: None,
-            signer: None,
-            version: 0,
-            type_: 0,
-            max_fee: None,
-            deadline: None,
-            transactions_size: 0,
-            transactions: None,
-        }
-    }
+	#[inline]
+	fn default() -> Self {
+		AggregateTransactionBufferArgs {
+			size_: 0,
+			signature: None,
+			signer: None,
+			version: 0,
+			type_: 0,
+			max_fee: None,
+			deadline: None,
+			transactions_size: 0,
+			transactions: None,
+		}
+	}
 }
 
 pub struct AggregateTransactionBufferBuilder<'a: 'b, 'b> {
-    fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+	fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+	start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
 }
 
 impl<'a: 'b, 'b> AggregateTransactionBufferBuilder<'a, 'b> {
-    #[inline]
-    pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_
-            .push_slot::<u32>(AggregateTransactionBuffer::VT_SIZE_, size_, 0);
-    }
-    #[inline]
-    pub fn add_signature(
-        &mut self,
-        signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
-    ) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
-            AggregateTransactionBuffer::VT_SIGNATURE,
-            signature,
-        );
-    }
-    #[inline]
-    pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
-            AggregateTransactionBuffer::VT_SIGNER,
-            signer,
-        );
-    }
-    #[inline]
-    pub fn add_version(&mut self, version: u32) {
-        self.fbb_
-            .push_slot::<u32>(AggregateTransactionBuffer::VT_VERSION, version, 0);
-    }
-    #[inline]
-    pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_
-            .push_slot::<u16>(AggregateTransactionBuffer::VT_TYPE_, type_, 0);
-    }
-    #[inline]
-    pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
-            AggregateTransactionBuffer::VT_MAX_FEE,
-            max_fee,
-        );
-    }
-    #[inline]
-    pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
-            AggregateTransactionBuffer::VT_DEADLINE,
-            deadline,
-        );
-    }
-    #[inline]
-    pub fn add_transactions_size(&mut self, transactions_size: u32) {
-        self.fbb_.push_slot::<u32>(
-            AggregateTransactionBuffer::VT_TRANSACTIONS_SIZE,
-            transactions_size,
-            0,
-        );
-    }
-    #[inline]
-    pub fn add_transactions(
-        &mut self,
-        transactions: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
-    ) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
-            AggregateTransactionBuffer::VT_TRANSACTIONS,
-            transactions,
-        );
-    }
-    #[inline]
-    pub fn new(
-        _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    ) -> AggregateTransactionBufferBuilder<'a, 'b> {
-        let start = _fbb.start_table();
-        AggregateTransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
-    }
-    #[inline]
-    pub fn finish(self) -> flatbuffers::WIPOffset<AggregateTransactionBuffer<'a>> {
-        let o = self.fbb_.end_table(self.start_);
-        flatbuffers::WIPOffset::new(o.value())
-    }
+	#[inline]
+	pub fn add_size_(&mut self, size_: u32) {
+		self.fbb_.push_slot::<u32>(AggregateTransactionBuffer::VT_SIZE_, size_, 0);
+	}
+	#[inline]
+	pub fn add_signature(
+		&mut self,
+		signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
+	) {
+		self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+			AggregateTransactionBuffer::VT_SIGNATURE,
+			signature,
+		);
+	}
+	#[inline]
+	pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
+		self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+			AggregateTransactionBuffer::VT_SIGNER,
+			signer,
+		);
+	}
+	#[inline]
+	pub fn add_version(&mut self, version: u32) {
+		self.fbb_.push_slot::<u32>(AggregateTransactionBuffer::VT_VERSION, version, 0);
+	}
+	#[inline]
+	pub fn add_type_(&mut self, type_: u16) {
+		self.fbb_.push_slot::<u16>(AggregateTransactionBuffer::VT_TYPE_, type_, 0);
+	}
+	#[inline]
+	pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
+		self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+			AggregateTransactionBuffer::VT_MAX_FEE,
+			max_fee,
+		);
+	}
+	#[inline]
+	pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
+		self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+			AggregateTransactionBuffer::VT_DEADLINE,
+			deadline,
+		);
+	}
+	#[inline]
+	pub fn add_transactions_size(&mut self, transactions_size: u32) {
+		self.fbb_.push_slot::<u32>(
+			AggregateTransactionBuffer::VT_TRANSACTIONS_SIZE,
+			transactions_size,
+			0,
+		);
+	}
+	#[inline]
+	pub fn add_transactions(
+		&mut self,
+		transactions: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
+	) {
+		self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+			AggregateTransactionBuffer::VT_TRANSACTIONS,
+			transactions,
+		);
+	}
+	#[inline]
+	pub fn new(
+		_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+	) -> AggregateTransactionBufferBuilder<'a, 'b> {
+		let start = _fbb.start_table();
+		AggregateTransactionBufferBuilder { fbb_: _fbb, start_: start }
+	}
+	#[inline]
+	pub fn finish(self) -> flatbuffers::WIPOffset<AggregateTransactionBuffer<'a>> {
+		let o = self.fbb_.end_table(self.start_);
+		flatbuffers::WIPOffset::new(o.value())
+	}
 }
 
 impl core::fmt::Debug for AggregateTransactionBuffer<'_> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        let mut ds = f.debug_struct("AggregateTransactionBuffer");
-        ds.field("size_", &self.size_());
-        ds.field("signature", &self.signature());
-        ds.field("signer", &self.signer());
-        ds.field("version", &self.version());
-        ds.field("type_", &self.type_());
-        ds.field("max_fee", &self.max_fee());
-        ds.field("deadline", &self.deadline());
-        ds.field("transactions_size", &self.transactions_size());
-        ds.field("transactions", &self.transactions());
-        ds.finish()
-    }
+	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+		let mut ds = f.debug_struct("AggregateTransactionBuffer");
+		ds.field("size_", &self.size_());
+		ds.field("signature", &self.signature());
+		ds.field("signer", &self.signer());
+		ds.field("version", &self.version());
+		ds.field("type_", &self.type_());
+		ds.field("max_fee", &self.max_fee());
+		ds.field("deadline", &self.deadline());
+		ds.field("transactions_size", &self.transactions_size());
+		ds.field("transactions", &self.transactions());
+		ds.finish()
+	}
 }
 
 #[inline]
@@ -366,9 +341,9 @@ impl core::fmt::Debug for AggregateTransactionBuffer<'_> {
 /// previous, unchecked, behavior use
 /// `root_as_aggregate_transaction_buffer_unchecked`.
 pub fn root_as_aggregate_transaction_buffer(
-    buf: &[u8],
+	buf: &[u8],
 ) -> Result<AggregateTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
-    flatbuffers::root::<AggregateTransactionBuffer>(buf)
+	flatbuffers::root::<AggregateTransactionBuffer>(buf)
 }
 
 #[inline]
@@ -379,9 +354,9 @@ pub fn root_as_aggregate_transaction_buffer(
 /// previous, unchecked, behavior use
 /// `size_prefixed_root_as_aggregate_transaction_buffer_unchecked`.
 pub fn size_prefixed_root_as_aggregate_transaction_buffer(
-    buf: &[u8],
+	buf: &[u8],
 ) -> Result<AggregateTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
-    flatbuffers::size_prefixed_root::<AggregateTransactionBuffer>(buf)
+	flatbuffers::size_prefixed_root::<AggregateTransactionBuffer>(buf)
 }
 
 #[inline]
@@ -392,10 +367,10 @@ pub fn size_prefixed_root_as_aggregate_transaction_buffer(
 /// previous, unchecked, behavior use
 /// `root_as_aggregate_transaction_buffer_unchecked`.
 pub fn root_as_aggregate_transaction_buffer_with_opts<'b, 'o>(
-    opts: &'o flatbuffers::VerifierOptions,
-    buf: &'b [u8],
+	opts: &'o flatbuffers::VerifierOptions,
+	buf: &'b [u8],
 ) -> Result<AggregateTransactionBuffer<'b>, flatbuffers::InvalidFlatbuffer> {
-    flatbuffers::root_with_opts::<AggregateTransactionBuffer<'b>>(opts, buf)
+	flatbuffers::root_with_opts::<AggregateTransactionBuffer<'b>>(opts, buf)
 }
 
 #[inline]
@@ -406,10 +381,10 @@ pub fn root_as_aggregate_transaction_buffer_with_opts<'b, 'o>(
 /// previous, unchecked, behavior use
 /// `root_as_aggregate_transaction_buffer_unchecked`.
 pub fn size_prefixed_root_as_aggregate_transaction_buffer_with_opts<'b, 'o>(
-    opts: &'o flatbuffers::VerifierOptions,
-    buf: &'b [u8],
+	opts: &'o flatbuffers::VerifierOptions,
+	buf: &'b [u8],
 ) -> Result<AggregateTransactionBuffer<'b>, flatbuffers::InvalidFlatbuffer> {
-    flatbuffers::size_prefixed_root_with_opts::<AggregateTransactionBuffer<'b>>(opts, buf)
+	flatbuffers::size_prefixed_root_with_opts::<AggregateTransactionBuffer<'b>>(opts, buf)
 }
 
 #[inline]
@@ -417,9 +392,9 @@ pub fn size_prefixed_root_as_aggregate_transaction_buffer_with_opts<'b, 'o>(
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid `AggregateTransactionBuffer`.
 pub unsafe fn root_as_aggregate_transaction_buffer_unchecked(
-    buf: &[u8],
+	buf: &[u8],
 ) -> AggregateTransactionBuffer {
-    flatbuffers::root_unchecked::<AggregateTransactionBuffer>(buf)
+	flatbuffers::root_unchecked::<AggregateTransactionBuffer>(buf)
 }
 
 #[inline]
@@ -427,23 +402,23 @@ pub unsafe fn root_as_aggregate_transaction_buffer_unchecked(
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid size prefixed `AggregateTransactionBuffer`.
 pub unsafe fn size_prefixed_root_as_aggregate_transaction_buffer_unchecked(
-    buf: &[u8],
+	buf: &[u8],
 ) -> AggregateTransactionBuffer {
-    flatbuffers::size_prefixed_root_unchecked::<AggregateTransactionBuffer>(buf)
+	flatbuffers::size_prefixed_root_unchecked::<AggregateTransactionBuffer>(buf)
 }
 
 #[inline]
 pub fn finish_aggregate_transaction_buffer_buffer<'a, 'b>(
-    fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<AggregateTransactionBuffer<'a>>,
+	fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+	root: flatbuffers::WIPOffset<AggregateTransactionBuffer<'a>>,
 ) {
-    fbb.finish(root, None);
+	fbb.finish(root, None);
 }
 
 #[inline]
 pub fn finish_size_prefixed_aggregate_transaction_buffer_buffer<'a, 'b>(
-    fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<AggregateTransactionBuffer<'a>>,
+	fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+	root: flatbuffers::WIPOffset<AggregateTransactionBuffer<'a>>,
 ) {
-    fbb.finish_size_prefixed(root, None);
+	fbb.finish_size_prefixed(root, None);
 }

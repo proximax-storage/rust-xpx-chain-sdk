@@ -8,17 +8,13 @@ use crate::network::NetworkType;
 
 #[derive(Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct NetworkInfo {
-    #[serde(rename = "name")]
-    pub network_type: NetworkType,
-    pub description: String,
+	#[serde(rename = "name")]
+	pub network_type: NetworkType,
+	pub description: String,
 }
 
 impl core::fmt::Display for NetworkInfo {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
-    }
+	fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+		write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
+	}
 }

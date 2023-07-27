@@ -18,67 +18,67 @@ pub type TransactionHash = H256;
 pub type Signer = H256;
 
 construct_fixed_hash! {
-    /// Symbol 256 bit hash type.
-    #[derive(Deserialize)]
-    pub struct H256(32);
+	/// Symbol 256 bit hash type.
+	#[derive(Deserialize)]
+	pub struct H256(32);
 }
 
 impl Serialize for H256 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
-    {
-        serializer.serialize_str(&self.encode_hex_upper::<String>())
-    }
+	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+	where
+		S: Serializer,
+	{
+		serializer.serialize_str(&self.encode_hex_upper::<String>())
+	}
 }
 
 construct_fixed_hash! {
-    /// Symbol 512 bit hash type.
-    pub struct H512(64);
+	/// Symbol 512 bit hash type.
+	pub struct H512(64);
 }
 
 impl<'de> Deserialize<'de> for H512 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: Deserializer<'de>,
-    {
-        let string = String::deserialize(deserializer)?;
-        H512::from_str(string.as_ref()).map_err(|e| D::Error::custom(e))
-    }
+	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+	where
+		D: Deserializer<'de>,
+	{
+		let string = String::deserialize(deserializer)?;
+		H512::from_str(string.as_ref()).map_err(|e| D::Error::custom(e))
+	}
 }
 
 construct_fixed_hash! {
-    /// Symbol 200 bit hash type.
-    pub struct H200(25);
+	/// Symbol 200 bit hash type.
+	pub struct H200(25);
 }
 
 impl H200 {
-    pub fn as_base32(&self) -> String {
-        encode_base32(self.as_bytes())
-    }
+	pub fn as_base32(&self) -> String {
+		encode_base32(self.as_bytes())
+	}
 
-    pub fn from_base32(data: &str) -> Self {
-        let mut address = H200::zero();
-        decode_base32(address.as_mut(), &data);
-        address
-    }
+	pub fn from_base32(data: &str) -> Self {
+		let mut address = H200::zero();
+		decode_base32(address.as_mut(), &data);
+		address
+	}
 }
 
 impl<'de> Deserialize<'de> for H200 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: Deserializer<'de>,
-    {
-        let string = String::deserialize(deserializer)?;
-        Ok(H200::from_base32(string.as_ref()))
-    }
+	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+	where
+		D: Deserializer<'de>,
+	{
+		let string = String::deserialize(deserializer)?;
+		Ok(H200::from_base32(string.as_ref()))
+	}
 }
 
 impl Serialize for H200 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
-    {
-        serializer.serialize_str(&self.as_base32())
-    }
+	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+	where
+		S: Serializer,
+	{
+		serializer.serialize_str(&self.as_base32())
+	}
 }

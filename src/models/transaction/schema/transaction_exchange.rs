@@ -5,69 +5,69 @@
  */
 
 use super::{
-    ArrayAttribute, ScalarAttribute, Schema, schema_common_definition::schema_common_definition,
-    SchemaAttribute, SIZEOF_BYTE, SIZEOF_INT, TableArrayAttribute,
+	schema_common_definition::schema_common_definition, ArrayAttribute, ScalarAttribute, Schema,
+	SchemaAttribute, TableArrayAttribute, SIZEOF_BYTE, SIZEOF_INT,
 };
 
 pub fn add_exchange_offer_transaction_schema() -> Schema {
-    let mut schema_definition = schema_common_definition();
+	let mut schema_definition = schema_common_definition();
 
-    let mut transfer_schema_definition: Vec<Box<dyn SchemaAttribute>> = vec![
-        Box::new(ScalarAttribute::new("offers_count", SIZEOF_BYTE)),
-        Box::new(TableArrayAttribute::new(
-            "offers",
-            vec![
-                Box::new(ArrayAttribute::new("mosaic_id", SIZEOF_INT)),
-                Box::new(ArrayAttribute::new("mosaic_amount", SIZEOF_INT)),
-                Box::new(ArrayAttribute::new("cost", SIZEOF_INT)),
-                Box::new(ScalarAttribute::new("type", SIZEOF_BYTE)),
-                Box::new(ArrayAttribute::new("duration", SIZEOF_INT)),
-            ],
-        )),
-    ];
+	let mut transfer_schema_definition: Vec<Box<dyn SchemaAttribute>> = vec![
+		Box::new(ScalarAttribute::new("offers_count", SIZEOF_BYTE)),
+		Box::new(TableArrayAttribute::new(
+			"offers",
+			vec![
+				Box::new(ArrayAttribute::new("mosaic_id", SIZEOF_INT)),
+				Box::new(ArrayAttribute::new("mosaic_amount", SIZEOF_INT)),
+				Box::new(ArrayAttribute::new("cost", SIZEOF_INT)),
+				Box::new(ScalarAttribute::new("type", SIZEOF_BYTE)),
+				Box::new(ArrayAttribute::new("duration", SIZEOF_INT)),
+			],
+		)),
+	];
 
-    schema_definition.append(&mut transfer_schema_definition);
+	schema_definition.append(&mut transfer_schema_definition);
 
-    Schema::new(schema_definition)
+	Schema::new(schema_definition)
 }
 
 pub fn exchange_offer_transaction_schema() -> Schema {
-    let mut schema_definition = schema_common_definition();
+	let mut schema_definition = schema_common_definition();
 
-    let mut transfer_schema_definition: Vec<Box<dyn SchemaAttribute>> = vec![
-        Box::new(ScalarAttribute::new("offers_count", SIZEOF_BYTE)),
-        Box::new(TableArrayAttribute::new(
-            "offers",
-            vec![
-                Box::new(ArrayAttribute::new("mosaic_id", SIZEOF_INT)),
-                Box::new(ArrayAttribute::new("mosaic_amount", SIZEOF_INT)),
-                Box::new(ArrayAttribute::new("cost", SIZEOF_INT)),
-                Box::new(ScalarAttribute::new("type", SIZEOF_BYTE)),
-                Box::new(ArrayAttribute::new("owner", SIZEOF_BYTE)),
-            ],
-        )),
-    ];
+	let mut transfer_schema_definition: Vec<Box<dyn SchemaAttribute>> = vec![
+		Box::new(ScalarAttribute::new("offers_count", SIZEOF_BYTE)),
+		Box::new(TableArrayAttribute::new(
+			"offers",
+			vec![
+				Box::new(ArrayAttribute::new("mosaic_id", SIZEOF_INT)),
+				Box::new(ArrayAttribute::new("mosaic_amount", SIZEOF_INT)),
+				Box::new(ArrayAttribute::new("cost", SIZEOF_INT)),
+				Box::new(ScalarAttribute::new("type", SIZEOF_BYTE)),
+				Box::new(ArrayAttribute::new("owner", SIZEOF_BYTE)),
+			],
+		)),
+	];
 
-    schema_definition.append(&mut transfer_schema_definition);
+	schema_definition.append(&mut transfer_schema_definition);
 
-    Schema::new(schema_definition)
+	Schema::new(schema_definition)
 }
 
 pub fn remove_exchange_offer_transaction_schema() -> Schema {
-    let mut schema_definition = schema_common_definition();
+	let mut schema_definition = schema_common_definition();
 
-    let mut transfer_schema_definition: Vec<Box<dyn SchemaAttribute>> = vec![
-        Box::new(ScalarAttribute::new("offers_count", SIZEOF_BYTE)),
-        Box::new(TableArrayAttribute::new(
-            "offers",
-            vec![
-                Box::new(ArrayAttribute::new("mosaic_id", SIZEOF_INT)),
-                Box::new(ScalarAttribute::new("type", SIZEOF_BYTE)),
-            ],
-        )),
-    ];
+	let mut transfer_schema_definition: Vec<Box<dyn SchemaAttribute>> = vec![
+		Box::new(ScalarAttribute::new("offers_count", SIZEOF_BYTE)),
+		Box::new(TableArrayAttribute::new(
+			"offers",
+			vec![
+				Box::new(ArrayAttribute::new("mosaic_id", SIZEOF_INT)),
+				Box::new(ScalarAttribute::new("type", SIZEOF_BYTE)),
+			],
+		)),
+	];
 
-    schema_definition.append(&mut transfer_schema_definition);
+	schema_definition.append(&mut transfer_schema_definition);
 
-    Schema::new(schema_definition)
+	Schema::new(schema_definition)
 }

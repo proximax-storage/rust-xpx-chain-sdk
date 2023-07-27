@@ -5,32 +5,30 @@
  */
 
 use {
-    ::core::mem::size_of,
-    byteorder::{LittleEndian, WriteBytesExt},
+	::core::mem::size_of,
+	byteorder::{LittleEndian, WriteBytesExt},
 };
 
 const SIZE_U32: usize = size_of::<u32>();
 
 #[inline]
 pub fn u32_to_array_u8(value: u32) -> [u8; SIZE_U32] {
-    let mut buf = [0u8; SIZE_U32];
-    buf.as_mut()
-        .write_u32::<LittleEndian>(value)
-        .expect("Unable to write");
-    buf
+	let mut buf = [0u8; SIZE_U32];
+	buf.as_mut().write_u32::<LittleEndian>(value).expect("Unable to write");
+	buf
 }
 
 pub fn array_u8_to_u64(bytes: &[u8]) -> u64 {
-    (bytes[0] as u64)
-        | (bytes[1] as u64) << 8
-        | (bytes[2] as u64) << 16
-        | (bytes[3] as u64) << 24
-        | (bytes[4] as u64) << 32
-        | (bytes[5] as u64) << 40
-        | (bytes[6] as u64) << 48
-        | (bytes[7] as u64) << 56
+	(bytes[0] as u64)
+		| (bytes[1] as u64) << 8
+		| (bytes[2] as u64) << 16
+		| (bytes[3] as u64) << 24
+		| (bytes[4] as u64) << 32
+		| (bytes[5] as u64) << 40
+		| (bytes[6] as u64) << 48
+		| (bytes[7] as u64) << 56
 }
 
 pub fn has_bits(number: u64, bits: u64) -> bool {
-    (number & bits) == bits
+	(number & bits) == bits
 }

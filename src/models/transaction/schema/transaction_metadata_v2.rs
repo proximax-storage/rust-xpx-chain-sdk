@@ -5,23 +5,23 @@
  */
 
 use super::{
-    ArrayAttribute, Schema, schema_common_definition::schema_common_definition, SchemaAttribute,
-    SIZEOF_BYTE, SIZEOF_INT,
+	schema_common_definition::schema_common_definition, ArrayAttribute, Schema, SchemaAttribute,
+	SIZEOF_BYTE, SIZEOF_INT,
 };
 
 pub fn modify_metadata_v2_transaction_schema() -> Schema {
-    let mut schema_definition = schema_common_definition();
+	let mut schema_definition = schema_common_definition();
 
-    let mut alias_definition: Vec<Box<dyn SchemaAttribute>> = vec![
-        Box::new(ArrayAttribute::new("target_key", SIZEOF_BYTE)),
-        Box::new(ArrayAttribute::new("scoped_metadata_key", SIZEOF_INT)),
-        Box::new(ArrayAttribute::new("target_id", SIZEOF_BYTE)),
-        Box::new(ArrayAttribute::new("value_size_delta", SIZEOF_BYTE)),
-        Box::new(ArrayAttribute::new("value_size", SIZEOF_BYTE)),
-        Box::new(ArrayAttribute::new("value", SIZEOF_BYTE)),
-    ];
+	let mut alias_definition: Vec<Box<dyn SchemaAttribute>> = vec![
+		Box::new(ArrayAttribute::new("target_key", SIZEOF_BYTE)),
+		Box::new(ArrayAttribute::new("scoped_metadata_key", SIZEOF_INT)),
+		Box::new(ArrayAttribute::new("target_id", SIZEOF_BYTE)),
+		Box::new(ArrayAttribute::new("value_size_delta", SIZEOF_BYTE)),
+		Box::new(ArrayAttribute::new("value_size", SIZEOF_BYTE)),
+		Box::new(ArrayAttribute::new("value", SIZEOF_BYTE)),
+	];
 
-    schema_definition.append(&mut alias_definition);
+	schema_definition.append(&mut alias_definition);
 
-    Schema::new(schema_definition)
+	Schema::new(schema_definition)
 }

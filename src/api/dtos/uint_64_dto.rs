@@ -12,11 +12,11 @@ use crate::AsUint64;
 pub(crate) struct Uint64Dto(pub(crate) [u32; 2]);
 
 impl Uint64Dto {
-    pub fn compact(&self) -> u64 {
-        u64::from_bits(self.0[0], self.0[1])
-    }
+	pub fn compact(&self) -> u64 {
+		u64::from_bits(self.0[0], self.0[1])
+	}
 
-    pub fn from_value(value: Value) -> Self {
-        Self(serde_json::from_value(value).unwrap())
-    }
+	pub fn from_value(value: Value) -> Self {
+		Self(serde_json::from_value(value).unwrap())
+	}
 }

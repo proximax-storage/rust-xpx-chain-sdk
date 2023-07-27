@@ -17,381 +17,366 @@ pub enum AccountPropertiesTransactionBufferOffset {}
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct AccountPropertiesTransactionBuffer<'a> {
-    pub _tab: flatbuffers::Table<'a>,
+	pub _tab: flatbuffers::Table<'a>,
 }
 
 impl<'a> flatbuffers::Follow<'a> for AccountPropertiesTransactionBuffer<'a> {
-    type Inner = AccountPropertiesTransactionBuffer<'a>;
-    #[inline]
-    unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
-    }
+	type Inner = AccountPropertiesTransactionBuffer<'a>;
+	#[inline]
+	unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
+		Self { _tab: flatbuffers::Table::new(buf, loc) }
+	}
 }
 
 impl<'a> AccountPropertiesTransactionBuffer<'a> {
-    pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
-    pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
-    pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
-    pub const VT_VERSION: flatbuffers::VOffsetT = 10;
-    pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
-    pub const VT_MAX_FEE: flatbuffers::VOffsetT = 14;
-    pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
-    pub const VT_PROPERTY_TYPE: flatbuffers::VOffsetT = 18;
-    pub const VT_MODIFICATION_COUNT: flatbuffers::VOffsetT = 20;
-    pub const VT_MODIFICATIONS: flatbuffers::VOffsetT = 22;
+	pub const VT_SIZE_: flatbuffers::VOffsetT = 4;
+	pub const VT_SIGNATURE: flatbuffers::VOffsetT = 6;
+	pub const VT_SIGNER: flatbuffers::VOffsetT = 8;
+	pub const VT_VERSION: flatbuffers::VOffsetT = 10;
+	pub const VT_TYPE_: flatbuffers::VOffsetT = 12;
+	pub const VT_MAX_FEE: flatbuffers::VOffsetT = 14;
+	pub const VT_DEADLINE: flatbuffers::VOffsetT = 16;
+	pub const VT_PROPERTY_TYPE: flatbuffers::VOffsetT = 18;
+	pub const VT_MODIFICATION_COUNT: flatbuffers::VOffsetT = 20;
+	pub const VT_MODIFICATIONS: flatbuffers::VOffsetT = 22;
 
-    #[inline]
-    pub unsafe fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
-        AccountPropertiesTransactionBuffer { _tab: table }
-    }
-    #[allow(unused_mut)]
-    pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
-        _fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
-        args: &'args AccountPropertiesTransactionBufferArgs<'args>,
-    ) -> flatbuffers::WIPOffset<AccountPropertiesTransactionBuffer<'bldr>> {
-        let mut builder = AccountPropertiesTransactionBufferBuilder::new(_fbb);
-        if let Some(x) = args.modifications {
-            builder.add_modifications(x);
-        }
-        if let Some(x) = args.deadline {
-            builder.add_deadline(x);
-        }
-        if let Some(x) = args.max_fee {
-            builder.add_max_fee(x);
-        }
-        builder.add_version(args.version);
-        if let Some(x) = args.signer {
-            builder.add_signer(x);
-        }
-        if let Some(x) = args.signature {
-            builder.add_signature(x);
-        }
-        builder.add_size_(args.size_);
-        builder.add_type_(args.type_);
-        builder.add_modification_count(args.modification_count);
-        builder.add_property_type(args.property_type);
-        builder.finish()
-    }
+	#[inline]
+	pub unsafe fn init_from_table(table: flatbuffers::Table<'a>) -> Self {
+		AccountPropertiesTransactionBuffer { _tab: table }
+	}
+	#[allow(unused_mut)]
+	pub fn create<'bldr: 'args, 'args: 'mut_bldr, 'mut_bldr>(
+		_fbb: &'mut_bldr mut flatbuffers::FlatBufferBuilder<'bldr>,
+		args: &'args AccountPropertiesTransactionBufferArgs<'args>,
+	) -> flatbuffers::WIPOffset<AccountPropertiesTransactionBuffer<'bldr>> {
+		let mut builder = AccountPropertiesTransactionBufferBuilder::new(_fbb);
+		if let Some(x) = args.modifications {
+			builder.add_modifications(x);
+		}
+		if let Some(x) = args.deadline {
+			builder.add_deadline(x);
+		}
+		if let Some(x) = args.max_fee {
+			builder.add_max_fee(x);
+		}
+		builder.add_version(args.version);
+		if let Some(x) = args.signer {
+			builder.add_signer(x);
+		}
+		if let Some(x) = args.signature {
+			builder.add_signature(x);
+		}
+		builder.add_size_(args.size_);
+		builder.add_type_(args.type_);
+		builder.add_modification_count(args.modification_count);
+		builder.add_property_type(args.property_type);
+		builder.finish()
+	}
 
-    #[inline]
-    pub fn size_(&self) -> u32 {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(AccountPropertiesTransactionBuffer::VT_SIZE_, Some(0))
-                .unwrap()
-        }
-    }
-    #[inline]
-    pub fn signature(&self) -> Option<flatbuffers::Vector<'a, u8>> {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AccountPropertiesTransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
-        }
-    }
-    #[inline]
-    pub fn signer(&self) -> Option<flatbuffers::Vector<'a, u8>> {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AccountPropertiesTransactionBuffer::VT_SIGNER,
-                    None,
-                )
-        }
-    }
-    #[inline]
-    pub fn version(&self) -> u32 {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(AccountPropertiesTransactionBuffer::VT_VERSION, Some(0))
-                .unwrap()
-        }
-    }
-    #[inline]
-    pub fn type_(&self) -> u16 {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u16>(AccountPropertiesTransactionBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
-    }
-    #[inline]
-    pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AccountPropertiesTransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
-        }
-    }
-    #[inline]
-    pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AccountPropertiesTransactionBuffer::VT_DEADLINE,
-                    None,
-                )
-        }
-    }
-    #[inline]
-    pub fn property_type(&self) -> u8 {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u8>(
-                    AccountPropertiesTransactionBuffer::VT_PROPERTY_TYPE,
-                    Some(0),
-                )
-                .unwrap()
-        }
-    }
-    #[inline]
-    pub fn modification_count(&self) -> u8 {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u8>(
-                    AccountPropertiesTransactionBuffer::VT_MODIFICATION_COUNT,
-                    Some(0),
-                )
-                .unwrap()
-        }
-    }
-    #[inline]
-    pub fn modifications(
-        &self,
-    ) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<PropertyModificationBuffer<'a>>>>
-    {
-        // Safety:
-        // Created from valid Table for this object
-        // which contains a valid value in this slot
-        unsafe {
-            self._tab.get::<flatbuffers::ForwardsUOffset<
-                flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<PropertyModificationBuffer>>,
-            >>(AccountPropertiesTransactionBuffer::VT_MODIFICATIONS, None)
-        }
-    }
+	#[inline]
+	pub fn size_(&self) -> u32 {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab
+				.get::<u32>(AccountPropertiesTransactionBuffer::VT_SIZE_, Some(0))
+				.unwrap()
+		}
+	}
+	#[inline]
+	pub fn signature(&self) -> Option<flatbuffers::Vector<'a, u8>> {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+				AccountPropertiesTransactionBuffer::VT_SIGNATURE,
+				None,
+			)
+		}
+	}
+	#[inline]
+	pub fn signer(&self) -> Option<flatbuffers::Vector<'a, u8>> {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+				AccountPropertiesTransactionBuffer::VT_SIGNER,
+				None,
+			)
+		}
+	}
+	#[inline]
+	pub fn version(&self) -> u32 {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab
+				.get::<u32>(AccountPropertiesTransactionBuffer::VT_VERSION, Some(0))
+				.unwrap()
+		}
+	}
+	#[inline]
+	pub fn type_(&self) -> u16 {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab
+				.get::<u16>(AccountPropertiesTransactionBuffer::VT_TYPE_, Some(0))
+				.unwrap()
+		}
+	}
+	#[inline]
+	pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+				AccountPropertiesTransactionBuffer::VT_MAX_FEE,
+				None,
+			)
+		}
+	}
+	#[inline]
+	pub fn deadline(&self) -> Option<flatbuffers::Vector<'a, u32>> {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+				AccountPropertiesTransactionBuffer::VT_DEADLINE,
+				None,
+			)
+		}
+	}
+	#[inline]
+	pub fn property_type(&self) -> u8 {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab
+				.get::<u8>(AccountPropertiesTransactionBuffer::VT_PROPERTY_TYPE, Some(0))
+				.unwrap()
+		}
+	}
+	#[inline]
+	pub fn modification_count(&self) -> u8 {
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab
+				.get::<u8>(AccountPropertiesTransactionBuffer::VT_MODIFICATION_COUNT, Some(0))
+				.unwrap()
+		}
+	}
+	#[inline]
+	pub fn modifications(
+		&self,
+	) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<PropertyModificationBuffer<'a>>>>
+	{
+		// Safety:
+		// Created from valid Table for this object
+		// which contains a valid value in this slot
+		unsafe {
+			self._tab.get::<flatbuffers::ForwardsUOffset<
+				flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<PropertyModificationBuffer>>,
+			>>(AccountPropertiesTransactionBuffer::VT_MODIFICATIONS, None)
+		}
+	}
 }
 
 impl flatbuffers::Verifiable for AccountPropertiesTransactionBuffer<'_> {
-    #[inline]
-    fn run_verifier(
-        v: &mut flatbuffers::Verifier,
-        pos: usize,
-    ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
-        v.visit_table(pos)?
-            .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
-                "signature",
-                Self::VT_SIGNATURE,
-                false,
-            )?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
-                "signer",
-                Self::VT_SIGNER,
-                false,
-            )?
-            .visit_field::<u32>("version", Self::VT_VERSION, false)?
-            .visit_field::<u16>("type_", Self::VT_TYPE_, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
-                "max_fee",
-                Self::VT_MAX_FEE,
-                false,
-            )?
-            .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
-                "deadline",
-                Self::VT_DEADLINE,
-                false,
-            )?
-            .visit_field::<u8>("property_type", Self::VT_PROPERTY_TYPE, false)?
-            .visit_field::<u8>("modification_count", Self::VT_MODIFICATION_COUNT, false)?
-            .visit_field::<flatbuffers::ForwardsUOffset<
-                flatbuffers::Vector<'_, flatbuffers::ForwardsUOffset<PropertyModificationBuffer>>,
-            >>("modifications", Self::VT_MODIFICATIONS, false)?
-            .finish();
-        Ok(())
-    }
+	#[inline]
+	fn run_verifier(
+		v: &mut flatbuffers::Verifier,
+		pos: usize,
+	) -> Result<(), flatbuffers::InvalidFlatbuffer> {
+		use self::flatbuffers::Verifiable;
+		v.visit_table(pos)?
+			.visit_field::<u32>("size_", Self::VT_SIZE_, false)?
+			.visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+				"signature",
+				Self::VT_SIGNATURE,
+				false,
+			)?
+			.visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
+				"signer",
+				Self::VT_SIGNER,
+				false,
+			)?
+			.visit_field::<u32>("version", Self::VT_VERSION, false)?
+			.visit_field::<u16>("type_", Self::VT_TYPE_, false)?
+			.visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+				"max_fee",
+				Self::VT_MAX_FEE,
+				false,
+			)?
+			.visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
+				"deadline",
+				Self::VT_DEADLINE,
+				false,
+			)?
+			.visit_field::<u8>("property_type", Self::VT_PROPERTY_TYPE, false)?
+			.visit_field::<u8>("modification_count", Self::VT_MODIFICATION_COUNT, false)?
+			.visit_field::<flatbuffers::ForwardsUOffset<
+				flatbuffers::Vector<'_, flatbuffers::ForwardsUOffset<PropertyModificationBuffer>>,
+			>>("modifications", Self::VT_MODIFICATIONS, false)?
+			.finish();
+		Ok(())
+	}
 }
 
 pub struct AccountPropertiesTransactionBufferArgs<'a> {
-    pub size_: u32,
-    pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-    pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
-    pub version: u32,
-    pub type_: u16,
-    pub max_fee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-    pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
-    pub property_type: u8,
-    pub modification_count: u8,
-    pub modifications: Option<
-        flatbuffers::WIPOffset<
-            flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<PropertyModificationBuffer<'a>>>,
-        >,
-    >,
+	pub size_: u32,
+	pub signature: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+	pub signer: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u8>>>,
+	pub version: u32,
+	pub type_: u16,
+	pub max_fee: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+	pub deadline: Option<flatbuffers::WIPOffset<flatbuffers::Vector<'a, u32>>>,
+	pub property_type: u8,
+	pub modification_count: u8,
+	pub modifications: Option<
+		flatbuffers::WIPOffset<
+			flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<PropertyModificationBuffer<'a>>>,
+		>,
+	>,
 }
 
 impl<'a> Default for AccountPropertiesTransactionBufferArgs<'a> {
-    #[inline]
-    fn default() -> Self {
-        AccountPropertiesTransactionBufferArgs {
-            size_: 0,
-            signature: None,
-            signer: None,
-            version: 0,
-            type_: 0,
-            max_fee: None,
-            deadline: None,
-            property_type: 0,
-            modification_count: 0,
-            modifications: None,
-        }
-    }
+	#[inline]
+	fn default() -> Self {
+		AccountPropertiesTransactionBufferArgs {
+			size_: 0,
+			signature: None,
+			signer: None,
+			version: 0,
+			type_: 0,
+			max_fee: None,
+			deadline: None,
+			property_type: 0,
+			modification_count: 0,
+			modifications: None,
+		}
+	}
 }
 
 pub struct AccountPropertiesTransactionBufferBuilder<'a: 'b, 'b> {
-    fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
+	fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+	start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
 }
 
 impl<'a: 'b, 'b> AccountPropertiesTransactionBufferBuilder<'a, 'b> {
-    #[inline]
-    pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_
-            .push_slot::<u32>(AccountPropertiesTransactionBuffer::VT_SIZE_, size_, 0);
-    }
-    #[inline]
-    pub fn add_signature(
-        &mut self,
-        signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
-    ) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
-            AccountPropertiesTransactionBuffer::VT_SIGNATURE,
-            signature,
-        );
-    }
-    #[inline]
-    pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
-            AccountPropertiesTransactionBuffer::VT_SIGNER,
-            signer,
-        );
-    }
-    #[inline]
-    pub fn add_version(&mut self, version: u32) {
-        self.fbb_
-            .push_slot::<u32>(AccountPropertiesTransactionBuffer::VT_VERSION, version, 0);
-    }
-    #[inline]
-    pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_
-            .push_slot::<u16>(AccountPropertiesTransactionBuffer::VT_TYPE_, type_, 0);
-    }
-    #[inline]
-    pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
-            AccountPropertiesTransactionBuffer::VT_MAX_FEE,
-            max_fee,
-        );
-    }
-    #[inline]
-    pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
-            AccountPropertiesTransactionBuffer::VT_DEADLINE,
-            deadline,
-        );
-    }
-    #[inline]
-    pub fn add_property_type(&mut self, property_type: u8) {
-        self.fbb_.push_slot::<u8>(
-            AccountPropertiesTransactionBuffer::VT_PROPERTY_TYPE,
-            property_type,
-            0,
-        );
-    }
-    #[inline]
-    pub fn add_modification_count(&mut self, modification_count: u8) {
-        self.fbb_.push_slot::<u8>(
-            AccountPropertiesTransactionBuffer::VT_MODIFICATION_COUNT,
-            modification_count,
-            0,
-        );
-    }
-    #[inline]
-    pub fn add_modifications(
-        &mut self,
-        modifications: flatbuffers::WIPOffset<
-            flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<PropertyModificationBuffer<'b>>>,
-        >,
-    ) {
-        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
-            AccountPropertiesTransactionBuffer::VT_MODIFICATIONS,
-            modifications,
-        );
-    }
-    #[inline]
-    pub fn new(
-        _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    ) -> AccountPropertiesTransactionBufferBuilder<'a, 'b> {
-        let start = _fbb.start_table();
-        AccountPropertiesTransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
-    }
-    #[inline]
-    pub fn finish(self) -> flatbuffers::WIPOffset<AccountPropertiesTransactionBuffer<'a>> {
-        let o = self.fbb_.end_table(self.start_);
-        flatbuffers::WIPOffset::new(o.value())
-    }
+	#[inline]
+	pub fn add_size_(&mut self, size_: u32) {
+		self.fbb_
+			.push_slot::<u32>(AccountPropertiesTransactionBuffer::VT_SIZE_, size_, 0);
+	}
+	#[inline]
+	pub fn add_signature(
+		&mut self,
+		signature: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>,
+	) {
+		self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+			AccountPropertiesTransactionBuffer::VT_SIGNATURE,
+			signature,
+		);
+	}
+	#[inline]
+	pub fn add_signer(&mut self, signer: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u8>>) {
+		self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+			AccountPropertiesTransactionBuffer::VT_SIGNER,
+			signer,
+		);
+	}
+	#[inline]
+	pub fn add_version(&mut self, version: u32) {
+		self.fbb_
+			.push_slot::<u32>(AccountPropertiesTransactionBuffer::VT_VERSION, version, 0);
+	}
+	#[inline]
+	pub fn add_type_(&mut self, type_: u16) {
+		self.fbb_
+			.push_slot::<u16>(AccountPropertiesTransactionBuffer::VT_TYPE_, type_, 0);
+	}
+	#[inline]
+	pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
+		self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+			AccountPropertiesTransactionBuffer::VT_MAX_FEE,
+			max_fee,
+		);
+	}
+	#[inline]
+	pub fn add_deadline(&mut self, deadline: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
+		self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+			AccountPropertiesTransactionBuffer::VT_DEADLINE,
+			deadline,
+		);
+	}
+	#[inline]
+	pub fn add_property_type(&mut self, property_type: u8) {
+		self.fbb_.push_slot::<u8>(
+			AccountPropertiesTransactionBuffer::VT_PROPERTY_TYPE,
+			property_type,
+			0,
+		);
+	}
+	#[inline]
+	pub fn add_modification_count(&mut self, modification_count: u8) {
+		self.fbb_.push_slot::<u8>(
+			AccountPropertiesTransactionBuffer::VT_MODIFICATION_COUNT,
+			modification_count,
+			0,
+		);
+	}
+	#[inline]
+	pub fn add_modifications(
+		&mut self,
+		modifications: flatbuffers::WIPOffset<
+			flatbuffers::Vector<'b, flatbuffers::ForwardsUOffset<PropertyModificationBuffer<'b>>>,
+		>,
+	) {
+		self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(
+			AccountPropertiesTransactionBuffer::VT_MODIFICATIONS,
+			modifications,
+		);
+	}
+	#[inline]
+	pub fn new(
+		_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+	) -> AccountPropertiesTransactionBufferBuilder<'a, 'b> {
+		let start = _fbb.start_table();
+		AccountPropertiesTransactionBufferBuilder { fbb_: _fbb, start_: start }
+	}
+	#[inline]
+	pub fn finish(self) -> flatbuffers::WIPOffset<AccountPropertiesTransactionBuffer<'a>> {
+		let o = self.fbb_.end_table(self.start_);
+		flatbuffers::WIPOffset::new(o.value())
+	}
 }
 
 impl core::fmt::Debug for AccountPropertiesTransactionBuffer<'_> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        let mut ds = f.debug_struct("AccountPropertiesTransactionBuffer");
-        ds.field("size_", &self.size_());
-        ds.field("signature", &self.signature());
-        ds.field("signer", &self.signer());
-        ds.field("version", &self.version());
-        ds.field("type_", &self.type_());
-        ds.field("max_fee", &self.max_fee());
-        ds.field("deadline", &self.deadline());
-        ds.field("property_type", &self.property_type());
-        ds.field("modification_count", &self.modification_count());
-        ds.field("modifications", &self.modifications());
-        ds.finish()
-    }
+	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+		let mut ds = f.debug_struct("AccountPropertiesTransactionBuffer");
+		ds.field("size_", &self.size_());
+		ds.field("signature", &self.signature());
+		ds.field("signer", &self.signer());
+		ds.field("version", &self.version());
+		ds.field("type_", &self.type_());
+		ds.field("max_fee", &self.max_fee());
+		ds.field("deadline", &self.deadline());
+		ds.field("property_type", &self.property_type());
+		ds.field("modification_count", &self.modification_count());
+		ds.field("modifications", &self.modifications());
+		ds.finish()
+	}
 }
 
 #[inline]
@@ -402,9 +387,9 @@ impl core::fmt::Debug for AccountPropertiesTransactionBuffer<'_> {
 /// previous, unchecked, behavior use
 /// `root_as_account_properties_transaction_buffer_unchecked`.
 pub fn root_as_account_properties_transaction_buffer(
-    buf: &[u8],
+	buf: &[u8],
 ) -> Result<AccountPropertiesTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
-    flatbuffers::root::<AccountPropertiesTransactionBuffer>(buf)
+	flatbuffers::root::<AccountPropertiesTransactionBuffer>(buf)
 }
 
 #[inline]
@@ -415,9 +400,9 @@ pub fn root_as_account_properties_transaction_buffer(
 /// previous, unchecked, behavior use
 /// `size_prefixed_root_as_account_properties_transaction_buffer_unchecked`.
 pub fn size_prefixed_root_as_account_properties_transaction_buffer(
-    buf: &[u8],
+	buf: &[u8],
 ) -> Result<AccountPropertiesTransactionBuffer, flatbuffers::InvalidFlatbuffer> {
-    flatbuffers::size_prefixed_root::<AccountPropertiesTransactionBuffer>(buf)
+	flatbuffers::size_prefixed_root::<AccountPropertiesTransactionBuffer>(buf)
 }
 
 #[inline]
@@ -428,10 +413,10 @@ pub fn size_prefixed_root_as_account_properties_transaction_buffer(
 /// previous, unchecked, behavior use
 /// `root_as_account_properties_transaction_buffer_unchecked`.
 pub fn root_as_account_properties_transaction_buffer_with_opts<'b, 'o>(
-    opts: &'o flatbuffers::VerifierOptions,
-    buf: &'b [u8],
+	opts: &'o flatbuffers::VerifierOptions,
+	buf: &'b [u8],
 ) -> Result<AccountPropertiesTransactionBuffer<'b>, flatbuffers::InvalidFlatbuffer> {
-    flatbuffers::root_with_opts::<AccountPropertiesTransactionBuffer<'b>>(opts, buf)
+	flatbuffers::root_with_opts::<AccountPropertiesTransactionBuffer<'b>>(opts, buf)
 }
 
 #[inline]
@@ -442,10 +427,10 @@ pub fn root_as_account_properties_transaction_buffer_with_opts<'b, 'o>(
 /// previous, unchecked, behavior use
 /// `root_as_account_properties_transaction_buffer_unchecked`.
 pub fn size_prefixed_root_as_account_properties_transaction_buffer_with_opts<'b, 'o>(
-    opts: &'o flatbuffers::VerifierOptions,
-    buf: &'b [u8],
+	opts: &'o flatbuffers::VerifierOptions,
+	buf: &'b [u8],
 ) -> Result<AccountPropertiesTransactionBuffer<'b>, flatbuffers::InvalidFlatbuffer> {
-    flatbuffers::size_prefixed_root_with_opts::<AccountPropertiesTransactionBuffer<'b>>(opts, buf)
+	flatbuffers::size_prefixed_root_with_opts::<AccountPropertiesTransactionBuffer<'b>>(opts, buf)
 }
 
 #[inline]
@@ -453,9 +438,9 @@ pub fn size_prefixed_root_as_account_properties_transaction_buffer_with_opts<'b,
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid `AccountPropertiesTransactionBuffer`.
 pub unsafe fn root_as_account_properties_transaction_buffer_unchecked(
-    buf: &[u8],
+	buf: &[u8],
 ) -> AccountPropertiesTransactionBuffer {
-    flatbuffers::root_unchecked::<AccountPropertiesTransactionBuffer>(buf)
+	flatbuffers::root_unchecked::<AccountPropertiesTransactionBuffer>(buf)
 }
 
 #[inline]
@@ -463,23 +448,23 @@ pub unsafe fn root_as_account_properties_transaction_buffer_unchecked(
 /// # Safety
 /// Callers must trust the given bytes do indeed contain a valid size prefixed `AccountPropertiesTransactionBuffer`.
 pub unsafe fn size_prefixed_root_as_account_properties_transaction_buffer_unchecked(
-    buf: &[u8],
+	buf: &[u8],
 ) -> AccountPropertiesTransactionBuffer {
-    flatbuffers::size_prefixed_root_unchecked::<AccountPropertiesTransactionBuffer>(buf)
+	flatbuffers::size_prefixed_root_unchecked::<AccountPropertiesTransactionBuffer>(buf)
 }
 
 #[inline]
 pub fn finish_account_properties_transaction_buffer_buffer<'a, 'b>(
-    fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<AccountPropertiesTransactionBuffer<'a>>,
+	fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+	root: flatbuffers::WIPOffset<AccountPropertiesTransactionBuffer<'a>>,
 ) {
-    fbb.finish(root, None);
+	fbb.finish(root, None);
 }
 
 #[inline]
 pub fn finish_size_prefixed_account_properties_transaction_buffer_buffer<'a, 'b>(
-    fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
-    root: flatbuffers::WIPOffset<AccountPropertiesTransactionBuffer<'a>>,
+	fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
+	root: flatbuffers::WIPOffset<AccountPropertiesTransactionBuffer<'a>>,
 ) {
-    fbb.finish_size_prefixed(root, None);
+	fbb.finish_size_prefixed(root, None);
 }
