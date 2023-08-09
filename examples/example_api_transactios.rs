@@ -12,12 +12,12 @@ use xpx_chain_sdk::TransactionHash;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-	let client = ApiNode::from_static("http://demo-api-1.edlx.io:3000").connect_lazy();
+	let client = ApiNode::from_static("http://demo-api-3.edlx.io:3000").connect_lazy();
 	// .await?;
 
 	let transaction_api = client.transaction_api();
 	let hash_one = TransactionHash::from_str(
-		"3328112E050F53D46A3E8C43C02094433BE6B0309162BA12412D1332DA1858AD",
+		"baed290d3326d9d040ac7338d0a481a36f9db610bb2d11b549bdaa0eccc7edcc",
 	)
 	.unwrap();
 
