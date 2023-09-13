@@ -13,7 +13,10 @@ use {
 	std::fmt,
 };
 
-use crate::transaction::{SignedTransaction, Transaction};
+use crate::multisig::CosignatureTransaction;
+use crate::transaction::{
+	AggregateTransaction, CosignatureSignedTransaction, SignedTransaction, Transaction,
+};
 use crate::{
 	errors_const,
 	helpers::{hex_decode, hex_encode, is_hex, Signer},
@@ -214,27 +217,24 @@ impl Account {
 	}
 
 	// /// Sign transaction with cosignatories creating a new signed_transaction.
-	// pub fn sign_with_cosignatories(
-	//     &self,
-	//     tx: AggregateTransaction,
-	//     cosignatories: Vec<Account>,
-	//     generation_hash: TransactionHash,
-	// ) -> Result<SignedTransaction> {
-	//     ensure!(
-	//         !generation_hash.is_zero(),
-	//         errors_const::ERR_EMPTY_GENERATION_HASH
-	//     );
-	//
-	//     tx.sign_with_cosignatories(self.to_owned(), cosignatories, generation_hash)
-	// }
+	pub fn sign_with_cosignatories(
+		&self,
+		tx: AggregateTransaction,
+		cosignatories: Vec<Account>,
+		generation_hash: TransactionHash,
+	) -> Result<SignedTransaction> {
+		ensure!(!generation_hash.is_zero(), errors_const::ERR_EMPTY_GENERATION_HASH);
 
-	// /// Sign aggregate signature transaction.
-	// pub fn sign_cosignature_transaction(
-	//     &self,
-	//     tx: CosignatureTransaction,
-	// ) -> Result<CosignatureSignedTransaction> {
-	//     tx.sign_cosignature_transaction(self.to_owned())
-	// }
+		tx.sign_with_cosignatories(self.to_owned(), cosignatories, generation_hash)
+	}
+
+	/// Sign aggregate signature transaction.
+	pub fn sign_cosignature_transaction(
+		&self,
+		tx: CosignatureTransaction,
+	) -> Result<CosignatureSignedTransaction> {
+		tx.sign_cosignature_transaction(self.to_owned())
+	}
 }
 
 impl fmt::Display for Account {

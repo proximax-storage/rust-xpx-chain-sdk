@@ -4,6 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
+use chrono::Utc;
+use serde::{Deserialize, Deserializer};
+use std::str::FromStr;
 use {
 	::std::{
 		ops::Add,
@@ -40,7 +43,7 @@ impl BlockchainTimestamp {
 	}
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Timestamp(SystemTime);
 
 impl Timestamp {
@@ -124,6 +127,17 @@ impl Serialize for Timestamp {
 		S: Serializer,
 	{
 		serializer.serialize_str(&format!("{}", self))
+	}
+}
+
+impl<'de> Deserialize<'de> for Timestamp {
+	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+	where
+		D: Deserializer<'de>,
+	{
+		let string = String::deserialize(deserializer)?;
+		let datetime: DateTime<Utc> = DateTime::from_str(string.as_ref()).unwrap();
+		Ok(Timestamp(datetime.into()))
 	}
 }
 

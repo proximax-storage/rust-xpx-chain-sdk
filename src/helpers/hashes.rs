@@ -19,7 +19,7 @@ pub type Signer = H256;
 
 construct_fixed_hash! {
 	/// Symbol 256 bit hash type.
-	#[derive(Deserialize)]
+	// #[derive(Deserialize)]
 	pub struct H256(32);
 }
 
@@ -29,6 +29,16 @@ impl Serialize for H256 {
 		S: Serializer,
 	{
 		serializer.serialize_str(&self.encode_hex_upper::<String>())
+	}
+}
+
+impl<'de> Deserialize<'de> for H256 {
+	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+	where
+		D: Deserializer<'de>,
+	{
+		let string = String::deserialize(deserializer)?;
+		H256::from_str(string.as_ref()).map_err(|e| D::Error::custom(e))
 	}
 }
 
