@@ -38,23 +38,23 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 	let network_type = chain.network_type;
 	let generation_hash = chain.generation_hash;
 
-	let private_key: &str = "26b64cb10f005e5988a36744ca19e20d835ccc7c105aaa5f3b212da593180930";
+	let private_key: &str = "c125fa87b64e90453aca9cabfd1bf95804ab83cc4673e77a384741be00bbb742";
 
 	let account = Account::from_hex_private_key(private_key, network_type).unwrap();
 
 	let cosignatory_one_public_key =
-		"738b2b466f718b14a1bf40fc6ce993e464eba6894dadedf1661ef6f79eef288a";
+		"d6e4c5a8f3f5513abdedfb652fe5395e3e45cbbe5965e6efb430d74f2f4434e4";
 	let cosignatory_two_public_key =
-		"8d0e5deb5042ad3bf59dd82882eedc8c55cf5c5cf14de4d67a1338e70bd112ed";
+		"2c0350a0efa7e8346fb1100ac5092d43e74f2a91e85eb1f2fdfda17bdf4cf665";
 	let cosignatory_three_public_key =
-		"fc02cce49b057f646b32f4aa1867b2259a09e5724d8a042fcce5f24c371c1c8c";
+		"99a347d030358344297765c9fb6abd264d51ad862c5d80a9645d886fb501ac06";
 
 	let cosignatory_one = PublicAccount::from_public_key(cosignatory_one_public_key, network_type)?;
 	let cosignatory_two = PublicAccount::from_public_key(cosignatory_two_public_key, network_type)?;
 	let cosignatory_three =
 		PublicAccount::from_public_key(cosignatory_three_public_key, network_type)?;
 
-	let min_approval_delta: i8 = 2;
+	let min_approval_delta: i8 = 3;
 	let min_removal_delta: i8 = 1;
 
 	let modifications = vec![
@@ -71,16 +71,16 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
 	multisig_account_transaction.set_aggregate(account.public_account);
 
-	let transaction = AggregateTransaction::builder_bonded(network_type)
+	let transaction = AggregateTransaction::builder_complete(network_type)
 		.inner_transactions(vec![Box::new(multisig_account_transaction)])
 		.build()?;
 	let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
 
-	let _ =
-		lock_fund(client.clone(), &account, sig_transaction.clone(), network_type, generation_hash)
-			.await?;
+	// let _ =
+	// 	lock_fund(client.clone(), &account, sig_transaction.clone(), network_type, generation_hash)
+	// 		.await?;
 
-	let response = client.transaction_api().announce_aggregate_bonded(&sig_transaction).await?;
+	let response = client.transaction_api().announce(&sig_transaction).await?;
 	println!("{response}");
 	println!("Singer: \t{}", account.public_key_to_hex());
 	println!("Hash: \t{:X}", sig_transaction.get_hash());

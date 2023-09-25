@@ -32,7 +32,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
 	let account = Account::from_hex_private_key(private_key, network_type).unwrap();
 
-	let transaction = RegisterNamespaceTransaction::builder_root("block_namespace", network_type)
+	let transaction = RegisterNamespaceTransaction::builder_root("payluy_namespace", network_type)
 		.duration(100)
 		.build()?;
 

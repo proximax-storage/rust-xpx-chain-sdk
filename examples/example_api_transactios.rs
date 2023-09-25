@@ -12,12 +12,13 @@ use xpx_chain_sdk::TransactionHash;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-	let client = ApiNode::from_static("http://demo-api-3.edlx.io:3000").connect_lazy();
+	let client =
+		ApiNode::from_static("http://bctestnet3.brimstone.xpxsirius.io:3000").connect_lazy();
 	// .await?;
 
 	let transaction_api = client.transaction_api();
 	let hash_one = TransactionHash::from_str(
-		"baed290d3326d9d040ac7338d0a481a36f9db610bb2d11b549bdaa0eccc7edcc",
+		"AFEB79AAA922F9D835DCDFC51E6063DB00D0F18FF89C8C423DC93C2BDD582F2F",
 	)
 	.unwrap();
 
@@ -34,74 +35,63 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 			eprintln!("Exception when calling transaction_api->get_any_transaction: {}\n", err)
 		},
 	}
-	//
-	// // Returns a [Transaction] information given a transactionId or hash.
-	// let account_info = transaction_api
-	//     .get_transaction(hash_one, TransactionGroupType::Confirmed)
-	//     .await;
-	// match account_info {
-	//     Ok(resp) => println!("{}", resp),
-	//     Err(err) => eprintln!(
-	//         "Exception when calling transaction_api->get_transaction: {}\n",
-	//         err
-	//     ),
-	// }
-	//
-	// // Returns a [Transaction] information given a transactionId or hash.
-	// let account_info = transaction_api
-	//     .get_transactions(vec![hash_one, hash_two], TransactionGroupType::Confirmed)
-	//     .await;
-	// match account_info {
-	//     Ok(resp) => println!("{:#?}", resp),
-	//     Err(err) => eprintln!(
-	//         "Exception when calling transaction_api->get_transactions: {}\n",
-	//         err
-	//     ),
-	// }
-	//
-	// let txn_query_params = TransactionQueryParams::create()
-	//     .public_key("c2f93346e27ce6ad1a9f8f5e3066f8326593a406bdf357acb041e2f9ab402efe".to_string())
-	//     .r#type(vec![TransactionType::Transfer])
-	//     .embedded(true)
-	//     .build()
-	//     .unwrap();
-	//
-	// // Returns a [Transaction] information given a transactionId or hash.
-	// let account_info = transaction_api
-	//     .get_transactions_by_group(TransactionGroupType::Confirmed, Some(txn_query_params))
-	//     .await;
-	// match account_info {
-	//     Ok(resp) => resp
-	//         .transactions
-	//         .iter()
-	//         .for_each(|item| println!("{:#?}", item)),
-	//     Err(err) => eprintln!(
-	//         "Exception when calling transaction_api->get_transactions_by_group: {}\n",
-	//         err
-	//     ),
-	// }
-	//
-	// // Returns a [Transaction] information given a transactionId or hash.
-	// let account_info = transaction_api.get_transaction_status(hash_one).await;
-	// match account_info {
-	//     Ok(resp) => println!("{}", resp),
-	//     Err(err) => eprintln!(
-	//         "Exception when calling transaction_api->get_transaction_status: {}\n",
-	//         err
-	//     ),
-	// }
-	//
-	// // Returns a [Transaction] information given a transactionId or hash.
-	// let account_info = transaction_api
-	//     .get_transactions_statuses(vec![hash_one, hash_two])
-	//     .await;
-	// match account_info {
-	//     Ok(resp) => println!("{:#?}", resp),
-	//     Err(err) => eprintln!(
-	//         "Exception when calling transaction_api->get_transactions_statuses: {}\n",
-	//         err
-	//     ),
-	// };
+
+	// Returns a [Transaction] information given a transactionId or hash.
+	let account_info =
+		transaction_api.get_transaction(hash_one, TransactionGroupType::Confirmed).await;
+	match account_info {
+		Ok(resp) => println!("{}", resp),
+		Err(err) => eprintln!("Exception when calling transaction_api->get_transaction: {}\n", err),
+	}
+
+	// Returns a [Transaction] information given a transactionId or hash.
+	let account_info = transaction_api
+		.get_transactions(vec![hash_one, hash_two], TransactionGroupType::Confirmed)
+		.await;
+	match account_info {
+		Ok(resp) => println!("{:#?}", resp),
+		Err(err) => {
+			eprintln!("Exception when calling transaction_api->get_transactions: {}\n", err)
+		},
+	}
+
+	let txn_query_params = TransactionQueryParams::create()
+		.public_key("c2f93346e27ce6ad1a9f8f5e3066f8326593a406bdf357acb041e2f9ab402efe".to_string())
+		.r#type(vec![TransactionType::Transfer])
+		.embedded(true)
+		.build()
+		.unwrap();
+
+	// Returns a [Transaction] information given a transactionId or hash.
+	let account_info = transaction_api
+		.get_transactions_by_group(TransactionGroupType::Confirmed, Some(txn_query_params))
+		.await;
+	match account_info {
+		Ok(resp) => resp.transactions.iter().for_each(|item| println!("{:#?}", item)),
+		Err(err) => eprintln!(
+			"Exception when calling transaction_api->get_transactions_by_group: {}\n",
+			err
+		),
+	}
+
+	// Returns a [Transaction] information given a transactionId or hash.
+	let account_info = transaction_api.get_transaction_status(hash_one).await;
+	match account_info {
+		Ok(resp) => println!("{}", resp),
+		Err(err) => {
+			eprintln!("Exception when calling transaction_api->get_transaction_status: {}\n", err)
+		},
+	}
+
+	// Returns a [Transaction] information given a transactionId or hash.
+	let account_info = transaction_api.get_transactions_statuses(vec![hash_one]).await;
+	match account_info {
+		Ok(resp) => println!("{:#?}", resp),
+		Err(err) => eprintln!(
+			"Exception when calling transaction_api->get_transactions_statuses: {}\n",
+			err
+		),
+	};
 
 	Ok(())
 }

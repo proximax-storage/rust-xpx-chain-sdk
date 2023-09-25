@@ -6,7 +6,7 @@
 
 use std::time::Duration;
 
-use xpx_chain_sdk::account::{Address, PublicAccount};
+use xpx_chain_sdk::account::{Account, Address, PublicAccount};
 use xpx_chain_sdk::api::ApiNode;
 use xpx_chain_sdk::api::{OrderV2, TransactionQueryParams};
 use xpx_chain_sdk::transaction::TransactionType;
@@ -29,16 +29,20 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 	// let account_api = client.account_api();
 
 	// let account_id_one: &str = "VCTVW23D2MN5VE4AQ4TZIDZENGNOZXPRPR3HTEHT";
-	let account_id_one: &str = "C2F93346E27CE6AD1A9F8F5E3066F8326593A406BDF357ACB041E2F9AB402EFE";
+	let account_id_one: &str = "69C7B0C1982245A553C39FA1F3A934555C0715DD7415FC83DA277E7C9D1DD49C";
 
 	// let account_id_two: &str = "VCWN77662VNLFGQBQ6RIFTC7LFWO5BSA3U622CSK";
-	let account_id_two: &str = "F6A9951DDB2B9EF2C7EB5132654562FC6D2308B42AEAAFD11097B232F429AF70";
+	let account_id_two: &str = "b0fd7cea2a03d7287551771d3395249546a2c32a5df6ecb54f";
 
 	// Create an Address from a given public key.
-	let account_one = PublicAccount::from_public_key(account_id_one, network_type).unwrap();
+	let account_one = Account::from_hex_private_key(account_id_one, network_type).unwrap();
+	println!("private_key: {}", account_one.private_key_to_hex());
+	println!("public_key: {}", account_one.public_key_to_hex());
 
 	// Create an Address from a given public key.
-	let account_two = Address::from_public_key(account_id_two, network_type).unwrap();
+	let account_two = Address::from_encoded(account_id_two).unwrap();
+
+	println!("{account_two}");
 
 	let account_api = client.account_api();
 
@@ -98,7 +102,9 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 		.unwrap();
 
 	// Returns the [configurable properties] for a given vector of addresses.
-	let accounts_properties = account_api.transactions(account_one, Some(txn_query_params)).await;
+	let accounts_properties = account_api
+		.transactions(account_one.public_account, Some(txn_query_params))
+		.await;
 	match accounts_properties {
 		Ok(resp) => println!("{}", resp),
 		Err(err) => eprintln!("Exception when calling AccountsApi->AccountsProperties: {}\n", err),

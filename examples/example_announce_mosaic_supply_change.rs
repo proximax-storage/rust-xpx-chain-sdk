@@ -29,18 +29,18 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 	let network_type = chain.network_type;
 	let generation_hash = chain.generation_hash;
 
-	let private_key: &str = "26b64cb10f005e5988a36744ca19e20d835ccc7c105aaa5f3b212da593180930";
+	let private_key: &str = "7C57C8A6D8767B48F81E8E5D7ECBC76F60D55455A79B4008A20146185F7C8882";
 
 	let account = Account::from_hex_private_key(private_key, network_type).unwrap();
 
 	let supply_type = MosaicSupplyType::Increase;
 
-	let asset_id = MosaicId::try_from_hex("50AB95DA731C128D")?;
+	let asset_id = MosaicId::try_from_hex("6291690CAB3C593D")?;
 
 	let transaction = MosaicSupplyChangeTransaction::builder(network_type)
 		.supply_type(supply_type)
 		.asset_id(asset_id)
-		.delta(100000)
+		.delta(9000000000000)
 		.build()?;
 
 	println!("{transaction}");
