@@ -23,17 +23,18 @@ use crate::transaction::{
 pub struct MetadataV2AccountTransaction(pub(crate) MetadataTransaction);
 
 impl MetadataV2AccountTransaction {
-	pub fn builder<T: fmt::Display + 'static>(
+	pub fn builder<T: fmt::Display + 'static, V: AsRef<str>>(
 		deadline: Deadline,
 		account: PublicAccount,
 		scoped_key: T,
-		new_value: &str,
+		new_value: V,
 		old_value: Option<&str>,
 		network_type: NetworkType,
 		max_fee: Option<u64>,
 	) -> Result<Self> {
+		let new_value_ref: &str = new_value.as_ref();
 		if let Some(old) = old_value {
-			ensure!(new_value != old, errors_const::ERR_METADATA_VALUE_IS_THE_SAME);
+			ensure!(new_value_ref != old, errors_const::ERR_METADATA_VALUE_IS_THE_SAME);
 		}
 
 		let scoped_metadata_key = build_scoped_metadata_key(scoped_key)?;
@@ -51,7 +52,7 @@ impl MetadataV2AccountTransaction {
 		let metadata = MetadataTransaction::builder(
 			common,
 			account,
-			new_value,
+			new_value_ref,
 			old_value,
 			scoped_metadata_key,
 		)?;

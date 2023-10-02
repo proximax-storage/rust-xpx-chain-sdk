@@ -144,5 +144,6 @@ tokio = { version = "1.26", features = ["full"] }
 
 [profile.test]
 opt-level = 2
+
 [profile.test.package."*"]
 opt-level = 3
