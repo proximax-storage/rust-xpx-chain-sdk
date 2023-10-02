@@ -12,12 +12,12 @@ use crate::account::PublicAccount;
 ///
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct MosaicRichList {
-	pub account: PublicAccount,
-	pub amount: u64,
+    pub account: PublicAccount,
+    pub amount: u64,
 }
 
 impl fmt::Display for MosaicRichList {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", &self)
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", &self)
+    }
 }

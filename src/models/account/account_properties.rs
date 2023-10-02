@@ -5,15 +5,15 @@
  */
 
 use {
-	::std::ops::BitAnd,
-	num_enum::IntoPrimitive,
-	serde_repr::{Deserialize_repr, Serialize_repr},
-	std::fmt,
+    ::std::ops::BitAnd,
+    num_enum::IntoPrimitive,
+    serde_repr::{Deserialize_repr, Serialize_repr},
+    std::fmt,
 };
 
 use crate::{
-	mosaic::{MosaicId, UnresolvedMosaicId},
-	transaction::TransactionType,
+    mosaic::{MosaicId, UnresolvedMosaicId},
+    transaction::TransactionType,
 };
 
 use super::Address;
@@ -24,26 +24,26 @@ use super::Address;
 #[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr, IntoPrimitive)]
 #[repr(u8)]
 pub enum AccountPropertiesModificationType {
-	AddProperty,
-	RemoveProperty,
-	AccountPropertiesModificationTypeUnknown,
+    AddProperty,
+    RemoveProperty,
+    AccountPropertiesModificationTypeUnknown,
 }
 
 impl AccountPropertiesModificationType {
-	pub fn value(self) -> u8 {
-		self.into()
-	}
+    pub fn value(self) -> u8 {
+        self.into()
+    }
 }
 
 impl From<u8> for AccountPropertiesModificationType {
-	fn from(num: u8) -> Self {
-		use AccountPropertiesModificationType::*;
-		match num {
-			0x00 => AddProperty,
-			0x01 => RemoveProperty,
-			_ => AccountPropertiesModificationTypeUnknown,
-		}
-	}
+    fn from(num: u8) -> Self {
+        use AccountPropertiesModificationType::*;
+        match num {
+            0x00 => AddProperty,
+            0x01 => RemoveProperty,
+            _ => AccountPropertiesModificationTypeUnknown,
+        }
+    }
 }
 
 /// Account property type
@@ -57,125 +57,125 @@ impl From<u8> for AccountPropertiesModificationType {
 #[derive(Debug, Clone, Copy, PartialEq, Serialize_repr, Deserialize_repr, IntoPrimitive)]
 #[repr(u8)]
 pub enum AccountPropertyType {
-	AllowAddress = 0x01,
-	AllowMosaic = 0x02,
-	AllowTransaction = 0x04,
-	BlockAddress = 0x80 + 0x01,
-	BlockMosaic = 0x80 + 0x02,
-	BlockTransaction = 0x80 + 0x04,
-	AccountPropertyTypeUnknown,
+    AllowAddress = 0x01,
+    AllowMosaic = 0x02,
+    AllowTransaction = 0x04,
+    BlockAddress = 0x80 + 0x01,
+    BlockMosaic = 0x80 + 0x02,
+    BlockTransaction = 0x80 + 0x04,
+    AccountPropertyTypeUnknown,
 }
 
 impl AccountPropertyType {
-	pub fn value(self) -> u8 {
-		self.into()
-	}
+    pub fn value(self) -> u8 {
+        self.into()
+    }
 }
 
 impl From<u8> for AccountPropertyType {
-	fn from(num: u8) -> Self {
-		use AccountPropertyType::*;
-		match num {
-			0x01 => AllowAddress,
-			0x02 => AllowMosaic,
-			0x04 => AllowTransaction,
-			0x81 => BlockAddress,
-			0x82 => BlockMosaic,
-			0x84 => BlockTransaction,
+    fn from(num: u8) -> Self {
+        use AccountPropertyType::*;
+        match num {
+            0x01 => AllowAddress,
+            0x02 => AllowMosaic,
+            0x04 => AllowTransaction,
+            0x81 => BlockAddress,
+            0x82 => BlockMosaic,
+            0x84 => BlockTransaction,
 
-			_ => AccountPropertyTypeUnknown,
-		}
-	}
+            _ => AccountPropertyTypeUnknown,
+        }
+    }
 }
 
 impl BitAnd for AccountPropertyType {
-	type Output = Self;
+    type Output = Self;
 
-	// rhs is the "right-hand side" of the expression `a & b`
-	fn bitand(self, rhs: Self) -> Self::Output {
-		AccountPropertyType::from(self.value() & rhs.value())
-	}
+    // rhs is the "right-hand side" of the expression `a & b`
+    fn bitand(self, rhs: Self) -> Self::Output {
+        AccountPropertyType::from(self.value() & rhs.value())
+    }
 }
 
 impl fmt::Display for AccountPropertyType {
-	fn fmt(&self, e: &mut fmt::Formatter) -> fmt::Result {
-		write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
-	}
+    fn fmt(&self, e: &mut fmt::Formatter) -> fmt::Result {
+        write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
+    }
 }
 
 #[derive(Debug, Clone, Serialize)]
 pub struct AccountProperties {
-	pub address: Address,
-	pub allowed_addresses: Vec<Address>,
-	pub allowed_mosaic_id: Vec<MosaicId>,
-	pub allowed_entity_types: Vec<TransactionType>,
-	pub blocked_addresses: Vec<Address>,
-	pub blocked_mosaic_id: Vec<MosaicId>,
-	pub blocked_entity_types: Vec<TransactionType>,
+    pub address: Address,
+    pub allowed_addresses: Vec<Address>,
+    pub allowed_mosaic_id: Vec<MosaicId>,
+    pub allowed_entity_types: Vec<TransactionType>,
+    pub blocked_addresses: Vec<Address>,
+    pub blocked_mosaic_id: Vec<MosaicId>,
+    pub blocked_entity_types: Vec<TransactionType>,
 }
 
 impl fmt::Display for AccountProperties {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AccountPropertiesAddressModification {
-	pub modification_type: AccountPropertiesModificationType,
-	pub address: Address,
+    pub modification_type: AccountPropertiesModificationType,
+    pub address: Address,
 }
 
 impl AccountPropertiesAddressModification {
-	pub fn create(modification_type: AccountPropertiesModificationType, address: Address) -> Self {
-		Self { modification_type, address }
-	}
+    pub fn create(modification_type: AccountPropertiesModificationType, address: Address) -> Self {
+        Self { modification_type, address }
+    }
 }
 
 impl fmt::Display for AccountPropertiesAddressModification {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AccountPropertiesMosaicModification {
-	pub modification_type: AccountPropertiesModificationType,
-	pub asset_id: Box<dyn UnresolvedMosaicId>,
+    pub modification_type: AccountPropertiesModificationType,
+    pub asset_id: Box<dyn UnresolvedMosaicId>,
 }
 
 impl AccountPropertiesMosaicModification {
-	pub fn create(
-		modification_type: AccountPropertiesModificationType,
-		asset_id: impl UnresolvedMosaicId + 'static,
-	) -> Self {
-		Self { modification_type, asset_id: Box::new(asset_id) }
-	}
+    pub fn create(
+        modification_type: AccountPropertiesModificationType,
+        asset_id: impl UnresolvedMosaicId + 'static,
+    ) -> Self {
+        Self { modification_type, asset_id: Box::new(asset_id) }
+    }
 }
 
 impl fmt::Display for AccountPropertiesMosaicModification {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AccountPropertiesEntityTypeModification {
-	pub modification_type: AccountPropertiesModificationType,
-	pub transaction_type: TransactionType,
+    pub modification_type: AccountPropertiesModificationType,
+    pub transaction_type: TransactionType,
 }
 
 impl AccountPropertiesEntityTypeModification {
-	pub fn create(
-		modification_type: AccountPropertiesModificationType,
-		transaction_type: TransactionType,
-	) -> Self {
-		Self { modification_type, transaction_type }
-	}
+    pub fn create(
+        modification_type: AccountPropertiesModificationType,
+        transaction_type: TransactionType,
+    ) -> Self {
+        Self { modification_type, transaction_type }
+    }
 }
 
 impl fmt::Display for AccountPropertiesEntityTypeModification {
-	fn fmt(&self, f: &mut core::fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
-	}
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
+    }
 }

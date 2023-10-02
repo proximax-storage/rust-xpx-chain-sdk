@@ -13,15 +13,15 @@ use crate::mosaic::MosaicId;
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NamespaceAlias {
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub mosaic_id: Option<MosaicId>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	pub address: Option<Address>,
-	pub type_: u8,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mosaic_id: Option<MosaicId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<Address>,
+    pub type_: u8,
 }
 
 impl fmt::Display for NamespaceAlias {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
+    }
 }

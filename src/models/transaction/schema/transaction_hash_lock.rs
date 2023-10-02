@@ -5,21 +5,21 @@
  */
 
 use super::{
-	schema_common_definition::schema_common_definition, ArrayAttribute, Schema, SchemaAttribute,
-	SIZEOF_BYTE, SIZEOF_INT,
+    ArrayAttribute, Schema, schema_common_definition::schema_common_definition, SchemaAttribute,
+    SIZEOF_BYTE, SIZEOF_INT,
 };
 
 pub fn lock_funds_transaction_schema() -> Schema {
-	let mut schema_definition = schema_common_definition();
+    let mut schema_definition = schema_common_definition();
 
-	let mut lock_funds_transaction_definition: Vec<Box<dyn SchemaAttribute>> = vec![
-		Box::new(ArrayAttribute::new("mosaic_id", SIZEOF_INT)),
-		Box::new(ArrayAttribute::new("mosaic_amount", SIZEOF_INT)),
-		Box::new(ArrayAttribute::new("duration", SIZEOF_INT)),
-		Box::new(ArrayAttribute::new("hash", SIZEOF_BYTE)),
-	];
+    let mut lock_funds_transaction_definition: Vec<Box<dyn SchemaAttribute>> = vec![
+        Box::new(ArrayAttribute::new("mosaic_id", SIZEOF_INT)),
+        Box::new(ArrayAttribute::new("mosaic_amount", SIZEOF_INT)),
+        Box::new(ArrayAttribute::new("duration", SIZEOF_INT)),
+        Box::new(ArrayAttribute::new("hash", SIZEOF_BYTE)),
+    ];
 
-	schema_definition.append(&mut lock_funds_transaction_definition);
+    schema_definition.append(&mut lock_funds_transaction_definition);
 
-	Schema::new(schema_definition)
+    Schema::new(schema_definition)
 }

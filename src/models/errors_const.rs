@@ -38,7 +38,7 @@ pub const ERR_EMPTY_TRANSACTION_SIGNER: &str = "some of the transaction does not
 pub const ERR_EMPTY_COSIGNATURE_HASH: &str = "Cosignature transaction hash it should not be empty";
 pub const ERR_EMPTY_GENERATION_HASH: &str = "Generation hash it should not be empty";
 pub const ERR_INVALID_AGGREGATE_TRANSACTION: &str =
-	"The transaction is not an AggregateTransaction.";
+    "The transaction is not an AggregateTransaction.";
 
 // Common errors
 pub const ERR_UNKNOWN_BLOCKCHAIN_TYPE: &str = "Not supported Blockchain Type.";

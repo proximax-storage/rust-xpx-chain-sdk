@@ -14,14 +14,14 @@ use super::{MosaicId, MosaicLevyType};
 ///
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct MosaicLevy {
-	pub r#type: MosaicLevyType,
-	pub recipient: Address,
-	pub mosaic_id: MosaicId,
-	pub fee: u64,
+    pub r#type: MosaicLevyType,
+    pub recipient: Address,
+    pub mosaic_id: MosaicId,
+    pub fee: u64,
 }
 
 impl fmt::Display for MosaicLevy {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", &self)
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", &self)
+    }
 }

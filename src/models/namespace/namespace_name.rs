@@ -10,15 +10,15 @@ use crate::namespace::NamespaceId;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NamespaceName {
-	#[serde(rename = "namespace_id")]
-	pub namespace_id: NamespaceId,
-	/// The full name of the namespace.
-	#[serde(rename = "name")]
-	pub name: String,
+    #[serde(rename = "namespace_id")]
+    pub namespace_id: NamespaceId,
+    /// The full name of the namespace.
+    #[serde(rename = "name")]
+    pub name: String,
 }
 
 impl fmt::Display for NamespaceName {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
+    }
 }

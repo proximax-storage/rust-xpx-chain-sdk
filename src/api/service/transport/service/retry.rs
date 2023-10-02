@@ -21,99 +21,99 @@ use crate::api::transport::service::connection::{Request, Response};
 /// is used to control the retry logic based on the remaining retry attempts.
 #[derive(Debug, Clone)]
 pub struct RetryPolicy {
-	pub max_num_retry: usize,
-	pub retry_service_unavailable_requests: bool,
+    pub max_num_retry: usize,
+    pub retry_service_unavailable_requests: bool,
 }
 
 impl RetryPolicy {
-	pub fn new(max_num_retry: usize, retry_service_unavailable: bool) -> Self {
-		Self { max_num_retry, retry_service_unavailable_requests: retry_service_unavailable }
-	}
+    pub fn new(max_num_retry: usize, retry_service_unavailable: bool) -> Self {
+        Self { max_num_retry, retry_service_unavailable_requests: retry_service_unavailable }
+    }
 
-	pub fn is_retry(&self) -> Option<future::Ready<RetryPolicy>> {
-		if self.max_num_retry > 0 {
-			// Try again!
-			Some(future::ready(RetryPolicy {
-				max_num_retry: self.max_num_retry - 1,
-				retry_service_unavailable_requests: self.retry_service_unavailable_requests,
-			}))
-		} else {
-			None
-		}
-	}
+    pub fn is_retry(&self) -> Option<future::Ready<RetryPolicy>> {
+        if self.max_num_retry > 0 {
+            // Try again!
+            Some(future::ready(RetryPolicy {
+                max_num_retry: self.max_num_retry - 1,
+                retry_service_unavailable_requests: self.retry_service_unavailable_requests,
+            }))
+        } else {
+            None
+        }
+    }
 }
 
 impl Policy<Request, Response, hyper::Error> for RetryPolicy {
-	type Future = future::Ready<Self>;
+    type Future = future::Ready<Self>;
 
-	/// Determines whether a retry should be performed based on the result of the previous request.
-	///
-	/// This method is called for each request to decide whether to retry or not.
-	///
-	/// # Arguments
-	///
-	/// * `req`: The original request that was made.
-	/// * `result`: The result of the previous request. It is a `Result` containing either
-	///             a reference to the successful response or a reference to the error that occurred.
-	///
-	/// # Returns
-	///
-	/// * `None`: If the result is successful (`Ok`), indicating that no retry should be performed.
-	/// * `Some`: If the result is an error (`Err`), indicating that a retry may be performed.
-	///           It contains a future that resolves to a new instance of `RetryPolicy` with a
-	///           decremented retry count, indicating the intention to retry.
-	fn retry(&self, _: &Request, result: Result<&Response, &hyper::Error>) -> Option<Self::Future> {
-		match result {
-			Ok(res) => {
-				let status = res.status();
+    /// Determines whether a retry should be performed based on the result of the previous request.
+    ///
+    /// This method is called for each request to decide whether to retry or not.
+    ///
+    /// # Arguments
+    ///
+    /// * `req`: The original request that was made.
+    /// * `result`: The result of the previous request. It is a `Result` containing either
+    ///             a reference to the successful response or a reference to the error that occurred.
+    ///
+    /// # Returns
+    ///
+    /// * `None`: If the result is successful (`Ok`), indicating that no retry should be performed.
+    /// * `Some`: If the result is an error (`Err`), indicating that a retry may be performed.
+    ///           It contains a future that resolves to a new instance of `RetryPolicy` with a
+    ///           decremented retry count, indicating the intention to retry.
+    fn retry(&self, _: &Request, result: Result<&Response, &hyper::Error>) -> Option<Self::Future> {
+        match result {
+            Ok(res) => {
+                let status = res.status();
 
-				match status {
-					StatusCode::SERVICE_UNAVAILABLE => {
-						tracing::debug!("retry service_unavailable");
-						if self.retry_service_unavailable_requests {
-							self.is_retry()
-						} else {
-							None
-						}
-					},
-					_ => None,
-				}
-			},
-			Err(err) => {
-				tracing::debug!("error: {}", err);
+                match status {
+                    StatusCode::SERVICE_UNAVAILABLE => {
+                        tracing::debug!("retry service_unavailable");
+                        if self.retry_service_unavailable_requests {
+                            self.is_retry()
+                        } else {
+                            None
+                        }
+                    }
+                    _ => None,
+                }
+            }
+            Err(err) => {
+                tracing::debug!("error: {}", err);
 
-				// if err.is_connect() {
-				self.is_retry()
-				// } else {
-				//     None
-				// }
-				// Treat all other errors as failures...
-				// But we limit the number of attempts...
-			},
-		}
-	}
+                // if err.is_connect() {
+                self.is_retry()
+                // } else {
+                //     None
+                // }
+                // Treat all other errors as failures...
+                // But we limit the number of attempts...
+            }
+        }
+    }
 
-	/// Clones the original request for a retry.
-	///
-	/// This method is called when a retry is about to be performed.
-	///
-	/// # Arguments
-	///
-	/// * `req`: The original request that was made.
-	///
-	/// # Returns
-	///
-	/// * `Some`: A cloned instance of the original request, indicating that a retry should be performed.
-	/// * `None`: If cloning the request is not possible or not needed, indicating that no retry should be performed.
-	fn clone_request(&self, req: &Request) -> Option<Request> {
-		let mut clone = hyper::Request::new(req.body().clone());
+    /// Clones the original request for a retry.
+    ///
+    /// This method is called when a retry is about to be performed.
+    ///
+    /// # Arguments
+    ///
+    /// * `req`: The original request that was made.
+    ///
+    /// # Returns
+    ///
+    /// * `Some`: A cloned instance of the original request, indicating that a retry should be performed.
+    /// * `None`: If cloning the request is not possible or not needed, indicating that no retry should be performed.
+    fn clone_request(&self, req: &Request) -> Option<Request> {
+        let mut clone = hyper::Request::new(req.body().clone());
 
-		// Copy relevant fields from the original request.
-		*clone.method_mut() = req.method().clone();
-		*clone.uri_mut() = req.uri().clone();
-		*clone.headers_mut() = req.headers().clone();
-		*clone.version_mut() = req.version();
+        // Copy relevant fields from the original request.
+        *clone.method_mut() = req.method().clone();
+        *clone.uri_mut() = req.uri().clone();
+        *clone.headers_mut() = req.headers().clone();
+        *clone.version_mut() = req.version();
 
-		Some(clone)
-	}
+        Some(clone)
+    }
 }

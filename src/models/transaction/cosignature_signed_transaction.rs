@@ -13,19 +13,19 @@ use crate::helpers::{Signer, TransactionHash};
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CosignatureSignedTransaction {
-	pub parent_hash: TransactionHash,
-	pub signature: Signature,
-	pub signer: Signer,
+    pub parent_hash: TransactionHash,
+    pub signature: Signature,
+    pub signer: Signer,
 }
 
 impl CosignatureSignedTransaction {
-	pub fn create(parent_hash: TransactionHash, signature: Signature, signer: Signer) -> Self {
-		Self { parent_hash, signature, signer }
-	}
+    pub fn create(parent_hash: TransactionHash, signature: Signature, signer: Signer) -> Self {
+        Self { parent_hash, signature, signer }
+    }
 }
 
 impl fmt::Display for CosignatureSignedTransaction {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
+    }
 }

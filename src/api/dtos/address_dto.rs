@@ -4,42 +4,37 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::{
-	account::Address,
-	transaction::{MetadataAddressTransaction, Transaction},
-};
-
-use super::{ModifyMetadataTransactionDto, TransactionDto, TransactionMetaDto};
+use super::{ModifyMetadataTransactionDto, TransactionMetaDto};
 
 /// AddressMetadataTransactionDto :
 ///Transaction that addes metadata to account.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddressMetadataTransactionDto {
-	#[serde(flatten)]
-	metadata_transaction: ModifyMetadataTransactionDto,
-	#[serde(rename = "metadataId")]
-	address: String,
+    #[serde(flatten)]
+    metadata_transaction: ModifyMetadataTransactionDto,
+    #[serde(rename = "metadataId")]
+    address: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddressMetadataTransactionInfoDto {
-	meta: TransactionMetaDto,
-	transaction: AddressMetadataTransactionDto,
+    meta: TransactionMetaDto,
+    transaction: AddressMetadataTransactionDto,
 }
 
 #[typetag::serde]
 impl TransactionDto for AddressMetadataTransactionInfoDto {
-	fn compact(&self) -> crate::api::error::Result<Box<dyn Transaction>> {
-		let dto = self.transaction.clone();
+    fn compact(&self) -> crate::api::error::Result<Box<dyn Transaction>> {
+        let dto = self.transaction.clone();
 
-		let info = self.meta.compact()?;
+        let info = self.meta.compact()?;
 
-		let metadata_transaction = dto.metadata_transaction.compact(info)?;
+        let metadata_transaction = dto.metadata_transaction.compact(info)?;
 
-		let address = Address::from_encoded(&dto.address)?;
+        let address = Address::from_encoded(&dto.address)?;
 
-		Ok(Box::new(MetadataAddressTransaction { metadata_transaction, address }))
-	}
+        Ok(Box::new(MetadataAddressTransaction { metadata_transaction, address }))
+    }
 }

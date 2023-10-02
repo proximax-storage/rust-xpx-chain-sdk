@@ -12,12 +12,12 @@ use crate::metadata::MetadataEntry;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SearchMetadataEntry {
-	pub data: Vec<MetadataEntry>,
-	pub pagination: Pagination,
+    pub data: Vec<MetadataEntry>,
+    pub pagination: Pagination,
 }
 
 impl fmt::Display for SearchMetadataEntry {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
+    }
 }

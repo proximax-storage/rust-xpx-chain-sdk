@@ -1,6 +1,6 @@
 [package]
 name = "xpx-chain-sdk"
-version = "0.5.5"
+version = "0.5.6"
 readme = "README.md"
 license = "Apache-2.0"
 authors = ["ProxymaX Core Development Team", "Eleazar Garrido <eleazartovar123@gmail.com>"]
@@ -12,6 +12,7 @@ keywords = ["blockchain", "sdk"]
 categories = ["sdk"]
 exclude = [".gitignore"]
 edition = "2021"
+rust-version = "1.72.1"
 
 [lib]
 name = "xpx_chain_sdk"
@@ -24,10 +25,10 @@ xpx-chain-crypto = { git = "https://github.com/proximax-storage/rust-xpx-crypto"
 version = "^1"
 
 [dependencies.thiserror]
-version = "1.0"
+version = "^1.0"
 
 [dependencies.fixed-hash]
-version = "0.8"
+version = "^0.8"
 
 [dependencies.regex]
 version = "^1"
@@ -42,7 +43,7 @@ version = "^0.4"
 version = "^0.4"
 
 [dependencies.flatbuffers]
-version = "23.1"
+version = "23.5"
 
 [dependencies.num_enum]
 version = "^0.6"
@@ -79,7 +80,7 @@ version = "0.2"
 version = "^0.4"
 
 [dependencies.bytes]
-version = "^1.1"
+version = "^1.4"
 
 [dependencies.futures-util]
 version = "0.3"
@@ -90,7 +91,7 @@ features = ["async-await", "sink", "std"]
 version = "1.0"
 
 [dependencies.tokio]
-version = "1.30"
+version = "^1"
 features = ["rt"]
 default_features = false
 
@@ -98,7 +99,7 @@ default_features = false
 version = "0.24"
 
 [dependencies.tower]
-version = "0.4"
+version = "^0.4"
 features = ["retry", "limit", "util", "timeout", "reconnect"]
 
 [dependencies.hyper]
@@ -121,7 +122,7 @@ version = "0.1"
 version = "0.12"
 
 [dependencies.serde_qs]
-version = "0.12.0"
+version = "0.12"
 
 [dependencies.strum]
 version = "0.25"
@@ -138,9 +139,11 @@ mosaic = []
 transaction = []
 
 [dev-dependencies]
-lazy_static = "1.4"
-tokio-test = "0.4"
-tokio = { version = "1.26", features = ["full"] }
+lazy_static = "^1.4"
+tokio-test = "^0.4"
+tokio = { version = "^1", features = ["full"] }
+quickcheck = "1.0"
+quickcheck_macros = "1.0"
 
 [profile.test]
 opt-level = 2

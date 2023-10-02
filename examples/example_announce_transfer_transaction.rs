@@ -13,49 +13,47 @@ use xpx_chain_sdk::transaction::TransferTransaction;
 
 #[tokio::main]
 async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
-	let start = Instant::now();
+    let start = Instant::now();
 
-	let client = ApiNode::builder()
-		.uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
-		// .timeout(Duration::from_secs(1))
-		.connect_timeout(Duration::from_secs(5))
-		.build()?
-		.connect()
-		.await?;
+    let client = ApiNode::builder()
+        .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
+        // .timeout(Duration::from_secs(1))
+        .connect_timeout(Duration::from_secs(5))
+        .build()?
+        .connect()
+        .await?;
 
-	let chain = client.chain_api().get_block_by_height(1).await?;
+    let chain = client.chain_api().get_block_by_height(1).await?;
 
-	// // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
-	let network_type = chain.network_type;
+    // // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
+    let network_type = chain.network_type;
 
-	let generation_hash = chain.generation_hash;
+    let generation_hash = chain.generation_hash;
 
-	let private_key: &str = "7C57C8A6D8767B48F81E8E5D7ECBC76F60D55455A79B4008A20146185F7C8882";
+    let private_key: &str = "7C57C8A6D8767B48F81E8E5D7ECBC76F60D55455A79B4008A20146185F7C8882";
 
-	let account = Account::from_hex_private_key(private_key, network_type).unwrap();
-	let recipient = Address::from_public_key(
-		"4ca040afdc7ed14a6807e5328476f8c4c763a8eb57ca03be350152a54a910a6c",
-		network_type,
-	)
-	.unwrap();
+    let account = Account::from_hex_private_key(private_key, network_type).unwrap();
+    let recipient = Address::from_raw("WA5V7Y2B2LSDSQNZHCVRIZZV56Q7AYJZKBB5S5V3").unwrap();
 
-	let asset_id = MosaicId::try_from_hex("6291690CAB3C593D")?;
+    println!("{:?}", recipient.as_bytes());
 
-	let transfer_transaction = TransferTransaction::builder(network_type)
-		.recipient(recipient)
-		// .max_fee(1000)
-		.mosaics(vec![Mosaic::create(asset_id, 100000000000).unwrap()])
-		.build()?;
+    let asset_id = MosaicId::try_from_hex("6291690CAB3C593D")?;
 
-	let sig_transaction = account.sign_transaction(transfer_transaction, generation_hash)?;
+    let transfer_transaction = TransferTransaction::builder(network_type)
+        .recipient(recipient)
+        // .max_fee(1000)
+        .mosaics(vec![Mosaic::create(asset_id, 10).unwrap()])
+        .build()?;
 
-	let response = client.transaction_api().announce(&sig_transaction).await?;
-	println!("{response}");
-	println!("Singer: \t{}", account.public_key_to_hex());
-	println!("Hash: \t{:X}", sig_transaction.hash);
+    let sig_transaction = account.sign_transaction(transfer_transaction, generation_hash)?;
 
-	let duration = start.elapsed();
+    let response = client.transaction_api().announce(&sig_transaction).await?;
+    println!("{response}");
+    println!("Singer: \t{}", account.public_key_to_hex());
+    println!("Hash: \t{:X}", sig_transaction.hash);
 
-	println!("Time elapsed in expensive_function() is: {:?}", duration);
-	Ok(())
+    let duration = start.elapsed();
+
+    println!("Time elapsed in expensive_function() is: {:?}", duration);
+    Ok(())
 }
