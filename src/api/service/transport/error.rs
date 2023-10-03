@@ -1,3 +1,9 @@
+/*
+ * Copyright 2018 ProximaX Limited. All rights reserved.
+ * Use of this source code is governed by the Apache 2.0
+ * license that can be found in the LICENSE file.
+ */
+
 // TODO: remove this when we use errors throughout,
 // there are some that are only used under the TLS feature
 // these probably should be scoped to a `TLSError` enum.

@@ -4,7 +4,6 @@
  * license that can be found in the LICENSE file.
  */
 
-use chrono::format;
 use std::time::Duration;
 
 use xpx_chain_sdk::api::{ApiNode, MetadataQueryParams};
