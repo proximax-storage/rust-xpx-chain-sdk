@@ -6,20 +6,24 @@
 
 use std::any::Any;
 
-use {::std::fmt, serde_json::Value};
+use ::std::fmt;
+use serde_json::Value;
 
 use crate::{
-    account::{PublicAccount, UnresolvedAddress},
-    AsUint64,
-    message::Message,
-    models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE},
-    mosaic::Mosaic,
-    network::NetworkType,
+	account::UnresolvedAddress,
+	AsUint64,
+	message::Message,
+	mosaic::Mosaic,
+	network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE};
+use crate::transaction::buffers;
+use crate::transaction::schema::transfer_transaction_schema;
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline, schema::transfer_transaction_schema,
-    Transaction, TransactionType, TransactionVersion,
+	CommonTransaction, deadline::Deadline,
+	Transaction, TransactionType, TransactionVersion,
 };
 
 /// It defines a structure for Sirius transfer transactions with recipient information, mosaic data, and message content.
@@ -83,10 +87,7 @@ impl TransferTransaction {
             Some(Default::default()),
             None,
         );
-        TransferTransactionBuilder {
-            common: Some(common),
-            ..Default::default()
-        }
+        TransferTransactionBuilder { common: Some(common), ..Default::default() }
     }
 
     /// The String notation for the set recipient.
@@ -164,9 +165,7 @@ impl Transaction for TransferTransaction {
         message_buffer.add_payload(payload_vec);
         let message_vec = message_buffer.finish();
 
-        let recipient = self
-            .recipient
-            .unresolved_address_to_bytes(self.common.network_type);
+        let recipient = self.recipient.unresolved_address_to_bytes(self.common.network_type);
 
         let recipient_vec = _builder.create_vector(&recipient);
 
@@ -217,41 +216,37 @@ impl Transaction for TransferTransaction {
 
 impl fmt::Display for TransferTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
 #[cfg(test)]
 pub mod tests {
     pub mod tests_size {
-        use std::str::FromStr;
+		use std::str::FromStr;
 
-        use lazy_static::lazy_static;
+		use lazy_static::lazy_static;
 
-        use crate::account::{Address, UnresolvedAddress};
-        use crate::account::tests::TESTING_ACCOUNT;
-        use crate::helpers::GenerationHash;
-        use crate::message::{Message, PlainMessage};
-        use crate::mosaic::Mosaic;
-        use crate::namespace::NamespaceId;
-        use crate::network::NetworkType;
-        use crate::transaction::{Transaction, TransferTransaction};
+		use crate::account::{Address, UnresolvedAddress};
+		use crate::account::tests::TESTING_ACCOUNT;
+		use crate::helpers::GenerationHash;
+		use crate::message::{Message, PlainMessage};
+		use crate::mosaic::Mosaic;
+		use crate::namespace::NamespaceId;
+		use crate::network::NetworkType;
+		use crate::transaction::{Transaction, TransferTransaction};
 
-        const NETWORK_TYPE: NetworkType = NetworkType::PublicTest;
+		const NETWORK_TYPE: NetworkType = NetworkType::PublicTest;
 
         lazy_static! {
-            static ref GENERATION_HASH: GenerationHash = GenerationHash::from_str(
-                "56D112C98F7A7E34D1AEDC4BD01BC06CA2276DD546A93E36690B785E82439CA9"
-            )
-            .unwrap();
-            static ref NAMESPACE_ID: NamespaceId = NamespaceId::from_name("cat.currency").unwrap();
-            static ref CAT_CURRENCY: Mosaic =
-                Mosaic::create_relative((*NAMESPACE_ID).clone(), 100, 6).unwrap();
-        }
+			static ref GENERATION_HASH: GenerationHash = GenerationHash::from_str(
+				"56D112C98F7A7E34D1AEDC4BD01BC06CA2276DD546A93E36690B785E82439CA9"
+			)
+			.unwrap();
+			static ref NAMESPACE_ID: NamespaceId = NamespaceId::from_name("cat.currency").unwrap();
+			static ref CAT_CURRENCY: Mosaic =
+				Mosaic::create_relative((*NAMESPACE_ID).clone(), 100, 6).unwrap();
+		}
 
         #[test]
         fn should_default_max_fee_field_be_set_to_none() {
@@ -286,20 +281,11 @@ pub mod tests {
                 .build()
                 .unwrap();
 
-            assert_eq!(
-                transfer_transaction.message.as_ref().payload(),
-                "test-message"
-            );
+            assert_eq!(transfer_transaction.message.as_ref().payload(), "test-message");
             assert_eq!(transfer_transaction.mosaics.len(), 0);
-            assert!(transfer_transaction
-                .recipient
-                .try_downcast_ref::<Address>()
-                .is_some());
+            assert!(transfer_transaction.recipient.try_downcast_ref::<Address>().is_some());
             assert_eq!(
-                transfer_transaction
-                    .recipient
-                    .downcast_ref::<Address>()
-                    .recipient_to_string(),
+                transfer_transaction.recipient.downcast_ref::<Address>().recipient_to_string(),
                 "VDI5IS5YXT5GLRT5RSS3EZIB4QOAI26GLWR2TDK7"
             );
 
@@ -307,7 +293,8 @@ pub mod tests {
                 .sign_with(TESTING_ACCOUNT.clone(), *GENERATION_HASH)
                 .unwrap();
 
-            assert_eq!(&signed_transaction.payload[236..signed_transaction.payload.len()], "35000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F0D000000746573742D6D657373616765");
+            assert_eq!(&signed_transaction.payload[236..signed_transaction.payload.len()],
+                       "37000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F0D000000746573742D6D657373616765");
         }
 
         #[test]
@@ -322,15 +309,9 @@ pub mod tests {
 
             assert_eq!(transfer_transaction.message.as_ref().payload(), "");
             assert_eq!(transfer_transaction.mosaics.len(), 0);
-            assert!(transfer_transaction
-                .recipient
-                .try_downcast_ref::<Address>()
-                .is_some());
+            assert!(transfer_transaction.recipient.try_downcast_ref::<Address>().is_some());
             assert_eq!(
-                transfer_transaction
-                    .recipient
-                    .downcast_ref::<Address>()
-                    .recipient_to_string(),
+                transfer_transaction.recipient.downcast_ref::<Address>().recipient_to_string(),
                 "VDI5IS5YXT5GLRT5RSS3EZIB4QOAI26GLWR2TDK7"
             );
 
@@ -340,7 +321,7 @@ pub mod tests {
 
             assert_eq!(
                 &signed_transaction.payload[236..signed_transaction.payload.len()],
-                "35000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F01000000"
+                "37000000A8D1D44BB8BCFA65C67D8CA5B26501E41C046BC65DA3A98D5F01000000"
             );
         }
 
@@ -352,10 +333,7 @@ pub mod tests {
                 .build()
                 .unwrap();
 
-            assert_eq!(
-                transfer_transaction.to_serializer().len(),
-                transfer_transaction.size()
-            );
+            assert_eq!(transfer_transaction.to_serializer().len(), transfer_transaction.size());
             assert_eq!(transfer_transaction.size(), 154);
         }
     }

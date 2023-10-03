@@ -5,18 +5,16 @@
  */
 
 use crate::{
-    account::PublicAccount,
-    api::error::Result,
-    errors_const,
-    namespace::{NamespaceId, NamespaceInfo, NamespaceName, NamespaceType},
-    transaction::{MetadataNamespaceTransaction, RegisterNamespaceTransaction, Transaction},
+	account::{Address, PublicAccount},
+	errors_const,
+	mosaic::UnresolvedMosaicId,
+	namespace::{NamespaceId, NamespaceInfo, NamespaceName, NamespaceType},
+	transaction::{MetadataNamespaceTransaction, RegisterNamespaceTransaction, Transaction},
 };
-use crate::account::Address;
-use crate::mosaic::UnresolvedMosaicId;
 
 use super::{
-    AbstractTransactionDto, AliasDto, ModifyMetadataTransactionDto, TransactionDto,
-    TransactionMetaDto, Uint64Dto,
+	AbstractTransactionDto, AliasDto, ModifyMetadataTransactionDto, TransactionDto,
+	TransactionMetaDto, Uint64Dto,
 };
 
 type NamespaceIdDto = Option<Uint64Dto>;
@@ -24,109 +22,109 @@ type NamespaceIdDto = Option<Uint64Dto>;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceDto {
-    /// The public key of the owner of the namespace.
-    owner: String,
-    /// The address of the owner of the namespace in hexadecimal.
-    owner_address: String,
-    start_height: Uint64Dto,
-    end_height: Uint64Dto,
-    #[serde(rename = "depth")]
-    depth: u8,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    level0: NamespaceIdDto,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    level1: NamespaceIdDto,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    level2: NamespaceIdDto,
-    #[serde(rename = "type")]
-    _type: u8,
-    alias: AliasDto,
-    parent_id: Uint64Dto,
+	/// The public key of the owner of the namespace.
+	owner: String,
+	/// The address of the owner of the namespace in hexadecimal.
+	owner_address: String,
+	start_height: Uint64Dto,
+	end_height: Uint64Dto,
+	#[serde(rename = "depth")]
+	depth: u8,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	level0: NamespaceIdDto,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	level1: NamespaceIdDto,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	level2: NamespaceIdDto,
+	#[serde(rename = "type")]
+	_type: u8,
+	alias: AliasDto,
+	parent_id: Uint64Dto,
 }
 
 impl NamespaceDto {
-    fn extract_levels(&self) -> anyhow::Result<Vec<NamespaceId>> {
-        let mut levels: Vec<NamespaceId> = Vec::new();
+	fn extract_levels(&self) -> anyhow::Result<Vec<NamespaceId>> {
+		let mut levels: Vec<NamespaceId> = Vec::new();
 
-        let mut extract_level = |level: NamespaceIdDto| {
-            if let Some(l) = level {
-                let nemsapce_id = NamespaceId::from(l.compact());
-                levels.push(nemsapce_id)
-            }
-        };
+		let mut extract_level = |level: NamespaceIdDto| {
+			if let Some(l) = level {
+				let nemsapce_id = NamespaceId::from(l.compact());
+				levels.push(nemsapce_id)
+			}
+		};
 
-        extract_level(self.level0.to_owned());
-        extract_level(self.level1.to_owned());
-        extract_level(self.level2.to_owned());
+		extract_level(self.level0.to_owned());
+		extract_level(self.level1.to_owned());
+		extract_level(self.level2.to_owned());
 
-        ensure!(!levels.is_empty(), errors_const::ERR_EMPTY_NAMESPACE_ID);
+		ensure!(!levels.is_empty(), errors_const::ERR_EMPTY_NAMESPACE_ID);
 
-        Ok(levels)
-    }
+		Ok(levels)
+	}
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct NamespaceInfoDto {
-    #[serde(rename = "meta")]
-    meta: NamespaceMetaDto,
-    #[serde(rename = "namespace")]
-    namespace: NamespaceDto,
+	#[serde(rename = "meta")]
+	meta: NamespaceMetaDto,
+	#[serde(rename = "namespace")]
+	namespace: NamespaceDto,
 }
 
 impl NamespaceInfoDto {
-    pub fn compact(&self) -> anyhow::Result<NamespaceInfo> {
-        let owner_address = Address::from_encoded(&self.namespace.owner_address)?;
+	pub fn compact(&self) -> anyhow::Result<NamespaceInfo> {
+		let owner_address = Address::from_encoded(&self.namespace.owner_address)?;
 
-        let public_account =
-            PublicAccount::from_public_key(&self.namespace.owner, owner_address.network_type)?;
+		let public_account =
+			PublicAccount::from_public_key(&self.namespace.owner, owner_address.network_type)?;
 
-        let levels = self.namespace.extract_levels()?;
+		let levels = self.namespace.extract_levels()?;
 
-        let parent_id = NamespaceId::from(self.namespace.parent_id.compact());
+		let parent_id = NamespaceId::from(self.namespace.parent_id.compact());
 
-        let alias = self.namespace.alias.compact()?;
+		let alias = self.namespace.alias.compact()?;
 
-        let mut namespace = NamespaceInfo {
-            namespace_id: levels[levels.len() - 1],
-            active: self.meta.active,
-            type_space: NamespaceType::from(self.namespace._type),
-            depth: self.namespace.depth,
-            levels,
-            alias,
-            parent: None,
-            owner: public_account,
-            start_height: self.namespace.start_height.compact(),
-            end_height: self.namespace.end_height.compact(),
-        };
+		let mut namespace = NamespaceInfo {
+			namespace_id: levels[levels.len() - 1],
+			active: self.meta.active,
+			type_space: NamespaceType::from(self.namespace._type),
+			depth: self.namespace.depth,
+			levels,
+			alias,
+			parent: None,
+			owner: public_account,
+			start_height: self.namespace.start_height.compact(),
+			end_height: self.namespace.end_height.compact(),
+		};
 
-        if parent_id.to_u64() != 0 {
-            let parent = NamespaceInfo {
-                namespace_id: parent_id,
-                active: false,
-                type_space: NamespaceType::Root,
-                depth: 1,
-                levels: Default::default(),
-                alias: Default::default(),
-                parent: None,
-                owner: Default::default(),
-                start_height: Default::default(),
-                end_height: Default::default(),
-            };
-            namespace.parent = Some(Box::new(parent));
-        }
+		if parent_id.to_u64() != 0 {
+			let parent = NamespaceInfo {
+				namespace_id: parent_id,
+				active: false,
+				type_space: NamespaceType::Root,
+				depth: 1,
+				levels: Default::default(),
+				alias: Default::default(),
+				parent: None,
+				owner: Default::default(),
+				start_height: Default::default(),
+				end_height: Default::default(),
+			};
+			namespace.parent = Some(Box::new(parent));
+		}
 
-        Ok(namespace)
-    }
+		Ok(namespace)
+	}
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct NamespaceMetaDto {
-    #[serde(rename = "id")]
-    id: String,
-    #[serde(rename = "active")]
-    active: bool,
-    #[serde(rename = "index")]
-    index: i32,
+	#[serde(rename = "id")]
+	id: String,
+	#[serde(rename = "active")]
+	active: bool,
+	#[serde(rename = "index")]
+	index: i32,
 }
 
 /// NamespaceMetadataTransactionDto :
@@ -134,110 +132,107 @@ pub(crate) struct NamespaceMetaDto {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceMetadataTransactionDto {
-    #[serde(flatten)]
-    metadata_transaction: ModifyMetadataTransactionDto,
-    #[serde(rename = "metadataId")]
-    namespace_id: Uint64Dto,
+	#[serde(flatten)]
+	metadata_transaction: ModifyMetadataTransactionDto,
+	#[serde(rename = "metadataId")]
+	namespace_id: Uint64Dto,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NamespaceMetadataTransactionInfoDto {
-    meta: TransactionMetaDto,
-    transaction: NamespaceMetadataTransactionDto,
+	meta: TransactionMetaDto,
+	transaction: NamespaceMetadataTransactionDto,
 }
 
 #[typetag::serde]
 impl TransactionDto for NamespaceMetadataTransactionInfoDto {
-    fn compact(&self) -> Result<Box<dyn Transaction>> {
-        let dto = self.transaction.clone();
+	fn compact(&self) -> anyhow::Result<Box<dyn Transaction>> {
+		let dto = self.transaction.clone();
 
-        let info = self.meta.compact()?;
+		let info = self.meta.compact()?;
 
-        let metadata_transaction = dto.metadata_transaction.compact(info)?;
+		let metadata_transaction = dto.metadata_transaction.compact(info)?;
 
-        let namespace_id = NamespaceId::from(dto.namespace_id.compact());
+		let namespace_id = NamespaceId::from(dto.namespace_id.compact());
 
-        Ok(Box::new(MetadataNamespaceTransaction {
-            metadata_transaction,
-            namespace_id,
-        }))
-    }
+		Ok(Box::new(MetadataNamespaceTransaction { metadata_transaction, namespace_id }))
+	}
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct NamespaceNameDto {
-    #[serde(rename = "namespaceId")]
-    namespace_id: Uint64Dto,
-    /// The full name of the namespace.
-    #[serde(rename = "name")]
-    name: String,
+	#[serde(rename = "namespaceId")]
+	namespace_id: Uint64Dto,
+	/// The full name of the namespace.
+	#[serde(rename = "name")]
+	name: String,
 }
 
 impl NamespaceNameDto {
-    pub fn compact(&self) -> anyhow::Result<NamespaceName> {
-        Ok(NamespaceName {
-            namespace_id: NamespaceId::from(self.namespace_id.compact()),
-            name: self.name.to_owned(),
-        })
-    }
+	pub fn compact(&self) -> anyhow::Result<NamespaceName> {
+		Ok(NamespaceName {
+			namespace_id: NamespaceId::from(self.namespace_id.compact()),
+			name: self.name.to_owned(),
+		})
+	}
 }
 
 /// RegisterNamespaceTransactionDto : Transaction that creates or renew a namespace.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RegisterNamespaceTransactionDto {
-    #[serde(flatten)]
-    r#abstract: AbstractTransactionDto,
-    #[serde(rename = "namespaceType")]
-    namespace_type: u8,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    duration: Option<Uint64Dto>,
-    namespace_id: Uint64Dto,
-    #[serde(rename = "name")]
-    namespace_name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    parent_id: Option<Uint64Dto>,
+	#[serde(flatten)]
+	r#abstract: AbstractTransactionDto,
+	#[serde(rename = "namespaceType")]
+	namespace_type: u8,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	duration: Option<Uint64Dto>,
+	namespace_id: Uint64Dto,
+	#[serde(rename = "name")]
+	namespace_name: String,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	parent_id: Option<Uint64Dto>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RegisterNamespaceTransactionInfoDto {
-    meta: TransactionMetaDto,
-    transaction: RegisterNamespaceTransactionDto,
+	meta: TransactionMetaDto,
+	transaction: RegisterNamespaceTransactionDto,
 }
 
 #[typetag::serde]
 impl TransactionDto for RegisterNamespaceTransactionInfoDto {
-    fn compact(&self) -> Result<Box<dyn Transaction>> {
-        let dto = self.transaction.clone();
+	fn compact(&self) -> anyhow::Result<Box<dyn Transaction>> {
+		let dto = self.transaction.clone();
 
-        let info = self.meta.compact()?;
+		let info = self.meta.compact()?;
 
-        let common = dto.r#abstract.compact(info)?;
+		let common = dto.r#abstract.compact(info)?;
 
-        let namespace_type = NamespaceType::from(dto.namespace_type);
+		let namespace_type = NamespaceType::from(dto.namespace_type);
 
-        let namespace_id = NamespaceId::from(dto.namespace_id.compact());
+		let namespace_id = NamespaceId::from(dto.namespace_id.compact());
 
-        let mut parent_id = None;
+		let mut parent_id = None;
 
-        let mut duration = None;
-        if namespace_type == NamespaceType::Root {
-            if let Some(d) = dto.duration {
-                duration = Some(d.compact())
-            };
-        } else if let Some(p) = dto.parent_id {
-            parent_id = Some(NamespaceId::from(p.compact()))
-        }
+		let mut duration = None;
+		if namespace_type == NamespaceType::Root {
+			if let Some(d) = dto.duration {
+				duration = Some(d.compact())
+			};
+		} else if let Some(p) = dto.parent_id {
+			parent_id = Some(NamespaceId::from(p.compact()))
+		}
 
-        Ok(Box::new(RegisterNamespaceTransaction {
-            common,
-            namespace_type,
-            namespace_id,
-            name: dto.namespace_name,
-            duration,
-            parent_id,
-        }))
-    }
+		Ok(Box::new(RegisterNamespaceTransaction {
+			common,
+			namespace_type,
+			namespace_id,
+			name: dto.namespace_name,
+			duration,
+			parent_id,
+		}))
+	}
 }

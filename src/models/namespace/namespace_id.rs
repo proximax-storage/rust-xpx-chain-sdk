@@ -51,10 +51,7 @@ impl NamespaceId {
 
     /// Creates a new `NamespaceId` from a hex string.
     pub fn from_name(string_name: &str) -> Result<NamespaceId> {
-        ensure!(
-            !string_name.is_empty(),
-            errors_const::ERR_EMPTY_NAMESPACE_NAME
-        );
+        ensure!(!string_name.is_empty(), errors_const::ERR_EMPTY_NAMESPACE_NAME);
 
         let list = generate_namespace_path(string_name)?;
 
@@ -68,10 +65,7 @@ impl NamespaceId {
     pub fn try_from_hex(hex: &str) -> Result<Self> {
         ensure!(!hex.is_empty(), "The hexString must not be null or empty");
         ensure!(is_hex(hex), "Invalid hex");
-        ensure!(
-            hex.len() == Self::LENGTH_IN_HEX,
-            "Invalid size for NamespaceId hex"
-        );
+        ensure!(hex.len() == Self::LENGTH_IN_HEX, "Invalid size for NamespaceId hex");
 
         Ok(Self(u64::from_hex(hex)?))
     }

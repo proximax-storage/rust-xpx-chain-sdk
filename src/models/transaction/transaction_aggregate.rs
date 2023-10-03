@@ -4,26 +4,29 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::any::Any;
-
 use anyhow::Result;
 
-use {::std::fmt, serde_json::Value};
+use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
 
 use crate::{
-    account::{Account, PublicAccount},
-    errors_const::{ERR_EMPTY_INNER_TRANSACTION, ERR_EMPTY_TRANSACTION_SIGNER},
+    account::Account,
+    errors_const::ERR_EMPTY_INNER_TRANSACTION,
     helpers::TransactionHash,
-    models::consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE},
     multisig::Cosignature,
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::errors_const::ERR_EMPTY_TRANSACTION_SIGNER;
+use crate::models::consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE};
+use crate::transaction::buffers;
+use crate::transaction::internal::to_aggregate_transaction_bytes;
+use crate::transaction::schema::aggregate_transaction_schema;
 
 use super::{
-    buffers,
     CommonTransaction,
-    Deadline,
-    internal::{sign_transaction_with_cosignatures, to_aggregate_transaction_bytes}, schema::aggregate_transaction_schema, SignedTransaction, Transaction, Transactions,
+    Deadline, internal::sign_transaction_with_cosignatures, SignedTransaction, Transaction, Transactions,
     TransactionType, TransactionVersion,
 };
 
@@ -77,10 +80,7 @@ impl AggregateTransaction {
             Some(Default::default()),
             None,
         );
-        AggregateTransactionBuilder {
-            common: Some(common),
-            ..Default::default()
-        }
+        AggregateTransactionBuilder { common: Some(common), ..Default::default() }
     }
 
     pub fn builder_bonded(network_type: NetworkType) -> AggregateTransactionBuilder {
@@ -91,10 +91,7 @@ impl AggregateTransaction {
             Some(Default::default()),
             None,
         );
-        AggregateTransactionBuilder {
-            common: Some(common),
-            ..Default::default()
-        }
+        AggregateTransactionBuilder { common: Some(common), ..Default::default() }
     }
 
     pub fn sign_with_cosignatories(
@@ -109,11 +106,7 @@ impl AggregateTransaction {
 
 impl fmt::Display for AggregateTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 

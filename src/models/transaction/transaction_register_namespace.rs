@@ -4,23 +4,19 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::any::Any;
-
 use anyhow::Result;
 
-use {::std::fmt, serde_json::Value};
+use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
 
-use crate::{
-    AsUint64,
-    errors_const,
-    models::consts::REGISTER_NAMESPACE_HEADER_SIZE,
-    mosaic::UnresolvedMosaicId,
-    namespace::{generate_namespace_id, NamespaceId, NamespaceType},
-    network::NetworkType,
-};
+use crate::{AsUint64, errors_const, mosaic::UnresolvedMosaicId, namespace::{generate_namespace_id, NamespaceId, NamespaceType}, network::NetworkType};
+use crate::models::consts::REGISTER_NAMESPACE_HEADER_SIZE;
+use crate::transaction::buffers;
+use crate::transaction::schema::register_namespace_transaction_schema;
 
 use super::{
-    buffers, CommonTransaction, Deadline, schema::register_namespace_transaction_schema,
+    CommonTransaction, Deadline,
     Transaction, TransactionType, TransactionVersion,
 };
 
@@ -48,35 +44,21 @@ pub struct RegisterNamespaceTransaction {
 
 impl RegisterNamespaceTransactionBuilder {
     fn validate(&self) -> Result<()> {
-        let namespace_name = self
-            .name
-            .clone()
-            .ok_or(anyhow!(errors_const::ERR_EMPTY_NAMESPACE_NAME))?;
+        let namespace_name =
+            self.name.clone().ok_or(anyhow!(errors_const::ERR_EMPTY_NAMESPACE_NAME))?;
 
-        ensure!(
-            !namespace_name.is_empty(),
-            errors_const::ERR_EMPTY_NAMESPACE_NAME
-        );
+        ensure!(!namespace_name.is_empty(), errors_const::ERR_EMPTY_NAMESPACE_NAME);
 
         if self.namespace_type == Some(NamespaceType::Root) {
-            ensure!(
-                namespace_name.len() <= 16,
-                errors_const::ERR_INVALID_LEN_NAMESPACE_NAME
-            );
+            ensure!(namespace_name.len() <= 16, errors_const::ERR_INVALID_LEN_NAMESPACE_NAME);
         } else if self.namespace_type == Some(NamespaceType::Sub) {
-            ensure!(
-                namespace_name.len() <= 64,
-                errors_const::ERR_INVALID_LEN_NAMESPACE_NAME
-            );
+            ensure!(namespace_name.len() <= 64, errors_const::ERR_INVALID_LEN_NAMESPACE_NAME);
             let parent_id = self
                 .parent_id
                 .unwrap_or_default()
                 .ok_or(anyhow!(errors_const::ERR_EMPTY_NAMESPACE_ID))?;
 
-            ensure!(
-                parent_id.to_u64() != 0,
-                errors_const::ERR_EMPTY_NAMESPACE_ID
-            );
+            ensure!(parent_id.to_u64() != 0, errors_const::ERR_EMPTY_NAMESPACE_ID);
         }
 
         Ok(())
@@ -219,10 +201,6 @@ impl Transaction for RegisterNamespaceTransaction {
 
 impl fmt::Display for RegisterNamespaceTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

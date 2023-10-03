@@ -52,11 +52,8 @@ impl ResolverRoutes {
             AssetIdType::NamespaceIdType => {
                 let namespace_id = asset_id.as_namespace_id()?;
 
-                let namespace_info = self
-                    .clone()
-                    .__namespace_routes()
-                    .get_namespace_info(namespace_id)
-                    .await?;
+                let namespace_info =
+                    self.clone().__namespace_routes().get_namespace_info(namespace_id).await?;
 
                 if namespace_info.alias.mosaic_id.is_none() {
                     return Err(Error::from(ERR_INVALID_NAMESPACE_ALIASED));
@@ -101,11 +98,8 @@ impl ResolverRoutes {
             let mut mosaic_infos = vec![];
 
             for namespace_id in namespace_ids {
-                mosaic_infos.push(
-                    self.clone()
-                        .get_mosaic_info_by_asset_id(Box::new(namespace_id))
-                        .await?,
-                );
+                mosaic_infos
+                    .push(self.clone().get_mosaic_info_by_asset_id(Box::new(namespace_id)).await?);
             }
             Ok(mosaic_infos)
         }

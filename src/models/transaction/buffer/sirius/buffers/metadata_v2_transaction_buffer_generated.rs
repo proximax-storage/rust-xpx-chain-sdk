@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum MetadataV2TransactionBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for MetadataV2TransactionBuffer<'a> {
     type Inner = MetadataV2TransactionBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -96,11 +88,7 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(MetadataV2TransactionBuffer::VT_SIZE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u32>(MetadataV2TransactionBuffer::VT_SIZE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn signature(&self) -> Option<flatbuffers::Vector<'a, u8>> {
@@ -108,11 +96,10 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MetadataV2TransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MetadataV2TransactionBuffer::VT_SIGNATURE,
+                None,
+            )
         }
     }
     #[inline]
@@ -121,11 +108,10 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MetadataV2TransactionBuffer::VT_SIGNER,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MetadataV2TransactionBuffer::VT_SIGNER,
+                None,
+            )
         }
     }
     #[inline]
@@ -133,22 +119,14 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(MetadataV2TransactionBuffer::VT_VERSION, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u32>(MetadataV2TransactionBuffer::VT_VERSION, Some(0)).unwrap() }
     }
     #[inline]
     pub fn type_(&self) -> u16 {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u16>(MetadataV2TransactionBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u16>(MetadataV2TransactionBuffer::VT_TYPE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
@@ -156,11 +134,10 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MetadataV2TransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MetadataV2TransactionBuffer::VT_MAX_FEE,
+                None,
+            )
         }
     }
     #[inline]
@@ -169,11 +146,10 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MetadataV2TransactionBuffer::VT_DEADLINE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MetadataV2TransactionBuffer::VT_DEADLINE,
+                None,
+            )
         }
     }
     #[inline]
@@ -182,11 +158,10 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MetadataV2TransactionBuffer::VT_TARGET_KEY,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MetadataV2TransactionBuffer::VT_TARGET_KEY,
+                None,
+            )
         }
     }
     #[inline]
@@ -195,11 +170,10 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MetadataV2TransactionBuffer::VT_SCOPED_METADATA_KEY,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MetadataV2TransactionBuffer::VT_SCOPED_METADATA_KEY,
+                None,
+            )
         }
     }
     /// In case of address it is empty array. In case of mosaic or namespace id it is 8 byte array(or 2 uint32 array)
@@ -209,11 +183,10 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MetadataV2TransactionBuffer::VT_TARGET_ID,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MetadataV2TransactionBuffer::VT_TARGET_ID,
+                None,
+            )
         }
     }
     #[inline]
@@ -222,11 +195,10 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MetadataV2TransactionBuffer::VT_VALUE_SIZE_DELTA,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MetadataV2TransactionBuffer::VT_VALUE_SIZE_DELTA,
+                None,
+            )
         }
     }
     #[inline]
@@ -235,11 +207,10 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MetadataV2TransactionBuffer::VT_VALUE_SIZE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MetadataV2TransactionBuffer::VT_VALUE_SIZE,
+                None,
+            )
         }
     }
     #[inline]
@@ -248,11 +219,10 @@ impl<'a> MetadataV2TransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MetadataV2TransactionBuffer::VT_VALUE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MetadataV2TransactionBuffer::VT_VALUE,
+                None,
+            )
         }
     }
 }
@@ -263,7 +233,6 @@ impl flatbuffers::Verifiable for MetadataV2TransactionBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -368,8 +337,7 @@ pub struct MetadataV2TransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> MetadataV2TransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_
-            .push_slot::<u32>(MetadataV2TransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_.push_slot::<u32>(MetadataV2TransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
     pub fn add_signature(
@@ -390,13 +358,11 @@ impl<'a: 'b, 'b> MetadataV2TransactionBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_
-            .push_slot::<u32>(MetadataV2TransactionBuffer::VT_VERSION, version, 0);
+        self.fbb_.push_slot::<u32>(MetadataV2TransactionBuffer::VT_VERSION, version, 0);
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_
-            .push_slot::<u16>(MetadataV2TransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_.push_slot::<u16>(MetadataV2TransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
@@ -474,10 +440,7 @@ impl<'a: 'b, 'b> MetadataV2TransactionBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> MetadataV2TransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        MetadataV2TransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        MetadataV2TransactionBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<MetadataV2TransactionBuffer<'a>> {

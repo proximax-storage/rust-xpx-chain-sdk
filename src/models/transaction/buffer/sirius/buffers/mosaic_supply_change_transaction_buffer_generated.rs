@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum MosaicSupplyChangeTransactionBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for MosaicSupplyChangeTransactionBuffer<'a> {
     type Inner = MosaicSupplyChangeTransactionBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -94,11 +86,10 @@ impl<'a> MosaicSupplyChangeTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MosaicSupplyChangeTransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MosaicSupplyChangeTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
         }
     }
     #[inline]
@@ -107,11 +98,10 @@ impl<'a> MosaicSupplyChangeTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MosaicSupplyChangeTransactionBuffer::VT_SIGNER,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MosaicSupplyChangeTransactionBuffer::VT_SIGNER,
+                None,
+            )
         }
     }
     #[inline]
@@ -142,11 +132,10 @@ impl<'a> MosaicSupplyChangeTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MosaicSupplyChangeTransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicSupplyChangeTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
         }
     }
     #[inline]
@@ -155,11 +144,10 @@ impl<'a> MosaicSupplyChangeTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MosaicSupplyChangeTransactionBuffer::VT_DEADLINE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicSupplyChangeTransactionBuffer::VT_DEADLINE,
+                None,
+            )
         }
     }
     #[inline]
@@ -168,11 +156,10 @@ impl<'a> MosaicSupplyChangeTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MosaicSupplyChangeTransactionBuffer::VT_MOSAIC_ID,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicSupplyChangeTransactionBuffer::VT_MOSAIC_ID,
+                None,
+            )
         }
     }
     #[inline]
@@ -192,11 +179,10 @@ impl<'a> MosaicSupplyChangeTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MosaicSupplyChangeTransactionBuffer::VT_DELTA,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicSupplyChangeTransactionBuffer::VT_DELTA,
+                None,
+            )
         }
     }
 }
@@ -207,7 +193,6 @@ impl flatbuffers::Verifiable for MosaicSupplyChangeTransactionBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -343,11 +328,8 @@ impl<'a: 'b, 'b> MosaicSupplyChangeTransactionBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_direction(&mut self, direction: u8) {
-        self.fbb_.push_slot::<u8>(
-            MosaicSupplyChangeTransactionBuffer::VT_DIRECTION,
-            direction,
-            0,
-        );
+        self.fbb_
+            .push_slot::<u8>(MosaicSupplyChangeTransactionBuffer::VT_DIRECTION, direction, 0);
     }
     #[inline]
     pub fn add_delta(&mut self, delta: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
@@ -361,10 +343,7 @@ impl<'a: 'b, 'b> MosaicSupplyChangeTransactionBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> MosaicSupplyChangeTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        MosaicSupplyChangeTransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        MosaicSupplyChangeTransactionBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<MosaicSupplyChangeTransactionBuffer<'a>> {

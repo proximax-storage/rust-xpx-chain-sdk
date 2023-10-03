@@ -21,10 +21,7 @@ pub struct HttpTimeout<S> {
 
 impl<S> HttpTimeout<S> {
     pub(crate) fn new(inner: S, server_timeout: Option<Duration>) -> Self {
-        Self {
-            inner,
-            server_timeout,
-        }
+        Self { inner, server_timeout }
     }
 }
 
@@ -60,10 +57,7 @@ impl<S, ReqBody> Service<Request<ReqBody>> for HttpTimeout<S>
 
         ResponseFuture {
             inner: self.inner.call(req),
-            sleep: timeout_duration
-                .map(tokio::time::sleep)
-                .map(Some)
-                .unwrap_or(None),
+            sleep: timeout_duration.map(tokio::time::sleep).map(Some).unwrap_or(None),
         }
     }
 }
@@ -278,9 +272,7 @@ mod tests {
         let bytes: Vec<_> = (min..max)
             .map(|_| {
                 // Chars to pick from
-                g.choose(b"ABCDEFGHIJKLMNOPQRSTUVabcdefghilpqrstuvwxyz----")
-                    .copied()
-                    .unwrap()
+                g.choose(b"ABCDEFGHIJKLMNOPQRSTUVabcdefghilpqrstuvwxyz----").copied().unwrap()
             })
             .collect();
 

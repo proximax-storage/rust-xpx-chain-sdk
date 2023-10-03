@@ -4,18 +4,18 @@
  * license that can be found in the LICENSE file.
  */
 
-use {
-    serde_json::Value,
-    std::{any::Any, fmt},
-};
+use std::any::Any;
+use std::fmt;
+use serde_json::Value;
 
 use crate::{
-    account::{Address, PublicAccount},
+    account::Address,
     alias::AliasActionType,
-    models::consts::ADDRESS_SIZE,
     namespace::NamespaceId,
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::ADDRESS_SIZE;
 
 use super::{
     AliasTransaction, CommonTransaction, Deadline, Transaction, TransactionType, TransactionVersion,
@@ -46,11 +46,7 @@ impl AddressAliasTransaction {
         );
 
         Self {
-            alias_transaction: AliasTransaction {
-                common: abs_tx,
-                action_type,
-                namespace_id,
-            },
+            alias_transaction: AliasTransaction { common: abs_tx, action_type, namespace_id },
             address,
         }
     }
@@ -79,8 +75,7 @@ impl Transaction for AddressAliasTransaction {
 
         let address_vector = builder.create_vector(address_bytes);
 
-        self.alias_transaction
-            .to_serializer(&mut builder, address_vector, ADDRESS_SIZE)
+        self.alias_transaction.to_serializer(&mut builder, address_vector, ADDRESS_SIZE)
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
@@ -102,10 +97,6 @@ impl Transaction for AddressAliasTransaction {
 
 impl fmt::Display for AddressAliasTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

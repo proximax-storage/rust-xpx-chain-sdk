@@ -4,21 +4,19 @@
  * license that can be found in the LICENSE file.
  */
 
+use ::std::fmt;
 use std::any::Any;
+use serde_json::Value;
 
-use {::std::fmt, serde_json::Value};
-
-use crate::{
-    account::PublicAccount,
-    AsUint64,
-    models::consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
-    mosaic::{MosaicSupplyType, UnresolvedMosaicId},
-    network::NetworkType,
-};
+use crate::{AsUint64, mosaic::{MosaicSupplyType, UnresolvedMosaicId}, network::NetworkType};
+use crate::account::PublicAccount;
+use crate::models::consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE;
+use crate::transaction::buffers;
+use crate::transaction::schema::mosaic_supply_change_transaction_schema;
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline,
-    schema::mosaic_supply_change_transaction_schema, Transaction, TransactionType, TransactionVersion,
+    CommonTransaction,
+    deadline::Deadline, Transaction, TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Builder, Deserialize)]
@@ -67,10 +65,7 @@ impl MosaicSupplyChangeTransaction {
             Some(Default::default()),
             None,
         );
-        MosaicSupplyChangeTransactionBuilder {
-            common: Some(common),
-            ..Default::default()
-        }
+        MosaicSupplyChangeTransactionBuilder { common: Some(common), ..Default::default() }
     }
 }
 
@@ -136,10 +131,6 @@ impl Transaction for MosaicSupplyChangeTransaction {
 
 impl fmt::Display for MosaicSupplyChangeTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

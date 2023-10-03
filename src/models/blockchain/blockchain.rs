@@ -23,11 +23,7 @@ impl Deref for HeightInfo {
 
 impl<'a> core::fmt::Display for HeightInfo {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self.height).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self.height).unwrap_or_default())
     }
 }
 
@@ -43,11 +39,7 @@ pub struct BlockchainScore {
 
 impl<'a> core::fmt::Display for BlockchainScore {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -68,10 +60,6 @@ pub struct StorageInfo {
 
 impl<'a> core::fmt::Display for StorageInfo {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }

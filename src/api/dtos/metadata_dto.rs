@@ -42,10 +42,7 @@ impl MetadataInfoDto {
             fields.insert(String::from(&field.key), String::from(&field.value));
         });
 
-        MetadataInfo {
-            r#type: MetadataType::from(self._type),
-            fields,
-        }
+        MetadataInfo { r#type: MetadataType::from(self._type), fields }
     }
 }
 

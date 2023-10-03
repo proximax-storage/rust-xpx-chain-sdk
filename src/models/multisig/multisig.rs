@@ -52,10 +52,7 @@ impl CosignatoryModification {
         modification_type: MultisigModificationType,
         public_account: PublicAccount,
     ) -> Self {
-        CosignatoryModification {
-            modification_type,
-            public_account,
-        }
+        CosignatoryModification { modification_type, public_account }
     }
 }
 
@@ -81,11 +78,7 @@ pub struct CosignatureInfo {
 
 impl fmt::Display for CosignatureInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -117,11 +110,7 @@ pub struct MultisigAccountInfo {
 
 impl fmt::Display for MultisigAccountInfo {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -133,10 +122,6 @@ pub struct MultisigAccountGraphInfo {
 
 impl fmt::Display for MultisigAccountGraphInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }

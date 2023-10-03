@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum RegisterNamespaceTransactionBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for RegisterNamespaceTransactionBuffer<'a> {
     type Inner = RegisterNamespaceTransactionBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -100,11 +92,10 @@ impl<'a> RegisterNamespaceTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    RegisterNamespaceTransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                RegisterNamespaceTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
         }
     }
     #[inline]
@@ -113,11 +104,10 @@ impl<'a> RegisterNamespaceTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    RegisterNamespaceTransactionBuffer::VT_SIGNER,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                RegisterNamespaceTransactionBuffer::VT_SIGNER,
+                None,
+            )
         }
     }
     #[inline]
@@ -148,11 +138,10 @@ impl<'a> RegisterNamespaceTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    RegisterNamespaceTransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RegisterNamespaceTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
         }
     }
     #[inline]
@@ -161,11 +150,10 @@ impl<'a> RegisterNamespaceTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    RegisterNamespaceTransactionBuffer::VT_DEADLINE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RegisterNamespaceTransactionBuffer::VT_DEADLINE,
+                None,
+            )
         }
     }
     #[inline]
@@ -175,10 +163,7 @@ impl<'a> RegisterNamespaceTransactionBuffer<'a> {
         // which contains a valid value in this slot
         unsafe {
             self._tab
-                .get::<u8>(
-                    RegisterNamespaceTransactionBuffer::VT_NAMESPACE_TYPE,
-                    Some(0),
-                )
+                .get::<u8>(RegisterNamespaceTransactionBuffer::VT_NAMESPACE_TYPE, Some(0))
                 .unwrap()
         }
     }
@@ -188,11 +173,10 @@ impl<'a> RegisterNamespaceTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    RegisterNamespaceTransactionBuffer::VT_DURATION_PARENT_ID,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RegisterNamespaceTransactionBuffer::VT_DURATION_PARENT_ID,
+                None,
+            )
         }
     }
     #[inline]
@@ -201,11 +185,10 @@ impl<'a> RegisterNamespaceTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    RegisterNamespaceTransactionBuffer::VT_NAMESPACE_ID,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RegisterNamespaceTransactionBuffer::VT_NAMESPACE_ID,
+                None,
+            )
         }
     }
     #[inline]
@@ -215,10 +198,7 @@ impl<'a> RegisterNamespaceTransactionBuffer<'a> {
         // which contains a valid value in this slot
         unsafe {
             self._tab
-                .get::<u8>(
-                    RegisterNamespaceTransactionBuffer::VT_NAMESPACE_NAME_SIZE,
-                    Some(0),
-                )
+                .get::<u8>(RegisterNamespaceTransactionBuffer::VT_NAMESPACE_NAME_SIZE, Some(0))
                 .unwrap()
         }
     }
@@ -242,7 +222,6 @@ impl flatbuffers::Verifiable for RegisterNamespaceTransactionBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -424,10 +403,7 @@ impl<'a: 'b, 'b> RegisterNamespaceTransactionBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> RegisterNamespaceTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        RegisterNamespaceTransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        RegisterNamespaceTransactionBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<RegisterNamespaceTransactionBuffer<'a>> {

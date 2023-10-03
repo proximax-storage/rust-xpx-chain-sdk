@@ -40,8 +40,7 @@ impl<T, ReqBody> Service<Request<ReqBody>> for UserAgent<T>
     }
 
     fn call(&mut self, mut req: Request<ReqBody>) -> Self::Future {
-        req.headers_mut()
-            .insert(USER_AGENT, self.user_agent.clone());
+        req.headers_mut().insert(USER_AGENT, self.user_agent.clone());
 
         self.inner.call(req)
     }

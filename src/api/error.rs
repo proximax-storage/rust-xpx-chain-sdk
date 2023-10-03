@@ -46,10 +46,6 @@ impl From<&'static str> for Error {
 
 impl core::fmt::Display for SiriusError {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{{ code: \"{}\", message: \"{}\" }}",
-            self.code, self.message
-        )
+        write!(f, "{{ code: \"{}\", message: \"{}\" }}", self.code, self.message)
     }
 }

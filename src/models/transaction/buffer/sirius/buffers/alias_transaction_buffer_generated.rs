@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum AliasTransactionBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for AliasTransactionBuffer<'a> {
     type Inner = AliasTransactionBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -82,11 +74,7 @@ impl<'a> AliasTransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(AliasTransactionBuffer::VT_SIZE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u32>(AliasTransactionBuffer::VT_SIZE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn signature(&self) -> Option<flatbuffers::Vector<'a, u8>> {
@@ -94,11 +82,10 @@ impl<'a> AliasTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AliasTransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                AliasTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
         }
     }
     #[inline]
@@ -107,11 +94,10 @@ impl<'a> AliasTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AliasTransactionBuffer::VT_SIGNER,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                AliasTransactionBuffer::VT_SIGNER,
+                None,
+            )
         }
     }
     #[inline]
@@ -119,22 +105,14 @@ impl<'a> AliasTransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(AliasTransactionBuffer::VT_VERSION, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u32>(AliasTransactionBuffer::VT_VERSION, Some(0)).unwrap() }
     }
     #[inline]
     pub fn type_(&self) -> u16 {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u16>(AliasTransactionBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u16>(AliasTransactionBuffer::VT_TYPE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
@@ -142,11 +120,10 @@ impl<'a> AliasTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AliasTransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AliasTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
         }
     }
     #[inline]
@@ -155,11 +132,10 @@ impl<'a> AliasTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AliasTransactionBuffer::VT_DEADLINE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AliasTransactionBuffer::VT_DEADLINE,
+                None,
+            )
         }
     }
     #[inline]
@@ -167,11 +143,7 @@ impl<'a> AliasTransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u8>(AliasTransactionBuffer::VT_ACTION_TYPE, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u8>(AliasTransactionBuffer::VT_ACTION_TYPE, Some(0)).unwrap() }
     }
     #[inline]
     pub fn namespace_id(&self) -> Option<flatbuffers::Vector<'a, u32>> {
@@ -179,11 +151,10 @@ impl<'a> AliasTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AliasTransactionBuffer::VT_NAMESPACE_ID,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AliasTransactionBuffer::VT_NAMESPACE_ID,
+                None,
+            )
         }
     }
     /// In case of address it is 25 bytes array. In case of mosaic it is 8 byte array(or 2 uint32 array)
@@ -193,11 +164,10 @@ impl<'a> AliasTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AliasTransactionBuffer::VT_ALIAS_ID,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                AliasTransactionBuffer::VT_ALIAS_ID,
+                None,
+            )
         }
     }
 }
@@ -208,7 +178,6 @@ impl flatbuffers::Verifiable for AliasTransactionBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -288,8 +257,7 @@ pub struct AliasTransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> AliasTransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_
-            .push_slot::<u32>(AliasTransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_.push_slot::<u32>(AliasTransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
     pub fn add_signature(
@@ -310,13 +278,11 @@ impl<'a: 'b, 'b> AliasTransactionBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_
-            .push_slot::<u32>(AliasTransactionBuffer::VT_VERSION, version, 0);
+        self.fbb_.push_slot::<u32>(AliasTransactionBuffer::VT_VERSION, version, 0);
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_
-            .push_slot::<u16>(AliasTransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_.push_slot::<u16>(AliasTransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
@@ -359,10 +325,7 @@ impl<'a: 'b, 'b> AliasTransactionBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> AliasTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        AliasTransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        AliasTransactionBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<AliasTransactionBuffer<'a>> {

@@ -91,9 +91,6 @@ impl SearchMetadataV2InfoDTO {
         for item in &self.data {
             data.push(item.compact()?)
         }
-        Ok(SearchMetadataEntry {
-            data,
-            pagination: self.pagination.clone(),
-        })
+        Ok(SearchMetadataEntry { data, pagination: self.pagination.clone() })
     }
 }

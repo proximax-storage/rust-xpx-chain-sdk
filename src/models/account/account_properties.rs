@@ -116,11 +116,7 @@ pub struct AccountProperties {
 
 impl fmt::Display for AccountProperties {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -132,20 +128,13 @@ pub struct AccountPropertiesAddressModification {
 
 impl AccountPropertiesAddressModification {
     pub fn create(modification_type: AccountPropertiesModificationType, address: Address) -> Self {
-        Self {
-            modification_type,
-            address,
-        }
+        Self { modification_type, address }
     }
 }
 
 impl fmt::Display for AccountPropertiesAddressModification {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -160,20 +149,13 @@ impl AccountPropertiesMosaicModification {
         modification_type: AccountPropertiesModificationType,
         asset_id: impl UnresolvedMosaicId + 'static,
     ) -> Self {
-        Self {
-            modification_type,
-            asset_id: Box::new(asset_id),
-        }
+        Self { modification_type, asset_id: Box::new(asset_id) }
     }
 }
 
 impl fmt::Display for AccountPropertiesMosaicModification {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -188,19 +170,12 @@ impl AccountPropertiesEntityTypeModification {
         modification_type: AccountPropertiesModificationType,
         transaction_type: TransactionType,
     ) -> Self {
-        Self {
-            modification_type,
-            transaction_type,
-        }
+        Self { modification_type, transaction_type }
     }
 }
 
 impl fmt::Display for AccountPropertiesEntityTypeModification {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }

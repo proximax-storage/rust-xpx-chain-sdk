@@ -5,23 +5,24 @@
  */
 
 use std::any::Any;
-
 use anyhow::ensure;
 use anyhow::Result;
+use serde_json::Value;
 
-use {::std::fmt, fb::FlatBufferBuilder, serde_json::Value};
+use {::std::fmt, fb::FlatBufferBuilder};
+use crate::account::PublicAccount;
 
 use crate::AsUint64;
 use crate::models::{
-    account::PublicAccount,
-    consts::{ADD_EXCHANGE_OFFER_HEADER_SIZE, ADD_EXCHANGE_OFFER_SIZE},
     errors_const,
     exchange::AddOffer,
     network::NetworkType,
 };
+use crate::models::consts::{ADD_EXCHANGE_OFFER_HEADER_SIZE, ADD_EXCHANGE_OFFER_SIZE};
+use crate::transaction::schema::add_exchange_offer_transaction_schema;
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline, schema::add_exchange_offer_transaction_schema,
+    buffers, CommonTransaction, deadline::Deadline,
     Transaction, TransactionType, TransactionVersion,
 };
 
@@ -117,11 +118,7 @@ impl Transaction for AddExchangeOfferTransaction {
 
 impl fmt::Display for AddExchangeOfferTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 

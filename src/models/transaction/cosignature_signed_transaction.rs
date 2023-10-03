@@ -20,20 +20,12 @@ pub struct CosignatureSignedTransaction {
 
 impl CosignatureSignedTransaction {
     pub fn create(parent_hash: TransactionHash, signature: Signature, signer: Signer) -> Self {
-        Self {
-            parent_hash,
-            signature,
-            signer,
-        }
+        Self { parent_hash, signature, signer }
     }
 }
 
 impl fmt::Display for CosignatureSignedTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

@@ -38,10 +38,7 @@ impl MosaicId {
     /// Creates a new `MosaicId` from a hex string.
     ///
     pub fn try_from_hex(hex: &str) -> Result<Self> {
-        ensure!(
-            hex.len() == Self::LENGTH_IN_HEX,
-            "Invalid size for MosaicId hex"
-        );
+        ensure!(hex.len() == Self::LENGTH_IN_HEX, "Invalid size for MosaicId hex");
 
         Ok(Self(u64::from_hex(hex)?))
     }

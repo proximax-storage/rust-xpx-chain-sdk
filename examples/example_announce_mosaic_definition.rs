@@ -29,7 +29,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let network_type = chain.network_type;
     let generation_hash = chain.generation_hash;
 
-    let private_key: &str = "26b64cb10f005e5988a36744ca19e20d835ccc7c105aaa5f3b212da593180930";
+    let private_key: &str = "7C57C8A6D8767B48F81E8E5D7ECBC76F60D55455A79B4008A20146185F7C8882";
 
     let account = Account::from_hex_private_key(private_key, network_type).unwrap();
 
@@ -37,7 +37,7 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
     let owner_public_account = account.public_account;
 
-    let properties = MosaicProperties::create(true, true, 6, None);
+    let properties = MosaicProperties::create(true, true, 2, None);
 
     let transaction = MosaicDefinitionTransaction::builder(network_type)
         .properties(properties)

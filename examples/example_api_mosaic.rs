@@ -28,34 +28,21 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let info = mosaic_api.get_mosaic_info(mosaic_id_one).await;
     match info {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling mosaic_api->get_mosaic_info: {}\n",
-            err
-        ),
+        Err(err) => eprintln!("Exception when calling mosaic_api->get_mosaic_info: {}\n", err),
     }
 
     // Get namespaces owned by an account.
-    let info = mosaic_api
-        .get_mosaics_info(vec![mosaic_id_one, mosaic_id_two])
-        .await;
+    let info = mosaic_api.get_mosaics_info(vec![mosaic_id_one, mosaic_id_two]).await;
     match info {
         Ok(resp) => println!("{:#?}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling mosaic_api->get_mosaics_info: {}\n",
-            err
-        ),
+        Err(err) => eprintln!("Exception when calling mosaic_api->get_mosaics_info: {}\n", err),
     }
 
     // Get namespaces owned by an account.
-    let info = mosaic_api
-        .get_mosaics_names(vec![mosaic_id_one, mosaic_id_two])
-        .await;
+    let info = mosaic_api.get_mosaics_names(vec![mosaic_id_one, mosaic_id_two]).await;
     match info {
         Ok(resp) => println!("{:#?}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling mosaic_api->get_mosaics_names: {}\n",
-            err
-        ),
+        Err(err) => eprintln!("Exception when calling mosaic_api->get_mosaics_names: {}\n", err),
     }
 
     let info = mosaic_api
@@ -63,19 +50,13 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         .await;
     match info {
         Ok(resp) => println!("{:#?}", resp.len()),
-        Err(err) => eprintln!(
-            "Exception when calling mosaic_api->get_mosaic_rich_list: {}\n",
-            err
-        ),
+        Err(err) => eprintln!("Exception when calling mosaic_api->get_mosaic_rich_list: {}\n", err),
     }
 
     let info = mosaic_api.get_mosaic_levy(mosaic_id_one).await;
     match info {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling mosaic_api->get_mosaic_levy: {}\n",
-            err
-        ),
+        Err(err) => eprintln!("Exception when calling mosaic_api->get_mosaic_levy: {}\n", err),
     }
     Ok(())
 }

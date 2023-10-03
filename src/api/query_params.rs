@@ -61,10 +61,7 @@ impl QueryParams {
 
         object
             .into_iter()
-            .map(|(key, value)| QueryParam {
-                name: key.to_string(),
-                value: value.clone(),
-            })
+            .map(|(key, value)| QueryParam { name: key.to_string(), value: value.clone() })
             .collect::<Vec<_>>()
     }
 }

@@ -4,20 +4,19 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::any::Any;
 use anyhow::Result;
 
-use {
-    serde_json::Value,
-    std::{any::Any, fmt},
-};
+use std::fmt;
+use serde_json::Value;
 
 use crate::{
-    account::PublicAccount,
     errors_const,
     metadata::{MetadataModification, MetadataType},
     namespace::NamespaceId,
     network::NetworkType,
 };
+use crate::account::PublicAccount;
 use crate::models::consts::NAMESPACE_SIZE;
 use crate::mosaic::UnresolvedMosaicId;
 
@@ -41,10 +40,7 @@ impl MetadataNamespaceTransaction {
         network_type: NetworkType,
         max_fee: Option<u64>,
     ) -> Result<Self> {
-        ensure!(
-            !modifications.is_empty(),
-            errors_const::ERR_METADATA_EMPTY_MODIFICATIONS
-        );
+        ensure!(!modifications.is_empty(), errors_const::ERR_METADATA_EMPTY_MODIFICATIONS);
 
         let common = CommonTransaction::create_from_type(
             TransactionType::ModifyMetadataNamespace,
@@ -114,10 +110,6 @@ impl Transaction for MetadataNamespaceTransaction {
 
 impl fmt::Display for MetadataNamespaceTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

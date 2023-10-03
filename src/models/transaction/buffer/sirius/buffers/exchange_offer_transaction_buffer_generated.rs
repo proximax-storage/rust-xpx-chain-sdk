@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum ExchangeOfferTransactionBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for ExchangeOfferTransactionBuffer<'a> {
     type Inner = ExchangeOfferTransactionBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -78,11 +70,7 @@ impl<'a> ExchangeOfferTransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(ExchangeOfferTransactionBuffer::VT_SIZE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u32>(ExchangeOfferTransactionBuffer::VT_SIZE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn signature(&self) -> Option<flatbuffers::Vector<'a, u8>> {
@@ -90,11 +78,10 @@ impl<'a> ExchangeOfferTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    ExchangeOfferTransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                ExchangeOfferTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
         }
     }
     #[inline]
@@ -103,11 +90,10 @@ impl<'a> ExchangeOfferTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    ExchangeOfferTransactionBuffer::VT_SIGNER,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                ExchangeOfferTransactionBuffer::VT_SIGNER,
+                None,
+            )
         }
     }
     #[inline]
@@ -126,11 +112,7 @@ impl<'a> ExchangeOfferTransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u16>(ExchangeOfferTransactionBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u16>(ExchangeOfferTransactionBuffer::VT_TYPE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
@@ -138,11 +120,10 @@ impl<'a> ExchangeOfferTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    ExchangeOfferTransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                ExchangeOfferTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
         }
     }
     #[inline]
@@ -151,11 +132,10 @@ impl<'a> ExchangeOfferTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    ExchangeOfferTransactionBuffer::VT_DEADLINE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                ExchangeOfferTransactionBuffer::VT_DEADLINE,
+                None,
+            )
         }
     }
     #[inline]
@@ -172,8 +152,7 @@ impl<'a> ExchangeOfferTransactionBuffer<'a> {
     #[inline]
     pub fn offers(
         &self,
-    ) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<ExchangeOfferBuffer<'a>>>>
-    {
+    ) -> Option<flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<ExchangeOfferBuffer<'a>>>> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
@@ -191,7 +170,6 @@ impl flatbuffers::Verifiable for ExchangeOfferTransactionBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -266,8 +244,7 @@ pub struct ExchangeOfferTransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> ExchangeOfferTransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_
-            .push_slot::<u32>(ExchangeOfferTransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_.push_slot::<u32>(ExchangeOfferTransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
     pub fn add_signature(
@@ -293,8 +270,7 @@ impl<'a: 'b, 'b> ExchangeOfferTransactionBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_
-            .push_slot::<u16>(ExchangeOfferTransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_.push_slot::<u16>(ExchangeOfferTransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
@@ -312,11 +288,8 @@ impl<'a: 'b, 'b> ExchangeOfferTransactionBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_offers_count(&mut self, offers_count: u8) {
-        self.fbb_.push_slot::<u8>(
-            ExchangeOfferTransactionBuffer::VT_OFFERS_COUNT,
-            offers_count,
-            0,
-        );
+        self.fbb_
+            .push_slot::<u8>(ExchangeOfferTransactionBuffer::VT_OFFERS_COUNT, offers_count, 0);
     }
     #[inline]
     pub fn add_offers(
@@ -335,10 +308,7 @@ impl<'a: 'b, 'b> ExchangeOfferTransactionBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> ExchangeOfferTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        ExchangeOfferTransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        ExchangeOfferTransactionBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<ExchangeOfferTransactionBuffer<'a>> {

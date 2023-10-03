@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum ModifyMultisigAccountTransactionBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for ModifyMultisigAccountTransactionBuffer<'a> 
     type Inner = ModifyMultisigAccountTransactionBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -94,11 +86,10 @@ impl<'a> ModifyMultisigAccountTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    ModifyMultisigAccountTransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                ModifyMultisigAccountTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
         }
     }
     #[inline]
@@ -107,11 +98,10 @@ impl<'a> ModifyMultisigAccountTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    ModifyMultisigAccountTransactionBuffer::VT_SIGNER,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                ModifyMultisigAccountTransactionBuffer::VT_SIGNER,
+                None,
+            )
         }
     }
     #[inline]
@@ -142,11 +132,10 @@ impl<'a> ModifyMultisigAccountTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    ModifyMultisigAccountTransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                ModifyMultisigAccountTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
         }
     }
     #[inline]
@@ -155,11 +144,10 @@ impl<'a> ModifyMultisigAccountTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    ModifyMultisigAccountTransactionBuffer::VT_DEADLINE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                ModifyMultisigAccountTransactionBuffer::VT_DEADLINE,
+                None,
+            )
         }
     }
     #[inline]
@@ -169,10 +157,7 @@ impl<'a> ModifyMultisigAccountTransactionBuffer<'a> {
         // which contains a valid value in this slot
         unsafe {
             self._tab
-                .get::<i8>(
-                    ModifyMultisigAccountTransactionBuffer::VT_MIN_REMOVAL_DELTA,
-                    Some(0),
-                )
+                .get::<i8>(ModifyMultisigAccountTransactionBuffer::VT_MIN_REMOVAL_DELTA, Some(0))
                 .unwrap()
         }
     }
@@ -183,10 +168,7 @@ impl<'a> ModifyMultisigAccountTransactionBuffer<'a> {
         // which contains a valid value in this slot
         unsafe {
             self._tab
-                .get::<i8>(
-                    ModifyMultisigAccountTransactionBuffer::VT_MIN_APPROVAL_DELTA,
-                    Some(0),
-                )
+                .get::<i8>(ModifyMultisigAccountTransactionBuffer::VT_MIN_APPROVAL_DELTA, Some(0))
                 .unwrap()
         }
     }
@@ -197,10 +179,7 @@ impl<'a> ModifyMultisigAccountTransactionBuffer<'a> {
         // which contains a valid value in this slot
         unsafe {
             self._tab
-                .get::<u8>(
-                    ModifyMultisigAccountTransactionBuffer::VT_NUM_MODIFICATIONS,
-                    Some(0),
-                )
+                .get::<u8>(ModifyMultisigAccountTransactionBuffer::VT_NUM_MODIFICATIONS, Some(0))
                 .unwrap()
         }
     }
@@ -219,10 +198,7 @@ impl<'a> ModifyMultisigAccountTransactionBuffer<'a> {
                     'a,
                     flatbuffers::ForwardsUOffset<CosignatoryModificationBuffer>,
                 >,
-            >>(
-                ModifyMultisigAccountTransactionBuffer::VT_MODIFICATIONS,
-                None,
-            )
+            >>(ModifyMultisigAccountTransactionBuffer::VT_MODIFICATIONS, None)
         }
     }
 }
@@ -233,7 +209,6 @@ impl flatbuffers::Verifiable for ModifyMultisigAccountTransactionBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -342,11 +317,8 @@ impl<'a: 'b, 'b> ModifyMultisigAccountTransactionBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_.push_slot::<u32>(
-            ModifyMultisigAccountTransactionBuffer::VT_VERSION,
-            version,
-            0,
-        );
+        self.fbb_
+            .push_slot::<u32>(ModifyMultisigAccountTransactionBuffer::VT_VERSION, version, 0);
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
@@ -411,10 +383,7 @@ impl<'a: 'b, 'b> ModifyMultisigAccountTransactionBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> ModifyMultisigAccountTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        ModifyMultisigAccountTransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        ModifyMultisigAccountTransactionBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<ModifyMultisigAccountTransactionBuffer<'a>> {

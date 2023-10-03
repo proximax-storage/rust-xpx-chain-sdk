@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum TransferTransactionBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for TransferTransactionBuffer<'a> {
     type Inner = TransferTransactionBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -88,11 +80,7 @@ impl<'a> TransferTransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(TransferTransactionBuffer::VT_SIZE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u32>(TransferTransactionBuffer::VT_SIZE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn signature(&self) -> Option<flatbuffers::Vector<'a, u8>> {
@@ -100,11 +88,10 @@ impl<'a> TransferTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    TransferTransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                TransferTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
         }
     }
     #[inline]
@@ -113,11 +100,10 @@ impl<'a> TransferTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    TransferTransactionBuffer::VT_SIGNER,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                TransferTransactionBuffer::VT_SIGNER,
+                None,
+            )
         }
     }
     #[inline]
@@ -125,22 +111,14 @@ impl<'a> TransferTransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(TransferTransactionBuffer::VT_VERSION, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u32>(TransferTransactionBuffer::VT_VERSION, Some(0)).unwrap() }
     }
     #[inline]
     pub fn type_(&self) -> u16 {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u16>(TransferTransactionBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u16>(TransferTransactionBuffer::VT_TYPE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
@@ -148,11 +126,10 @@ impl<'a> TransferTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    TransferTransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                TransferTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
         }
     }
     #[inline]
@@ -161,11 +138,10 @@ impl<'a> TransferTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    TransferTransactionBuffer::VT_DEADLINE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                TransferTransactionBuffer::VT_DEADLINE,
+                None,
+            )
         }
     }
     #[inline]
@@ -174,11 +150,10 @@ impl<'a> TransferTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    TransferTransactionBuffer::VT_RECIPIENT,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                TransferTransactionBuffer::VT_RECIPIENT,
+                None,
+            )
         }
     }
     #[inline]
@@ -197,11 +172,7 @@ impl<'a> TransferTransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u8>(TransferTransactionBuffer::VT_NUM_MOSAICS, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u8>(TransferTransactionBuffer::VT_NUM_MOSAICS, Some(0)).unwrap() }
     }
     #[inline]
     pub fn message(&self) -> Option<MessageBuffer<'a>> {
@@ -209,11 +180,10 @@ impl<'a> TransferTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<MessageBuffer>>(
-                    TransferTransactionBuffer::VT_MESSAGE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<MessageBuffer>>(
+                TransferTransactionBuffer::VT_MESSAGE,
+                None,
+            )
         }
     }
     #[inline]
@@ -237,7 +207,6 @@ impl flatbuffers::Verifiable for TransferTransactionBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -329,8 +298,7 @@ pub struct TransferTransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> TransferTransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_
-            .push_slot::<u32>(TransferTransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_.push_slot::<u32>(TransferTransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
     pub fn add_signature(
@@ -351,13 +319,11 @@ impl<'a: 'b, 'b> TransferTransactionBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_
-            .push_slot::<u32>(TransferTransactionBuffer::VT_VERSION, version, 0);
+        self.fbb_.push_slot::<u32>(TransferTransactionBuffer::VT_VERSION, version, 0);
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_
-            .push_slot::<u16>(TransferTransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_.push_slot::<u16>(TransferTransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
@@ -395,11 +361,10 @@ impl<'a: 'b, 'b> TransferTransactionBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_message(&mut self, message: flatbuffers::WIPOffset<MessageBuffer<'b>>) {
-        self.fbb_
-            .push_slot_always::<flatbuffers::WIPOffset<MessageBuffer>>(
-                TransferTransactionBuffer::VT_MESSAGE,
-                message,
-            );
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<MessageBuffer>>(
+            TransferTransactionBuffer::VT_MESSAGE,
+            message,
+        );
     }
     #[inline]
     pub fn add_mosaics(
@@ -418,10 +383,7 @@ impl<'a: 'b, 'b> TransferTransactionBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> TransferTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        TransferTransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        TransferTransactionBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<TransferTransactionBuffer<'a>> {

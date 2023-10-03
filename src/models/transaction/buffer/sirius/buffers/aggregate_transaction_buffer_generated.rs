@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum AggregateTransactionBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for AggregateTransactionBuffer<'a> {
     type Inner = AggregateTransactionBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -78,11 +70,7 @@ impl<'a> AggregateTransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(AggregateTransactionBuffer::VT_SIZE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u32>(AggregateTransactionBuffer::VT_SIZE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn signature(&self) -> Option<flatbuffers::Vector<'a, u8>> {
@@ -90,11 +78,10 @@ impl<'a> AggregateTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AggregateTransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                AggregateTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
         }
     }
     #[inline]
@@ -103,11 +90,10 @@ impl<'a> AggregateTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AggregateTransactionBuffer::VT_SIGNER,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                AggregateTransactionBuffer::VT_SIGNER,
+                None,
+            )
         }
     }
     #[inline]
@@ -115,22 +101,14 @@ impl<'a> AggregateTransactionBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(AggregateTransactionBuffer::VT_VERSION, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u32>(AggregateTransactionBuffer::VT_VERSION, Some(0)).unwrap() }
     }
     #[inline]
     pub fn type_(&self) -> u16 {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u16>(AggregateTransactionBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u16>(AggregateTransactionBuffer::VT_TYPE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn max_fee(&self) -> Option<flatbuffers::Vector<'a, u32>> {
@@ -138,11 +116,10 @@ impl<'a> AggregateTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AggregateTransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AggregateTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
         }
     }
     #[inline]
@@ -151,11 +128,10 @@ impl<'a> AggregateTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AggregateTransactionBuffer::VT_DEADLINE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AggregateTransactionBuffer::VT_DEADLINE,
+                None,
+            )
         }
     }
     #[inline]
@@ -175,11 +151,10 @@ impl<'a> AggregateTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    AggregateTransactionBuffer::VT_TRANSACTIONS,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                AggregateTransactionBuffer::VT_TRANSACTIONS,
+                None,
+            )
         }
     }
 }
@@ -190,7 +165,6 @@ impl flatbuffers::Verifiable for AggregateTransactionBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -263,8 +237,7 @@ pub struct AggregateTransactionBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> AggregateTransactionBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_
-            .push_slot::<u32>(AggregateTransactionBuffer::VT_SIZE_, size_, 0);
+        self.fbb_.push_slot::<u32>(AggregateTransactionBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
     pub fn add_signature(
@@ -285,13 +258,11 @@ impl<'a: 'b, 'b> AggregateTransactionBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_version(&mut self, version: u32) {
-        self.fbb_
-            .push_slot::<u32>(AggregateTransactionBuffer::VT_VERSION, version, 0);
+        self.fbb_.push_slot::<u32>(AggregateTransactionBuffer::VT_VERSION, version, 0);
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u16) {
-        self.fbb_
-            .push_slot::<u16>(AggregateTransactionBuffer::VT_TYPE_, type_, 0);
+        self.fbb_.push_slot::<u16>(AggregateTransactionBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_max_fee(&mut self, max_fee: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
@@ -330,10 +301,7 @@ impl<'a: 'b, 'b> AggregateTransactionBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> AggregateTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        AggregateTransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        AggregateTransactionBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<AggregateTransactionBuffer<'a>> {

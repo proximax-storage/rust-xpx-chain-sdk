@@ -26,10 +26,9 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let network_type = api.get_node_info().await;
     match network_type {
         Ok(resp) => println!("{}", resp.friendly_name),
-        Err(err) => eprintln!(
-            "Exception when calling network_api->get_get_network_type: {}\n",
-            err
-        ),
+        Err(err) => {
+            eprintln!("Exception when calling network_api->get_get_network_type: {}\n", err)
+        }
     }
 
     Ok(())

@@ -45,10 +45,7 @@ impl CosignatureDto {
     pub fn compact(&self, network_type: NetworkType) -> Cosignature {
         let signer = PublicAccount::from_public_key(&self.signer, network_type).unwrap();
 
-        Cosignature {
-            signature: (&self.signature).parse().unwrap(),
-            signer,
-        }
+        Cosignature { signature: (&self.signature).parse().unwrap(), signer }
     }
 }
 

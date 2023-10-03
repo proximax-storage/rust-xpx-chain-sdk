@@ -54,10 +54,7 @@ impl fmt::Display for dyn UnresolvedAddress {
 impl dyn UnresolvedAddress {
     /// Map asset address string to Address or NamespaceId.
     pub fn from_unresolved_address(hex: &str) -> Result<Box<dyn UnresolvedAddress>> {
-        ensure!(
-            is_hex(hex),
-            "Input string is not in valid hexadecimal notation."
-        );
+        ensure!(is_hex(hex), "Input string is not in valid hexadecimal notation.");
 
         let bytes = hex_decode(&hex[0..2]);
         let byte0 = &bytes[0];
@@ -118,8 +115,8 @@ impl dyn UnresolvedAddress {
             Ok(self.into_any().downcast().unwrap())
         } else {
             Err(anyhow!(
-                "downcast to wrong UnresolvedAddress type; original UnresolvedAddress type"
-            ))
+				"downcast to wrong UnresolvedAddress type; original UnresolvedAddress type"
+			))
         }
     }
 }
@@ -133,11 +130,11 @@ mod tests {
     use crate::namespace::NamespaceId;
 
     lazy_static! {
-        pub static ref NAMESPACE_ID: NamespaceId =
-            NamespaceId::try_from_hex("9550CA3FC9B41FC5").unwrap();
-        pub static ref ADDRESS: Address =
-            Address::from_raw("VDPI5RSUIFID32NBPLEGHELVDJFXPWQXCRVN3PLR").unwrap();
-    }
+		pub static ref NAMESPACE_ID: NamespaceId =
+			NamespaceId::try_from_hex("9550CA3FC9B41FC5").unwrap();
+		pub static ref ADDRESS: Address =
+			Address::from_raw("VDPI5RSUIFID32NBPLEGHELVDJFXPWQXCRVN3PLR").unwrap();
+	}
 
     #[test]
     fn test_can_map_hex_str_to_address() {
@@ -151,10 +148,7 @@ mod tests {
     fn test_can_map_hex_str_to_namespace_id() {
         let unresolved =
             <dyn UnresolvedAddress>::from_unresolved_address(&NAMESPACE_ID.to_hex()).unwrap();
-        assert_eq!(
-            unresolved.clone().try_downcast::<NamespaceId>().is_ok(),
-            true
-        );
+        assert_eq!(unresolved.clone().try_downcast::<NamespaceId>().is_ok(), true);
         assert_eq!(unresolved.try_downcast::<Address>().is_ok(), false);
     }
 

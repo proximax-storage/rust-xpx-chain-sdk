@@ -35,10 +35,7 @@ pub(crate) fn generate_namespace_path(name: &str) -> Result<Vec<NamespaceId>> {
     let mut path: Vec<NamespaceId> = vec![];
 
     for part in parts {
-        ensure!(
-            is_valid_namespace_name(part),
-            errors_const::ERR_INVALID_NAMESPACE_NAME
-        );
+        ensure!(is_valid_namespace_name(part), errors_const::ERR_INVALID_NAMESPACE_NAME);
 
         namespace_id = generate_namespace_id(part, namespace_id)?;
 
@@ -59,7 +56,5 @@ pub(crate) fn generate_namespace_id(name: &str, parent_id: NamespaceId) -> Resul
 
     let t_result = result.finalize();
 
-    Ok(NamespaceId::create(
-        array_u8_to_u64(&t_result) | NAMESPACE_BIT,
-    ))
+    Ok(NamespaceId::create(array_u8_to_u64(&t_result) | NAMESPACE_BIT))
 }

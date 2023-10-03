@@ -32,10 +32,7 @@ impl CosignatureTransaction {
         &self,
         account: Account,
     ) -> Result<CosignatureSignedTransaction> {
-        ensure!(
-            !self.0.get_transaction_hash().is_zero(),
-            errors_const::ERR_EMPTY_COSIGNATURE_HASH
-        );
+        ensure!(!self.0.get_transaction_hash().is_zero(), errors_const::ERR_EMPTY_COSIGNATURE_HASH);
 
         let signer = account.to_signer();
         let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);

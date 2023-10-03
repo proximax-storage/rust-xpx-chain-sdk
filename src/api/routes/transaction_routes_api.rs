@@ -67,8 +67,7 @@ impl TransactionRoutes {
             }));
         }
 
-        self.get_transaction(transaction_hash, txn_status.to_group_type())
-            .await
+        self.get_transaction(transaction_hash, txn_status.to_group_type()).await
     }
 
     /// Get transaction status
@@ -166,17 +165,15 @@ impl TransactionRoutes {
         let mut req = ApiRequest::new(Method::POST, TRANSACTIONS_STATUS_ROUTE.to_string());
 
         let body_param = json!({
-            "hashes": hashes,
-        });
+			"hashes": hashes,
+		});
 
         req = req.with_body_param(body_param);
 
         let dto: Vec<TransactionStatusDto> = req.execute(self.__client()).await?;
 
-        let statuses: TransactionsStatus = dto
-            .into_iter()
-            .map(move |status_dto| status_dto.compact().unwrap())
-            .collect();
+        let statuses: TransactionsStatus =
+            dto.into_iter().map(move |status_dto| status_dto.compact().unwrap()).collect();
 
         Ok(statuses)
     }
@@ -222,10 +219,7 @@ impl TransactionRoutes {
         let mut req = ApiRequest::new(Method::GET, TRANSACTION_ROUTE.to_string());
 
         req = req
-            .with_path_param(
-                "transactionId".to_string(),
-                transaction_hash.encode_hex::<String>(),
-            )
+            .with_path_param("transactionId".to_string(), transaction_hash.encode_hex::<String>())
             .with_path_param("group".to_string(), group.to_string());
 
         __internal_get_transaction(self.__client(), req).await
@@ -292,8 +286,8 @@ impl TransactionRoutes {
         group: TransactionGroupType,
     ) -> Result<Transactions> {
         let body_param = json!({
-            "transactionIds": hashes,
-        });
+			"transactionIds": hashes,
+		});
 
         let mut req = ApiRequest::new(Method::POST, TRANSACTIONS_ROUTE.to_string());
 

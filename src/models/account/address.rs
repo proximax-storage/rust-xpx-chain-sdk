@@ -99,10 +99,7 @@ impl Address {
 
         let address = public_key_to_address(public_key_hash, network_type);
 
-        Ok(Self {
-            address,
-            network_type,
-        })
+        Ok(Self { address, network_type })
     }
 
     /// Creates an Sirius 'Address' from a given raw address string.
@@ -137,11 +134,11 @@ impl Address {
     pub fn from_raw<S: AsRef<str>>(raw_address: S) -> Result<Self> {
         let address_raw = raw_address.as_ref().trim().replace("-", "");
         ensure!(
-            address_raw.len() == Self::LENGTH_IN_BASE32,
-            "Address {} has to be {} characters long",
-            address_raw,
-            Self::LENGTH_IN_BASE32
-        );
+			address_raw.len() == Self::LENGTH_IN_BASE32,
+			"Address {} has to be {} characters long",
+			address_raw,
+			Self::LENGTH_IN_BASE32
+		);
 
         let network_identifier = address_raw.to_uppercase().chars().next().unwrap();
 
@@ -149,10 +146,7 @@ impl Address {
 
         let address = H200::from_base32(&address_raw);
 
-        Ok(Self {
-            address,
-            network_type,
-        })
+        Ok(Self { address, network_type })
     }
 
     /// Create an Sirius `Address` from the given hex string address
@@ -208,11 +202,7 @@ impl Address {
         let mut address = H200::zero();
         decode_base32(address.as_mut(), raw_address);
 
-        is_valid_address(
-            address.as_bytes(),
-            Self::LENGTH_IN_DECODED,
-            Self::CHECKSUM_SIZE,
-        )
+        is_valid_address(address.as_bytes(), Self::LENGTH_IN_DECODED, Self::CHECKSUM_SIZE)
     }
 
     /// Determines the validity of an encoded address string.
@@ -227,11 +217,7 @@ impl Address {
         if !is_hex(encoded) {
             return false;
         }
-        is_valid_address(
-            &hex_decode(encoded),
-            Self::LENGTH_IN_DECODED,
-            Self::CHECKSUM_SIZE,
-        )
+        is_valid_address(&hex_decode(encoded), Self::LENGTH_IN_DECODED, Self::CHECKSUM_SIZE)
     }
 
     pub fn as_bytes(&self) -> &[u8] {
@@ -270,11 +256,7 @@ impl UnresolvedAddress for Address {
 
 impl fmt::Display for Address {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -289,49 +271,34 @@ mod tests {
     #[test]
     fn test_should_print_the_address_in_pretty_format() {
         let address = Address::from_public_key(PUBLIC_KEY, NetworkType::PrivateTest).unwrap();
-        assert_eq!(
-            address.prettify(),
-            "WCVE6E-C5EPQO-7PWXGZ-SNY4V2-SIHUNH-DKXDZM-XDMY"
-        );
+        assert_eq!(address.prettify(), "WCVE6E-C5EPQO-7PWXGZ-SNY4V2-SIHUNH-DKXDZM-XDMY");
     }
 
     #[test]
     fn test_should_create_given_public_key_with_network_type_private_test() {
         let address = Address::from_public_key(PUBLIC_KEY, NetworkType::PrivateTest).unwrap();
-        assert_eq!(
-            address.address_str(),
-            "WCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXDZMXDMY"
-        );
+        assert_eq!(address.address_str(), "WCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXDZMXDMY");
         assert_eq!(address.network_type, NetworkType::PrivateTest);
     }
 
     #[test]
     fn test_should_create_given_public_key_with_network_type_private() {
         let address = Address::from_public_key(PUBLIC_KEY, NetworkType::Private).unwrap();
-        assert_eq!(
-            address.address_str(),
-            "ZCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXDOYPDA6"
-        );
+        assert_eq!(address.address_str(), "ZCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXDOYPDA6");
         assert_eq!(address.network_type, NetworkType::Private);
     }
 
     #[test]
     fn test_should_create_given_public_key_with_network_type_public_net() {
         let address = Address::from_public_key(PUBLIC_KEY, NetworkType::Public).unwrap();
-        assert_eq!(
-            address.address_str(),
-            "XCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXA5KTMLO"
-        );
+        assert_eq!(address.address_str(), "XCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXA5KTMLO");
         assert_eq!(address.network_type, NetworkType::Public);
     }
 
     #[test]
     fn test_should_create_given_public_key_with_network_type_public_test_net() {
         let address = Address::from_public_key(PUBLIC_KEY, NetworkType::PublicTest).unwrap();
-        assert_eq!(
-            address.address_str(),
-            "VCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXBNBWFCJ"
-        );
+        assert_eq!(address.address_str(), "VCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXBNBWFCJ");
         assert_eq!(address.network_type, NetworkType::PublicTest);
     }
 
@@ -363,10 +330,7 @@ mod tests {
     fn test_should_create_given_wcve6e_c5epqo_7pwxgz_sny4v2_sihunh_dkxdzm_xdmy() {
         let address = Address::from_raw("WCVE6E-C5EPQO-7PWXGZ-SNY4V2-SIHUNH-DKXDZM-XDMY").unwrap();
         assert_eq!(address.network_type, NetworkType::PrivateTest);
-        assert_eq!(
-            address.prettify(),
-            "WCVE6E-C5EPQO-7PWXGZ-SNY4V2-SIHUNH-DKXDZM-XDMY"
-        );
+        assert_eq!(address.prettify(), "WCVE6E-C5EPQO-7PWXGZ-SNY4V2-SIHUNH-DKXDZM-XDMY");
     }
 
     #[test]
@@ -386,10 +350,7 @@ mod tests {
     #[test]
     fn test_should_turn_a_lowercase_address_to_uppercase() {
         let address = Address::from_raw("wcve6ec5epqo7pwxgzsny4v2sihunhdkxdzmxdmy").unwrap();
-        assert_eq!(
-            address.address_str(),
-            "WCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXDZMXDMY"
-        );
+        assert_eq!(address.address_str(), "WCVE6EC5EPQO7PWXGZSNY4V2SIHUNHDKXDZMXDMY");
     }
 
     #[test]
@@ -537,18 +498,9 @@ mod tests {
         #[test]
         fn test_adding_leading_or_trailing_white_space_invalidates_encoded_address() {
             let encoded = "6823BB7C3C089D996585466380EDBDC19D4959184893E38C";
-            assert_eq!(
-                Address::is_valid_encoded_address(&format!(" \t {}", encoded)),
-                false
-            );
-            assert_eq!(
-                Address::is_valid_encoded_address(&format!("{} \t ", encoded)),
-                false
-            );
-            assert_eq!(
-                Address::is_valid_encoded_address(&format!(" \t {} \t ", encoded)),
-                false
-            );
+            assert_eq!(Address::is_valid_encoded_address(&format!(" \t {}", encoded)), false);
+            assert_eq!(Address::is_valid_encoded_address(&format!("{} \t ", encoded)), false);
+            assert_eq!(Address::is_valid_encoded_address(&format!(" \t {} \t ", encoded)), false);
         }
     }
 }

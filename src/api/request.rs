@@ -78,9 +78,7 @@ impl ApiRequest {
                 .unwrap();
             req.headers_mut().insert(
                 CONTENT_TYPE,
-                "application/json"
-                    .parse()
-                    .map_err(|err| Error::from(format_err!("{}", err)))?,
+                "application/json".parse().map_err(|err| Error::from(format_err!("{}", err)))?,
             );
 
             req.headers_mut().insert(CONTENT_LENGTH, body.len().into());

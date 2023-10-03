@@ -4,20 +4,20 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::any::Any;
 use anyhow::Result;
 
-use {
-    serde_json::Value,
-    std::{any::Any, fmt},
-};
+use std::fmt;
+use serde_json::Value;
 
 use crate::{
-    account::{Address, PublicAccount},
+    account::Address,
     errors_const,
     metadata::{MetadataModification, MetadataType},
-    models::consts::ADDRESS_SIZE,
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::ADDRESS_SIZE;
 
 use super::{
     CommonTransaction, Deadline, ModifyMetadataTransaction, Transaction, TransactionType,
@@ -39,10 +39,7 @@ impl MetadataAddressTransaction {
         network_type: NetworkType,
         max_fee: Option<u64>,
     ) -> Result<Self> {
-        ensure!(
-            !modifications.is_empty(),
-            errors_const::ERR_METADATA_EMPTY_MODIFICATIONS
-        );
+        ensure!(!modifications.is_empty(), errors_const::ERR_METADATA_EMPTY_MODIFICATIONS);
 
         let common = CommonTransaction::create_from_type(
             TransactionType::ModifyMetadataAddress,
@@ -109,10 +106,6 @@ impl Transaction for MetadataAddressTransaction {
 
 impl fmt::Display for MetadataAddressTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

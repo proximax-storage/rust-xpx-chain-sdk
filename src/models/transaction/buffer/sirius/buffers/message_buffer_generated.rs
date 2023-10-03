@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum MessageBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for MessageBuffer<'a> {
     type Inner = MessageBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -56,11 +48,7 @@ impl<'a> MessageBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u8>(MessageBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u8>(MessageBuffer::VT_TYPE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn payload(&self) -> Option<flatbuffers::Vector<'a, u8>> {
@@ -68,11 +56,10 @@ impl<'a> MessageBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MessageBuffer::VT_PAYLOAD,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MessageBuffer::VT_PAYLOAD,
+                None,
+            )
         }
     }
 }
@@ -83,7 +70,6 @@ impl flatbuffers::Verifiable for MessageBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u8>("type_", Self::VT_TYPE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -104,10 +90,7 @@ pub struct MessageBufferArgs<'a> {
 impl<'a> Default for MessageBufferArgs<'a> {
     #[inline]
     fn default() -> Self {
-        MessageBufferArgs {
-            type_: 0,
-            payload: None,
-        }
+        MessageBufferArgs { type_: 0, payload: None }
     }
 }
 
@@ -129,10 +112,7 @@ impl<'a: 'b, 'b> MessageBufferBuilder<'a, 'b> {
     #[inline]
     pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> MessageBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        MessageBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        MessageBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<MessageBuffer<'a>> {

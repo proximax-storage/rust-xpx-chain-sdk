@@ -106,32 +106,25 @@ impl PublicAccount {
 
 impl fmt::Display for PublicAccount {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crypto::Signature;
+	use crypto::Signature;
 
-    use crate::account::{Account, PublicAccount};
-    use crate::network::NetworkType;
+	use crate::account::{Account, PublicAccount};
+	use crate::network::NetworkType;
 
-    const PUBLIC_KEY: &str = "b4f12e7c9f6946091e2cb8b6d3a12b50d17ccbbf646386ea27ce2946a7423dcf";
+	const PUBLIC_KEY: &str = "b4f12e7c9f6946091e2cb8b6d3a12b50d17ccbbf646386ea27ce2946a7423dcf";
 
     #[test]
     fn test_should_create_from_public_key() {
         let public_account =
             PublicAccount::from_public_key(PUBLIC_KEY, NetworkType::PrivateTest).unwrap();
         assert_eq!(public_account.public_key_to_hex(), PUBLIC_KEY);
-        assert_eq!(
-            public_account.address_as_string(),
-            "WARNASAS2BIAB6LMFA3FPMGBPGIJGK6IJHPRCU4F"
-        );
+        assert_eq!(public_account.address_as_string(), "WARNASAS2BIAB6LMFA3FPMGBPGIJGK6IJHPRCU4F");
     }
 
     #[test]
@@ -142,9 +135,7 @@ mod tests {
         let data =
             "ff60983e0c5d21d2fb83c67598d560f3cf0e28ae667b5616aaa58a059666cd8cf826b026243c92cf";
         let signature = testing_account.sign_data(data);
-        assert!(signer_public_account
-            .verify_signature(data, signature)
-            .is_ok());
+        assert!(signer_public_account.verify_signature(data, signature).is_ok());
     }
 
     #[test]
@@ -157,9 +148,7 @@ mod tests {
 
         let data = "I am so so so awesome as always";
         let signature = Signature::from_bytes(&hex::decode("B01DCA6484026C2ECDF3C822E64DEAAFC15EBCCE337EEE209C28513CB5351CDED8863A8E7B855CD471B55C91FAE611C548625C9A5916A555A24F72F3526FA508").unwrap()).unwrap();
-        assert!(signer_public_account
-            .verify_signature(data, signature)
-            .is_err());
+        assert!(signer_public_account.verify_signature(data, signature).is_err());
     }
 
     #[test]
@@ -172,9 +161,7 @@ mod tests {
 
         let data = "I am awesome as always";
         let signature = Signature::from_bytes(&hex::decode("B01DCA6484026C2ECDF3C822E64DEAAFC15EBCCE337EEE209C28513CB5351CDED8863A8E7B855CD471B55C91FAE611C548625C9A5916A555A24F72F3526FA508").unwrap()).unwrap();
-        assert!(signer_public_account
-            .verify_signature(data, signature)
-            .is_err());
+        assert!(signer_public_account.verify_signature(data, signature).is_err());
     }
 
     #[test]
@@ -187,8 +174,6 @@ mod tests {
 
         let data = "I am so so so awesome as always";
         let signature = Signature::from_bytes(&hex::decode("A01DCA6484026C2ECDF3C822E64DEAAFC15EBCCE337EEE209C28513CB5351CDED8863A8E7B855CD471B55C91FAE611C548625C9A5916A555A24F72F3526FA509").unwrap()).unwrap();
-        assert!(signer_public_account
-            .verify_signature(data, signature)
-            .is_err());
+        assert!(signer_public_account.verify_signature(data, signature).is_err());
     }
 }

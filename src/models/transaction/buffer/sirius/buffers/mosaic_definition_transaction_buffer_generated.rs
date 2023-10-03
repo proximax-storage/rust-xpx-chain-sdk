@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum MosaicDefinitionTransactionBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for MosaicDefinitionTransactionBuffer<'a> {
     type Inner = MosaicDefinitionTransactionBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -100,11 +92,10 @@ impl<'a> MosaicDefinitionTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MosaicDefinitionTransactionBuffer::VT_SIGNATURE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MosaicDefinitionTransactionBuffer::VT_SIGNATURE,
+                None,
+            )
         }
     }
     #[inline]
@@ -113,11 +104,10 @@ impl<'a> MosaicDefinitionTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MosaicDefinitionTransactionBuffer::VT_SIGNER,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MosaicDefinitionTransactionBuffer::VT_SIGNER,
+                None,
+            )
         }
     }
     #[inline]
@@ -148,11 +138,10 @@ impl<'a> MosaicDefinitionTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MosaicDefinitionTransactionBuffer::VT_MAX_FEE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicDefinitionTransactionBuffer::VT_MAX_FEE,
+                None,
+            )
         }
     }
     #[inline]
@@ -161,11 +150,10 @@ impl<'a> MosaicDefinitionTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MosaicDefinitionTransactionBuffer::VT_DEADLINE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicDefinitionTransactionBuffer::VT_DEADLINE,
+                None,
+            )
         }
     }
     #[inline]
@@ -185,11 +173,10 @@ impl<'a> MosaicDefinitionTransactionBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MosaicDefinitionTransactionBuffer::VT_MOSAIC_ID,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicDefinitionTransactionBuffer::VT_MOSAIC_ID,
+                None,
+            )
         }
     }
     #[inline]
@@ -199,10 +186,7 @@ impl<'a> MosaicDefinitionTransactionBuffer<'a> {
         // which contains a valid value in this slot
         unsafe {
             self._tab
-                .get::<u8>(
-                    MosaicDefinitionTransactionBuffer::VT_NUM_OPTIONAL_PROPERTIES,
-                    Some(0),
-                )
+                .get::<u8>(MosaicDefinitionTransactionBuffer::VT_NUM_OPTIONAL_PROPERTIES, Some(0))
                 .unwrap()
         }
     }
@@ -238,10 +222,7 @@ impl<'a> MosaicDefinitionTransactionBuffer<'a> {
         unsafe {
             self._tab.get::<flatbuffers::ForwardsUOffset<
                 flatbuffers::Vector<'a, flatbuffers::ForwardsUOffset<MosaicProperty>>,
-            >>(
-                MosaicDefinitionTransactionBuffer::VT_OPTIONAL_PROPERTIES,
-                None,
-            )
+            >>(MosaicDefinitionTransactionBuffer::VT_OPTIONAL_PROPERTIES, None)
         }
     }
 }
@@ -252,7 +233,6 @@ impl flatbuffers::Verifiable for MosaicDefinitionTransactionBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -283,11 +263,7 @@ impl flatbuffers::Verifiable for MosaicDefinitionTransactionBuffer<'_> {
                 Self::VT_MOSAIC_ID,
                 false,
             )?
-            .visit_field::<u8>(
-                "num_optional_properties",
-                Self::VT_NUM_OPTIONAL_PROPERTIES,
-                false,
-            )?
+            .visit_field::<u8>("num_optional_properties", Self::VT_NUM_OPTIONAL_PROPERTIES, false)?
             .visit_field::<u8>("flags", Self::VT_FLAGS, false)?
             .visit_field::<u8>("divisibility", Self::VT_DIVISIBILITY, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<
@@ -419,8 +395,7 @@ impl<'a: 'b, 'b> MosaicDefinitionTransactionBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_flags(&mut self, flags: u8) {
-        self.fbb_
-            .push_slot::<u8>(MosaicDefinitionTransactionBuffer::VT_FLAGS, flags, 0);
+        self.fbb_.push_slot::<u8>(MosaicDefinitionTransactionBuffer::VT_FLAGS, flags, 0);
     }
     #[inline]
     pub fn add_divisibility(&mut self, divisibility: u8) {
@@ -447,10 +422,7 @@ impl<'a: 'b, 'b> MosaicDefinitionTransactionBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> MosaicDefinitionTransactionBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        MosaicDefinitionTransactionBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        MosaicDefinitionTransactionBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<MosaicDefinitionTransactionBuffer<'a>> {

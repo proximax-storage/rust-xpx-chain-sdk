@@ -20,7 +20,10 @@ use crate::{
     network::NetworkType,
     TransactionHash,
 };
-use crate::transaction::{SignedTransaction, Transaction};
+use crate::multisig::CosignatureTransaction;
+use crate::transaction::{
+    AggregateTransaction, CosignatureSignedTransaction, SignedTransaction, Transaction,
+};
 
 use super::{Address, PublicAccount};
 
@@ -68,10 +71,7 @@ impl Account {
 
         let public_account = PublicAccount::from_public_key(&public_key_hex, network_type).unwrap();
 
-        Self {
-            key_pair,
-            public_account,
-        }
+        Self { key_pair, public_account }
     }
 
     /// Creates an Sirius `Account` from a given hex private key string.
@@ -102,15 +102,9 @@ impl Account {
     /// A `Result` whose okay value is an Sirius `Account` or whose error value
     /// is an `Error` describing the error that occurred.
     pub fn from_hex_private_key(private_key: &str, network_type: NetworkType) -> Result<Self> {
-        ensure!(
-            !private_key.is_empty(),
-            errors_const::ERR_INVALID_PRIVATE_KEY_LENGTH
-        );
+        ensure!(!private_key.is_empty(), errors_const::ERR_INVALID_PRIVATE_KEY_LENGTH);
 
-        ensure!(
-            private_key.len() == 64,
-            errors_const::ERR_INVALID_KEY_LENGTH
-        );
+        ensure!(private_key.len() == 64, errors_const::ERR_INVALID_KEY_LENGTH);
 
         ensure!(is_hex(private_key), errors_const::ERR_INVALID_KEY_HEX);
 
@@ -126,10 +120,7 @@ impl Account {
 
         let public_account = PublicAccount::from_public_key(&public_key_hex, network_type)?;
 
-        Ok(Self {
-            key_pair,
-            public_account,
-        })
+        Ok(Self { key_pair, public_account })
     }
 
     pub fn key_pair_to_owned(&self) -> Keypair {
@@ -209,11 +200,7 @@ impl Account {
     /// Signs raw data.
     #[inline]
     pub fn sign_data(&self, data: &str) -> Signature {
-        let data = if is_hex(data) {
-            hex::decode(data).unwrap()
-        } else {
-            Vec::from(data)
-        };
+        let data = if is_hex(data) { hex::decode(data).unwrap() } else { Vec::from(data) };
 
         self.key_pair.sign(data.as_ref())
     }
@@ -224,53 +211,41 @@ impl Account {
         tx: impl Transaction,
         generation_hash: TransactionHash,
     ) -> Result<SignedTransaction> {
-        ensure!(
-            !generation_hash.is_zero(),
-            errors_const::ERR_EMPTY_GENERATION_HASH
-        );
+        ensure!(!generation_hash.is_zero(), errors_const::ERR_EMPTY_GENERATION_HASH);
 
         tx.sign_with(self.to_owned(), generation_hash)
     }
 
     // /// Sign transaction with cosignatories creating a new signed_transaction.
-    // pub fn sign_with_cosignatories(
-    //     &self,
-    //     tx: AggregateTransaction,
-    //     cosignatories: Vec<Account>,
-    //     generation_hash: TransactionHash,
-    // ) -> Result<SignedTransaction> {
-    //     ensure!(
-    //         !generation_hash.is_zero(),
-    //         errors_const::ERR_EMPTY_GENERATION_HASH
-    //     );
-    //
-    //     tx.sign_with_cosignatories(self.to_owned(), cosignatories, generation_hash)
-    // }
+    pub fn sign_with_cosignatories(
+        &self,
+        tx: AggregateTransaction,
+        cosignatories: Vec<Account>,
+        generation_hash: TransactionHash,
+    ) -> Result<SignedTransaction> {
+        ensure!(!generation_hash.is_zero(), errors_const::ERR_EMPTY_GENERATION_HASH);
 
-    // /// Sign aggregate signature transaction.
-    // pub fn sign_cosignature_transaction(
-    //     &self,
-    //     tx: CosignatureTransaction,
-    // ) -> Result<CosignatureSignedTransaction> {
-    //     tx.sign_cosignature_transaction(self.to_owned())
-    // }
+        tx.sign_with_cosignatories(self.to_owned(), cosignatories, generation_hash)
+    }
+
+    /// Sign aggregate signature transaction.
+    pub fn sign_cosignature_transaction(
+        &self,
+        tx: CosignatureTransaction,
+    ) -> Result<CosignatureSignedTransaction> {
+        tx.sign_cosignature_transaction(self.to_owned())
+    }
 }
 
 impl fmt::Display for Account {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self.public_account).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self.public_account).unwrap_or_default())
     }
 }
 
 impl fmt::Debug for Account {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_tuple("Account")
-            .field(&self.public_account)
-            .finish()
+        f.debug_tuple("Account").field(&self.public_account).finish()
     }
 }
 
@@ -283,11 +258,7 @@ pub struct AccountName {
 
 impl fmt::Display for AccountName {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -346,32 +317,32 @@ pub mod tests {
     use crate::network::NetworkType;
 
     lazy_static! {
-        pub static ref TESTING_ACCOUNT: Account = Account::from_hex_private_key(
-            "26b64cb10f005e5988a36744ca19e20d835ccc7c105aaa5f3b212da593180930",
-            NetworkType::PrivateTest
-        )
-        .unwrap();
-        pub static ref MULTISIG_ACCOUNT: Account = Account::from_hex_private_key(
-            "5edebfdbeb32e9146d05ffd232c8af2cf9f396caf9954289daa0362d097fff3b",
-            NetworkType::PrivateTest
-        )
-        .unwrap();
-        pub static ref COSIGNATORY_ACCOUNT: Account = Account::from_hex_private_key(
-            "2a2b1f5d366a5dd5dc56c3c757cf4fe6c66e2787087692cf329d7a49a594658b",
-            NetworkType::PrivateTest
-        )
-        .unwrap();
-        pub static ref COSIGNATORY2_ACCOUNT: Account = Account::from_hex_private_key(
-            "b8afae6f4ad13a1b8aad047b488e0738a437c7389d4ff30c359ac068910c1d59",
-            NetworkType::PrivateTest
-        )
-        .unwrap();
-        pub static ref COSIGNATORY3_ACCOUNT: Account = Account::from_hex_private_key(
-            "111602be4d36f92dd60ca6a3c68478988578f26f6a02f8c72089839515ab603e",
-            NetworkType::PrivateTest
-        )
-        .unwrap();
-    }
+		pub static ref TESTING_ACCOUNT: Account = Account::from_hex_private_key(
+			"26b64cb10f005e5988a36744ca19e20d835ccc7c105aaa5f3b212da593180930",
+			NetworkType::PrivateTest
+		)
+		.unwrap();
+		pub static ref MULTISIG_ACCOUNT: Account = Account::from_hex_private_key(
+			"5edebfdbeb32e9146d05ffd232c8af2cf9f396caf9954289daa0362d097fff3b",
+			NetworkType::PrivateTest
+		)
+		.unwrap();
+		pub static ref COSIGNATORY_ACCOUNT: Account = Account::from_hex_private_key(
+			"2a2b1f5d366a5dd5dc56c3c757cf4fe6c66e2787087692cf329d7a49a594658b",
+			NetworkType::PrivateTest
+		)
+		.unwrap();
+		pub static ref COSIGNATORY2_ACCOUNT: Account = Account::from_hex_private_key(
+			"b8afae6f4ad13a1b8aad047b488e0738a437c7389d4ff30c359ac068910c1d59",
+			NetworkType::PrivateTest
+		)
+		.unwrap();
+		pub static ref COSIGNATORY3_ACCOUNT: Account = Account::from_hex_private_key(
+			"111602be4d36f92dd60ca6a3c68478988578f26f6a02f8c72089839515ab603e",
+			NetworkType::PrivateTest
+		)
+		.unwrap();
+	}
 
     #[cfg(test)]
     mod tests_account {
@@ -456,9 +427,7 @@ pub mod tests {
             let signed_with0x = account.sign_data("0xAA");
 
             assert!(public_account.verify_signature("AA", signed).is_ok());
-            assert!(public_account
-                .verify_signature("0xAA", signed_with0x)
-                .is_ok());
+            assert!(public_account.verify_signature("0xAA", signed_with0x).is_ok());
         }
 
         #[test]

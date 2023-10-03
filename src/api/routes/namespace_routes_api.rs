@@ -149,9 +149,7 @@ impl NamespaceRoutes {
             namespace_info.push(namespace_dto.compact()?);
         }
 
-        self.clone()
-            .__build_namespaces_hierarchy(&mut namespace_info)
-            .await;
+        self.clone().__build_namespaces_hierarchy(&mut namespace_info).await;
 
         Ok(namespace_info)
     }
@@ -168,10 +166,7 @@ impl NamespaceRoutes {
         }
 
         let accounts = AccountsId::from(
-            accounts_id
-                .into_iter()
-                .map(|item| item.address_str())
-                .collect::<Vec<_>>(),
+            accounts_id.into_iter().map(|item| item.address_str()).collect::<Vec<_>>(),
         );
 
         let mut req = __internal_request::ApiRequest::new(

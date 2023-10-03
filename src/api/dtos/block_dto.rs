@@ -59,11 +59,11 @@ impl BlockDto {
     ) -> Result<BlockInfo> {
         let dto = self;
 
-        let network_type = NetworkType::from_transaction_version(dto.version as u32)?;
+        let network_type = NetworkType::from_transaction_version(dto.version)?;
 
         let signer_public_account = PublicAccount::from_public_key(&dto.signer, network_type)?;
 
-        let version = extract_version(dto.version as u32);
+        let version = extract_version(dto.version);
 
         let beneficiary_public_account = if let Some(v) = dto.beneficiary {
             if v != "0000000000000000000000000000000000000000000000000000000000000000" {
@@ -75,11 +75,7 @@ impl BlockDto {
             Option::default()
         };
 
-        let fee_multiplier = if let Some(v) = dto.fee_multiplier {
-            v
-        } else {
-            0
-        };
+        let fee_multiplier = if let Some(v) = dto.fee_multiplier { v } else { 0 };
 
         let block_receipts_hash = if let Some(v) = dto.block_receipts_hash {
             TransactionHash::from_str(&v).map_err(|err| anyhow!(err))?
@@ -95,11 +91,8 @@ impl BlockDto {
 
         let fee_interest = if let Some(v) = dto.fee_interest { v } else { 0 };
 
-        let fee_interest_denominator = if let Some(v) = dto.fee_interest_denominator {
-            v
-        } else {
-            0
-        };
+        let fee_interest_denominator =
+            if let Some(v) = dto.fee_interest_denominator { v } else { 0 };
 
         Ok(BlockInfo {
             network_type,

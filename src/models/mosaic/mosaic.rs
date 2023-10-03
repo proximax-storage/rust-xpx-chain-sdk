@@ -72,19 +72,16 @@ impl Mosaic {
     /// divisibility of 3 the quantity is given in millis.
     pub fn create<I: UnresolvedMosaicId + 'static>(asset_id: I, amount: Amount) -> Result<Self> {
         ensure!(
-            amount <= Self::MAX_AMOUNT_ABSOLUTE,
-            format!(
-                "Invalid amount {}, the amount must be in the range of {} and {} atomic units.",
-                amount,
-                Self::MIN_AMOUNT,
-                Self::MAX_AMOUNT_ABSOLUTE
-            )
-        );
+			amount <= Self::MAX_AMOUNT_ABSOLUTE,
+			format!(
+				"Invalid amount {}, the amount must be in the range of {} and {} atomic units.",
+				amount,
+				Self::MIN_AMOUNT,
+				Self::MAX_AMOUNT_ABSOLUTE
+			)
+		);
 
-        Ok(Self {
-            asset_id: Box::new(asset_id),
-            amount,
-        })
+        Ok(Self { asset_id: Box::new(asset_id), amount })
     }
 
     /// Create `Mosaic` with relative amount.
@@ -101,44 +98,37 @@ impl Mosaic {
         divisibility: u8,
     ) -> Result<Self> {
         ensure!(
-            divisibility <= Self::MAX_DIVISIBILITY,
-            format!(
-                "Invalid divisibility {}, the divisibility must be in the range of 0 and 6.",
-                divisibility
-            )
-        );
+			divisibility <= Self::MAX_DIVISIBILITY,
+			format!(
+				"Invalid divisibility {}, the divisibility must be in the range of 0 and 6.",
+				divisibility
+			)
+		);
 
         let pow_divisibility = 10_u64.pow(divisibility as u32);
 
         let max_amount_relative = Self::MAX_AMOUNT_ABSOLUTE / pow_divisibility;
         ensure!(
-            amount <= max_amount_relative,
-            format!(
-                "Invalid amount {}, the relative amount must be in the range of {} and {} units.",
-                amount,
-                Self::MIN_AMOUNT,
-                max_amount_relative
-            )
-        );
+			amount <= max_amount_relative,
+			format!(
+				"Invalid amount {}, the relative amount must be in the range of {} and {} units.",
+				amount,
+				Self::MIN_AMOUNT,
+				max_amount_relative
+			)
+		);
 
         Self::create(id, amount * pow_divisibility)
     }
 
     pub fn xpx(amount: Amount) -> Self {
-        assert!(
-            amount <= XPX_MAX_VALUE,
-            "Maximum xpx value must be {}",
-            XPX_MAX_VALUE
-        );
+        assert!(amount <= XPX_MAX_VALUE, "Maximum xpx value must be {}", XPX_MAX_VALUE);
 
         assert!(amount > 0, "Minimum xpx value must be {}", XPX_MIN_VALUE);
 
         let xpx_mosaic_id = Box::new(MosaicId::from(PRX_XPX_U64));
 
-        Self {
-            asset_id: xpx_mosaic_id,
-            amount,
-        }
+        Self { asset_id: xpx_mosaic_id, amount }
     }
 
     pub fn xpx_relative(amount: Amount) -> Self {
@@ -148,11 +138,7 @@ impl Mosaic {
             XPX_MAX_RELATIVE_VALUE
         );
 
-        assert!(
-            amount > 0,
-            "Minimum xpx relative value must be {}",
-            XPX_MIN_VALUE
-        );
+        assert!(amount > 0, "Minimum xpx relative value must be {}", XPX_MIN_VALUE);
 
         Mosaic::xpx(amount * XPX_DIVISIBILITY)
     }
@@ -160,11 +146,7 @@ impl Mosaic {
 
 impl fmt::Display for Mosaic {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 

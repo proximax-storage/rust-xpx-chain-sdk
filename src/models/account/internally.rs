@@ -90,13 +90,7 @@ pub(crate) fn verify_signature(
 ) -> Result<()> {
     // ensure!(!data.is_empty(), "data cannot be empty");
 
-    let data = if is_hex(data) {
-        hex::decode(data)?
-    } else {
-        Vec::from(data)
-    };
+    let data = if is_hex(data) { hex::decode(data)? } else { Vec::from(data) };
 
-    public_key
-        .verify(data.as_ref(), &signature)
-        .map_err(|err| anyhow!(err))
+    public_key.verify(data.as_ref(), &signature).map_err(|err| anyhow!(err))
 }

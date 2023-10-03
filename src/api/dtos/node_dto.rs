@@ -68,9 +68,6 @@ impl NodeTimeDto {
             receive = value.compact();
         };
 
-        NodeTime {
-            send_timestamp: Some(send),
-            receive_timestamp: Some(receive),
-        }
+        NodeTime { send_timestamp: Some(send), receive_timestamp: Some(receive) }
     }
 }

@@ -4,20 +4,23 @@
  * license that can be found in the LICENSE file.
  */
 
+use ::std::fmt;
 use std::any::Any;
-
-use {::std::fmt, serde_json::Value};
+use serde_json::Value;
 
 use crate::{
     account::PublicAccount,
-    models::consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE},
     mosaic::{MosaicId, MosaicNonce, MosaicProperties},
     network::NetworkType,
 };
+use crate::models::consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE};
+use crate::transaction::buffers;
+use crate::transaction::internal::mosaic_property_array_to_buffer;
+use crate::transaction::schema::mosaic_definition_transaction_schema;
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline,
-    internal::mosaic_property_array_to_buffer, schema::mosaic_definition_transaction_schema, Transaction, TransactionType,
+    CommonTransaction,
+    deadline::Deadline, Transaction, TransactionType,
     TransactionVersion,
 };
 
@@ -68,10 +71,7 @@ impl MosaicDefinitionTransaction {
             Some(Default::default()),
             None,
         );
-        MosaicDefinitionTransactionBuilder {
-            common: Some(common),
-            ..Default::default()
-        }
+        MosaicDefinitionTransactionBuilder { common: Some(common), ..Default::default() }
     }
 }
 
@@ -150,10 +150,6 @@ impl Transaction for MosaicDefinitionTransaction {
 
 impl fmt::Display for MosaicDefinitionTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

@@ -4,23 +4,25 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::any::Any;
 use std::fmt;
 
 use anyhow::Result;
-
-use {::std::any::Any, serde_json::Value};
+use serde_json::Value;
 
 use crate::{
-    account::PublicAccount,
     errors_const,
-    models::consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE},
     multisig::CosignatoryModification,
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE};
+use crate::transaction::buffers;
+use crate::transaction::internal::cosignatory_modification_array_to_buffer;
+use crate::transaction::schema::modify_multisig_account_transaction_schema;
 
 use super::{
-    buffers, CommonTransaction,
-    Deadline, internal::cosignatory_modification_array_to_buffer, schema::modify_multisig_account_transaction_schema, Transaction,
+    CommonTransaction, Deadline, Transaction,
     TransactionType, TransactionVersion,
 };
 
@@ -42,24 +44,15 @@ pub struct ModifyMultisigAccountTransaction {
 impl ModifyMultisigAccountTransactionBuilder {
     fn validate(&self) -> Result<()> {
         if let Some(ref modifications) = self.modifications {
-            ensure!(
-                !modifications.is_empty(),
-                errors_const::ERR_EMPTY_MODIFICATIONS
-            );
+            ensure!(!modifications.is_empty(), errors_const::ERR_EMPTY_MODIFICATIONS);
         }
 
         if let Some(min_approval_delta) = self.min_approval_delta {
-            ensure!(
-                min_approval_delta != 0,
-                errors_const::ERR_EMPTY_MODIFICATIONS
-            );
+            ensure!(min_approval_delta != 0, errors_const::ERR_EMPTY_MODIFICATIONS);
         }
 
         if let Some(min_removal_delta) = self.min_removal_delta {
-            ensure!(
-                min_removal_delta != 0,
-                errors_const::ERR_EMPTY_MODIFICATIONS
-            );
+            ensure!(min_removal_delta != 0, errors_const::ERR_EMPTY_MODIFICATIONS);
         }
 
         Ok(())
@@ -88,10 +81,7 @@ impl ModifyMultisigAccountTransaction {
             Some(Default::default()),
             None,
         );
-        ModifyMultisigAccountTransactionBuilder {
-            common: Some(common),
-            ..Default::default()
-        }
+        ModifyMultisigAccountTransactionBuilder { common: Some(common), ..Default::default() }
     }
 }
 
@@ -163,10 +153,6 @@ impl Transaction for ModifyMultisigAccountTransaction {
 
 impl fmt::Display for ModifyMultisigAccountTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

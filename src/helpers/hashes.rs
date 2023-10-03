@@ -18,9 +18,9 @@ pub type TransactionHash = H256;
 pub type Signer = H256;
 
 construct_fixed_hash! {
-    /// Symbol 256 bit hash type.
-    #[derive(Deserialize)]
-    pub struct H256(32);
+	/// Symbol 256 bit hash type.
+	// #[derive(Deserialize)]
+	pub struct H256(32);
 }
 
 impl Serialize for H256 {
@@ -32,9 +32,19 @@ impl Serialize for H256 {
     }
 }
 
+impl<'de> Deserialize<'de> for H256 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+    {
+        let string = String::deserialize(deserializer)?;
+        H256::from_str(string.as_ref()).map_err(|e| D::Error::custom(e))
+    }
+}
+
 construct_fixed_hash! {
-    /// Symbol 512 bit hash type.
-    pub struct H512(64);
+	/// Symbol 512 bit hash type.
+	pub struct H512(64);
 }
 
 impl<'de> Deserialize<'de> for H512 {
@@ -48,8 +58,8 @@ impl<'de> Deserialize<'de> for H512 {
 }
 
 construct_fixed_hash! {
-    /// Symbol 200 bit hash type.
-    pub struct H200(25);
+	/// Symbol 200 bit hash type.
+	pub struct H200(25);
 }
 
 impl H200 {

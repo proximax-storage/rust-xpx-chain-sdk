@@ -1,10 +1,10 @@
 use std::{
-    convert::{TryFrom, TryInto},
-    fmt,
-    future::Future,
-    pin::Pin,
-    str::FromStr,
-    time::Duration,
+	convert::{TryFrom, TryInto},
+	fmt,
+	future::Future,
+	pin::Pin,
+	str::FromStr,
+	time::Duration,
 };
 
 use bytes::Bytes;
@@ -12,8 +12,8 @@ use hyper::header::HeaderValue;
 use hyper::Uri;
 
 use crate::api::{
-    self,
-    transport::{Error, service},
+	self,
+	transport::{Error, service},
 };
 
 use super::Client;
@@ -24,10 +24,7 @@ use super::Client;
 #[derive(Clone, Builder)]
 #[builder(create_empty = "empty", build_fn(error = "crate::api::error::Error"))]
 pub struct ApiNode {
-    #[builder(
-    setter(custom),
-    default = "Uri::from_static(\"http:://127.0.0.1:3000\")"
-    )]
+    #[builder(setter(custom), default = "Uri::from_static(\"http:://127.0.0.1:3000\")")]
     pub(crate) uri: Uri,
     #[builder(setter(strip_option), default)]
     pub(crate) user_agent: Option<HeaderValue>,
@@ -180,7 +177,6 @@ impl ApiNode {
     /// ```
     /// # use hyper::Uri;
     /// use xpx_chain_sdk::api::ApiNode;
-    /// # use http::Uri;
     /// let node = ApiNode::from_static("http://api-1.testnet2.xpxsirius.io:3000");
     ///
     /// assert_eq!(node.uri(), &Uri::from_static("http://api-1.testnet2.xpxsirius.io:3000"));

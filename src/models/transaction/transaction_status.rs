@@ -31,13 +31,7 @@ impl TransactionStatus {
         deadline: Option<Deadline>,
         height: Option<Height>,
     ) -> Self {
-        TransactionStatus {
-            group,
-            status,
-            hash,
-            deadline,
-            height,
-        }
+        TransactionStatus { group, status, hash, deadline, height }
     }
 
     pub fn is_success(&self) -> bool {
@@ -64,10 +58,6 @@ impl TransactionStatus {
 
 impl fmt::Display for TransactionStatus {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

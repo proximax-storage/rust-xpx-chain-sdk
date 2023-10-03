@@ -85,24 +85,21 @@ impl Client {
         Ok(Self::builder(uri))
     }
 
-    pub(crate) fn new(connector: TimeoutConnector, endpoint: ApiNode) -> Self
-    {
+    pub(crate) fn new(connector: TimeoutConnector, endpoint: ApiNode) -> Self {
         let svc = Connection::lazy(connector, endpoint);
 
-        Client {
-            inner: svc,
-        }
+        Client { inner: svc }
     }
 
-    pub(crate) async fn connect(connector: TimeoutConnector, endpoint: ApiNode) -> Result<Self, super::Error>
-    {
+    pub(crate) async fn connect(
+        connector: TimeoutConnector,
+        endpoint: ApiNode,
+    ) -> Result<Self, super::Error> {
         let svc = Connection::connect(connector, endpoint)
             .await
             .map_err(super::Error::from_source)?;
 
-        Ok(Client {
-            inner: svc,
-        })
+        Ok(Client { inner: svc })
     }
 }
 
@@ -157,11 +154,7 @@ impl Client {
 
     /// Get Resolver ApiClient routes.
     pub fn resolver_api(&self) -> Box<ResolverRoutes> {
-        Box::new(ResolverRoutes::new(
-            self.__client(),
-            *self.namespace_api(),
-            *self.mosaic_api(),
-        ))
+        Box::new(ResolverRoutes::new(self.__client(), *self.namespace_api(), *self.mosaic_api()))
     }
 
     // /// Get Metadata ApiClient routes.
@@ -189,7 +182,6 @@ impl Service<Request> for Client {
         Box::pin(async move { fut.await.map_err(Into::into) })
     }
 }
-
 
 impl fmt::Debug for Client {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

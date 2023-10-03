@@ -37,13 +37,13 @@ impl MosaicNonce {
     pub fn from_hex(hex: &str) -> Result<MosaicNonce> {
         ensure!(is_hex(hex), "Invalid hex string");
         ensure!(
-            hex.len() == Self::LENGTH_IN_HEX,
-            format!(
-                "Invalid hex size for nonce, should be {} bytes but received {}'",
-                Self::LENGTH_IN_HEX,
-                hex.len()
-            )
-        );
+			hex.len() == Self::LENGTH_IN_HEX,
+			format!(
+				"Invalid hex size for nonce, should be {} bytes but received {}'",
+				Self::LENGTH_IN_HEX,
+				hex.len()
+			)
+		);
 
         let bytes = <[u8; Self::LENGTH]>::from_hex(hex)?;
 

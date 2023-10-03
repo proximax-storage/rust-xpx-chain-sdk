@@ -35,16 +35,13 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let info = namespace_api.get_namespace_info(namespace_id_one).await;
     match info {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_namespace_info: {}\n",
-            err
-        ),
+        Err(err) => {
+            eprintln!("Exception when calling namespace_api->get_namespace_info: {}\n", err)
+        }
     }
 
     // Get namespaces owned by an account.
-    let info = namespace_api
-        .get_namespaces_from_account(address_one, None)
-        .await;
+    let info = namespace_api.get_namespaces_from_account(address_one, None).await;
     match info {
         Ok(resp) => println!("{:#?}", resp),
         Err(err) => eprintln!(
@@ -71,10 +68,9 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         .await;
     match info {
         Ok(resp) => println!("{:#?}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling namespace_api->get_namespaces_names: {}\n",
-            err
-        ),
+        Err(err) => {
+            eprintln!("Exception when calling namespace_api->get_namespaces_names: {}\n", err)
+        }
     }
     Ok(())
 }

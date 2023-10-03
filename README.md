@@ -20,19 +20,24 @@ xpx-chain-sdk = { git = "https://github.com/proximax-storage/rust-xpx-chain-sdk"
 
 ```rust
 #[tokio::main]
-async fn main() {
-    let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-
-    let sirius_client = xpx_chain_sdk::api::ApiNode::new(node_url).await;
-    let client = match sirius_client {
-        Ok(resp) => resp,
-        Err(err) => panic!("{}", err),
-    };
+async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
+    let client = ApiNode::builder()
+        .uri("http://bctestnet3.brimstone.xpxsirius.io:3000")
+        // .timeout(Duration::from_secs(1))
+        .connect_timeout(Duration::from_secs(5))
+        .max_num_retry(2)
+        .concurrency_limit(100)
+        .build()?
+        .connect()
+        .await?;
 
     //let account_id: &str = "VC6LFNKEQQEI5DOAA2OJLL4XRPDNPLRJDH6T2B7X";
     let account_id: &str = "5649D09FB884424AB5E3ED16B965CF69E3048A5E641287C319AC3DE995C97FB0";
 
-    let account_info = client.account_api().account_info(account_id).await;
+    // Create an Address from a given public key.
+    let account = PublicAccount::from_public_key(account_id, network_type).unwrap();
+    
+    let account_info = client.account_api().account_info(account).await;
     match account_info {
         Ok(resp) => println!("{}", resp),
         Err(err) => eprintln!("{}", err),

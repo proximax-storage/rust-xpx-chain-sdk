@@ -24,22 +24,24 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
         .connect()
         .await?;
 
-    let chain = client.chain_api().get_block_by_height(1).await?;
+    let block_info = client.chain_api().get_block_by_height(1).await?;
 
     // // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
-    let network_type = chain.network_type;
-    let generation_hash = chain.generation_hash;
+    let network_type = block_info.network_type;
+    let generation_hash = block_info.generation_hash;
 
     let private_key: &str = "970F8FE51765D1E426C0FE895B7B217FB47C39D049C68EEDFD71FB523812DF10";
 
     // Create an [Account] from a given Private key.
     let account = Account::from_hex_private_key(private_key, network_type)?;
 
+    println!("{}", account.address_str());
+
     let mut metadata_txn = MetadataV2AccountTransaction::builder(
         Deadline::default(),
         account.public_account,
-        "Rust SDK",
-        "Hello world",
+        "branch_id",
+        format!("{:X}", generation_hash),
         None,
         network_type,
         None,

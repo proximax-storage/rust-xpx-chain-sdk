@@ -70,21 +70,13 @@ pub struct Offer {
 
 impl Offer {
     pub fn create(offer_type: OfferType, mosaic: Mosaic, cost: Amount) -> Self {
-        Self {
-            r#type: offer_type,
-            mosaic,
-            cost,
-        }
+        Self { r#type: offer_type, mosaic, cost }
     }
 }
 
 impl fmt::Display for Offer {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -104,11 +96,7 @@ impl AddOffer {
 
 impl fmt::Display for AddOffer {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -121,20 +109,13 @@ pub struct RemoveOffer {
 
 impl RemoveOffer {
     pub fn create(offer_type: OfferType, asset_id: impl UnresolvedMosaicId + 'static) -> Self {
-        Self {
-            r#type: offer_type,
-            asset_id: Box::new(asset_id),
-        }
+        Self { r#type: offer_type, asset_id: Box::new(asset_id) }
     }
 }
 
 impl fmt::Display for RemoveOffer {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -150,11 +131,7 @@ pub struct OfferInfo {
 
 impl fmt::Display for OfferInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -167,11 +144,7 @@ pub struct OfferIdInfo {
 
 impl fmt::Display for OfferIdInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -192,11 +165,7 @@ pub struct Exchange {
 
 impl fmt::Display for Exchange {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -207,11 +176,7 @@ pub struct ExchangeInfo {
 
 impl fmt::Display for ExchangeInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{:?}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{:?}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -231,11 +196,7 @@ impl ExchangeConfirmation {
 
 impl fmt::Display for ExchangeConfirmation {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -265,10 +226,6 @@ impl UserExchangeInfo {
 
 impl fmt::Display for UserExchangeInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }

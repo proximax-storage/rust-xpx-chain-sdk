@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum MetadataModificationBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for MetadataModificationBuffer<'a> {
     type Inner = MetadataModificationBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -68,11 +60,7 @@ impl<'a> MetadataModificationBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u32>(MetadataModificationBuffer::VT_SIZE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u32>(MetadataModificationBuffer::VT_SIZE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn modification_type(&self) -> u8 {
@@ -90,11 +78,7 @@ impl<'a> MetadataModificationBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u8>(MetadataModificationBuffer::VT_KEY_SIZE, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u8>(MetadataModificationBuffer::VT_KEY_SIZE, Some(0)).unwrap() }
     }
     #[inline]
     pub fn value_size(&self) -> Option<flatbuffers::Vector<'a, u8>> {
@@ -102,11 +86,10 @@ impl<'a> MetadataModificationBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MetadataModificationBuffer::VT_VALUE_SIZE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MetadataModificationBuffer::VT_VALUE_SIZE,
+                None,
+            )
         }
     }
     #[inline]
@@ -115,11 +98,10 @@ impl<'a> MetadataModificationBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MetadataModificationBuffer::VT_KEY,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MetadataModificationBuffer::VT_KEY,
+                None,
+            )
         }
     }
     #[inline]
@@ -128,11 +110,10 @@ impl<'a> MetadataModificationBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    MetadataModificationBuffer::VT_VALUE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                MetadataModificationBuffer::VT_VALUE,
+                None,
+            )
         }
     }
 }
@@ -143,7 +124,6 @@ impl flatbuffers::Verifiable for MetadataModificationBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u32>("size_", Self::VT_SIZE_, false)?
             .visit_field::<u8>("modification_type", Self::VT_MODIFICATION_TYPE, false)?
@@ -199,8 +179,7 @@ pub struct MetadataModificationBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> MetadataModificationBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_size_(&mut self, size_: u32) {
-        self.fbb_
-            .push_slot::<u32>(MetadataModificationBuffer::VT_SIZE_, size_, 0);
+        self.fbb_.push_slot::<u32>(MetadataModificationBuffer::VT_SIZE_, size_, 0);
     }
     #[inline]
     pub fn add_modification_type(&mut self, modification_type: u8) {
@@ -212,8 +191,7 @@ impl<'a: 'b, 'b> MetadataModificationBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_key_size(&mut self, key_size: u8) {
-        self.fbb_
-            .push_slot::<u8>(MetadataModificationBuffer::VT_KEY_SIZE, key_size, 0);
+        self.fbb_.push_slot::<u8>(MetadataModificationBuffer::VT_KEY_SIZE, key_size, 0);
     }
     #[inline]
     pub fn add_value_size(
@@ -242,10 +220,7 @@ impl<'a: 'b, 'b> MetadataModificationBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> MetadataModificationBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        MetadataModificationBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        MetadataModificationBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<MetadataModificationBuffer<'a>> {

@@ -28,9 +28,7 @@ impl SharedExec {
         where
             E: Executor<BoxFuture<'static, ()>> + Send + Sync + 'static,
     {
-        Self {
-            inner: Arc::new(exec),
-        }
+        Self { inner: Arc::new(exec) }
     }
 
     pub(crate) fn tokio() -> Self {

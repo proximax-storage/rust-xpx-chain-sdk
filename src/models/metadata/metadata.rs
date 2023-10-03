@@ -122,11 +122,7 @@ pub struct AddressMetadataInfo {
 
 impl fmt::Display for AddressMetadataInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -138,11 +134,7 @@ pub struct MosaicMetadataInfo {
 
 impl fmt::Display for MosaicMetadataInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -154,11 +146,7 @@ pub struct NamespaceMetadataInfo {
 
 impl fmt::Display for NamespaceMetadataInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -175,10 +163,8 @@ impl From<Vec<&str>> for MetadataIds {
     fn from(ids: Vec<&str>) -> Self {
         let mut metadata_ids = MetadataIds::default();
 
-        let addresses: Vec<String> = ids
-            .into_iter()
-            .map(|id| id.trim().replace("-", "").to_uppercase())
-            .collect();
+        let addresses: Vec<String> =
+            ids.into_iter().map(|id| id.trim().replace("-", "").to_uppercase()).collect();
 
         if !addresses.is_empty() {
             metadata_ids.ids = Some(addresses);
@@ -225,11 +211,7 @@ pub struct MetadataModification {
 
 impl MetadataModification {
     pub fn new(modification_type: MetadataModificationType, key: &str, value: &str) -> Self {
-        Self {
-            r#type: modification_type,
-            key: key.to_string(),
-            value: value.to_string(),
-        }
+        Self { r#type: modification_type, key: key.to_string(), value: value.to_string() }
     }
 
     pub fn size(&self) -> usize {
@@ -244,10 +226,6 @@ impl MetadataModification {
 
 impl fmt::Display for MetadataModification {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

@@ -281,14 +281,8 @@ pub trait AsUint64 {
     #[inline]
     fn from_bits(lower: u32, higher: u32) -> u64 {
         let mut buf = [0x0; Uint64::BYTES];
-        buf[..4]
-            .as_mut()
-            .write(&higher.to_be_bytes())
-            .expect("higher write error");
-        buf[4..]
-            .as_mut()
-            .write(&lower.to_be_bytes())
-            .expect("lower write error");
+        buf[..4].as_mut().write(&higher.to_be_bytes()).expect("higher write error");
+        buf[4..].as_mut().write(&lower.to_be_bytes()).expect("lower write error");
         u64::from_be_bytes(buf)
     }
 
@@ -324,30 +318,12 @@ mod tests {
     }
 
     static HEX_TEST_VECTORS: &[TestVector] = &[
-        TestVector {
-            str: "0000000000000000",
-            dto: [0, 0],
-        }, // "0"
-        TestVector {
-            str: "000000000000A1B2",
-            dto: [0xa1b2, 0],
-        }, // "(0, 8)"
-        TestVector {
-            str: "0000000012345678",
-            dto: [0x12345678, 0],
-        }, // "8"
-        TestVector {
-            str: "0000ABCD12345678",
-            dto: [0x12345678, 0xabcd],
-        }, //"(8, 16)"
-        TestVector {
-            str: "1234567890ABCDEF",
-            dto: [0x90abcdef, 0x12345678],
-        }, // "16"
-        TestVector {
-            str: "FFFFFFFFFFFFFFFF",
-            dto: [0xffffffff, 0xffffffff],
-        }, // "16 (max value)"
+        TestVector { str: "0000000000000000", dto: [0, 0] }, // "0"
+        TestVector { str: "000000000000A1B2", dto: [0xa1b2, 0] }, // "(0, 8)"
+        TestVector { str: "0000000012345678", dto: [0x12345678, 0] }, // "8"
+        TestVector { str: "0000ABCD12345678", dto: [0x12345678, 0xabcd] }, //"(8, 16)"
+        TestVector { str: "1234567890ABCDEF", dto: [0x90abcdef, 0x12345678] }, // "16"
+        TestVector { str: "FFFFFFFFFFFFFFFF", dto: [0xffffffff, 0xffffffff] }, // "16 (max value)"
     ];
 
     #[test]

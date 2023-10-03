@@ -104,9 +104,7 @@ pub(crate) fn build_scoped_metadata_key<T: fmt::Display + 'static>(
     } else if TypeId::of::<u64>() == scoped_key.type_id() {
         u64::from_str(&scoped_key.to_string())?
     } else {
-        return Err(anyhow!(
-            errors_const::ERR_METADATA_INVALID_SCOPED_METADATA_KEY_TYPE
-        ));
+        return Err(anyhow!(errors_const::ERR_METADATA_INVALID_SCOPED_METADATA_KEY_TYPE));
     })
 }
 

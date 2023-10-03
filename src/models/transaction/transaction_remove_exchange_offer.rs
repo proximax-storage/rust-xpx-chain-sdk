@@ -5,22 +5,23 @@
  */
 
 use std::any::Any;
-
 use anyhow::Result;
+use serde_json::Value;
 
-use {::std::fmt, fb::FlatBufferBuilder, serde_json::Value};
+use {::std::fmt, fb::FlatBufferBuilder};
+use crate::account::PublicAccount;
 
 use crate::models::{
-    account::PublicAccount,
-    consts::{REMOVE_EXCHANGE_OFFER_HEADER_SIZE, REMOVE_EXCHANGE_OFFER_SIZE},
     errors_const,
     exchange::RemoveOffer,
     network::NetworkType,
 };
+use crate::models::consts::{REMOVE_EXCHANGE_OFFER_HEADER_SIZE, REMOVE_EXCHANGE_OFFER_SIZE};
+use crate::transaction::schema::remove_exchange_offer_transaction_schema;
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline,
-    schema::remove_exchange_offer_transaction_schema, Transaction, TransactionType, TransactionVersion,
+    buffers, CommonTransaction,
+    deadline::Deadline, Transaction, TransactionType, TransactionVersion,
 };
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -116,11 +117,7 @@ impl Transaction for RemoveExchangeOfferTransaction {
 
 impl fmt::Display for RemoveExchangeOfferTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 

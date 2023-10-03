@@ -397,10 +397,7 @@ impl AccountRoutes {
         valid_vec_len(&addresses, ERR_EMPTY_ADDRESSES_IDS)?;
 
         let accounts = AccountsId::from(
-            addresses
-                .into_iter()
-                .map(|item| item.address_str())
-                .collect::<Vec<_>>(),
+            addresses.into_iter().map(|item| item.address_str()).collect::<Vec<_>>(),
         );
 
         let mut req = __internal_request::ApiRequest::new(

@@ -53,7 +53,7 @@ impl MosaicRoutes {
     /// use xpx_chain_sdk::mosaic::MosaicId;
     ///
     ///#[tokio::main]
-    ///async fn main() {    
+    ///async fn main() {
     /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
     /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
@@ -187,10 +187,7 @@ impl MosaicRoutes {
 
         let dto: Vec<MosaicNamesDto> = req.execute(self.__client()).await?;
 
-        let mosaics_names = dto
-            .into_iter()
-            .map(move |name_dto| name_dto.compact())
-            .collect();
+        let mosaics_names = dto.into_iter().map(move |name_dto| name_dto.compact()).collect();
 
         Ok(mosaics_names)
     }
@@ -211,10 +208,7 @@ impl MosaicRoutes {
 
         let dto: Vec<MosaicRichListDTO> = req.execute(self.__client()).await?;
 
-        let mosaics_names = dto
-            .into_iter()
-            .map(move |name_dto| name_dto.compact())
-            .collect();
+        let mosaics_names = dto.into_iter().map(move |name_dto| name_dto.compact()).collect();
 
         Ok(mosaics_names)
     }

@@ -40,10 +40,7 @@ impl MetadataV2NamespaceTransaction {
         max_fee: Option<u64>,
     ) -> Result<Self> {
         if let Some(old) = old_value {
-            ensure!(
-                new_value != old,
-                errors_const::ERR_METADATA_VALUE_IS_THE_SAME
-            );
+            ensure!(new_value != old, errors_const::ERR_METADATA_VALUE_IS_THE_SAME);
         }
 
         let scoped_metadata_key = build_scoped_metadata_key(scoped_key)?;
@@ -66,10 +63,7 @@ impl MetadataV2NamespaceTransaction {
             scoped_metadata_key,
         )?;
 
-        Ok(Self {
-            metadata,
-            namespace_id,
-        })
+        Ok(Self { metadata, namespace_id })
     }
 
     pub fn create<T: fmt::Display + 'static>(
@@ -83,10 +77,7 @@ impl MetadataV2NamespaceTransaction {
         max_fee: Option<u64>,
     ) -> Result<Self> {
         if let Some(old) = old_value {
-            ensure!(
-                new_value != old,
-                errors_const::ERR_METADATA_VALUE_IS_THE_SAME
-            );
+            ensure!(new_value != old, errors_const::ERR_METADATA_VALUE_IS_THE_SAME);
         }
 
         let scoped_metadata_key = build_scoped_metadata_key(scoped_key)?;
@@ -109,10 +100,7 @@ impl MetadataV2NamespaceTransaction {
             scoped_metadata_key,
         )?;
 
-        Ok(Self {
-            metadata,
-            namespace_id,
-        })
+        Ok(Self { metadata, namespace_id })
     }
 }
 
@@ -136,8 +124,7 @@ impl Transaction for MetadataV2NamespaceTransaction {
         let mut builder = fb::FlatBufferBuilder::new();
 
         let target_id = builder.create_vector(&self.namespace_id.to_builder());
-        self.metadata
-            .embedded_to_bytes(&mut builder, target_id, self.size())
+        self.metadata.embedded_to_bytes(&mut builder, target_id, self.size())
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
@@ -159,10 +146,6 @@ impl Transaction for MetadataV2NamespaceTransaction {
 
 impl fmt::Display for MetadataV2NamespaceTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

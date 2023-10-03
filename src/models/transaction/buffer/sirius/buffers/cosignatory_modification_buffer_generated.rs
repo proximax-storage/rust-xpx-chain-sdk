@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum CosignatoryModificationBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for CosignatoryModificationBuffer<'a> {
     type Inner = CosignatoryModificationBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -56,11 +48,7 @@ impl<'a> CosignatoryModificationBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u8>(CosignatoryModificationBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u8>(CosignatoryModificationBuffer::VT_TYPE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn cosignatory_public_key(&self) -> Option<flatbuffers::Vector<'a, u8>> {
@@ -68,11 +56,10 @@ impl<'a> CosignatoryModificationBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    CosignatoryModificationBuffer::VT_COSIGNATORY_PUBLIC_KEY,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                CosignatoryModificationBuffer::VT_COSIGNATORY_PUBLIC_KEY,
+                None,
+            )
         }
     }
 }
@@ -83,7 +70,6 @@ impl flatbuffers::Verifiable for CosignatoryModificationBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u8>("type_", Self::VT_TYPE_, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -104,10 +90,7 @@ pub struct CosignatoryModificationBufferArgs<'a> {
 impl<'a> Default for CosignatoryModificationBufferArgs<'a> {
     #[inline]
     fn default() -> Self {
-        CosignatoryModificationBufferArgs {
-            type_: 0,
-            cosignatory_public_key: None,
-        }
+        CosignatoryModificationBufferArgs { type_: 0, cosignatory_public_key: None }
     }
 }
 
@@ -119,8 +102,7 @@ pub struct CosignatoryModificationBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> CosignatoryModificationBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_type_(&mut self, type_: u8) {
-        self.fbb_
-            .push_slot::<u8>(CosignatoryModificationBuffer::VT_TYPE_, type_, 0);
+        self.fbb_.push_slot::<u8>(CosignatoryModificationBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_cosignatory_public_key(
@@ -137,10 +119,7 @@ impl<'a: 'b, 'b> CosignatoryModificationBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> CosignatoryModificationBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        CosignatoryModificationBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        CosignatoryModificationBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<CosignatoryModificationBuffer<'a>> {

@@ -4,24 +4,24 @@
  * license that can be found in the LICENSE file.
  */
 
-use std::any::Any;
-
 use anyhow::{bail, ensure};
 use anyhow::Result;
 
-use {
-    ::std::fmt::{self, Display, Formatter},
-    serde_json::Value,
-};
+use ::std::fmt::{self, Display, Formatter};
+use std::any::Any;
+use serde_json::Value;
 
 use crate::{
-    account::{AccountPropertiesMosaicModification, AccountPropertyType, PublicAccount},
-    models::consts::{ACCOUNT_PROPERTIES_MOSAIC_MODIFICATION_SIZE, ACCOUNT_PROPERTY_MOSAIC_HEADER},
+    account::{AccountPropertiesMosaicModification, AccountPropertyType},
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{ACCOUNT_PROPERTIES_MOSAIC_MODIFICATION_SIZE, ACCOUNT_PROPERTY_MOSAIC_HEADER};
+use crate::transaction::buffers;
+use crate::transaction::schema::account_property_transaction_schema;
 
 use super::{
-    buffers, CommonTransaction, Deadline, schema::account_property_transaction_schema, Transaction,
+    CommonTransaction, Deadline, Transaction,
     TransactionType, TransactionVersion,
 };
 
@@ -41,10 +41,7 @@ impl AccountPropertiesMosaicTransaction {
         network_type: NetworkType,
         max_fee: Option<u64>,
     ) -> Result<Self> {
-        ensure!(
-            !modifications.is_empty(),
-            "modifications must not be empty."
-        );
+        ensure!(!modifications.is_empty(), "modifications must not be empty.");
 
         if property_type.value() & AccountPropertyType::AllowMosaic.value() == 0 {
             bail!("wrong propertyType for mosaic account properties")
@@ -58,11 +55,7 @@ impl AccountPropertiesMosaicTransaction {
             max_fee,
         );
 
-        Ok(Self {
-            common: abs_tx,
-            property_type,
-            modifications,
-        })
+        Ok(Self { common: abs_tx, property_type, modifications })
     }
 }
 
@@ -149,10 +142,6 @@ impl Transaction for AccountPropertiesMosaicTransaction {
 
 impl Display for AccountPropertiesMosaicTransaction {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

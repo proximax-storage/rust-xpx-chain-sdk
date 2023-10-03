@@ -25,17 +25,11 @@ impl PlainMessage {
     /// Create a new `PlainMessage`.
     ///
     pub fn create(message: &str) -> Self {
-        Self {
-            r#type: MessageType::PlainMessageType,
-            payload: message.into(),
-        }
+        Self { r#type: MessageType::PlainMessageType, payload: message.into() }
     }
 
     pub fn empty() -> Self {
-        Self {
-            r#type: MessageType::PlainMessageType,
-            payload: String::new(),
-        }
+        Self { r#type: MessageType::PlainMessageType, payload: String::new() }
     }
 
     /// The 00 prefix will be attached to the final payload.
@@ -43,10 +37,7 @@ impl PlainMessage {
     pub fn from_payload(payload_hex: &str) -> Result<Self> {
         ensure!(is_hex(payload_hex), "payload_hex it's not hex.");
         let payload = hex_to_utf8(payload_hex);
-        Ok(Self {
-            r#type: MessageType::PlainMessageType,
-            payload,
-        })
+        Ok(Self { r#type: MessageType::PlainMessageType, payload })
     }
 
     /// It creates a `PlainMessage` from the given bytes.
@@ -73,11 +64,7 @@ impl Message for PlainMessage {
 
 impl core::fmt::Display for PlainMessage {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 

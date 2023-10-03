@@ -15,9 +15,7 @@ pub struct TableArrayAttribute {
 impl TableArrayAttribute {
     pub fn new(name: &str, schema: Vec<Box<dyn SchemaAttribute>>) -> Self {
         TableArrayAttribute {
-            abs_schema_attribute: AbstractSchemaAttribute {
-                name: name.parse().unwrap(),
-            },
+            abs_schema_attribute: AbstractSchemaAttribute { name: name.parse().unwrap() },
             schema,
         }
     }

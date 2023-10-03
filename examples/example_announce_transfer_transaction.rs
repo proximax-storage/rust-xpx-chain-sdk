@@ -6,9 +6,9 @@
 
 use std::time::{Duration, Instant};
 
-use xpx_chain_sdk::account::Account;
+use xpx_chain_sdk::account::{Account, Address};
 use xpx_chain_sdk::api::ApiNode;
-use xpx_chain_sdk::message::PlainMessage;
+use xpx_chain_sdk::mosaic::{Mosaic, MosaicId};
 use xpx_chain_sdk::transaction::TransferTransaction;
 
 #[tokio::main]
@@ -27,22 +27,25 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
 
     // // let network_type = xpx_chain_sdk::network::PUBLIC_TEST;
     let network_type = chain.network_type;
+
     let generation_hash = chain.generation_hash;
 
-    let private_key: &str = "26b64cb10f005e5988a36744ca19e20d835ccc7c105aaa5f3b212da593180930";
+    let private_key: &str = "7C57C8A6D8767B48F81E8E5D7ECBC76F60D55455A79B4008A20146185F7C8882";
 
     let account = Account::from_hex_private_key(private_key, network_type).unwrap();
-    let recipient = Account::random(network_type).to_address();
+    let recipient = Address::from_raw("WA5V7Y2B2LSDSQNZHCVRIZZV56Q7AYJZKBB5S5V3").unwrap();
 
-    let transaction = TransferTransaction::builder(network_type)
+    println!("{:?}", recipient.as_bytes());
+
+    let asset_id = MosaicId::try_from_hex("6291690CAB3C593D")?;
+
+    let transfer_transaction = TransferTransaction::builder(network_type)
         .recipient(recipient)
-        .message(PlainMessage::create("Sirius chain Rust sdk"))
-        .max_fee(1000)
+        // .max_fee(1000)
+        .mosaics(vec![Mosaic::create(asset_id, 10).unwrap()])
         .build()?;
 
-    println!("{transaction}");
-
-    let sig_transaction = account.sign_transaction(transaction, generation_hash)?;
+    let sig_transaction = account.sign_transaction(transfer_transaction, generation_hash)?;
 
     let response = client.transaction_api().announce(&sig_transaction).await?;
     println!("{response}");

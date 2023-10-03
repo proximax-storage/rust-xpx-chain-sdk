@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum PropertyModificationBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for PropertyModificationBuffer<'a> {
     type Inner = PropertyModificationBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -70,11 +62,10 @@ impl<'a> PropertyModificationBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
-                    PropertyModificationBuffer::VT_VALUE,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u8>>>(
+                PropertyModificationBuffer::VT_VALUE,
+                None,
+            )
         }
     }
 }
@@ -85,7 +76,6 @@ impl flatbuffers::Verifiable for PropertyModificationBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<u8>("modification_type", Self::VT_MODIFICATION_TYPE, false)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u8>>>(
@@ -106,10 +96,7 @@ pub struct PropertyModificationBufferArgs<'a> {
 impl<'a> Default for PropertyModificationBufferArgs<'a> {
     #[inline]
     fn default() -> Self {
-        PropertyModificationBufferArgs {
-            modification_type: 0,
-            value: None,
-        }
+        PropertyModificationBufferArgs { modification_type: 0, value: None }
     }
 }
 
@@ -139,10 +126,7 @@ impl<'a: 'b, 'b> PropertyModificationBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> PropertyModificationBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        PropertyModificationBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        PropertyModificationBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<PropertyModificationBuffer<'a>> {

@@ -27,10 +27,7 @@ pub struct RetryPolicy {
 
 impl RetryPolicy {
     pub fn new(max_num_retry: usize, retry_service_unavailable: bool) -> Self {
-        Self {
-            max_num_retry,
-            retry_service_unavailable_requests: retry_service_unavailable,
-        }
+        Self { max_num_retry, retry_service_unavailable_requests: retry_service_unavailable }
     }
 
     pub fn is_retry(&self) -> Option<future::Ready<RetryPolicy>> {

@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum MosaicBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for MosaicBuffer<'a> {
     type Inner = MosaicBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -59,11 +51,10 @@ impl<'a> MosaicBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MosaicBuffer::VT_ID,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicBuffer::VT_ID,
+                None,
+            )
         }
     }
     #[inline]
@@ -72,11 +63,10 @@ impl<'a> MosaicBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    MosaicBuffer::VT_AMOUNT,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                MosaicBuffer::VT_AMOUNT,
+                None,
+            )
         }
     }
 }
@@ -87,7 +77,6 @@ impl flatbuffers::Verifiable for MosaicBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
                 "id",
@@ -112,10 +101,7 @@ pub struct MosaicBufferArgs<'a> {
 impl<'a> Default for MosaicBufferArgs<'a> {
     #[inline]
     fn default() -> Self {
-        MosaicBufferArgs {
-            id: None,
-            amount: None,
-        }
+        MosaicBufferArgs { id: None, amount: None }
     }
 }
 
@@ -127,8 +113,7 @@ pub struct MosaicBufferBuilder<'a: 'b, 'b> {
 impl<'a: 'b, 'b> MosaicBufferBuilder<'a, 'b> {
     #[inline]
     pub fn add_id(&mut self, id: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
-        self.fbb_
-            .push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicBuffer::VT_ID, id);
+        self.fbb_.push_slot_always::<flatbuffers::WIPOffset<_>>(MosaicBuffer::VT_ID, id);
     }
     #[inline]
     pub fn add_amount(&mut self, amount: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
@@ -138,10 +123,7 @@ impl<'a: 'b, 'b> MosaicBufferBuilder<'a, 'b> {
     #[inline]
     pub fn new(_fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>) -> MosaicBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        MosaicBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        MosaicBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<MosaicBuffer<'a>> {

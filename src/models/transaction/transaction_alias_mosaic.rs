@@ -4,19 +4,18 @@
  * license that can be found in the LICENSE file.
  */
 
-use {
-    serde_json::Value,
-    std::{any::Any, fmt},
-};
+use std::any::Any;
+use std::fmt;
+use serde_json::Value;
 
 use crate::{
-    account::PublicAccount,
     alias::AliasActionType,
-    models::consts::MOSAIC_ID_SIZE,
     mosaic::{MosaicId, UnresolvedMosaicId},
     namespace::NamespaceId,
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::MOSAIC_ID_SIZE;
 
 use super::{
     AliasTransaction, CommonTransaction, Deadline, Transaction, TransactionType, TransactionVersion,
@@ -47,11 +46,7 @@ impl MosaicAliasTransaction {
         );
 
         Self {
-            alias_transaction: AliasTransaction {
-                common: abs_tx,
-                action_type,
-                namespace_id,
-            },
+            alias_transaction: AliasTransaction { common: abs_tx, action_type, namespace_id },
             mosaic_id,
         }
     }
@@ -103,10 +98,6 @@ impl Transaction for MosaicAliasTransaction {
 
 impl fmt::Display for MosaicAliasTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

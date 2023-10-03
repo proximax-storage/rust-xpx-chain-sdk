@@ -63,10 +63,7 @@ pub(crate) fn value_to_transaction_search(
         transactions.push(transaction_dto.compact()?)
     }
 
-    Ok(TransactionSearch {
-        transactions,
-        pagination,
-    })
+    Ok(TransactionSearch { transactions, pagination })
 }
 
 pub(crate) fn value_to_transaction(body_value: Value) -> api::error::Result<Transactions> {
@@ -201,10 +198,7 @@ pub(crate) fn cosignatory_dto_vec_to_struct(
     modifications: Vec<CosignatoryModificationDto>,
     network_type: NetworkType,
 ) -> Vec<CosignatoryModification> {
-    modifications
-        .into_iter()
-        .map(|item| item.compact(network_type))
-        .collect()
+    modifications.into_iter().map(|item| item.compact(network_type)).collect()
 }
 
 pub(crate) fn has_bits(number: u64, bits: u8) -> bool {
@@ -214,10 +208,7 @@ pub(crate) fn has_bits(number: u64, bits: u8) -> bool {
 pub(crate) fn metadata_dto_vec_to_struct(
     modifications: Vec<MetadataModificationDto>,
 ) -> Vec<MetadataModification> {
-    modifications
-        .iter()
-        .map(|modification| modification.compact())
-        .collect()
+    modifications.iter().map(|modification| modification.compact()).collect()
 }
 
 pub(crate) async fn __internal_get_transactions(

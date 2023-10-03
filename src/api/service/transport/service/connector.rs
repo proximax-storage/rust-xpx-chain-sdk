@@ -51,10 +51,7 @@ impl Connector {
             .with_root_certificates(root_cert_store)
             .with_no_client_auth();
 
-        (
-            host.to_string(),
-            Some(RustlsConnector::from(Arc::new(config))),
-        )
+        (host.to_string(), Some(RustlsConnector::from(Arc::new(config))))
     }
 }
 

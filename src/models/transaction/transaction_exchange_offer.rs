@@ -5,22 +5,23 @@
  */
 
 use std::any::Any;
-
 use anyhow::Result;
+use serde_json::Value;
 
-use {::std::fmt, fb::FlatBufferBuilder, serde_json::Value};
+use {::std::fmt, fb::FlatBufferBuilder};
 
 use crate::{
-    account::PublicAccount,
     AsUint64,
     errors_const,
     exchange::ExchangeConfirmation,
-    models::consts::{EXCHANGE_OFFER_HEADER_SIZE, EXCHANGE_OFFER_SIZE},
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{EXCHANGE_OFFER_HEADER_SIZE, EXCHANGE_OFFER_SIZE};
+use crate::transaction::schema::exchange_offer_transaction_schema;
 
 use super::{
-    buffers, CommonTransaction, deadline::Deadline, schema::exchange_offer_transaction_schema,
+    buffers, CommonTransaction, deadline::Deadline,
     Transaction, TransactionType, TransactionVersion,
 };
 
@@ -48,10 +49,7 @@ impl ExchangeOfferTransaction {
             max_fee,
         );
 
-        Ok(Self {
-            common,
-            confirmations,
-        })
+        Ok(Self { common, confirmations })
     }
 }
 
@@ -119,11 +117,7 @@ impl Transaction for ExchangeOfferTransaction {
 
 impl fmt::Display for ExchangeOfferTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 

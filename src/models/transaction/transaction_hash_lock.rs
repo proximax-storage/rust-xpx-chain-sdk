@@ -5,18 +5,19 @@
  */
 
 use std::any::Any;
-
 use anyhow::Result;
 
-use {serde_json::Value, std::fmt};
+use std::fmt;
+use serde_json::Value;
 
-use crate::{
-    account::PublicAccount, AsUint64, models::consts::LOCK_SIZE, mosaic::Mosaic,
-    network::NetworkType,
-};
+use crate::{AsUint64, mosaic::Mosaic, network::NetworkType};
+use crate::account::PublicAccount;
+use crate::models::consts::LOCK_SIZE;
+use crate::transaction::buffers;
+use crate::transaction::schema::lock_funds_transaction_schema;
 
 use super::{
-    buffers, CommonTransaction, Deadline, schema::lock_funds_transaction_schema, SignedTransaction,
+    CommonTransaction, Deadline, SignedTransaction,
     Transaction, TransactionType, TransactionVersion,
 };
 
@@ -39,9 +40,9 @@ impl LockFundsTransaction {
         max_fee: Option<u64>,
     ) -> Result<Self> {
         ensure!(
-            signed_tx.get_type() == TransactionType::AggregateBonded,
-            "signed_tx must be of type AggregateBonded."
-        );
+			signed_tx.get_type() == TransactionType::AggregateBonded,
+			"signed_tx must be of type AggregateBonded."
+		);
 
         let abs_tx = CommonTransaction::create_from_type(
             TransactionType::HashLock,
@@ -51,12 +52,7 @@ impl LockFundsTransaction {
             max_fee,
         );
 
-        Ok(Self {
-            common: abs_tx,
-            mosaic,
-            duration,
-            signed_transaction: signed_tx,
-        })
+        Ok(Self { common: abs_tx, mosaic, duration, signed_transaction: signed_tx })
     }
 }
 
@@ -127,10 +123,6 @@ impl Transaction for LockFundsTransaction {
 
 impl fmt::Display for LockFundsTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

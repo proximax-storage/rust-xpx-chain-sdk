@@ -24,11 +24,7 @@ pub enum AssetIdType {
 
 impl fmt::Display for AssetIdType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -86,10 +82,7 @@ impl dyn UnresolvedMosaicId {
     /// Map asset mosaic hex string to MosaicId or NamespaceId.
     ///
     pub fn from_hex(hex: &str) -> Result<Box<dyn UnresolvedMosaicId>> {
-        ensure!(
-            is_hex(hex),
-            "Input string is not in valid hexadecimal notation."
-        );
+        ensure!(is_hex(hex), "Input string is not in valid hexadecimal notation.");
         let bytes = hex_decode(hex);
         let byte0 = &bytes[0];
 
@@ -106,9 +99,9 @@ impl dyn UnresolvedMosaicId {
         match self.get_type() {
             AssetIdType::MosaicIdType => Ok(MosaicId::from(self.to_u64())),
             _ => Err(anyhow!(
-                "Wrong MosaicId type; original UnresolvedMosaicId type: {:?}",
-                self.get_type()
-            )),
+				"Wrong MosaicId type; original UnresolvedMosaicId type: {:?}",
+				self.get_type()
+			)),
         }
     }
 
@@ -116,9 +109,9 @@ impl dyn UnresolvedMosaicId {
         match self.get_type() {
             AssetIdType::NamespaceIdType => Ok(NamespaceId::from(self.to_u64())),
             _ => Err(anyhow!(
-                "Wrong NamespaceId type; original UnresolvedMosaicId type: {:?}",
-                self.get_type()
-            )),
+				"Wrong NamespaceId type; original UnresolvedMosaicId type: {:?}",
+				self.get_type()
+			)),
         }
     }
 
@@ -158,8 +151,8 @@ impl dyn UnresolvedMosaicId {
             Ok(self.into_any().downcast().unwrap())
         } else {
             Err(anyhow!(
-                "downcast to wrong UnresolvedAddress type; original UnresolvedAddress type"
-            ))
+				"downcast to wrong UnresolvedAddress type; original UnresolvedAddress type"
+			))
         }
     }
 }
@@ -172,10 +165,10 @@ mod tests {
     use crate::namespace::NamespaceId;
 
     lazy_static! {
-        pub static ref MOSAIC_ID: MosaicId = MosaicId::try_from_hex("11F4B1B3AC033DB5").unwrap();
-        pub static ref NAMESPACE_ID: NamespaceId =
-            NamespaceId::try_from_hex("9550CA3FC9B41FC5").unwrap();
-    }
+		pub static ref MOSAIC_ID: MosaicId = MosaicId::try_from_hex("11F4B1B3AC033DB5").unwrap();
+		pub static ref NAMESPACE_ID: NamespaceId =
+			NamespaceId::try_from_hex("9550CA3FC9B41FC5").unwrap();
+	}
 
     #[test]
     fn test_can_map_hex_string_to_mosaic_id() {

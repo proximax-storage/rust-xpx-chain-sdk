@@ -5,7 +5,6 @@
  */
 
 use std::fmt;
-
 use crate::helpers::is_hex;
 
 use super::{MessageType, PlainMessage};
@@ -88,11 +87,7 @@ impl<'a> PartialEq for Box<dyn Message + 'static> {
 
 impl fmt::Display for dyn Message {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -104,21 +99,13 @@ mod tests {
     #[test]
     fn test_should_create_an_plain_message_dto_struct() {
         let message = PlainMessage::create("test");
-        assert_eq!(
-            message.to_dto(),
-            format!("00{}", utf8_to_hex("test").to_uppercase())
-        );
+        assert_eq!(message.to_dto(), format!("00{}", utf8_to_hex("test").to_uppercase()));
     }
 
     #[test]
     fn test_should_create_an_encrypted_message_dto_struct() {
-        let message = SecureMessage {
-            r#type: MessageType::SecureMessageType,
-            payload: "test".to_string(),
-        };
-        assert_eq!(
-            message.to_dto(),
-            format!("01{}", utf8_to_hex("test").to_uppercase())
-        );
+        let message =
+            SecureMessage { r#type: MessageType::SecureMessageType, payload: "test".to_string() };
+        assert_eq!(message.to_dto(), format!("01{}", utf8_to_hex("test").to_uppercase()));
     }
 }

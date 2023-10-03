@@ -15,9 +15,7 @@ pub(crate) struct TableAttribute {
 impl TableAttribute {
     pub fn new(name: &str, schema: Vec<Box<dyn SchemaAttribute>>) -> Self {
         TableAttribute {
-            abs_schema_attribute: AbstractSchemaAttribute {
-                name: name.parse().unwrap(),
-            },
+            abs_schema_attribute: AbstractSchemaAttribute { name: name.parse().unwrap() },
             schema,
         }
     }

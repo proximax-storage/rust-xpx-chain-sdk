@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum AddExchangeOfferBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for AddExchangeOfferBuffer<'a> {
     type Inner = AddExchangeOfferBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -69,11 +61,10 @@ impl<'a> AddExchangeOfferBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AddExchangeOfferBuffer::VT_MOSAIC_ID,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AddExchangeOfferBuffer::VT_MOSAIC_ID,
+                None,
+            )
         }
     }
     #[inline]
@@ -82,11 +73,10 @@ impl<'a> AddExchangeOfferBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AddExchangeOfferBuffer::VT_MOSAIC_AMOUNT,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AddExchangeOfferBuffer::VT_MOSAIC_AMOUNT,
+                None,
+            )
         }
     }
     #[inline]
@@ -95,11 +85,10 @@ impl<'a> AddExchangeOfferBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AddExchangeOfferBuffer::VT_COST,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AddExchangeOfferBuffer::VT_COST,
+                None,
+            )
         }
     }
     #[inline]
@@ -107,11 +96,7 @@ impl<'a> AddExchangeOfferBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u8>(AddExchangeOfferBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u8>(AddExchangeOfferBuffer::VT_TYPE_, Some(0)).unwrap() }
     }
     #[inline]
     pub fn duration(&self) -> Option<flatbuffers::Vector<'a, u32>> {
@@ -119,11 +104,10 @@ impl<'a> AddExchangeOfferBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    AddExchangeOfferBuffer::VT_DURATION,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                AddExchangeOfferBuffer::VT_DURATION,
+                None,
+            )
         }
     }
 }
@@ -134,7 +118,6 @@ impl flatbuffers::Verifiable for AddExchangeOfferBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
                 "mosaic_id",
@@ -216,8 +199,7 @@ impl<'a: 'b, 'b> AddExchangeOfferBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u8) {
-        self.fbb_
-            .push_slot::<u8>(AddExchangeOfferBuffer::VT_TYPE_, type_, 0);
+        self.fbb_.push_slot::<u8>(AddExchangeOfferBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn add_duration(&mut self, duration: flatbuffers::WIPOffset<flatbuffers::Vector<'b, u32>>) {
@@ -231,10 +213,7 @@ impl<'a: 'b, 'b> AddExchangeOfferBufferBuilder<'a, 'b> {
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> AddExchangeOfferBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        AddExchangeOfferBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        AddExchangeOfferBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<AddExchangeOfferBuffer<'a>> {

@@ -14,15 +14,9 @@ pub struct AddOrigin<T> {
 
 impl<T> AddOrigin<T> {
     pub(crate) fn new(inner: T, origin: Uri) -> Self {
-        let Parts {
-            scheme, authority, ..
-        } = origin.into_parts();
+        let Parts { scheme, authority, .. } = origin.into_parts();
 
-        Self {
-            inner,
-            scheme,
-            authority,
-        }
+        Self { inner, scheme, authority }
     }
 }
 

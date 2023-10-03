@@ -6,19 +6,19 @@
 
 use sha3::{Digest, Sha3_256};
 
-use {
-    ::std::{any::Any, fmt},
-    serde_json::Value,
-};
-
+use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
 use crate::account::{Account, PublicAccount};
+
 use crate::anyhow::Result;
-use crate::AsUint64;
-use crate::helpers::{GenerationHash, hex_decode, hex_encode, TransactionHash};
+use crate::{AsUint64, GenerationHash};
+use crate::helpers::{hex_decode, hex_encode, TransactionHash};
 use crate::models::consts::{HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE};
+use crate::transaction::{SignedTransaction, TransactionType};
 
 use super::{
-    CommonTransaction, deadline::Deadline, SignedTransaction, TransactionStatus, TransactionType,
+    CommonTransaction, deadline::Deadline, TransactionStatus,
 };
 
 pub type Amount = u64;
@@ -113,11 +113,7 @@ pub trait Transaction
         if self.get_transaction_type() == TransactionType::AggregateBonded
             || self.get_transaction_type() == TransactionType::AggregateComplete
         {
-            [
-                generation_hash_bytes[..32].as_ref(),
-                byte_buffer_without_header,
-            ]
-                .concat()
+            [generation_hash_bytes[..32].as_ref(), byte_buffer_without_header].concat()
         } else {
             [generation_hash_bytes, byte_buffer_without_header].concat()
         }
@@ -296,9 +292,9 @@ impl dyn Transaction {
             Ok(self.into_any().downcast().unwrap())
         } else {
             Err(anyhow!(
-                "downcast to wrong Transaction type; original transaction type: {}",
-                self.get_transaction_type()
-            ))
+				"downcast to wrong Transaction type; original transaction type: {}",
+				self.get_transaction_type()
+			))
         }
     }
 }
@@ -318,10 +314,6 @@ impl<'a> PartialEq for &'a dyn Transaction {
 
 impl fmt::Display for dyn Transaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

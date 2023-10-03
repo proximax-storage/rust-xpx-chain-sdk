@@ -15,9 +15,7 @@ pub struct ScalarAttribute {
 impl ScalarAttribute {
     pub fn new(name: &str, size: usize) -> Self {
         ScalarAttribute {
-            abs_schema_attribute: AbstractSchemaAttribute {
-                name: name.parse().unwrap(),
-            },
+            abs_schema_attribute: AbstractSchemaAttribute { name: name.parse().unwrap() },
             size,
         }
     }

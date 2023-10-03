@@ -25,15 +25,12 @@ async fn main() -> Result<(), xpx_chain_sdk::api::error::Error> {
     let asset_id_one = NamespaceId::try_from_hex("BFFB42A19116BDF6")?;
     let asset_id_two = MosaicId::try_from_hex("13BFC518E40549D7")?;
 
-    let info = resolver_api
-        .get_mosaic_info_by_asset_id(asset_id_one.box_clone())
-        .await;
+    let info = resolver_api.get_mosaic_info_by_asset_id(asset_id_one.box_clone()).await;
     match info {
         Ok(resp) => println!("{}", resp),
-        Err(err) => eprintln!(
-            "Exception when calling resolver_api->get_mosaic_info_by_asset_id: {}\n",
-            err
-        ),
+        Err(err) => {
+            eprintln!("Exception when calling resolver_api->get_mosaic_info_by_asset_id: {}\n", err)
+        }
     }
 
     let info = resolver_api

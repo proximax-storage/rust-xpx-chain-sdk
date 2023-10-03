@@ -18,11 +18,7 @@ pub struct PageQueryParams {
 
 impl PageQueryParams {
     pub fn create(page: u16, page_size: u8) -> PageQueryParams {
-        let page_size = if page_size >= 10 && page_size <= 100 {
-            page_size
-        } else {
-            25
-        };
+        let page_size = if page_size >= 10 && page_size <= 100 { page_size } else { 25 };
 
         PageQueryParams { page, page_size }
     }
@@ -36,9 +32,6 @@ impl PageQueryParams {
 
 impl Default for PageQueryParams {
     fn default() -> Self {
-        PageQueryParams {
-            page: 0,
-            page_size: 25,
-        }
+        PageQueryParams { page: 0, page_size: 25 }
     }
 }

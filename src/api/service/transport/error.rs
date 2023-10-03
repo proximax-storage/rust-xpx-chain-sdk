@@ -26,9 +26,7 @@ pub(crate) enum Kind {
 
 impl Error {
     pub(crate) fn new(kind: Kind) -> Self {
-        Self {
-            inner: ErrorImpl { kind, source: None },
-        }
+        Self { inner: ErrorImpl { kind, source: None } }
     }
 
     pub(crate) fn with(mut self, source: impl Into<Source>) -> Self {
@@ -79,9 +77,6 @@ impl fmt::Display for Error {
 
 impl StdError for Error {
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
-        self.inner
-            .source
-            .as_ref()
-            .map(|source| &**source as &(dyn StdError + 'static))
+        self.inner.source.as_ref().map(|source| &**source as &(dyn StdError + 'static))
     }
 }

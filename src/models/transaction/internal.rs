@@ -62,11 +62,7 @@ pub(crate) fn sign_transaction_with_cosignatures(
         payload_bytes[i] = *item;
     });
 
-    Ok(SignedTransaction {
-        entity_type,
-        hash: sig_txn.hash,
-        payload: hex_encode(&payload_bytes),
-    })
+    Ok(SignedTransaction { entity_type, hash: sig_txn.hash, payload: hex_encode(&payload_bytes) })
 }
 
 pub(crate) fn mosaic_property_array_to_buffer(
@@ -89,10 +85,7 @@ pub(crate) fn mosaic_property_array_to_buffer(
 }
 
 pub(crate) fn to_aggregate_transaction_bytes(tx: &Box<dyn Transaction>) -> Result<Vec<u8>> {
-    ensure!(
-        tx.get_common_transaction().signer.is_some(),
-        ERR_EMPTY_TRANSACTION_SIGNER
-    );
+    ensure!(tx.get_common_transaction().signer.is_some(), ERR_EMPTY_TRANSACTION_SIGNER);
 
     let signer_bytes = tx.get_common_transaction().signer.unwrap();
 

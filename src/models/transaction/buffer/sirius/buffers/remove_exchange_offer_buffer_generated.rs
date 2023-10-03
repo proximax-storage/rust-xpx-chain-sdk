@@ -3,15 +3,9 @@
 extern crate alloc;
 extern crate flatbuffers;
 
-use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use core::cmp::Ordering;
-use core::mem;
-
 use super::*;
 
-use self::flatbuffers::{EndianScalar, Follow};
+use self::flatbuffers::Follow;
 
 pub enum RemoveExchangeOfferBufferOffset {}
 
@@ -24,9 +18,7 @@ impl<'a> flatbuffers::Follow<'a> for RemoveExchangeOfferBuffer<'a> {
     type Inner = RemoveExchangeOfferBuffer<'a>;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Self {
-            _tab: flatbuffers::Table::new(buf, loc),
-        }
+        Self { _tab: flatbuffers::Table::new(buf, loc) }
     }
 }
 
@@ -57,11 +49,10 @@ impl<'a> RemoveExchangeOfferBuffer<'a> {
         // Created from valid Table for this object
         // which contains a valid value in this slot
         unsafe {
-            self._tab
-                .get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
-                    RemoveExchangeOfferBuffer::VT_MOSAIC_ID,
-                    None,
-                )
+            self._tab.get::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'a, u32>>>(
+                RemoveExchangeOfferBuffer::VT_MOSAIC_ID,
+                None,
+            )
         }
     }
     #[inline]
@@ -69,11 +60,7 @@ impl<'a> RemoveExchangeOfferBuffer<'a> {
         // Safety:
         // Created from valid Table for this object
         // which contains a valid value in this slot
-        unsafe {
-            self._tab
-                .get::<u8>(RemoveExchangeOfferBuffer::VT_TYPE_, Some(0))
-                .unwrap()
-        }
+        unsafe { self._tab.get::<u8>(RemoveExchangeOfferBuffer::VT_TYPE_, Some(0)).unwrap() }
     }
 }
 
@@ -83,7 +70,6 @@ impl flatbuffers::Verifiable for RemoveExchangeOfferBuffer<'_> {
         v: &mut flatbuffers::Verifier,
         pos: usize,
     ) -> Result<(), flatbuffers::InvalidFlatbuffer> {
-        use self::flatbuffers::Verifiable;
         v.visit_table(pos)?
             .visit_field::<flatbuffers::ForwardsUOffset<flatbuffers::Vector<'_, u32>>>(
                 "mosaic_id",
@@ -104,10 +90,7 @@ pub struct RemoveExchangeOfferBufferArgs<'a> {
 impl<'a> Default for RemoveExchangeOfferBufferArgs<'a> {
     #[inline]
     fn default() -> Self {
-        RemoveExchangeOfferBufferArgs {
-            mosaic_id: None,
-            type_: 0,
-        }
+        RemoveExchangeOfferBufferArgs { mosaic_id: None, type_: 0 }
     }
 }
 
@@ -129,18 +112,14 @@ impl<'a: 'b, 'b> RemoveExchangeOfferBufferBuilder<'a, 'b> {
     }
     #[inline]
     pub fn add_type_(&mut self, type_: u8) {
-        self.fbb_
-            .push_slot::<u8>(RemoveExchangeOfferBuffer::VT_TYPE_, type_, 0);
+        self.fbb_.push_slot::<u8>(RemoveExchangeOfferBuffer::VT_TYPE_, type_, 0);
     }
     #[inline]
     pub fn new(
         _fbb: &'b mut flatbuffers::FlatBufferBuilder<'a>,
     ) -> RemoveExchangeOfferBufferBuilder<'a, 'b> {
         let start = _fbb.start_table();
-        RemoveExchangeOfferBufferBuilder {
-            fbb_: _fbb,
-            start_: start,
-        }
+        RemoveExchangeOfferBufferBuilder { fbb_: _fbb, start_: start }
     }
     #[inline]
     pub fn finish(self) -> flatbuffers::WIPOffset<RemoveExchangeOfferBuffer<'a>> {
