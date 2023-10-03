@@ -59,11 +59,11 @@ impl BlockDto {
     ) -> Result<BlockInfo> {
         let dto = self;
 
-        let network_type = NetworkType::from_transaction_version(dto.version as u32)?;
+        let network_type = NetworkType::from_transaction_version(dto.version)?;
 
         let signer_public_account = PublicAccount::from_public_key(&dto.signer, network_type)?;
 
-        let version = extract_version(dto.version as u32);
+        let version = extract_version(dto.version);
 
         let beneficiary_public_account = if let Some(v) = dto.beneficiary {
             if v != "0000000000000000000000000000000000000000000000000000000000000000" {

@@ -7,13 +7,13 @@
 use anyhow::Result;
 
 use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
 
-use crate::{
-    errors_const,
-    mosaic::UnresolvedMosaicId,
-    namespace::{generate_namespace_id, NamespaceId, NamespaceType},
-    network::NetworkType,
-};
+use crate::{AsUint64, errors_const, mosaic::UnresolvedMosaicId, namespace::{generate_namespace_id, NamespaceId, NamespaceType}, network::NetworkType};
+use crate::models::consts::REGISTER_NAMESPACE_HEADER_SIZE;
+use crate::transaction::buffers;
+use crate::transaction::schema::register_namespace_transaction_schema;
 
 use super::{
     CommonTransaction, Deadline,

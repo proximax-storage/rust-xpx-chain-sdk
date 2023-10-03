@@ -11,6 +11,7 @@ use anyhow::{anyhow, Result};
 use crate::account::Address;
 use crate::helpers::{hex_decode, is_hex};
 use crate::namespace::NamespaceId;
+use crate::network::NetworkType;
 
 ///  Custom trait for unresolved address
 ///

@@ -7,11 +7,17 @@
 use anyhow::{bail, ensure, Result};
 
 use ::std::fmt::{self, Display, Formatter};
+use std::any::Any;
+use serde_json::Value;
 
 use crate::{
     account::{AccountPropertiesAddressModification, AccountPropertyType},
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{ACCOUNT_PROPERTIES_ADDRESS_MODIFICATION_SIZE, ACCOUNT_PROPERTY_ADDRESS_HEADER};
+use crate::transaction::buffers::{AccountPropertiesTransactionBufferBuilder, PropertyModificationBuffer, PropertyModificationBufferBuilder};
+use crate::transaction::schema::account_property_transaction_schema;
 
 use super::{
     CommonTransaction, Deadline, Transaction, TransactionType, TransactionVersion,

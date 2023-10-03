@@ -4,7 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::any::Any;
 use std::fmt;
+use serde_json::Value;
 
 use crate::{
     alias::AliasActionType,
@@ -12,6 +14,8 @@ use crate::{
     namespace::NamespaceId,
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::MOSAIC_ID_SIZE;
 
 use super::{
     AliasTransaction, CommonTransaction, Deadline, Transaction, TransactionType, TransactionVersion,

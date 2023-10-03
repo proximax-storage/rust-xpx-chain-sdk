@@ -20,7 +20,7 @@ use crate::account::{alias_to_recipient, UnresolvedAddress};
 use crate::AsUint64;
 use crate::errors_const;
 use crate::helpers::{has_bits, is_hex};
-use crate::mosaic::UnresolvedMosaicId;
+use crate::mosaic::{AssetIdType, UnresolvedMosaicId};
 use crate::network::NetworkType;
 
 use super::{generate_namespace_path, NAMESPACE_BIT};

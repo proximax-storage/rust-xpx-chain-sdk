@@ -8,6 +8,7 @@ use std::{
 
 use hyper::http::{HeaderMap, HeaderValue, Request};
 use pin_project::pin_project;
+use tokio::time::Sleep;
 use tower::Service;
 
 pub(crate) const HTTP_TIMEOUT_HEADER: &str = "grpc-timeout";

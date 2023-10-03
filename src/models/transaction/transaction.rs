@@ -7,11 +7,15 @@
 use sha3::{Digest, Sha3_256};
 
 use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
+use crate::account::{Account, PublicAccount};
 
 use crate::anyhow::Result;
-use crate::AsUint64;
-use crate::helpers::{hex_decode, TransactionHash};
+use crate::{AsUint64, GenerationHash};
+use crate::helpers::{hex_decode, hex_encode, TransactionHash};
 use crate::models::consts::{HALF_OF_SIGNATURE, SIGNATURE_SIZE, SIGNER_SIZE, SIZE_SIZE};
+use crate::transaction::{SignedTransaction, TransactionType};
 
 use super::{
     CommonTransaction, deadline::Deadline, TransactionStatus,

@@ -17,7 +17,7 @@ use {
 
 use crate::account::PublicAccount;
 use crate::models::uint64::AsUint64;
-use crate::mosaic::UnresolvedMosaicId;
+use crate::mosaic::{AssetIdType, UnresolvedMosaicId};
 
 use super::{generate_mosaic_id, MosaicNonce};
 

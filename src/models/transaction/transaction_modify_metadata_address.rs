@@ -4,9 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::any::Any;
 use anyhow::Result;
 
 use std::fmt;
+use serde_json::Value;
 
 use crate::{
     account::Address,
@@ -14,6 +16,8 @@ use crate::{
     metadata::{MetadataModification, MetadataType},
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::ADDRESS_SIZE;
 
 use super::{
     CommonTransaction, Deadline, ModifyMetadataTransaction, Transaction, TransactionType,

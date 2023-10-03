@@ -4,13 +4,17 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::any::Any;
 use anyhow::Result;
 
 use std::fmt;
+use serde_json::Value;
 
-use crate::{
-    mosaic::Mosaic, network::NetworkType,
-};
+use crate::{AsUint64, mosaic::Mosaic, network::NetworkType};
+use crate::account::PublicAccount;
+use crate::models::consts::LOCK_SIZE;
+use crate::transaction::buffers;
+use crate::transaction::schema::lock_funds_transaction_schema;
 
 use super::{
     CommonTransaction, Deadline, SignedTransaction,

@@ -4,9 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::any::Any;
 use anyhow::Result;
 
 use std::fmt;
+use serde_json::Value;
 
 use crate::{
     errors_const,
@@ -14,6 +16,8 @@ use crate::{
     mosaic::MosaicId,
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::MOSAIC_ID_SIZE;
 use crate::mosaic::UnresolvedMosaicId;
 
 use super::{

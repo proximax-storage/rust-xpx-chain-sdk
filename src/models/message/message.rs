@@ -5,6 +5,7 @@
  */
 
 use std::fmt;
+use crate::helpers::is_hex;
 
 use super::{MessageType, PlainMessage};
 

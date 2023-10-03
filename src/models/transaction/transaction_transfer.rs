@@ -7,6 +7,7 @@
 use std::any::Any;
 
 use ::std::fmt;
+use serde_json::Value;
 
 use crate::{
 	account::UnresolvedAddress,
@@ -15,6 +16,10 @@ use crate::{
 	mosaic::Mosaic,
 	network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{AMOUNT_SIZE, MOSAIC_ID_SIZE, TRANSFER_HEADER_SIZE};
+use crate::transaction::buffers;
+use crate::transaction::schema::transfer_transaction_schema;
 
 use super::{
 	CommonTransaction, deadline::Deadline,

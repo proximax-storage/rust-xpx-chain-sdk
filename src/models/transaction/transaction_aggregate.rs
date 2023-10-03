@@ -7,6 +7,8 @@
 use anyhow::Result;
 
 use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
 
 use crate::{
     account::Account,
@@ -15,6 +17,12 @@ use crate::{
     multisig::Cosignature,
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::errors_const::ERR_EMPTY_TRANSACTION_SIGNER;
+use crate::models::consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE};
+use crate::transaction::buffers;
+use crate::transaction::internal::to_aggregate_transaction_bytes;
+use crate::transaction::schema::aggregate_transaction_schema;
 
 use super::{
     CommonTransaction,

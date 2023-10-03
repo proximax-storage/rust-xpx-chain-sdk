@@ -5,11 +5,14 @@
  */
 
 use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
 
-use crate::{
-    mosaic::{MosaicSupplyType, UnresolvedMosaicId},
-    network::NetworkType,
-};
+use crate::{AsUint64, mosaic::{MosaicSupplyType, UnresolvedMosaicId}, network::NetworkType};
+use crate::account::PublicAccount;
+use crate::models::consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE;
+use crate::transaction::buffers;
+use crate::transaction::schema::mosaic_supply_change_transaction_schema;
 
 use super::{
     CommonTransaction,

@@ -4,12 +4,15 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::any::Any;
 use std::fmt;
 
 use anyhow::Result;
+use serde_json::Value;
 
 use crate::account::PublicAccount;
 use crate::errors_const;
+use crate::models::consts::NAMESPACE_SIZE;
 use crate::mosaic::UnresolvedMosaicId;
 use crate::namespace::NamespaceId;
 use crate::network::NetworkType;

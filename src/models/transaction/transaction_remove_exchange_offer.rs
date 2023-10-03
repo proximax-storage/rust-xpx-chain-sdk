@@ -4,15 +4,20 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::any::Any;
 use anyhow::Result;
+use serde_json::Value;
 
 use {::std::fmt, fb::FlatBufferBuilder};
+use crate::account::PublicAccount;
 
 use crate::models::{
     errors_const,
     exchange::RemoveOffer,
     network::NetworkType,
 };
+use crate::models::consts::{REMOVE_EXCHANGE_OFFER_HEADER_SIZE, REMOVE_EXCHANGE_OFFER_SIZE};
+use crate::transaction::schema::remove_exchange_offer_transaction_schema;
 
 use super::{
     buffers, CommonTransaction,

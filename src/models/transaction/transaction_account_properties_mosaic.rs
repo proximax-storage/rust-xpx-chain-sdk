@@ -8,11 +8,17 @@ use anyhow::{bail, ensure};
 use anyhow::Result;
 
 use ::std::fmt::{self, Display, Formatter};
+use std::any::Any;
+use serde_json::Value;
 
 use crate::{
     account::{AccountPropertiesMosaicModification, AccountPropertyType},
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{ACCOUNT_PROPERTIES_MOSAIC_MODIFICATION_SIZE, ACCOUNT_PROPERTY_MOSAIC_HEADER};
+use crate::transaction::buffers;
+use crate::transaction::schema::account_property_transaction_schema;
 
 use super::{
     CommonTransaction, Deadline, Transaction,

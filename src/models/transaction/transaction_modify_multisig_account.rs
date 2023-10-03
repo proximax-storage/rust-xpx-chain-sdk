@@ -4,15 +4,22 @@
  * license that can be found in the LICENSE file.
  */
 
+use std::any::Any;
 use std::fmt;
 
 use anyhow::Result;
+use serde_json::Value;
 
 use crate::{
     errors_const,
     multisig::CosignatoryModification,
     network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE};
+use crate::transaction::buffers;
+use crate::transaction::internal::cosignatory_modification_array_to_buffer;
+use crate::transaction::schema::modify_multisig_account_transaction_schema;
 
 use super::{
     CommonTransaction, Deadline, Transaction,
