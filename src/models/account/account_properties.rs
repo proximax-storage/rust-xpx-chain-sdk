@@ -8,9 +8,13 @@ use {
     ::std::ops::BitAnd,
     num_enum::IntoPrimitive,
     serde_repr::{Deserialize_repr, Serialize_repr},
+    std::fmt,
 };
 
-use crate::{mosaic::MosaicId, transaction::TransactionType, AssetId};
+use crate::{
+    mosaic::{MosaicId, UnresolvedMosaicId},
+    transaction::TransactionType,
+};
 
 use super::Address;
 
@@ -93,8 +97,8 @@ impl BitAnd for AccountPropertyType {
     }
 }
 
-impl core::fmt::Display for AccountPropertyType {
-    fn fmt(&self, e: &mut core::fmt::Formatter) -> core::fmt::Result {
+impl fmt::Display for AccountPropertyType {
+    fn fmt(&self, e: &mut fmt::Formatter) -> fmt::Result {
         write!(e, "{}", serde_json::to_string(&self).unwrap_or_default())
     }
 }
@@ -110,93 +114,68 @@ pub struct AccountProperties {
     pub blocked_entity_types: Vec<TransactionType>,
 }
 
-impl core::fmt::Display for AccountProperties {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for AccountProperties {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AccountPropertiesAddressModification {
     pub modification_type: AccountPropertiesModificationType,
     pub address: Address,
 }
 
 impl AccountPropertiesAddressModification {
-    pub fn new(modification_type: AccountPropertiesModificationType, address: Address) -> Self {
-        Self {
-            modification_type,
-            address,
-        }
+    pub fn create(modification_type: AccountPropertiesModificationType, address: Address) -> Self {
+        Self { modification_type, address }
     }
 }
 
-impl core::fmt::Display for AccountPropertiesAddressModification {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for AccountPropertiesAddressModification {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AccountPropertiesMosaicModification {
     pub modification_type: AccountPropertiesModificationType,
-    pub asset_id: Box<dyn AssetId>,
+    pub asset_id: Box<dyn UnresolvedMosaicId>,
 }
 
 impl AccountPropertiesMosaicModification {
-    pub fn new(
+    pub fn create(
         modification_type: AccountPropertiesModificationType,
-        asset_id: impl AssetId + 'static,
+        asset_id: impl UnresolvedMosaicId + 'static,
     ) -> Self {
-        Self {
-            modification_type,
-            asset_id: Box::new(asset_id),
-        }
+        Self { modification_type, asset_id: Box::new(asset_id) }
     }
 }
 
-impl core::fmt::Display for AccountPropertiesMosaicModification {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for AccountPropertiesMosaicModification {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AccountPropertiesEntityTypeModification {
     pub modification_type: AccountPropertiesModificationType,
     pub transaction_type: TransactionType,
 }
 
 impl AccountPropertiesEntityTypeModification {
-    pub fn new(
+    pub fn create(
         modification_type: AccountPropertiesModificationType,
         transaction_type: TransactionType,
     ) -> Self {
-        Self {
-            modification_type,
-            transaction_type,
-        }
+        Self { modification_type, transaction_type }
     }
 }
 
-impl core::fmt::Display for AccountPropertiesEntityTypeModification {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for AccountPropertiesEntityTypeModification {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }

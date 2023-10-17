@@ -14,7 +14,7 @@ table ModifyMultisigAccountTransactionBuffer {
     max_fee: [uint];
     deadline:[uint];
     min_removal_delta: byte;
-    _minApprovalDelta: byte;
+    min_approval_delta: byte;
     num_modifications: ubyte;
     modifications: [CosignatoryModificationBuffer];
 }

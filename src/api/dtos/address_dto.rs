@@ -5,44 +5,42 @@
  */
 
 use crate::{
-    account::Address,
-    transaction::{MetadataAddressTransaction, Transaction},
+	account::Address,
+	transaction::{MetadataAddressTransaction, Transaction},
 };
 
-use super::{ModifyMetadataTransactionDto, TransactionDto, TransactionMetaDto};
+use super::TransactionDto;
+use super::{ModifyMetadataTransactionDto, TransactionMetaDto};
 
 /// AddressMetadataTransactionDto :
 ///Transaction that addes metadata to account.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddressMetadataTransactionDto {
-    #[serde(flatten)]
-    metadata_transaction: ModifyMetadataTransactionDto,
-    #[serde(rename = "metadataId")]
-    address: String,
+	#[serde(flatten)]
+	metadata_transaction: ModifyMetadataTransactionDto,
+	#[serde(rename = "metadataId")]
+	address: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AddressMetadataTransactionInfoDto {
-    meta: TransactionMetaDto,
-    transaction: AddressMetadataTransactionDto,
+	meta: TransactionMetaDto,
+	transaction: AddressMetadataTransactionDto,
 }
 
 #[typetag::serde]
 impl TransactionDto for AddressMetadataTransactionInfoDto {
-    fn compact(&self) -> crate::models::Result<Box<dyn Transaction>> {
-        let dto = self.transaction.clone();
+	fn compact(&self) -> anyhow::Result<Box<dyn Transaction>> {
+		let dto = self.transaction.clone();
 
-        let info = self.meta.compact()?;
+		let info = self.meta.compact()?;
 
-        let metadata_transaction = dto.metadata_transaction.compact(info)?;
+		let metadata_transaction = dto.metadata_transaction.compact(info)?;
 
-        let address = Address::from_encoded(&dto.address)?;
+		let address = Address::from_encoded(&dto.address)?;
 
-        Ok(Box::new(MetadataAddressTransaction {
-            metadata_transaction,
-            address,
-        }))
-    }
+		Ok(Box::new(MetadataAddressTransaction { metadata_transaction, address }))
+	}
 }

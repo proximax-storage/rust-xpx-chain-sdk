@@ -5,7 +5,7 @@
  */
 
 pub use self::cosignature::*;
-pub use self::multisig_model::*;
+pub use self::multisig::*;
 
 mod cosignature;
-mod multisig_model;
+mod multisig;

@@ -15,9 +15,7 @@ pub struct ArrayAttribute {
 impl ArrayAttribute {
     pub fn new(name: &str, size: usize) -> Self {
         ArrayAttribute {
-            abs_schema_attribute: AbstractSchemaAttribute {
-                name: name.parse().unwrap(),
-            },
+            abs_schema_attribute: AbstractSchemaAttribute { name: name.parse().unwrap() },
             size,
         }
     }

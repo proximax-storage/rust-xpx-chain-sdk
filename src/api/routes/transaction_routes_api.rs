@@ -4,50 +4,70 @@
  * license that can be found in the LICENSE file.
  */
 
+use hex::ToHex;
+use serde_json::json;
+
 use {
-    ::std::{
-        fmt::{Debug, Display},
-        future::Future,
-        sync::Arc,
-    },
-    reqwest::Method,
+    ::std::fmt::{Debug, Display},
+    hyper::Method,
 };
 
-use crate::models::transaction::HashValue;
 use crate::{
-    api::{
-        internally::{str_to_hash, valid_vec_hash, valid_vec_len},
-        request as __internal_request,
-        sirius_client::ApiClient,
-        TransactionDto, TransactionStatusDto,
-    },
-    errors_const::{ERR_EMPTY_TRANSACTION_HASHES, ERR_EMPTY_TRANSACTION_IDS},
-    models::Result,
+    api::{error::Result, internally::valid_vec_len, TransactionStatusDto},
+    errors_const::ERR_EMPTY_TRANSACTION_HASHES,
     transaction::{
-        CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionHashes,
-        TransactionIds, TransactionStatus, Transactions, TransactionsStatus,
+        CosignatureSignedTransaction, SignedTransaction, Transaction, TransactionsStatus,
+        TransactionStatus,
     },
+    TransactionHash,
 };
+use crate::api::{
+    __internal_get_transaction, __internal_get_transactions_by_group_with_pagination,
+    TransactionQueryParams, value_to_transaction,
+};
+use crate::api::error::{Error, SiriusError};
+use crate::api::request::ApiRequest;
+use crate::api::routes::const_routes::{ANNOUNCE_TRANSACTION_ROUTE, TRANSACTIONS_BY_GROUP_ROUTE};
+use crate::api::transport::service::Connection;
+use crate::transaction::{TransactionGroupType, Transactions, TransactionSearch};
 
 use super::{
-    ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, ANNOUNCE_AGGREGATE_ROUTE, TRANSACTIONS_ROUTE,
-    TRANSACTIONS_STATUS_ROUTE, TRANSACTION_ROUTE, TRANSACTION_STATUS_ROUTE,
+    AGGREGATE_TRANSACTIONS_ROUTE, ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE, TRANSACTION_ROUTE,
+    TRANSACTION_STATUS_ROUTE, TRANSACTIONS_ROUTE, TRANSACTIONS_STATUS_ROUTE,
 };
 
 /// Transaction ApiClient routes.
 ///
 #[derive(Clone)]
-pub struct TransactionRoutes(Arc<ApiClient>);
+pub struct TransactionRoutes(Connection);
 
 /// Transaction related endpoints.
 ///
 impl TransactionRoutes {
-    pub(crate) fn new(client: Arc<ApiClient>) -> Self {
+    pub(crate) fn new(client: Connection) -> Self {
         TransactionRoutes(client)
     }
 
-    fn __client(&self) -> Arc<ApiClient> {
-        Arc::clone(&self.0)
+    fn __client(&self) -> Connection {
+        self.0.clone()
+    }
+
+    /// GetAnyTransaction returns Transaction for passed transaction id or hash.
+    ///
+    pub async fn get_any_transaction(
+        &self,
+        transaction_hash: TransactionHash,
+    ) -> Result<Box<dyn Transaction>> {
+        let txn_status = self.get_transaction_status(transaction_hash).await?;
+
+        if txn_status.to_group_type() == TransactionGroupType::Failed {
+            return Err(Error::SiriusError(SiriusError {
+                code: "400".to_string(),
+                message: txn_status.status,
+            }));
+        }
+
+        self.get_transaction(transaction_hash, txn_status.to_group_type()).await
     }
 
     /// Get transaction status
@@ -60,37 +80,39 @@ impl TransactionRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
-    ///
-    ///const HASH: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
+    ///use xpx_chain_sdk::api::ApiNode;
+    /// use std::str::FromStr;
+    /// use xpx_chain_sdk::TransactionHash;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url);
+    /// let hash: TransactionHash = TransactionHash::from_str("130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
-    ///    let transaction_status = client.transaction.get_transaction_status( HASH ).await;
-    ///
-    ///    match transaction_status {
-    ///        Ok(resp_info) => println!("{}", resp_info),
-    ///        Err(err) => eprintln!("{:?}", err),
-    ///    }
+    /// let transaction_status = client.transaction_api().get_transaction_status( hash ).await;
+    /// match transaction_status {
+    ///     Ok(resp_info) => println!("{}", resp_info),
+    ///     Err(err) => eprintln!("{:?}", err),
+    /// }
     ///}
     /// ```
     ///
     /// # Returns
     ///
-    /// Returns a Future `Result` whose okay value is an [TransactionStatus] for a given hash or
-    /// whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn get_transaction_status(self, hash: HashValue) -> Result<TransactionStatus> {
-        let mut req =
-            __internal_request::Request::new(Method::GET, TRANSACTION_STATUS_ROUTE.to_string());
+    /// Returns a Future `Result` whose okay value is an `TransactionStatus` for a given hash or
+    /// whose error value is an `Error<VALUE>` describing the error that occurred.
+    pub async fn get_transaction_status(
+        &self,
+        transaction_hash: TransactionHash,
+    ) -> Result<TransactionStatus> {
+        let mut req = ApiRequest::new(Method::GET, TRANSACTION_STATUS_ROUTE.to_string());
 
-        req = req.with_path_param("hash".to_string(), hash.to_string());
+        req = req.with_path_param("hash".to_string(), transaction_hash.encode_hex::<String>());
 
-        let dto: Result<TransactionStatusDto> = req.execute(self.__client()).await;
+        let dto: TransactionStatusDto = req.execute(self.__client()).await?;
 
-        Ok(dto?.compact()?)
+        Ok(dto.compact()?)
     }
 
     /// Get transactions status.
@@ -103,54 +125,55 @@ impl TransactionRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
-    ///
-    ///const HASH_A: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
-    ///const HASH_B: &str = "5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4";
+    ///use ::std::str::FromStr;
+    ///use xpx_chain_sdk::api::ApiNode;
+    ///use xpx_chain_sdk::TransactionHash;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    ///use xpx_chain_sdk::api::SiriusClient;
     ///
-    ///    let transactions_status = client.transaction.get_transactions_statuses( vec![HASH_A,HASH_B] ).await;
+    /// let hash_one: TransactionHash = TransactionHash::from_str("130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").unwrap();
+    /// let hash_two: TransactionHash = TransactionHash::from_str("5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4").unwrap();
     ///
-    ///    match transactions_status {
-    ///        Ok(statuses) => {
-    ///            for status in statuses {
-    ///                println!("{}", status)
-    ///            }
-    ///        }
-    ///        Err(err) => eprintln!("{:?}", err),
-    ///    }
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
+    ///
+    /// let transactions_status = client.transaction_api().get_transactions_statuses( vec![hash_one,hash_two] ).await;
+    ///
+    /// match transactions_status {
+    ///     Ok(statuses) => {
+    ///         for status in statuses {
+    ///             println!("{}", status)
+    ///         }
+    ///     }
+    ///     Err(err) => eprintln!("{:?}", err),
+    /// }
     ///}
     /// ```
     ///
     /// # Returns
     ///
-    /// Returns a Future `Result` whose okay value is an vector of [TransactionStatus] for a
-    /// given vector of transaction hashes or whose error value is an `Error<Value>` describing the
+    /// Returns a Future `Result` whose okay value is an vector of `TransactionStatus` for a
+    /// given vector of transaction hashes or whose error value is an `Error<VALUE>` describing the
     /// error that occurred.
-    pub async fn get_transactions_statuses(self, hashes: Vec<&str>) -> Result<TransactionsStatus> {
-        valid_vec_len(&hashes, ERR_EMPTY_TRANSACTION_HASHES)?;
+    pub async fn get_transactions_statuses(
+        &self,
+        hashes: Vec<TransactionHash>,
+    ) -> Result<TransactionsStatus> {
+        valid_vec_len(hashes.as_ref(), ERR_EMPTY_TRANSACTION_HASHES)?;
 
-        valid_vec_hash(&hashes)?;
+        let mut req = ApiRequest::new(Method::POST, TRANSACTIONS_STATUS_ROUTE.to_string());
 
-        let transaction_hashes = TransactionHashes::from(hashes);
+        let body_param = json!({
+			"hashes": hashes,
+		});
 
-        let mut req = __internal_request::Request::new(
-            reqwest::Method::POST,
-            TRANSACTIONS_STATUS_ROUTE.to_string(),
-        );
-
-        req = req.with_body_param(transaction_hashes);
+        req = req.with_body_param(body_param);
 
         let dto: Vec<TransactionStatusDto> = req.execute(self.__client()).await?;
 
-        let statuses: TransactionsStatus = dto
-            .into_iter()
-            .map(move |status_dto| status_dto.compact().unwrap())
-            .collect();
+        let statuses: TransactionsStatus =
+            dto.into_iter().map(move |status_dto| status_dto.compact().unwrap()).collect();
 
         Ok(statuses)
     }
@@ -164,48 +187,60 @@ impl TransactionRoutes {
     /// # Example
     ///
     /// ```
-    ///
-    ///use xpx_chain_sdk::api::SiriusClient;
-    ///
-    ///const HASH: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
+    /// use ::std::str::FromStr;
+    /// use xpx_chain_sdk::api::ApiNode;
+    /// use xpx_chain_sdk::transaction::TransactionGroupType;
+    /// use xpx_chain_sdk::TransactionHash;
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url);
+    /// let hash_one: TransactionHash = TransactionHash::from_str("130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").unwrap();
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
-    ///    let transaction = client.transaction.get_transaction( HASH ).await;
+    /// let transaction = client.transaction_api().get_transaction( hash_one , TransactionGroupType::Confirmed).await;
     ///
-    ///    match transaction {
-    ///        Ok(resp_info) => println!("{}", resp_info),
-    ///        Err(err) => eprintln!("{:?}", err),
-    ///    }
+    /// match transaction {
+    ///     Ok(resp_info) => println!("{}", resp_info),
+    ///     Err(err) => eprintln!("{:?}", err),
+    /// }
     ///}
     /// ```
     ///
     /// # Returns
     ///
-    /// Returns a Future `Result` whose okay value is an [Box<dyn Transaction>] for given a
-    /// transactionId or hash or whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn get_transaction(self, transaction_id: &str) -> Result<Box<dyn Transaction>> {
-        let mut req = __internal_request::Request::new(Method::GET, TRANSACTION_ROUTE.to_string());
-
-        let id = if transaction_id.len() != 24 {
-            HashValue::from_slice(&str_to_hash(&transaction_id)?)?.to_string()
-        } else {
-            transaction_id.to_string()
-        };
+    /// Returns a Future `Result` whose okay value is an `Box<dyn Transaction>` for given a
+    /// transactionId or hash or whose error value is an `Error<VALUE>` describing the error that occurred.
+    pub async fn get_transaction(
+        &self,
+        transaction_hash: TransactionHash,
+        group: TransactionGroupType,
+    ) -> Result<Box<dyn Transaction>> {
+        let mut req = ApiRequest::new(Method::GET, TRANSACTION_ROUTE.to_string());
 
         req = req
-            .with_path_param("transactionId".to_string(), id)
-            .set_transaction();
+            .with_path_param("transactionId".to_string(), transaction_hash.encode_hex::<String>())
+            .with_path_param("group".to_string(), group.to_string());
 
-        let transaction: Box<dyn TransactionDto> = req.execute(self.__client()).await?;
-
-        Ok(transaction.compact()?)
+        __internal_get_transaction(self.__client(), req).await
     }
 
-    /// Get [Transactions] information.
+    /// GetTransactionsByGroup returns an array of Transaction's for passed TransactionGroupType.
+    pub async fn get_transactions_by_group(
+        &self,
+        group_type: TransactionGroupType,
+        txn_query_params: Option<TransactionQueryParams>,
+    ) -> Result<TransactionSearch> {
+        __internal_get_transactions_by_group_with_pagination(
+            self.__client(),
+            TRANSACTIONS_BY_GROUP_ROUTE,
+            group_type,
+            txn_query_params,
+        )
+            .await
+    }
+
+    /// Get `Transactions` information.
     ///
     /// # Inputs
     ///
@@ -215,17 +250,20 @@ impl TransactionRoutes {
     ///
     /// ```
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
-    ///
-    ///const HASH_A: &str = "130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F";
-    ///const HASH_B: &str = "5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4";
-    ///
+    ///use ::std::str::FromStr;
+    ///use xpx_chain_sdk::api::ApiNode;
+    ///use xpx_chain_sdk::TransactionHash;
+    /// use xpx_chain_sdk::transaction::TransactionGroupType;
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url);
     ///
-    ///    let transactions_info = client.transaction.get_transactions( vec![HASH_A,HASH_B] ).await;
+    /// let hash_one: TransactionHash = TransactionHash::from_str("130171141CAE9D9ED6F62FD47CC316631986BBACD6B3D63930A9C46ED1ED764F").unwrap();
+    /// let hash_two: TransactionHash = TransactionHash::from_str("5EC5C0E766B3DF81FBAD0E4FD794828002763905FEDC47208520E90FBED783B4").unwrap();
+    ///
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
+    ///
+    ///    let transactions_info = client.transaction_api().get_transactions( vec![hash_one,hash_two], TransactionGroupType::Confirmed ).await;
     ///
     ///    match transactions_info {
     ///        Ok(transactions) => {
@@ -240,93 +278,84 @@ impl TransactionRoutes {
     ///
     /// # Returns
     ///
-    /// Returns a Future `Result` whose okay value is an [Transactions] for a given vector of
-    /// transactionIds or whose error value is an `Error<Value>` describing the error that occurred.
-    pub async fn get_transactions(self, transaction_ids: Vec<&str>) -> Result<Transactions> {
-        valid_vec_len(&transaction_ids, ERR_EMPTY_TRANSACTION_IDS)?;
+    /// Returns a Future `Result` whose okay value is an `Transactions` for a given vector of
+    /// transactionIds or whose error value is an `Error<VALUE>` describing the error that occurred.
+    pub async fn get_transactions(
+        &self,
+        hashes: Vec<TransactionHash>,
+        group: TransactionGroupType,
+    ) -> Result<Transactions> {
+        let body_param = json!({
+			"transactionIds": hashes,
+		});
 
-        valid_vec_hash(&transaction_ids)?;
+        let mut req = ApiRequest::new(Method::POST, TRANSACTIONS_ROUTE.to_string());
 
-        let ids = TransactionIds::from(transaction_ids);
+        req = req
+            .with_body_param(body_param)
+            .with_path_param("group".to_string(), group.to_string());
 
-        let mut req =
-            __internal_request::Request::new(Method::POST, TRANSACTIONS_ROUTE.to_string());
-
-        req = req.with_body_param(ids).set_transaction_vec();
-
-        let dto: Vec<Box<dyn TransactionDto>> = req.execute(self.__client()).await?;
-
-        let mut transactions_info: Transactions = vec![];
-        for transaction_dto in dto.into_iter() {
-            transactions_info.push(transaction_dto.compact()?);
-        }
-
-        Ok(transactions_info)
+        let body_value = req.execute(self.__client()).await?;
+        value_to_transaction(body_value)
     }
 
     /// Announces a transaction to the network.
     ///
     /// # Inputs
     ///
-    /// * `transaction_signed` =    An [signed_transaction].
+    /// * `transaction_signed` =  An [signed_transaction].
     ///
     /// # Example
     ///
     /// ```
     ///
     ///
-    ///use xpx_chain_sdk::api::SiriusClient;
+    ///use xpx_chain_sdk::api::ApiNode;
     ///use xpx_chain_sdk::{
     ///    account::{Account, Address},
     ///    message::PlainMessage,
     ///    mosaic::Mosaic,
-    ///    network::PUBLIC_TEST,
-    ///    transaction::{Deadline, TransferTransaction}
+    ///    transaction::{TransferTransaction}
     ///};
     ///
     ///const PRIVATE_KEY: &str = "5D3E959EB0CD69CC1DB6E9C62CB81EC52747AB56FA740CF18AACB5003429AD2E";
     ///
     ///#[tokio::main]
     ///async fn main() {
-    /// let node_url = vec!["http://bctestnet1.brimstone.xpxsirius.io:3000"];
-    /// let client = SiriusClient::new_from_urls(&node_url);
+    /// let node_url = "http://api-2.testnet2.xpxsirius.io:3000";
+    /// let client = ApiNode::from_static(node_url).connect().await.unwrap();
     ///
-    ///    let generation_hash = client.generation_hash().await;
+    /// let chain = client.chain_api().get_block_by_height(1).await.unwrap();
     ///
-    ///    // let network_type = client.network_type().await;
-    ///    let network_type = PUBLIC_TEST;
+    /// let network_type = chain.network_type;
+    /// let generation_hash = chain.generation_hash;
     ///
-    ///    // Deadline default 1 hour
-    ///    // let deadline = Deadline::new(1, 0, 0);
-    ///    let deadline = Deadline::default();
-    ///
-    ///    let account = Account::from_private_key(PRIVATE_KEY, network_type).unwrap();
+    ///    let account = Account::from_hex_private_key(PRIVATE_KEY, network_type).unwrap();
     ///
     ///    let recipient = Address::from_raw("VC4A3Z6ALFGJPYAGDK2CNE2JAXOMQKILYBVNLQFS").unwrap();
     ///
-    ///    let message = PlainMessage::new("Transfer From ProximaX Rust SDK");
+    ///    let message = PlainMessage::create("Transfer From ProximaX Rust SDK");
     ///
-    ///    let transfer_transaction = TransferTransaction::new(
-    ///        deadline,
-    ///        recipient,
-    ///        vec![Mosaic::xpx(1)],
-    ///        message,
-    ///        network_type,
-    ///    );
+    ///    let transfer_transaction = TransferTransaction::builder(network_type)
+    ///         .recipient(recipient)
+    ///         .mosaics(vec![Mosaic::xpx(1)])
+    ///         .message(message)
+    ///         .max_fee(1000)
+    ///         .build();
     ///
-    ///    if let Err(err) = &transfer_transaction {
+    ///    if let Err(ref err) = transfer_transaction {
     ///        panic!("{}", err)
     ///    }
     ///
-    ///    let sig_transaction = account.sign(
-    ///        &transfer_transaction.unwrap(), generation_hash);
+    ///    let sig_transaction = account.sign_transaction(
+    ///        transfer_transaction.unwrap(), generation_hash);
     ///
     ///    let sig_tx = match &sig_transaction {
     ///        Ok(sig) => sig,
     ///        Err(err) => panic!("{}", err),
     ///    };
     ///
-    ///    let response = client.transaction.announce(&sig_tx).await;
+    ///    let response = client.transaction_api().announce(&sig_tx).await;
     ///
     ///    match response {
     ///        Ok(resp) => println!("{}", resp),
@@ -337,45 +366,41 @@ impl TransactionRoutes {
     ///
     /// # Returns
     ///
-    /// Returns a Future `Result` whose okay value is an [AnnounceTransactionInfo] or whose error
-    /// value is an `Error<Value>` describing the error that occurred.
+    /// Returns a Future `Result` whose okay value is an `AnnounceTransactionInfo` or whose error
+    /// value is an `Error<VALUE>` describing the error that occurred.
     pub async fn announce(
-        self,
+        &self,
         transaction_signed: &SignedTransaction,
     ) -> Result<AnnounceTransactionInfo> {
-        self.__announce_transaction(transaction_signed, TRANSACTIONS_ROUTE)
+        self.__announce_transaction(transaction_signed, ANNOUNCE_TRANSACTION_ROUTE)
             .await
     }
 
     pub async fn announce_aggregate_bonded(
-        self,
+        &self,
         signed_transaction: &SignedTransaction,
     ) -> Result<AnnounceTransactionInfo> {
-        self.__announce_transaction(signed_transaction, ANNOUNCE_AGGREGATE_ROUTE)
+        self.__announce_transaction(signed_transaction, AGGREGATE_TRANSACTIONS_ROUTE)
             .await
     }
 
     pub async fn announce_aggregate_bonded_cosignature(
-        self,
+        &self,
         cosignature: &CosignatureSignedTransaction,
     ) -> Result<AnnounceTransactionInfo> {
         self.__announce_transaction(cosignature, ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE)
             .await
     }
 
-    fn __announce_transaction<T>(
-        self,
-        tx: T,
-        route: &str,
-    ) -> impl Future<Output = Result<AnnounceTransactionInfo>>
-    where
-        for<'de> T: serde::Serialize,
+    async fn __announce_transaction<T>(&self, tx: T, route: &str) -> Result<AnnounceTransactionInfo>
+        where
+                for<'de> T: serde::Serialize,
     {
-        let mut req = __internal_request::Request::new(Method::PUT, route.to_string());
+        let mut req = ApiRequest::new(Method::PUT, route.to_string());
 
         req = req.with_body_param(tx);
 
-        async move { req.execute(self.__client()).await }
+        req.execute(self.__client()).await
     }
 }
 

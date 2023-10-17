@@ -4,45 +4,45 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::models::{
-    account::PublicAccount, alias::AliasActionType, asset_id_model::AssetId,
-    consts::ALIAS_TRANSACTION_HEADER, namespace::NamespaceId,
+use crate::{
+    account::PublicAccount, alias::AliasActionType, models::consts::ALIAS_TRANSACTION_HEADER,
+    mosaic::UnresolvedMosaicId, namespace::NamespaceId,
 };
 
-use super::{buffer::alias as buffer, schema::alias_transaction_schema, AbstractTransaction};
+use super::{buffers, CommonTransaction, schema::alias_transaction_schema};
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AliasTransaction {
-    pub abs_transaction: AbstractTransaction,
+    pub common: CommonTransaction,
     pub action_type: AliasActionType,
     pub namespace_id: NamespaceId,
 }
 
 impl AliasTransaction {
     pub(crate) fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        self.common.set_aggregate(signer)
     }
 
-    pub(crate) fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
+    pub(crate) fn common(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
     pub(crate) fn size(&self) -> usize {
         ALIAS_TRANSACTION_HEADER
     }
 
-    pub(crate) fn embedded_to_bytes(
+    pub(crate) fn to_serializer(
         &self,
         builder: &mut fb::FlatBufferBuilder,
         alias_vec: fb::WIPOffset<fb::Vector<u8>>,
         alias_size: usize,
-    ) -> crate::Result<Vec<u8>> {
-        let namespace_vec = builder.create_vector_direct(&self.namespace_id.to_u32_array());
+    ) -> Vec<u8> {
+        let namespace_vec = builder.create_vector(&self.namespace_id.to_dto());
 
-        let abs_vector = self.abs_transaction.build_vector(builder);
+        let abs_vector = self.common.build_vector(builder);
 
-        let mut txn_builder = buffer::AliasTransactionBufferBuilder::new(builder);
+        let mut txn_builder = buffers::AliasTransactionBufferBuilder::new(builder);
         txn_builder.add_size_((self.size() + alias_size) as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
@@ -59,6 +59,6 @@ impl AliasTransaction {
 
         let buf = builder.finished_data();
 
-        Ok(alias_transaction_schema().serialize(&mut buf.to_vec()))
+        alias_transaction_schema().serialize(&mut buf.to_vec())
     }
 }

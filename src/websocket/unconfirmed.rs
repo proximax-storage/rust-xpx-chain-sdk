@@ -6,7 +6,7 @@
 
 use ::std::str::FromStr;
 
-use crate::models::transaction::HashValue;
+use crate::models::transaction::TransactionHash;
 
 use super::Handler;
 
@@ -48,7 +48,7 @@ impl WsUnconfirmedMetaDto {
             height: crate::Uint64::default(),
             index: 0,
             id: String::new(),
-            hash: Some(HashValue::from_str(&self.hash).unwrap()),
+            hash: Some(TransactionHash::from_str(&self.hash).unwrap()),
             merkle_component_hash: None,
             aggregate_hash: None,
             aggregate_id: None,

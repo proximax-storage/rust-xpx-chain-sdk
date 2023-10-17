@@ -6,8 +6,6 @@
 
 use std::fmt;
 
-use crate::models::Uint64;
-
 use super::{MosaicId, MosaicProperties};
 
 /// Contains information about a mosaic.
@@ -17,10 +15,10 @@ pub struct MosaicInfo {
     pub mosaic_id: MosaicId,
 
     /// The total supply of the mosaic.
-    pub supply: Uint64,
+    pub supply: u64,
 
     /// The block height the mosaic was created.
-    pub height: Uint64,
+    pub height: u64,
 
     /// The account of the owner of this mosaic.
     pub owner: String,
@@ -29,28 +27,10 @@ pub struct MosaicInfo {
     pub revision: usize,
 
     /// The mosaic flags.
-    properties: MosaicProperties,
+    pub(crate) properties: MosaicProperties,
 }
 
 impl MosaicInfo {
-    pub fn new(
-        mosaic_id: MosaicId,
-        supply: Uint64,
-        height: Uint64,
-        owner: String,
-        revision: usize,
-        properties: MosaicProperties,
-    ) -> Self {
-        MosaicInfo {
-            mosaic_id,
-            supply,
-            height,
-            owner,
-            revision,
-            properties,
-        }
-    }
-
     /// Returns the mosaic supply mutability.
     pub fn is_supply_mutable(&self) -> bool {
         self.properties.supply_mutable
@@ -63,11 +43,7 @@ impl MosaicInfo {
 }
 
 impl fmt::Display for MosaicInfo {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

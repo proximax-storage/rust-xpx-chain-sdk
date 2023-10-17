@@ -4,109 +4,113 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::fmt, failure::_core::any::Any, serde_json::Value};
+use anyhow::Result;
+
+use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
 
 use crate::{
-    models::{
-        account::{Account, PublicAccount},
-        consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE},
-        errors_const::ERR_EMPTY_INNER_TRANSACTION,
-        multisig::Cosignature,
-        network::NetworkType,
-    },
-    Result,
+    account::Account,
+    errors_const::ERR_EMPTY_INNER_TRANSACTION,
+    helpers::TransactionHash,
+    multisig::Cosignature,
+    network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::errors_const::ERR_EMPTY_TRANSACTION_SIGNER;
+use crate::models::consts::{AGGREGATE_BONDED_HEADER, DEAD_LINE_SIZE, MAX_FEE_SIZE, SIGNATURE_SIZE};
+use crate::transaction::buffers;
+use crate::transaction::internal::to_aggregate_transaction_bytes;
+use crate::transaction::schema::aggregate_transaction_schema;
 
 use super::{
-    buffer::aggregate as buffer,
-    internal::{
-        sign_transaction, sign_transaction_with_cosignatures, to_aggregate_transaction_bytes,
-    },
-    schema::aggregate_transaction_schema,
-    AbsTransaction, AbstractTransaction, Deadline, HashValue, SignedTransaction, Transaction,
-    TransactionType, Transactions, AGGREGATE_BONDED_VERSION, AGGREGATE_COMPLETED_VERSION,
+    CommonTransaction,
+    Deadline, internal::sign_transaction_with_cosignatures, SignedTransaction, Transaction, Transactions,
+    TransactionType, TransactionVersion,
 };
 
 /// AggregateTransaction:
 /// Transaction that combines multiple transactions together.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(
+create_empty = "empty",
+build_fn(validate = "Self::validate", error = "crate::api::error::Error")
+)]
+#[serde(rename_all = "camelCase")]
 pub struct AggregateTransaction {
-    pub abs_transaction: AbstractTransaction,
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
+    pub common: CommonTransaction,
     /// An array of transaction cosignatures.
+    #[builder(default)]
     pub cosignatures: Vec<Cosignature>,
     /// The array of transactions initiated by different accounts.
     pub inner_transactions: Transactions,
 }
 
-impl AggregateTransaction {
-    pub fn new_complete(
-        deadline: Deadline,
-        inner_txs: Vec<Box<dyn Transaction>>,
-        network_type: NetworkType,
-    ) -> Result<AggregateTransaction> {
-        ensure!(!inner_txs.is_empty(), ERR_EMPTY_INNER_TRANSACTION);
+impl AggregateTransactionBuilder {
+    fn validate(&self) -> Result<()> {
+        if let Some(ref inner_transactions) = self.inner_transactions {
+            ensure!(!inner_transactions.is_empty(), ERR_EMPTY_INNER_TRANSACTION);
+        }
 
-        let abs_tx = AbstractTransaction::new_from_type(
-            deadline,
-            AGGREGATE_COMPLETED_VERSION,
+        Ok(())
+    }
+
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut AggregateTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut AggregateTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
+}
+
+impl AggregateTransaction {
+    pub fn builder_complete(network_type: NetworkType) -> AggregateTransactionBuilder {
+        let common = CommonTransaction::create_from_type(
             TransactionType::AggregateComplete,
             network_type,
+            TransactionVersion::AGGREGATE_COMPLETE,
+            Some(Default::default()),
+            None,
         );
-
-        Ok(Self {
-            abs_transaction: abs_tx,
-            cosignatures: vec![],
-            inner_transactions: inner_txs,
-        })
+        AggregateTransactionBuilder { common: Some(common), ..Default::default() }
     }
 
-    pub fn new_bonded(
-        deadline: Deadline,
-        inner_txs: Vec<Box<dyn Transaction>>,
-        network_type: NetworkType,
-    ) -> Result<Self> {
-        ensure!(!inner_txs.is_empty(), ERR_EMPTY_INNER_TRANSACTION);
-
-        let abs_tx = AbstractTransaction::new_from_type(
-            deadline,
-            AGGREGATE_BONDED_VERSION,
+    pub fn builder_bonded(network_type: NetworkType) -> AggregateTransactionBuilder {
+        let common = CommonTransaction::create_from_type(
             TransactionType::AggregateBonded,
             network_type,
+            TransactionVersion::AGGREGATE_BONDED,
+            Some(Default::default()),
+            None,
         );
-
-        Ok(Self {
-            abs_transaction: abs_tx,
-            cosignatures: vec![],
-            inner_transactions: inner_txs,
-        })
+        AggregateTransactionBuilder { common: Some(common), ..Default::default() }
     }
 
-    pub(crate) fn sign_with_cosignatories(
+    pub fn sign_with_cosignatories(
         self,
         account: Account,
         cosignatories: Vec<Account>,
-        generation_hash: HashValue,
-    ) -> crate::Result<SignedTransaction> {
+        generation_hash: TransactionHash,
+    ) -> Result<SignedTransaction> {
         sign_transaction_with_cosignatures(self, account, cosignatories, generation_hash)
     }
 }
 
 impl fmt::Display for AggregateTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
-impl AbsTransaction for AggregateTransaction {
-    fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
-    }
-}
-
+#[typetag::serde]
 impl Transaction for AggregateTransaction {
     fn size(&self) -> usize {
         let mut size_of_inner_transactions = 0;
@@ -121,30 +125,27 @@ impl Transaction for AggregateTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(
-        self,
-        account: Account,
-        generation_hash: HashValue,
-    ) -> crate::Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
+    fn get_common_transaction(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
-    fn embedded_to_bytes(&self) -> Result<Vec<u8>> {
+    fn to_serializer<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
 
         let mut txsb: Vec<u8> = Vec::new();
         for tx in &self.inner_transactions {
-            let mut tx_byte = to_aggregate_transaction_bytes(tx)?;
+            let mut tx_byte =
+                to_aggregate_transaction_bytes(tx).expect(ERR_EMPTY_TRANSACTION_SIGNER);
             txsb.append(&mut tx_byte)
         }
 
-        let tx_vec = _builder.create_vector_direct(&txsb);
+        let tx_vec = _builder.create_vector(&txsb);
 
-        let abs_vector = self.abs_transaction.build_vector(&mut _builder);
+        let abs_vector = self.common.build_vector(&mut _builder);
 
-        let mut txn_builder = buffer::AggregateTransactionBufferBuilder::new(&mut _builder);
+        let mut txn_builder = buffers::AggregateTransactionBufferBuilder::new(&mut _builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
@@ -161,11 +162,11 @@ impl Transaction for AggregateTransaction {
 
         let buf = _builder.finished_data();
 
-        Ok(aggregate_transaction_schema().serialize(&mut buf.to_vec()))
+        aggregate_transaction_schema().serialize(&mut buf.to_vec())
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        self.common.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {

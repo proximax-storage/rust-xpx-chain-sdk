@@ -4,6 +4,6 @@
  * license that can be found in the LICENSE file.
  */
 
-pub use self::alias_model::*;
+pub use self::alias::*;
 
-mod alias_model;
+mod alias;

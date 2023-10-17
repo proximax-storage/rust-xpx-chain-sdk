@@ -5,21 +5,26 @@
  */
 
 #[macro_use]
-extern crate downcast_rs;
+extern crate anyhow;
+extern crate core;
+#[macro_use]
+extern crate derive_builder;
 #[macro_use]
 extern crate erased_serde;
 #[macro_use]
-extern crate failure;
+extern crate fixed_hash;
 extern crate flatbuffers as fb;
 #[macro_use]
 extern crate serde;
+extern crate serde_qs as qs;
+#[macro_use]
+extern crate thiserror;
 extern crate xpx_chain_crypto as crypto;
 
+pub use self::helpers::hashes::*;
 pub use self::models::*;
 
 pub mod api;
+// pub mod websocket;
 mod helpers;
 mod models;
-pub mod websocket;
-
-pub type Result<T> = ::std::result::Result<T, failure::Error>;

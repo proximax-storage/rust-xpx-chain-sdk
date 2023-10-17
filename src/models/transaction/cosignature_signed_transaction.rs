@@ -4,34 +4,28 @@
  * license that can be found in the LICENSE file.
  */
 
+use crypto::Signature;
+
 use {serde::Serialize, std::fmt};
 
-use super::{HashValue, Signature, Signer};
+use crate::helpers::{Signer, TransactionHash};
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CosignatureSignedTransaction {
-    pub parent_hash: HashValue,
+    pub parent_hash: TransactionHash,
     pub signature: Signature,
     pub signer: Signer,
 }
 
 impl CosignatureSignedTransaction {
-    pub fn new(parent_hash: HashValue, signature: Signature, signer: Signer) -> Self {
-        Self {
-            parent_hash,
-            signature,
-            signer,
-        }
+    pub fn create(parent_hash: TransactionHash, signature: Signature, signer: Signer) -> Self {
+        Self { parent_hash, signature, signer }
     }
 }
 
 impl fmt::Display for CosignatureSignedTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

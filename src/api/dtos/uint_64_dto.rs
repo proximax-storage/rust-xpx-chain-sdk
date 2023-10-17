@@ -6,14 +6,14 @@
 
 use serde_json::Value;
 
-use crate::Uint64;
+use crate::AsUint64;
 
 #[derive(Debug, Clone, Deserialize, Serialize)] // we derive Default in order to use the clear() method in Drop
 pub(crate) struct Uint64Dto(pub(crate) [u32; 2]);
 
 impl Uint64Dto {
-    pub fn compact(&self) -> Uint64 {
-        Uint64::from((self.0[0], self.0[1]))
+    pub fn compact(&self) -> u64 {
+        u64::from_bits(self.0[0], self.0[1])
     }
 
     pub fn from_value(value: Value) -> Self {

@@ -8,10 +8,10 @@ use ::std::str::FromStr;
 
 use crate::{
     api::Uint64Dto,
-    transaction::{BlockchainTimestamp, Deadline, HashValue, TransactionStatus},
+    transaction::{BlockchainTimestamp, Deadline, TransactionStatus},
 };
 
-use super::{model::WsSubscribeDto, Handler};
+use super::{Handler, model::WsSubscribeDto};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -41,7 +41,7 @@ impl WsSubscribeDto for WsStatusInfoDto {
         TransactionStatus {
             group: "".to_string(),
             status: self.status,
-            hash: HashValue::from_str(&self.hash).unwrap(),
+            hash: TransactionHash::from_str(&self.hash).unwrap(),
             deadline: Some(deadline),
             height: None,
         }

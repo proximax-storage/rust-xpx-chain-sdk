@@ -4,7 +4,7 @@
 
 // Common errors
 pub const ERR_INVALID_NAMESPACE_ALIASED: &str = "Namespace is not aliased to Mosaic";
-pub const ERR_INVALID_ASSET_ID: &str = "AssetId's vector should not be empty";
+pub const ERR_INVALID_ASSET_ID: &str = "UnresolvedMosaicId's vector should not be empty";
 
 // Accounts errors
 pub const ERR_EMPTY_ADDRESSES_IDS: &str = "list of addresses should not be empty";
@@ -21,6 +21,7 @@ pub const ERR_WRONG_BIT_NAMESPACE_ID: &str = "Namespace_id doesn't have 64th bit
 pub const ERR_EMPTY_NAMESPACE_IDS: &str = "Namespace ids vec must not by empty";
 pub const ERR_EMPTY_NAMESPACE_NAME: &str = "Namespace name must not by empty";
 pub const ERR_INVALID_NAMESPACE_NAME: &str = "Namespace name is invalid";
+pub const ERR_INVALID_LEN_NAMESPACE_NAME: &str = "Namespace len name is invalid";
 
 // Mosaic errors
 pub const ERR_EMPTY_MOSAIC_IDS: &str = "Mosaics ids vec must not by empty";
@@ -40,12 +41,14 @@ pub const ERR_INVALID_AGGREGATE_TRANSACTION: &str =
     "The transaction is not an AggregateTransaction.";
 
 // Common errors
-pub const ERR_UNKNOWN_BLOCKCHAIN_TYPE: &str = "Not supported Blockchain Type. ";
+pub const ERR_UNKNOWN_BLOCKCHAIN_TYPE: &str = "Not supported Blockchain Type.";
 pub const ERR_INVALID_HASH_LENGTH: &str = "The length of Hash is invalid.";
 pub const ERR_INVALID_HASH_HEX: &str = "Invalid Hash it's not hex.";
+pub const ERR_INVALID_PAYLOAD_HEX: &str = "Invalid payload it's not hex.";
 
 //pub const ERR_EMPTY_HASH: &str = "Hash must not by empty.";
 pub const ERR_EMPTY_NETWORK_TYPE: &str = "NetworkType string is empty.";
+pub const ERR_WRONG_NETWORK_TYPE: &str = "Wrong NetworkType.";
 pub const ERR_INVALID_PRIVATE_KEY_LENGTH: &str = "The private key string is empty.";
 pub const ERR_INVALID_PUBLIC_KEY_LENGTH: &str = "The public key string is empty.";
 pub const ERR_INVALID_KEY_LENGTH: &str = "The length of key is invalid.";
@@ -60,3 +63,7 @@ pub const ERR_METADATA_EMPTY_ADDRESSES: &str = "list adresses ids must not by em
 pub const ERR_METADATA_EMPTY_MOSAIC_IDS: &str = "list mosaics ids must not by empty.";
 pub const ERR_METADATA_EMPTY_NAMESPACE_IDS: &str = "list namespaces ids must not by empty.";
 pub const ERR_METADATA_EMPTY_MODIFICATIONS: &str = "modifications must not empty.";
+
+// Metadata v2 errors
+pub const ERR_METADATA_VALUE_IS_THE_SAME: &str = "new value is the same.";
+pub const ERR_METADATA_INVALID_SCOPED_METADATA_KEY_TYPE: &str = "invalid scopedMetadataKey type.";

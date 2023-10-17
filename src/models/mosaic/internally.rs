@@ -6,12 +6,9 @@
 
 use sha3::{Digest, Sha3_256};
 
-use crate::{
-    helpers::array_u8_to_u64,
-    models::{account::PublicAccount, namespace::NAMESPACE_BIT, Uint64},
-};
+use crate::{account::PublicAccount, helpers::array_u8_to_u64, namespace::NAMESPACE_BIT};
 
-use super::MosaicNonce;
+use super::{MosaicId, MosaicNonce};
 
 pub(super) const XPX_DIVISIBILITY: u64 = 1_000_000;
 
@@ -23,16 +20,16 @@ pub(super) const XPX_MIN_VALUE: u64 = 1;
 
 pub(super) const PRX_XPX_U64: u64 = 13_833_723_942_089_965_046;
 
-pub(super) fn generate_mosaic_id(nonce: MosaicNonce, owner_public_id: PublicAccount) -> Uint64 {
+pub(super) fn generate_mosaic_id(nonce: MosaicNonce, owner_public_id: PublicAccount) -> MosaicId {
     let mut hash = Sha3_256::default();
 
-    hash.input(*nonce);
+    hash.update(*nonce);
 
-    let owner_bytes: [u8; 32] = owner_public_id.public_key;
+    let owner_bytes: [u8; 32] = owner_public_id.public_key.to_bytes();
 
-    hash.input(owner_bytes);
+    hash.update(owner_bytes);
 
-    let hash_to_array = hash.result();
+    let hash_to_array = hash.finalize();
 
-    Uint64::new(array_u8_to_u64(hash_to_array.as_slice()) ^ NAMESPACE_BIT)
+    MosaicId(array_u8_to_u64(hash_to_array.as_slice()) ^ NAMESPACE_BIT)
 }

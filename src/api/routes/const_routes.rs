@@ -10,21 +10,14 @@ pub const ACCOUNT_PROPERTIES_ROUTE: &str = "/account/{address_id}/properties";
 pub const ACCOUNTS_PROPERTIES_ROUTE: &str = "/account/properties";
 pub const MULTISIG_ACCOUNT_ROUTE: &str = "/account/{address_id}/multisig";
 pub const MULTISIG_ACCOUNT_GRAPH_INFO_ROUTE: &str = "/account/{address_id}/multisig/graph";
-pub const TRANSACTIONS_BY_ACCOUNT_ROUTE: &str = "/account/{publicKey}/transactions";
-pub const INCOMING_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/incoming";
-pub const OUTGOING_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/outgoing";
-pub const UNCONFIRMED_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/unconfirmed";
-pub const AGGREGATE_TRANSACTIONS_ROUTE: &str = "/account/{publicKey}/transactions/partial";
-
-/// Block routes.
-pub const BLOCK_BY_HEIGHT_ROUTE: &str = "/block/{height}";
-pub const BLOCK_GET_TRANSACTION_ROUTE: &str = "/block/{height}/transactions";
-pub const BLOCK_INFO_ROUTE: &str = "/blocks/{height}/limit/{limit}";
 
 /// Chain routes.
 pub const CHAIN_STORAGE_ROUTE: &str = "/diagnostic/storage";
 pub const CHAIN_SCORE_ROUTE: &str = "/chain/score";
 pub const CHAIN_HEIGHT_ROUTE: &str = "/chain/height";
+pub const BLOCK_BY_HEIGHT_ROUTE: &str = "/block/{height}";
+pub const BLOCK_GET_TRANSACTION_ROUTE: &str = "/block/{height}/transactions";
+pub const BLOCK_INFO_ROUTE: &str = "/blocks/{height}/limit/{limit}";
 
 ///  Exchange routes
 pub const EXCHANGE_ROUTE: &str = "/account/{account_id}/exchange";
@@ -34,6 +27,8 @@ pub const OFFERS_BY_MOSAIC_ROUTE: &str = "/exchange/{offer_type}/{mosaic_id}";
 pub const MOSAICS_ROUTE: &str = "/mosaic";
 pub const MOSAIC_ROUTE: &str = "/mosaic/{mosaic_id}";
 pub const MOSAIC_NAMES_ROUTE: &str = "/mosaic/names";
+pub const MOSAIC_RICH_LIST_ROUTE: &str = "/mosaic/{mosaicId}/richlist";
+pub const MOSAIC_LEVY_ROUTE: &str = "/mosaic/{mosaicId}/levy";
 
 /// Namespace routes.
 pub const NAMESPACE_ROUTE: &str = "/namespace/{namespaceId}";
@@ -44,13 +39,22 @@ pub const NAMESPACES_FROM_ACCOUNT_ROUTES: &str = "/account/{accountId}/namespace
 /// Node routes.
 pub const NODE_INFO: &str = "/node/info";
 pub const NODE_TIME: &str = "/node/time";
+pub const NODE_PEERS: &str = "/node/peers";
+
+/// Network routes.
+pub const NETWORK_INFO: &str = "/network";
 
 /// Transaction routes.
-pub const TRANSACTIONS_ROUTE: &str = "/transaction";
-pub const TRANSACTION_ROUTE: &str = "/transaction/{transactionId}";
-pub const TRANSACTION_STATUS_ROUTE: &str = "/transaction/{hash}/status";
-pub const TRANSACTIONS_STATUS_ROUTE: &str = "/transaction/statuses";
-pub const ANNOUNCE_AGGREGATE_ROUTE: &str = "/transaction/partial";
+pub const TRANSACTIONS_ROUTE: &str = "/transactions/confirmed";
+pub const TRANSACTIONS_UNCONFIRMED_ROUTE: &str = "/transactions/Unconfirmed";
+
+pub const TRANSACTIONS_BY_GROUP_ROUTE: &str = "/transactions/{group}";
+pub const TRANSACTION_ROUTE: &str = "/transactions/{group}/{transactionId}";
+
+pub const TRANSACTION_STATUS_ROUTE: &str = "/transactionStatus/{hash}";
+pub const TRANSACTIONS_STATUS_ROUTE: &str = "/transactionStatus";
+pub const ANNOUNCE_TRANSACTION_ROUTE: &str = "/transactions";
+pub const AGGREGATE_TRANSACTIONS_ROUTE: &str = "/transactions/partial";
 pub const ANNOUNCE_AGGREGATE_COSIGNATURE_ROUTE: &str = "/transaction/cosignature";
 
 // routes for MetadataService
@@ -58,3 +62,6 @@ pub const METADATA_INFO_ROUTE: &str = "/metadata";
 pub const METADATA_BY_ACCOUNT_ROUTE: &str = "/account/{address_id}/metadata";
 pub const METADATA_BY_MOSAIC_ROUTE: &str = "/mosaic/{mosaic_id}/metadata";
 pub const METADATA_BY_NAMESPACE_ROUTE: &str = "/namespace/{namespace_id}/metadata";
+
+pub const METADATA_V2_INFO_ROUTE: &str = "/metadata_v2/{compositeHash}";
+pub const METADATAS_V2_INFO_ROUTE: &str = "/metadata_v2";

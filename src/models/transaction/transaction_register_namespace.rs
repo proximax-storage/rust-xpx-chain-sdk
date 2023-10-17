@@ -4,113 +4,136 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::fmt, failure::_core::any::Any, serde_json::Value};
+use anyhow::Result;
 
-use crate::{
-    models::{
-        account::{Account, PublicAccount},
-        asset_id_model::AssetId,
-        consts::REGISTER_NAMESPACE_HEADER_SIZE,
-        errors_const,
-        namespace::{generate_namespace_id, NamespaceId, NamespaceType},
-        network::NetworkType,
-        uint_64::Uint64,
-    },
-    Result,
-};
+use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
+
+use crate::{AsUint64, errors_const, mosaic::UnresolvedMosaicId, namespace::{generate_namespace_id, NamespaceId, NamespaceType}, network::NetworkType};
+use crate::models::consts::REGISTER_NAMESPACE_HEADER_SIZE;
+use crate::transaction::buffers;
+use crate::transaction::schema::register_namespace_transaction_schema;
 
 use super::{
-    buffer::register_namespace as buffer, internal::sign_transaction,
-    schema::register_namespace_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    HashValue, SignedTransaction, Transaction, TransactionType, REGISTER_NAMESPACE_VERSION,
+    CommonTransaction, Deadline,
+    Transaction, TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(
+create_empty = "empty",
+build_fn(validate = "Self::validate", error = "crate::api::error::Error")
+)]
 #[serde(rename_all = "camelCase")]
 pub struct RegisterNamespaceTransaction {
-    pub abs_transaction: AbstractTransaction,
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
+    pub common: CommonTransaction,
     pub namespace_type: NamespaceType,
     pub namespace_id: NamespaceId,
+    #[builder(private)]
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub duration: Option<Uint64>,
+    #[builder(setter(strip_option))]
+    pub duration: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(setter(strip_option), default)]
     pub parent_id: Option<NamespaceId>,
 }
 
-impl RegisterNamespaceTransaction {
-    pub fn create_root(
-        deadline: Deadline,
-        namespace_name: &str,
-        duration: Uint64,
-        network_type: NetworkType,
-    ) -> Result<RegisterNamespaceTransaction> {
-        ensure!(
-            !namespace_name.is_empty() && namespace_name.len() <= 16,
-            errors_const::ERR_INVALID_NAMESPACE_NAME
-        );
+impl RegisterNamespaceTransactionBuilder {
+    fn validate(&self) -> Result<()> {
+        let namespace_name =
+            self.name.clone().ok_or(anyhow!(errors_const::ERR_EMPTY_NAMESPACE_NAME))?;
 
-        let abs_tx = AbstractTransaction::new_from_type(
-            deadline,
-            REGISTER_NAMESPACE_VERSION,
-            TransactionType::NamespaceRegistration,
-            network_type,
-        );
+        ensure!(!namespace_name.is_empty(), errors_const::ERR_EMPTY_NAMESPACE_NAME);
 
-        let namespace_id = NamespaceId::from_name(namespace_name)?;
+        if self.namespace_type == Some(NamespaceType::Root) {
+            ensure!(namespace_name.len() <= 16, errors_const::ERR_INVALID_LEN_NAMESPACE_NAME);
+        } else if self.namespace_type == Some(NamespaceType::Sub) {
+            ensure!(namespace_name.len() <= 64, errors_const::ERR_INVALID_LEN_NAMESPACE_NAME);
+            let parent_id = self
+                .parent_id
+                .unwrap_or_default()
+                .ok_or(anyhow!(errors_const::ERR_EMPTY_NAMESPACE_ID))?;
 
-        Ok(RegisterNamespaceTransaction {
-            abs_transaction: abs_tx,
-            namespace_type: NamespaceType::Root,
-            namespace_id,
-            name: namespace_name.parse().unwrap(),
-            duration: Some(duration),
-            parent_id: None,
-        })
+            ensure!(parent_id.to_u64() != 0, errors_const::ERR_EMPTY_NAMESPACE_ID);
+        }
+
+        Ok(())
     }
 
-    pub fn create_sub(
-        deadline: Deadline,
-        namespace_name: &'static str,
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut RegisterNamespaceTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut RegisterNamespaceTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
+}
+
+impl RegisterNamespaceTransaction {
+    pub fn builder_root(
+        namespace_name: impl Into<String>,
+        network_type: NetworkType,
+    ) -> RegisterNamespaceTransactionBuilder {
+        let common = CommonTransaction::create_from_type(
+            TransactionType::RegisterNamespace,
+            network_type,
+            TransactionVersion::NAMESPACE_REGISTRATION,
+            Some(Default::default()),
+            None,
+        );
+
+        let namespace_name = namespace_name.into();
+
+        let namespace_id = NamespaceId::from_name(namespace_name.as_str()).unwrap_or_default();
+
+        RegisterNamespaceTransactionBuilder {
+            common: Some(common),
+            namespace_id: Some(namespace_id),
+            name: Some(namespace_name),
+            namespace_type: Some(NamespaceType::Root),
+            ..Default::default()
+        }
+    }
+
+    pub fn builder_sub(
+        namespace_name: impl Into<String>,
         parent_id: NamespaceId,
         network_type: NetworkType,
-    ) -> Result<Self> {
-        ensure!(
-            !namespace_name.is_empty() && namespace_name.len() <= 64,
-            errors_const::ERR_INVALID_NAMESPACE_NAME
-        );
-
-        ensure!(
-            parent_id.to_u64() != 0,
-            errors_const::ERR_EMPTY_NAMESPACE_ID
-        );
-
-        let abs_tx = AbstractTransaction::new_from_type(
-            deadline,
-            REGISTER_NAMESPACE_VERSION,
-            TransactionType::NamespaceRegistration,
+    ) -> RegisterNamespaceTransactionBuilder {
+        let common = CommonTransaction::create_from_type(
+            TransactionType::RegisterNamespace,
             network_type,
+            TransactionVersion::NAMESPACE_REGISTRATION,
+            Some(Default::default()),
+            None,
         );
 
-        let namespace_id = generate_namespace_id(namespace_name, parent_id)?;
+        let namespace_name = namespace_name.into();
 
-        Ok(Self {
-            abs_transaction: abs_tx,
-            namespace_type: NamespaceType::Sub,
-            namespace_id,
-            name: namespace_name.parse().unwrap(),
-            duration: None,
-            parent_id: Some(parent_id),
-        })
+        let namespace_id =
+            generate_namespace_id(namespace_name.as_str(), parent_id).unwrap_or_default();
+
+        RegisterNamespaceTransactionBuilder {
+            common: Some(common),
+            namespace_id: Some(namespace_id),
+            name: Some(namespace_name),
+            parent_id: Some(Some(parent_id)),
+            duration: Some(Default::default()),
+            namespace_type: Some(NamespaceType::Sub),
+            ..Default::default()
+        }
     }
 }
 
-impl AbsTransaction for RegisterNamespaceTransaction {
-    fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
-    }
-}
-
+#[typetag::serde]
 impl Transaction for RegisterNamespaceTransaction {
     fn size(&self) -> usize {
         REGISTER_NAMESPACE_HEADER_SIZE + self.name.len()
@@ -120,31 +143,27 @@ impl Transaction for RegisterNamespaceTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(
-        self,
-        account: Account,
-        generation_hash: HashValue,
-    ) -> Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
+    fn get_common_transaction(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
+    fn to_serializer<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
 
-        let namespace_id_vec = builder.create_vector(&self.namespace_id.to_u32_array());
+        let namespace_id_vec = builder.create_vector(&self.namespace_id.to_dto());
 
         let d_vec = match self.namespace_type {
-            NamespaceType::Root => builder.create_vector(&self.duration.unwrap().to_i32_array()),
-            _ => builder.create_vector(&self.parent_id.unwrap().to_u32_array()),
+            NamespaceType::Root => builder.create_vector(&self.duration.unwrap().to_dto()),
+            _ => builder.create_vector(&self.parent_id.unwrap().to_dto()),
         };
 
         let name_vec = builder.create_string(self.name.as_ref());
 
-        let abs_vector = self.abs_transaction.build_vector(&mut builder);
+        let abs_vector = self.common.build_vector(&mut builder);
 
-        let mut txn_builder = buffer::RegisterNamespaceTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder = buffers::RegisterNamespaceTransactionBufferBuilder::new(&mut builder);
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
@@ -164,11 +183,7 @@ impl Transaction for RegisterNamespaceTransaction {
         builder.finish(t, None);
 
         let buf = builder.finished_data();
-        Ok(register_namespace_transaction_schema().serialize(&mut buf.to_vec()))
-    }
-
-    fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        register_namespace_transaction_schema().serialize(&mut buf.to_vec())
     }
 
     fn as_any(&self) -> &dyn Any {
@@ -186,10 +201,6 @@ impl Transaction for RegisterNamespaceTransaction {
 
 impl fmt::Display for RegisterNamespaceTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

@@ -4,14 +4,13 @@
  * license that can be found in the LICENSE file.
  */
 
-use {crypto::Keypair, failure};
+use anyhow::Result;
+use crypto::{Keypair, Signature};
 
-use crate::models::{
+use crate::{
     account::Account,
     errors_const,
-    transaction::{
-        AbsTransaction, AggregateTransaction, CosignatureSignedTransaction, Signature, Transaction,
-    },
+    transaction::{AggregateTransaction, CosignatureSignedTransaction, Transaction},
 };
 
 /// Cosign an aggregate bonded transaction.
@@ -21,33 +20,30 @@ use crate::models::{
 pub struct CosignatureTransaction(AggregateTransaction);
 
 impl CosignatureTransaction {
-    pub fn new(tx: Box<dyn Transaction>) -> crate::Result<Self> {
+    pub fn create(tx: Box<dyn Transaction>) -> Result<Self> {
         let aggregate = tx
             .try_downcast::<AggregateTransaction>()
-            .map_err(|_| failure::err_msg(errors_const::ERR_INVALID_AGGREGATE_TRANSACTION))?;
+            .map_err(|_| anyhow!(errors_const::ERR_INVALID_AGGREGATE_TRANSACTION))?;
 
         Ok(Self(*aggregate))
     }
 
-    pub(crate) fn sign_cosignature_transaction(
+    pub fn sign_cosignature_transaction(
         &self,
         account: Account,
-    ) -> crate::Result<CosignatureSignedTransaction> {
-        ensure!(
-            !self.0.transaction_hash().is_empty(),
-            errors_const::ERR_EMPTY_COSIGNATURE_HASH
-        );
+    ) -> Result<CosignatureSignedTransaction> {
+        ensure!(!self.0.get_transaction_hash().is_zero(), errors_const::ERR_EMPTY_COSIGNATURE_HASH);
 
         let signer = account.to_signer();
         let key_pair: Keypair = Keypair::from_private_key(account.key_pair.secret);
 
-        let hash_bytes = self.0.transaction_hash().to_vec();
+        let hash_bytes = self.0.get_transaction_hash();
 
-        let signature = key_pair.sign(&hash_bytes);
+        let signature = key_pair.sign(hash_bytes.as_bytes());
 
-        Ok(CosignatureSignedTransaction::new(
-            self.0.transaction_hash(),
-            Signature::new(signature.to_bytes()),
+        Ok(CosignatureSignedTransaction::create(
+            self.0.get_transaction_hash(),
+            Signature::from_bytes(&signature.to_bytes()).map_err(|err| anyhow!(err))?,
             signer,
         ))
     }

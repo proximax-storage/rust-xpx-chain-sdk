@@ -7,12 +7,13 @@
 use ::std::str::FromStr;
 
 use crate::{
-    account::{PublicAccount, EMPTY_PUBLIC_KEY},
+    account::PublicAccount,
+    api::error::Result,
     blockchain::BlockInfo,
-    network::extract_network_type,
-    transaction::{internal::extract_version, BlockchainTimestamp, HashValue},
-    Result,
+    helpers::TransactionHash,
+    transaction::{BlockchainTimestamp, internal::extract_version},
 };
+use crate::network::NetworkType;
 
 use super::Uint64Dto;
 
@@ -58,14 +59,14 @@ impl BlockDto {
     ) -> Result<BlockInfo> {
         let dto = self;
 
-        let network_type = extract_network_type(dto.version as u32);
+        let network_type = NetworkType::from_transaction_version(dto.version)?;
 
         let signer_public_account = PublicAccount::from_public_key(&dto.signer, network_type)?;
 
-        let version = extract_version(dto.version as u32);
+        let version = extract_version(dto.version);
 
         let beneficiary_public_account = if let Some(v) = dto.beneficiary {
-            if v != EMPTY_PUBLIC_KEY {
+            if v != "0000000000000000000000000000000000000000000000000000000000000000" {
                 Some(PublicAccount::from_public_key(&v, network_type)?)
             } else {
                 None
@@ -74,31 +75,24 @@ impl BlockDto {
             Option::default()
         };
 
-        let fee_multiplier = if let Some(v) = dto.fee_multiplier {
-            v
-        } else {
-            0
-        };
+        let fee_multiplier = if let Some(v) = dto.fee_multiplier { v } else { 0 };
 
         let block_receipts_hash = if let Some(v) = dto.block_receipts_hash {
-            HashValue::from_str(&v)?
+            TransactionHash::from_str(&v).map_err(|err| anyhow!(err))?
         } else {
-            HashValue::zero()
+            TransactionHash::zero()
         };
 
         let state_hash = if let Some(v) = dto.state_hash {
-            HashValue::from_str(&v)?
+            TransactionHash::from_str(&v).map_err(|err| anyhow!(err))?
         } else {
-            HashValue::zero()
+            TransactionHash::zero()
         };
 
         let fee_interest = if let Some(v) = dto.fee_interest { v } else { 0 };
 
-        let fee_interest_denominator = if let Some(v) = dto.fee_interest_denominator {
-            v
-        } else {
-            0
-        };
+        let fee_interest_denominator =
+            if let Some(v) = dto.fee_interest_denominator { v } else { 0 };
 
         Ok(BlockInfo {
             network_type,
@@ -107,13 +101,16 @@ impl BlockDto {
             version,
             ver_type: dto._type,
             height: dto.height.compact(),
-            timestamp: BlockchainTimestamp::new(*dto.timestamp.compact() as i64).to_timestamp(),
+            timestamp: BlockchainTimestamp::new(dto.timestamp.compact() as i64).to_timestamp(),
             difficulty: dto.difficulty.compact(),
             num_transactions,
             fee_multiplier,
-            generation_hash: HashValue::from_str(&generation_hash)?,
-            previous_block_hash: HashValue::from_str(&dto.previous_block_hash)?,
-            block_transactions_hash: HashValue::from_str(&dto.block_transactions_hash)?,
+            generation_hash: TransactionHash::from_str(&generation_hash)
+                .map_err(|err| anyhow!(err))?,
+            previous_block_hash: TransactionHash::from_str(&dto.previous_block_hash)
+                .map_err(|err| anyhow!(err))?,
+            block_transactions_hash: TransactionHash::from_str(&dto.block_transactions_hash)
+                .map_err(|err| anyhow!(err))?,
             block_receipts_hash,
             state_hash,
             beneficiary: beneficiary_public_account,

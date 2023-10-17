@@ -5,7 +5,7 @@ table MessageBuffer {
     payload: [ubyte];
 }
 
-table mosaic_buffer {
+table MosaicBuffer {
     id: [uint];
     amount: [uint];
 }
@@ -22,7 +22,7 @@ table TransferTransactionBuffer {
     message_size: ushort;
     num_mosaics: ubyte;
     message: MessageBuffer;
-    mosaics: [mosaic_buffer];
+    mosaics: [MosaicBuffer];
 }
 
 root_type TransferTransactionBuffer;

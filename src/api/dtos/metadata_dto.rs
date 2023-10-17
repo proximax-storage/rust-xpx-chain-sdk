@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-use downcast_rs::__std::collections::HashMap;
+use std::collections::HashMap;
 
 use crate::{
     api::metadata_dto_vec_to_struct,
@@ -42,14 +42,11 @@ impl MetadataInfoDto {
             fields.insert(String::from(&field.key), String::from(&field.value));
         });
 
-        MetadataInfo {
-            r#type: MetadataType::from(self._type),
-            fields,
-        }
+        MetadataInfo { r#type: MetadataType::from(self._type), fields }
     }
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub(crate) struct MetadataModificationDto {
     #[serde(rename = "modificationType")]
     modification_type: u8,
@@ -69,7 +66,7 @@ impl MetadataModificationDto {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ModifyMetadataTransactionDto {
     #[serde(flatten)]
@@ -79,12 +76,12 @@ pub(crate) struct ModifyMetadataTransactionDto {
 }
 
 impl ModifyMetadataTransactionDto {
-    pub fn compact(&self, info: TransactionInfo) -> crate::Result<ModifyMetadataTransaction> {
-        let abs_transaction = self.r#abstract.compact(info)?;
+    pub fn compact(&self, info: TransactionInfo) -> anyhow::Result<ModifyMetadataTransaction> {
+        let common = self.r#abstract.compact(info)?;
 
         let modifications = metadata_dto_vec_to_struct(self.modifications.clone());
         Ok(ModifyMetadataTransaction {
-            abs_transaction,
+            common,
             metadata_type: MetadataType::from(self.metadata_type),
             modifications,
         })
@@ -100,7 +97,7 @@ pub(crate) struct AddressMetadataInfoDto {
 }
 
 impl AddressMetadataInfoDto {
-    pub fn compact(&self) -> crate::Result<AddressMetadataInfo> {
+    pub fn compact(&self) -> anyhow::Result<AddressMetadataInfo> {
         let info = self.metadata.compact();
 
         let address = if !self.address.is_empty() {
@@ -121,7 +118,7 @@ pub(crate) struct MosaicMetadataInfoDto {
 }
 
 impl MosaicMetadataInfoDto {
-    pub fn compact(&self) -> crate::Result<MosaicMetadataInfo> {
+    pub fn compact(&self) -> anyhow::Result<MosaicMetadataInfo> {
         let info = self.metadata.compact();
 
         let mosaic_id = if !self.mosaic_id.0.is_empty() {
@@ -142,7 +139,7 @@ pub(crate) struct NamespaceMetadataInfoDto {
 }
 
 impl NamespaceMetadataInfoDto {
-    pub fn compact(&self) -> crate::Result<NamespaceMetadataInfo> {
+    pub fn compact(&self) -> anyhow::Result<NamespaceMetadataInfo> {
         let info = self.metadata.compact();
 
         let namespace_id = if !self.namespace_id.0.is_empty() {

@@ -4,6 +4,6 @@
  * license that can be found in the LICENSE file.
  */
 
-pub use self::node_model::*;
+pub use self::node::*;
 
-mod node_model;
+mod node;

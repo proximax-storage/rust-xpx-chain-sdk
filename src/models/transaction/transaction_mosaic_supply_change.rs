@@ -4,67 +4,72 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::fmt, failure::_core::any::Any, serde_json::Value};
+use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
 
-use crate::{
-    models::{
-        account::{Account, PublicAccount},
-        asset_id_model::AssetId,
-        consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE,
-        mosaic::MosaicSupplyType,
-        network::NetworkType,
-        uint_64::Uint64,
-    },
-    Result,
-};
+use crate::{AsUint64, mosaic::{MosaicSupplyType, UnresolvedMosaicId}, network::NetworkType};
+use crate::account::PublicAccount;
+use crate::models::consts::MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE;
+use crate::transaction::buffers;
+use crate::transaction::schema::mosaic_supply_change_transaction_schema;
 
 use super::{
-    buffer::mosaic_supply_change as buffer, deadline::Deadline, internal::sign_transaction,
-    schema::mosaic_supply_change_transaction_schema, AbsTransaction, AbstractTransaction,
-    HashValue, SignedTransaction, Transaction, TransactionType, MOSAIC_SUPPLY_CHANGE_VERSION,
+    CommonTransaction,
+    deadline::Deadline, Transaction, TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(create_empty = "empty", build_fn(error = "crate::api::error::Error"))]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicSupplyChangeTransaction {
-    pub abs_transaction: AbstractTransaction,
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
+    pub common: CommonTransaction,
     pub supply_type: MosaicSupplyType,
-    pub asset_id: Box<dyn AssetId>,
-    pub delta: Uint64,
+    #[builder(setter(custom))]
+    pub asset_id: Box<dyn UnresolvedMosaicId>,
+    pub delta: u64,
+}
+
+impl MosaicSupplyChangeTransactionBuilder {
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut MosaicSupplyChangeTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut MosaicSupplyChangeTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
+
+    /// The asset_id method sets the asset_id field.
+    pub fn asset_id<M: 'static + UnresolvedMosaicId>(
+        &mut self,
+        value: M,
+    ) -> &mut MosaicSupplyChangeTransactionBuilder {
+        self.asset_id = Some(Box::new(value));
+        self
+    }
 }
 
 impl MosaicSupplyChangeTransaction {
-    pub fn new(
-        deadline: Deadline,
-        supply_type: MosaicSupplyType,
-        asset_id: impl AssetId + 'static,
-        delta: Uint64,
-        network_type: NetworkType,
-    ) -> Result<Self> {
-        let abs_tx = AbstractTransaction::new_from_type(
-            deadline,
-            MOSAIC_SUPPLY_CHANGE_VERSION,
+    /// Build a MosaicSupplyChangeTransaction transaction object.
+    pub fn builder(network_type: NetworkType) -> MosaicSupplyChangeTransactionBuilder {
+        let common = CommonTransaction::create_from_type(
             TransactionType::MosaicSupplyChange,
             network_type,
+            TransactionVersion::MOSAIC_SUPPLY_CHANGE,
+            Some(Default::default()),
+            None,
         );
-
-        let id = Box::new(asset_id);
-
-        Ok(Self {
-            abs_transaction: abs_tx,
-            supply_type,
-            asset_id: id,
-            delta,
-        })
+        MosaicSupplyChangeTransactionBuilder { common: Some(common), ..Default::default() }
     }
 }
 
-impl AbsTransaction for MosaicSupplyChangeTransaction {
-    fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
-    }
-}
-
+#[typetag::serde]
 impl Transaction for MosaicSupplyChangeTransaction {
     fn size(&self) -> usize {
         MOSAIC_SUPPLY_CHANGE_TRANSACTION_SIZE
@@ -74,24 +79,21 @@ impl Transaction for MosaicSupplyChangeTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(
-        self,
-        account: Account,
-        generation_hash: HashValue,
-    ) -> Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
+    fn get_common_transaction(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
+    fn to_serializer<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
-        let mosaic_vec = builder.create_vector(&self.asset_id.to_u32_array());
-        let delta_vec = builder.create_vector(&self.delta.to_i32_array());
+        let mosaic_vec = builder.create_vector(&self.asset_id.to_dto());
+        let delta_vec = builder.create_vector(&self.delta.to_dto());
 
-        let abs_vector = self.abs_transaction.build_vector(&mut builder);
+        let abs_vector = self.common.build_vector(&mut builder);
 
-        let mut txn_builder = buffer::MosaicSupplyChangeTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder =
+            buffers::MosaicSupplyChangeTransactionBufferBuilder::new(&mut builder);
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
@@ -107,11 +109,11 @@ impl Transaction for MosaicSupplyChangeTransaction {
         builder.finish(t, None);
 
         let buf = builder.finished_data();
-        Ok(mosaic_supply_change_transaction_schema().serialize(&mut buf.to_vec()))
+        mosaic_supply_change_transaction_schema().serialize(&mut buf.to_vec())
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        self.common.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {
@@ -129,10 +131,6 @@ impl Transaction for MosaicSupplyChangeTransaction {
 
 impl fmt::Display for MosaicSupplyChangeTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

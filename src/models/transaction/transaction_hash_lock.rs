@@ -4,69 +4,59 @@
  * license that can be found in the LICENSE file.
  */
 
-use {failure::_core::any::Any, serde_json::Value, std::fmt};
+use std::any::Any;
+use anyhow::Result;
 
-use crate::{
-    models::{
-        account::{Account, PublicAccount},
-        consts::LOCK_SIZE,
-        mosaic::Mosaic,
-        network::NetworkType,
-        uint_64::Uint64,
-    },
-    Result,
-};
+use std::fmt;
+use serde_json::Value;
+
+use crate::{AsUint64, mosaic::Mosaic, network::NetworkType};
+use crate::account::PublicAccount;
+use crate::models::consts::LOCK_SIZE;
+use crate::transaction::buffers;
+use crate::transaction::schema::lock_funds_transaction_schema;
 
 use super::{
-    buffer::lock_funds as buffer, internal::sign_transaction,
-    schema::lock_funds_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    HashValue, SignedTransaction, Transaction, TransactionType, LOCK_VERSION,
+    CommonTransaction, Deadline, SignedTransaction,
+    Transaction, TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LockFundsTransaction {
-    pub abs_transaction: AbstractTransaction,
+    pub common: CommonTransaction,
     pub mosaic: Mosaic,
-    pub duration: Uint64,
+    pub duration: u64,
     pub signed_transaction: SignedTransaction,
 }
 
 impl LockFundsTransaction {
-    pub fn new(
+    pub fn create(
         deadline: Deadline,
         mosaic: Mosaic,
-        duration: Uint64,
+        duration: u64,
         signed_tx: SignedTransaction,
         network_type: NetworkType,
+        max_fee: Option<u64>,
     ) -> Result<Self> {
         ensure!(
-            signed_tx.get_type() == TransactionType::AggregateBonded,
-            "signed_tx must be of type AggregateBonded."
-        );
+			signed_tx.get_type() == TransactionType::AggregateBonded,
+			"signed_tx must be of type AggregateBonded."
+		);
 
-        let abs_tx = AbstractTransaction::new_from_type(
-            deadline,
-            LOCK_VERSION,
-            TransactionType::Lock,
+        let abs_tx = CommonTransaction::create_from_type(
+            TransactionType::HashLock,
             network_type,
+            TransactionVersion::HASH_LOCK,
+            Some(deadline),
+            max_fee,
         );
 
-        Ok(Self {
-            abs_transaction: abs_tx,
-            mosaic,
-            duration,
-            signed_transaction: signed_tx,
-        })
+        Ok(Self { common: abs_tx, mosaic, duration, signed_transaction: signed_tx })
     }
 }
 
-impl AbsTransaction for LockFundsTransaction {
-    fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
-    }
-}
-
+#[typetag::serde]
 impl Transaction for LockFundsTransaction {
     fn size(&self) -> usize {
         LOCK_SIZE
@@ -76,27 +66,23 @@ impl Transaction for LockFundsTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(
-        self,
-        account: Account,
-        generation_hash: HashValue,
-    ) -> Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
+    fn get_common_transaction(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
+    fn to_serializer<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
 
-        let mosaic_id_vector = _builder.create_vector_direct(&self.mosaic.asset_id.to_u32_array());
-        let amount_vector = _builder.create_vector_direct(&self.mosaic.amount.to_i32_array());
-        let duration_vector = _builder.create_vector_direct(&self.duration.to_i32_array());
-        let hash_vector = _builder.create_vector_direct(&self.signed_transaction.hash_to_bytes());
+        let mosaic_id_vector = _builder.create_vector(&self.mosaic.asset_id.to_dto());
+        let amount_vector = _builder.create_vector(&self.mosaic.amount.to_dto());
+        let duration_vector = _builder.create_vector(&self.duration.to_dto());
+        let hash_vector = _builder.create_vector(self.signed_transaction.hash_to_bytes());
 
-        let abs_vector = self.abs_transaction.build_vector(&mut _builder);
+        let abs_vector = self.common.build_vector(&mut _builder);
 
-        let mut txn_builder = buffer::LockFundsTransactionBufferBuilder::new(&mut _builder);
+        let mut txn_builder = buffers::LockFundsTransactionBufferBuilder::new(&mut _builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
@@ -115,11 +101,11 @@ impl Transaction for LockFundsTransaction {
 
         let buf = _builder.finished_data();
 
-        Ok(lock_funds_transaction_schema().serialize(&mut buf.to_vec()))
+        lock_funds_transaction_schema().serialize(&mut buf.to_vec())
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        self.common.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {
@@ -137,10 +123,6 @@ impl Transaction for LockFundsTransaction {
 
 impl fmt::Display for LockFundsTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

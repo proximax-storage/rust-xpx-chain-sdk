@@ -16,9 +16,7 @@ pub(crate) struct HeightInfoDto {
 
 impl HeightInfoDto {
     pub fn compact(&self) -> HeightInfo {
-        HeightInfo {
-            height: self.height.compact(),
-        }
+        HeightInfo { height: self.height.compact() }
     }
 }
 

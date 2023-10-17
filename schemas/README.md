@@ -1,6 +1,6 @@
 ## Generate flatbuffers transactions
 
-`flatc -go schema_aggregate_transaction.fbs`
+`flatc --rust schema_aggregate_transaction.fbs`
 
 Docs: http://google.github.io/flatbuffers/
 
@@ -13,10 +13,11 @@ cmake -G "Unix Makefiles"
 make
 cd -
 ```
+
 You can use syntax like:
 
 ```$xslt
-./flatbuffers/flatc --rust *.fbs
+./flatbuffers/flatc --defaults-json --gen-includes --gen-mutable --gen-all --rust-module-root-file --rust *.fbs
 ```
 
 

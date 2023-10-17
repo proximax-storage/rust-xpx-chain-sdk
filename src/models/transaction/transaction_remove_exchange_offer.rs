@@ -4,61 +4,55 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::fmt, failure::_core::any::Any, fb::FlatBufferBuilder, serde_json::Value};
+use std::any::Any;
+use anyhow::Result;
+use serde_json::Value;
 
-use crate::{
-    models::{
-        account::{Account, PublicAccount},
-        consts::{REMOVE_EXCHANGE_OFFER_HEADER_SIZE, REMOVE_EXCHANGE_OFFER_SIZE},
-        errors_const,
-        exchange::RemoveOffer,
-        network::NetworkType,
-        transaction::schema::remove_exchange_offer_transaction_schema,
-    },
-    Result,
+use {::std::fmt, fb::FlatBufferBuilder};
+use crate::account::PublicAccount;
+
+use crate::models::{
+    errors_const,
+    exchange::RemoveOffer,
+    network::NetworkType,
 };
+use crate::models::consts::{REMOVE_EXCHANGE_OFFER_HEADER_SIZE, REMOVE_EXCHANGE_OFFER_SIZE};
+use crate::transaction::schema::remove_exchange_offer_transaction_schema;
 
 use super::{
-    buffer::exchange as buffer, deadline::Deadline, internal::sign_transaction, AbsTransaction,
-    AbstractTransaction, HashValue, SignedTransaction, Transaction, TransactionType,
-    REMOVE_EXCHANGE_OFFER_VERSION,
+    buffers, CommonTransaction,
+    deadline::Deadline, Transaction, TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RemoveExchangeOfferTransaction {
-    pub abs_transaction: AbstractTransaction,
+    pub common: CommonTransaction,
     pub offers: Vec<RemoveOffer>,
 }
 
 impl RemoveExchangeOfferTransaction {
-    pub fn new(
+    pub fn create(
         deadline: Deadline,
         offers: Vec<RemoveOffer>,
         network_type: NetworkType,
+        max_fee: Option<u64>,
     ) -> Result<Self> {
         ensure!(!offers.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
 
-        let abs_tx = AbstractTransaction::new_from_type(
-            deadline,
-            REMOVE_EXCHANGE_OFFER_VERSION,
+        let common = CommonTransaction::create_from_type(
             TransactionType::RemoveExchangeOffer,
             network_type,
+            TransactionVersion::REMOVE_EXCHANGE_OFFER,
+            Some(deadline),
+            max_fee,
         );
 
-        Ok(Self {
-            abs_transaction: abs_tx,
-            offers,
-        })
+        Ok(Self { common, offers })
     }
 }
 
-impl AbsTransaction for RemoveExchangeOfferTransaction {
-    fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
-    }
-}
-
+#[typetag::serde]
 impl Transaction for RemoveExchangeOfferTransaction {
     fn size(&self) -> usize {
         REMOVE_EXCHANGE_OFFER_HEADER_SIZE + self.offers.len() * REMOVE_EXCHANGE_OFFER_SIZE
@@ -68,26 +62,22 @@ impl Transaction for RemoveExchangeOfferTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(
-        self,
-        account: Account,
-        generation_hash: HashValue,
-    ) -> Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
+    fn get_common_transaction(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
+    fn to_serializer<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
 
-        let abs_vector = self.abs_transaction.build_vector(&mut builder);
+        let abs_vector = self.common.build_vector(&mut builder);
 
         let offers_vector =
             remove_exchange_offer_to_array_to_buffer(&mut builder, self.offers.clone());
 
         let mut txn_builder =
-            buffer::RemoveExchangeOfferTransactionBufferBuilder::new(&mut builder);
+            buffers::RemoveExchangeOfferTransactionBufferBuilder::new(&mut builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
@@ -105,11 +95,11 @@ impl Transaction for RemoveExchangeOfferTransaction {
 
         let buf = builder.finished_data();
 
-        Ok(remove_exchange_offer_transaction_schema().serialize(&mut buf.to_vec()))
+        remove_exchange_offer_transaction_schema().serialize(&mut buf.to_vec())
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        self.common.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {
@@ -127,11 +117,7 @@ impl Transaction for RemoveExchangeOfferTransaction {
 
 impl fmt::Display for RemoveExchangeOfferTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -139,13 +125,13 @@ pub(crate) fn remove_exchange_offer_to_array_to_buffer<'a>(
     builder: &mut FlatBufferBuilder<'a>,
     offers: Vec<RemoveOffer>,
 ) -> fb::UOffsetT {
-    let mut offers_buffer: Vec<fb::WIPOffset<buffer::RemoveExchangeOfferBuffer<'a>>> =
+    let mut offers_buffer: Vec<fb::WIPOffset<buffers::RemoveExchangeOfferBuffer<'a>>> =
         Vec::with_capacity(offers.len());
 
     for item in offers {
-        let mosaic_vector = builder.create_vector_direct(&item.asset_id.to_u32_array());
+        let mosaic_vector = builder.create_vector(&item.asset_id.to_dto());
 
-        let mut add_exchange_offer = buffer::RemoveExchangeOfferBufferBuilder::new(builder);
+        let mut add_exchange_offer = buffers::RemoveExchangeOfferBufferBuilder::new(builder);
         add_exchange_offer.add_mosaic_id(mosaic_vector);
         add_exchange_offer.add_type_(item.r#type.value());
 

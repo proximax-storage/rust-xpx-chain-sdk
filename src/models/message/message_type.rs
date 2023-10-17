@@ -9,7 +9,7 @@ use {num_enum::IntoPrimitive, std::fmt};
 /// The type of the message:
 /// * 0 - Plain text or unencrypted message.
 /// * 1 - Secured text or encrypted message.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Copy, IntoPrimitive)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize, Copy, IntoPrimitive)]
 #[repr(u8)]
 pub enum MessageType {
     /// Plain text or unencrypted message.
@@ -24,6 +24,9 @@ pub enum MessageType {
 impl MessageType {
     pub fn value(self) -> u8 {
         self.into()
+    }
+    pub fn to_bytes(&self) -> [u8; 1] {
+        (self.value() as u8).to_le_bytes()
     }
 }
 
@@ -48,5 +51,29 @@ impl From<u8> for MessageType {
             0x01 => MessageType::SecureMessageType,
             _ => MessageType::UnknownMessageType,
         }
+    }
+}
+
+/// Creates `MessageType` with the default parameters.
+impl Default for MessageType {
+    fn default() -> Self {
+        Self::PlainMessageType
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::message::MessageType;
+
+    #[test]
+    fn test_plain_message_type_is_0x00() {
+        assert_eq!(MessageType::PlainMessageType as u8, 0x00);
+        assert_eq!(MessageType::PlainMessageType as u8, 0);
+    }
+
+    #[test]
+    fn test_secure_message_type_is_0x01() {
+        assert_eq!(MessageType::SecureMessageType as u8, 0x01);
+        assert_eq!(MessageType::SecureMessageType as u8, 1);
     }
 }

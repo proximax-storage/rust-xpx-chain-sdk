@@ -4,61 +4,56 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::fmt, failure::_core::any::Any, fb::FlatBufferBuilder, serde_json::Value};
+use std::any::Any;
+use anyhow::Result;
+use serde_json::Value;
 
-use crate::transaction::schema::exchange_offer_transaction_schema;
+use {::std::fmt, fb::FlatBufferBuilder};
+
 use crate::{
-    models::{
-        account::{Account, PublicAccount},
-        consts::{EXCHANGE_OFFER_HEADER_SIZE, EXCHANGE_OFFER_SIZE},
-        errors_const,
-        exchange::ExchangeConfirmation,
-        network::NetworkType,
-    },
-    Result,
+    AsUint64,
+    errors_const,
+    exchange::ExchangeConfirmation,
+    network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{EXCHANGE_OFFER_HEADER_SIZE, EXCHANGE_OFFER_SIZE};
+use crate::transaction::schema::exchange_offer_transaction_schema;
 
 use super::{
-    buffer::exchange as buffer, deadline::Deadline, internal::sign_transaction, AbsTransaction,
-    AbstractTransaction, HashValue, SignedTransaction, Transaction, TransactionType,
-    EXCHANGE_OFFER_VERSION,
+    buffers, CommonTransaction, deadline::Deadline,
+    Transaction, TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExchangeOfferTransaction {
-    pub abs_transaction: AbstractTransaction,
+    pub common: CommonTransaction,
     pub confirmations: Vec<ExchangeConfirmation>,
 }
 
 impl ExchangeOfferTransaction {
-    pub fn new(
+    pub fn create(
         deadline: Deadline,
         confirmations: Vec<ExchangeConfirmation>,
         network_type: NetworkType,
+        max_fee: Option<u64>,
     ) -> Result<Self> {
         ensure!(!confirmations.is_empty(), errors_const::ERR_EMPTY_ADDRESSES);
 
-        let abs_tx = AbstractTransaction::new_from_type(
-            deadline,
-            EXCHANGE_OFFER_VERSION,
+        let common = CommonTransaction::create_from_type(
             TransactionType::ExchangeOffer,
             network_type,
+            TransactionVersion::EXCHANGE_OFFER,
+            Some(deadline),
+            max_fee,
         );
 
-        Ok(Self {
-            abs_transaction: abs_tx,
-            confirmations,
-        })
+        Ok(Self { common, confirmations })
     }
 }
 
-impl AbsTransaction for ExchangeOfferTransaction {
-    fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
-    }
-}
-
+#[typetag::serde]
 impl Transaction for ExchangeOfferTransaction {
     fn size(&self) -> usize {
         EXCHANGE_OFFER_HEADER_SIZE + self.confirmations.len() * EXCHANGE_OFFER_SIZE
@@ -68,25 +63,21 @@ impl Transaction for ExchangeOfferTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(
-        self,
-        account: Account,
-        generation_hash: HashValue,
-    ) -> Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
+    fn get_common_transaction(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
+    fn to_serializer<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
 
-        let abs_vector = self.abs_transaction.build_vector(&mut builder);
+        let abs_vector = self.common.build_vector(&mut builder);
 
         let offers_vector =
             exchange_offer_to_array_to_buffer(&mut builder, self.confirmations.clone());
 
-        let mut txn_builder = buffer::AddExchangeOfferTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder = buffers::AddExchangeOfferTransactionBufferBuilder::new(&mut builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
@@ -104,11 +95,11 @@ impl Transaction for ExchangeOfferTransaction {
 
         let buf = builder.finished_data();
 
-        Ok(exchange_offer_transaction_schema().serialize(&mut buf.to_vec()))
+        exchange_offer_transaction_schema().serialize(&mut buf.to_vec())
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        self.common.set_aggregate(signer)
     }
 
     fn box_clone(&self) -> Box<dyn Transaction + 'static> {
@@ -126,11 +117,7 @@ impl Transaction for ExchangeOfferTransaction {
 
 impl fmt::Display for ExchangeOfferTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -138,21 +125,19 @@ pub(crate) fn exchange_offer_to_array_to_buffer<'a>(
     builder: &mut FlatBufferBuilder<'a>,
     offers: Vec<ExchangeConfirmation>,
 ) -> fb::UOffsetT {
-    let mut offers_buffer: Vec<fb::WIPOffset<buffer::ExchangeOfferBuffer<'a>>> =
+    let mut offers_buffer: Vec<fb::WIPOffset<buffers::ExchangeOfferBuffer<'a>>> =
         Vec::with_capacity(offers.len());
 
     for item in offers {
-        let mosaic_vector =
-            builder.create_vector_direct(&item.offer.mosaic.asset_id.to_u32_array());
+        let mosaic_vector = builder.create_vector(&item.offer.mosaic.asset_id.to_dto());
 
-        let mosaic_amount_vector =
-            builder.create_vector_direct(&item.offer.mosaic.amount.to_i32_array());
+        let mosaic_amount_vector = builder.create_vector(&item.offer.mosaic.amount.to_dto());
 
-        let cost_vector = builder.create_vector_direct(&item.offer.cost.to_i32_array());
+        let cost_vector = builder.create_vector(&item.offer.cost.to_dto());
 
-        let account_vector = builder.create_vector_direct(&item.owner.to_bytes());
+        let account_vector = builder.create_vector(item.owner.to_builder());
 
-        let mut add_exchange_offer = buffer::ExchangeOfferBufferBuilder::new(builder);
+        let mut add_exchange_offer = buffers::ExchangeOfferBufferBuilder::new(builder);
         add_exchange_offer.add_mosaic_id(mosaic_vector);
         add_exchange_offer.add_mosaic_amount(mosaic_amount_vector);
         add_exchange_offer.add_cost(cost_vector);

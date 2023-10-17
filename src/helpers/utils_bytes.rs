@@ -9,30 +9,13 @@ use {
     byteorder::{LittleEndian, WriteBytesExt},
 };
 
-pub const SIZE_U32: usize = size_of::<u32>();
-
-pub const SIZE_U64: usize = size_of::<u64>();
+const SIZE_U32: usize = size_of::<u32>();
 
 #[inline]
 pub fn u32_to_array_u8(value: u32) -> [u8; SIZE_U32] {
     let mut buf = [0u8; SIZE_U32];
-    buf.as_mut()
-        .write_u32::<LittleEndian>(value)
-        .expect("Unable to write");
+    buf.as_mut().write_u32::<LittleEndian>(value).expect("Unable to write");
     buf
-}
-
-#[inline]
-pub fn u64_to_array_u8(value: u64) -> [u8; SIZE_U64] {
-    let mut buf = [0u8; SIZE_U64];
-    buf.as_mut()
-        .write_u64::<LittleEndian>(value)
-        .expect("Unable to write");
-    buf
-}
-
-pub fn array_u8_to_u32(bytes: [u8; SIZE_U32]) -> u32 {
-    (bytes[0] as u32) | (bytes[1] as u32) << 8 | (bytes[2] as u32) << 16 | (bytes[3] as u32) << 24
 }
 
 pub fn array_u8_to_u64(bytes: &[u8]) -> u64 {

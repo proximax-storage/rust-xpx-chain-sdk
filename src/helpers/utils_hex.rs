@@ -25,3 +25,18 @@ pub fn hex_decode(data: &str) -> Vec<u8> {
 pub fn hex_encode(bytes: &[u8]) -> String {
     hex::encode(bytes)
 }
+
+pub fn hex_to_utf8(hex: &str) -> String {
+    let decode = hex_decode(hex);
+    String::from_utf8(decode).unwrap()
+}
+
+#[cfg(test)]
+pub fn utf8_to_hex(txt: &str) -> String {
+    use core::fmt::Write;
+    let mut ret = String::with_capacity(2 * txt.len());
+    for ch in txt.as_bytes() {
+        write!(ret, "{:02x}", ch).expect("writing to string");
+    }
+    ret
+}

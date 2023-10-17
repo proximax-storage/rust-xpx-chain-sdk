@@ -4,75 +4,88 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::any::Any, serde_json::Value};
+use std::any::Any;
+use std::fmt;
+
+use anyhow::Result;
+use serde_json::Value;
 
 use crate::{
-    models::{
-        account::{Account, PublicAccount},
-        consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE},
-        errors_const::ERR_EMPTY_MODIFICATIONS,
-        multisig::CosignatoryModification,
-        network::NetworkType,
-    },
-    Result,
+    errors_const,
+    multisig::CosignatoryModification,
+    network::NetworkType,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{KEY_SIZE, MODIFY_MULTISIG_HEADER_SIZE};
+use crate::transaction::buffers;
+use crate::transaction::internal::cosignatory_modification_array_to_buffer;
+use crate::transaction::schema::modify_multisig_account_transaction_schema;
 
 use super::{
-    buffer::modify_multisig_account as buffer,
-    internal::{cosignatory_modification_array_to_buffer, sign_transaction},
-    schema::modify_multisig_account_transaction_schema,
-    AbsTransaction, AbstractTransaction, Deadline, HashValue, SignedTransaction, Transaction,
-    TransactionType, MODIFY_MULTISIG_VERSION,
+    CommonTransaction, Deadline, Transaction,
+    TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(
+create_empty = "empty",
+build_fn(validate = "Self::validate", error = "crate::api::error::Error")
+)]
 #[serde(rename_all = "camelCase")]
 pub struct ModifyMultisigAccountTransaction {
-    pub abs_transaction: AbstractTransaction,
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
+    pub common: CommonTransaction,
     pub min_removal_delta: i8,
     pub min_approval_delta: i8,
     pub modifications: Vec<CosignatoryModification>,
 }
 
+impl ModifyMultisigAccountTransactionBuilder {
+    fn validate(&self) -> Result<()> {
+        if let Some(ref modifications) = self.modifications {
+            ensure!(!modifications.is_empty(), errors_const::ERR_EMPTY_MODIFICATIONS);
+        }
+
+        if let Some(min_approval_delta) = self.min_approval_delta {
+            ensure!(min_approval_delta != 0, errors_const::ERR_EMPTY_MODIFICATIONS);
+        }
+
+        if let Some(min_removal_delta) = self.min_removal_delta {
+            ensure!(min_removal_delta != 0, errors_const::ERR_EMPTY_MODIFICATIONS);
+        }
+
+        Ok(())
+    }
+
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut ModifyMultisigAccountTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut ModifyMultisigAccountTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
+}
+
 impl ModifyMultisigAccountTransaction {
-    pub fn new(
-        deadline: Deadline,
-        min_approval_delta: i8,
-        min_removal_delta: i8,
-        modifications: Vec<CosignatoryModification>,
-        network_type: NetworkType,
-    ) -> Result<Self> {
-        ensure!(
-            !modifications.is_empty() && min_approval_delta != 0 && min_removal_delta != 0,
-            ERR_EMPTY_MODIFICATIONS
-        );
-
-        let abs_tx = AbstractTransaction {
-            transaction_info: None,
+    /// Build a transfer transaction object.
+    pub fn builder(network_type: NetworkType) -> ModifyMultisigAccountTransactionBuilder {
+        let common = CommonTransaction::create_from_type(
+            TransactionType::MultisigAccountModify,
             network_type,
-            signature: None,
-            signer: Default::default(),
-            version: MODIFY_MULTISIG_VERSION,
-            transaction_type: TransactionType::ModifyMultisigAccount,
-            max_fee: None,
-            deadline: Some(deadline),
-        };
-
-        Ok(Self {
-            abs_transaction: abs_tx,
-            min_removal_delta,
-            min_approval_delta,
-            modifications,
-        })
+            TransactionVersion::MULTISIG_ACCOUNT_MODIFICATION,
+            Some(Default::default()),
+            None,
+        );
+        ModifyMultisigAccountTransactionBuilder { common: Some(common), ..Default::default() }
     }
 }
 
-impl AbsTransaction for ModifyMultisigAccountTransaction {
-    fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
-    }
-}
-
+#[typetag::serde]
 impl Transaction for ModifyMultisigAccountTransaction {
     fn size(&self) -> usize {
         MODIFY_MULTISIG_HEADER_SIZE + ((KEY_SIZE + 1) * self.modifications.len())
@@ -82,15 +95,11 @@ impl Transaction for ModifyMultisigAccountTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(
-        self,
-        account: Account,
-        generation_hash: HashValue,
-    ) -> Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
+    fn get_common_transaction(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
-    fn embedded_to_bytes(&self) -> Result<Vec<u8>> {
+    fn to_serializer<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut _builder = fb::FlatBufferBuilder::new();
@@ -100,10 +109,10 @@ impl Transaction for ModifyMultisigAccountTransaction {
         let modification_vector =
             cosignatory_modification_array_to_buffer(&mut _builder, modifications);
 
-        let abs_vector = self.abs_transaction.build_vector(&mut _builder);
+        let abs_vector = self.common.build_vector(&mut _builder);
 
         let mut txn_builder =
-            buffer::ModifyMultisigAccountTransactionBufferBuilder::new(&mut _builder);
+            buffers::ModifyMultisigAccountTransactionBufferBuilder::new(&mut _builder);
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
@@ -122,11 +131,11 @@ impl Transaction for ModifyMultisigAccountTransaction {
 
         let buf = _builder.finished_data();
 
-        Ok(modify_multisig_account_transaction_schema().serialize(&mut buf.to_vec()))
+        modify_multisig_account_transaction_schema().serialize(&mut buf.to_vec())
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        self.common.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {
@@ -142,12 +151,8 @@ impl Transaction for ModifyMultisigAccountTransaction {
     }
 }
 
-impl core::fmt::Display for ModifyMultisigAccountTransaction {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+impl fmt::Display for ModifyMultisigAccountTransaction {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

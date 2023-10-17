@@ -5,164 +5,280 @@
  */
 
 use {
-    num_enum::IntoPrimitive,
-    serde::{Serialize, Serializer},
+    num_enum::{FromPrimitive, IntoPrimitive},
+    serde_repr::*,
 };
 
-pub(crate) const ACCOUNT_PROPERTY_ADDRESS_VERSION: EntityVersion = 1;
-pub(crate) const ACCOUNT_PROPERTY_ENTITY_TYPE_VERSION: EntityVersion = 1;
-pub(crate) const ACCOUNT_PROPERTY_MOSAIC_VERSION: EntityVersion = 1;
-pub(crate) const ADDRESS_ALIAS_VERSION: EntityVersion = 1;
-pub(crate) const AGGREGATE_BONDED_VERSION: EntityVersion = 2;
-pub(crate) const AGGREGATE_COMPLETED_VERSION: EntityVersion = 2;
-pub(crate) const LOCK_VERSION: EntityVersion = 1;
-pub(crate) const MODIFY_MULTISIG_VERSION: EntityVersion = 3;
-pub(crate) const MOSAIC_ALIAS_VERSION: EntityVersion = 1;
-pub(crate) const MOSAIC_DEFINITION_VERSION: EntityVersion = 3;
-pub(crate) const MOSAIC_SUPPLY_CHANGE_VERSION: EntityVersion = 2;
-pub(crate) const REGISTER_NAMESPACE_VERSION: EntityVersion = 2;
-pub(crate) const TRANSFER_VERSION: EntityVersion = 3;
-pub(crate) const ADD_EXCHANGE_OFFER_VERSION: EntityVersion = 3;
-pub(crate) const EXCHANGE_OFFER_VERSION: EntityVersion = 1;
-pub(crate) const REMOVE_EXCHANGE_OFFER_VERSION: EntityVersion = 1;
-pub(crate) const METADATA_ADDRESS_VERSION: EntityVersion = 1;
-pub(crate) const METADATA_MOSAIC_VERSION: EntityVersion = 1;
-pub(crate) const METADATA_NAMESPACE_VERSION: EntityVersion = 1;
-
-//pub(crate) const BLOCKCHAIN_UPGRADE_VERSION: EntityVersion = 1;
-//pub(crate) const DRIVE_FILES_REWARD_VERSION: EntityVersion = 1;
-//pub(crate) const DRIVE_FILE_SYSTEM_VERSION: EntityVersion = 1;
-//pub(crate) const END_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
-//pub(crate) const END_DRIVE_VERSION: EntityVersion = 1;
-//pub(crate) const FILES_DEPOSIT_VERSION: EntityVersion = 1;
-//pub(crate) const JOIN_TO_DRIVE_VERSION: EntityVersion = 1;
-//pub(crate) const LINK_ACCOUNT_VERSION: EntityVersion = 2;
-//pub(crate) const MODIFY_CONTRACT_VERSION: EntityVersion = 3;
-//pub(crate) const NETWORK_CONFIG_VERSION: EntityVersion = 1;
-//pub(crate) const PREPARE_DRIVE_VERSION: EntityVersion = 1;
-//pub(crate) const SECRET_LOCK_VERSION: EntityVersion = 1;
-//pub(crate) const SECRET_PROOF_VERSION: EntityVersion = 1;
-//pub(crate) const START_DRIVE_VERIFICATION_VERSION: EntityVersion = 1;
-
-pub(crate) type EntityVersion = u32;
-
-/// The entity type:
-/// * 0x4141 (16705 decimal) - Aggregate Complete Transaction.
-/// * 0x4148 (16712 decimal) - Hash Lock Transaction.
-/// * 0x414C (16716 decimal) - Account Link Transaction.
-/// * 0x414D (16717 decimal) - Mosaic Definition Transaction.
-/// * 0x414E (16718 decimal) - Register Namespace Transaction.
-/// * 0x4150 (16720 decimal) - Account Properties Address Transaction.
-/// * 0x4152 (16722 decimal) - Secret Lock Transaction.
-/// * 0x4154 (16724 decimal) - Transfer Transaction.
-/// * 0x413D (16701 decimal) - Modify Metadata Address Transaction.
-/// * 0x423D (16957 decimal) - Modify Metadata Mosaic Transaction.
-/// * 0x433D (17213 decimal) - Modify Metadata Namespace Transaction.
-/// * 0x4158 (16728 decimal) - Blockchain Upgrade Transaction.
-/// * 0x4159 (16729 decimal) - Network Config Transaction.
-/// * 0x4241 (16961 decimal) - Aggregate Bonded Transaction.
-/// * 0x424D (16973 decimal) - Mosaic Supply Change Transaction.
-/// * 0x424E (16974 decimal) - Address Alias Transaction.
-/// * 0x4250 (16976 decimal) - Account Properties Mosaic Transaction.
-/// * 0x4252 (16978 decimal) - Secret Proof Transaction.
-/// * 0x434E (17230 decimal) - Mosaic Alias Transaction.
-/// * 0x4350 (17232 decimal) - Account Properties Entity Type Transaction.
-/// * 0x8043 (32835 decimal) - Nemesis block.
-/// * 0x8143 (33091 decimal) - Regular block.
-#[derive(Debug, Clone, Copy, PartialEq, Deserialize, IntoPrimitive)]
+/// The provided code defines the `TransactionType` enum,
+/// which represents different types of transactions in a blockchain system.
+/// Each transaction type variant is assigned a decimal value and a hexadecimal value using the repr attribute.
+#[derive(
+Debug,
+Clone,
+Copy,
+Eq,
+PartialEq,
+Serialize_repr,
+Deserialize_repr,
+IntoPrimitive,
+FromPrimitive,
+strum::Display,
+)]
 #[repr(u16)]
 pub enum TransactionType {
+    /// Reserved entity type.
+    Reserved = 0,
+
+    /// Blockchain Upgrade transaction type.
+    /// Decimal value = 16728
+    /// Hex value = 0x4158
+    ///
     BlockchainUpgrade = 0x4158,
+
+    /// Network Config transaction type.
+    /// Decimal value = 16729
+    /// Hex value = 0x4159
+    ///
     NetworkConfigEntityType = 0x4159,
+
+    /// Mosaic alias transaction type.
+    /// Decimal value = 17230
+    /// Hex value = 0x434E
+    ///
     MosaicAlias = 0x434E,
+
+    /// Mosaic definition transaction type.
+    /// Decimal value = 16717
+    /// Hex value = 0x414d
+    ///
     MosaicDefinition = 0x414D,
+
+    /// Mosaic supply change transaction.
+    /// Decimal value = 16973
+    /// Hex value = 0x424d
+    ///
     MosaicSupplyChange = 0x424D,
-    NamespaceRegistration = 0x414E,
+
+    /// Register namespace transaction type.
+    /// Decimal value = 16718
+    /// Hex value = 0x414e
+    ///
+    RegisterNamespace = 0x414E,
+
+    /// Add Exchange Offer transaction type.
+    /// Decimal value = 16733
+    /// Hex value = 0x415D
+    ///
     AddExchangeOffer = 0x415D,
+
+    /// Exchange Offer transaction type.
+    /// Decimal value = 16989
+    /// Hex value = 0x425D
+    ///
     ExchangeOffer = 0x425D,
+
+    /// Remove Exchange Offer transaction type.
+    /// Decimal value = 17245
+    /// Hex value = 0x435D
+    ///
     RemoveExchangeOffer = 0x435D,
+
+    /// Address alias transaction type.
+    /// Decimal value = 16974
+    /// Hex value = 0x424E
+    ///
     AddressAlias = 0x424E,
+
+    /// Transfer Transaction transaction type.
+    /// Decimal value = 16724
+    /// Hex value = 0x4154
+    ///
     Transfer = 0x4154,
+
+    /// Address Metadata transaction type.
+    /// Decimal value = 16701
+    /// Hex value = 0x413D
+    ///
     ModifyMetadataAddress = 0x413D,
+
+    /// Mosaic Metadata transaction type.
+    /// Decimal value = 16957
+    /// Hex value = 0x423D
+    ///
     ModifyMetadataMosaic = 0x423D,
+
+    /// Namespace Metadata transaction type.
+    /// Decimal value = 17213
+    /// Hex value = 0x433D
+    ///
     ModifyMetadataNamespace = 0x433D,
-    ModifyMultisigAccount = 0x4155,
+
+    /// Modify multisig account transaction type.
+    /// Decimal value = 16725
+    /// Hex value = 0x4155
+    ///
+    MultisigAccountModify = 0x4155,
+
+    /// Aggregate complete transaction type.
+    /// Decimal value = 16705
+    /// Hex value = 0x4141
+    ///
     AggregateComplete = 0x4141,
+
+    /// Aggregate bonded transaction type.
+    /// Decimal value = 16961
+    /// Hex value = 0x4241
+    ///
     AggregateBonded = 0x4241,
-    Lock = 0x4148,
+
+    /// Lock transaction type.
+    /// Decimal value = 16712
+    /// Hex value = 0x4148
+    ///
+    HashLock = 0x4148,
+
+    /// Account restriction address transaction type.
+    /// Decimal value = 16720
+    /// Hex value = 0x4150
+    ///
     AccountRestrictionAddress = 0x4150,
+
+    /// Account restriction mosaic transaction type.
+    /// Decimal value = 16976
+    /// Hex value = 0x4250
+    ///
     AccountRestrictionMosaic = 0x4250,
-    AccountRestrictionEntity = 0x4350,
+
+    /// Account restriction operation transaction type.
+    /// Decimal value = 17232
+    /// Hex value = 0x4350
+    ///
+    AccountRestrictionOperation = 0x4350,
+
+    /// Secret Lock Transaction type.
+    /// Decimal value = 16722
+    /// Hex value = 0x4152
+    ///
     SecretLock = 0x4152,
+
+    /// Secret Proof transaction type.
+    /// Decimal value = 16978
+    /// Hex value = 0x4252
+    ///
     SecretProof = 0x4252,
+
+    /// Link account transaction type.
+    /// Decimal value = 16716
+    /// Hex value = 0x414C
+    ///
     AccountLink = 0x414C,
+
+    /// Nemesis Block transaction type.
+    /// Decimal value = 32835
+    /// Hex value = 0x8043
+    ///
     NemesisBlock = 0x8043,
+
+    /// Regular block transaction type.
+    /// Decimal value = 33091
+    /// Hex value = 0x8143
+    ///
     Block = 0x8143,
+
+    /// Modify account metadata transaction type - NEM
+    /// Decimal value = 16703
+    /// Hex value = 0x413F
+    ///
+    AccountMetadataV2 = 0x413F,
+
+    /// Modify mosaic metadata transaction type - NEM
+    /// Decimal value = 16959
+    /// Hex value = 0x423F
+    ///
+    MosaicMetadataV2 = 0x423F,
+
+    /// Modify namespace metadata transaction type - NEM
+    /// Decimal value = 17215
+    /// Hex value = 0x433F
+    ///
+    NamespaceMetadataV2 = 0x433F,
+
+    /// Modify mosaic levy transaction type.
+    /// Decimal value = 17229
+    /// Hex value = 0x434D
+    ///
+    ModifyMosaicLevy = 0x434D,
+
+    /// Remove mosaic levy transaction type.
+    /// Decimal value = 17485
+    /// Hex value = 0x444D
+    ///
+    RemoveMosaicLevy = 0x444D,
+
+    #[num_enum(default)]
     EntityTypeUnknown,
 }
 
 impl TransactionType {
+    /// Returns the decimal value of the transaction type.
     pub fn value(self) -> u16 {
         self.into()
     }
 
+    /// Converts the transaction type into a little-endian byte array.
     pub fn to_bytes(self) -> [u8; 2] {
         self.value().to_le_bytes()
     }
 
+    /// Returns the hexadecimal representation of the transaction type.
     pub fn to_hex(&self) -> String {
         format!("{:#X}", self.value())
     }
 }
 
-impl From<u16> for TransactionType {
-    fn from(num: u16) -> Self {
-        use TransactionType::*;
-
-        match num {
-            0x4141 => AggregateComplete,
-            0x4148 => Lock,
-            0x414C => AccountLink,
-            0x414D => MosaicDefinition,
-            0x414E => NamespaceRegistration,
-            0x415D => AddExchangeOffer,
-            0x425D => ExchangeOffer,
-            0x435D => RemoveExchangeOffer,
-            0x4150 => AccountRestrictionAddress,
-            0x4152 => SecretLock,
-            0x4154 => Transfer,
-            0x4155 => ModifyMultisigAccount,
-            0x413D => ModifyMetadataAddress,
-            0x423D => ModifyMetadataMosaic,
-            0x433D => ModifyMetadataNamespace,
-            0x4158 => BlockchainUpgrade,
-            0x4159 => NetworkConfigEntityType,
-            0x4241 => AggregateBonded,
-            0x424D => MosaicSupplyChange,
-            0x424E => AddressAlias,
-            0x4250 => AccountRestrictionMosaic,
-            0x4252 => SecretProof,
-            0x434E => MosaicAlias,
-            0x4350 => AccountRestrictionEntity,
-            0x8043 => NemesisBlock,
-            0x8143 => Block,
-
-            _ => EntityTypeUnknown,
-        }
+impl From<TransactionType> for [u8; 2] {
+    /// Converts the `TransactionType` into a byte array.
+    fn from(value: TransactionType) -> Self {
+        value.to_bytes()
     }
 }
 
-impl core::fmt::Display for TransactionType {
-    fn fmt(&self, e: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(e, "{:?}", &self)
-    }
-}
+#[cfg(test)]
+mod tests {
+    use crate::transaction::TransactionType;
 
-impl Serialize for TransactionType {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        serializer.serialize_u16(self.value())
+    #[test]
+    fn test_should_match_the_specification() {
+        assert_eq!(TransactionType::BlockchainUpgrade, 0x4158.into());
+        assert_eq!(TransactionType::NetworkConfigEntityType, 0x4159.into());
+        assert_eq!(TransactionType::MosaicAlias, 0x434E.into());
+        assert_eq!(TransactionType::MosaicDefinition, 0x414d.into());
+        assert_eq!(TransactionType::MosaicSupplyChange, 0x424d.into());
+        assert_eq!(TransactionType::RegisterNamespace, 0x414e.into());
+        assert_eq!(TransactionType::AddExchangeOffer, 0x415D.into());
+        assert_eq!(TransactionType::ExchangeOffer, 0x425D.into());
+        assert_eq!(TransactionType::RemoveExchangeOffer, 0x435D.into());
+        assert_eq!(TransactionType::AddressAlias, 0x424E.into());
+        assert_eq!(TransactionType::Transfer, 0x4154.into());
+        assert_eq!(TransactionType::ModifyMetadataAddress, 0x413D.into());
+        assert_eq!(TransactionType::ModifyMetadataMosaic, 0x423D.into());
+        assert_eq!(TransactionType::ModifyMetadataNamespace, 0x433D.into());
+        assert_eq!(TransactionType::MultisigAccountModify, 0x4155.into());
+        assert_eq!(TransactionType::AggregateComplete, 0x4141.into());
+        assert_eq!(TransactionType::AggregateBonded, 0x4241.into());
+        assert_eq!(TransactionType::HashLock, 0x4148.into());
+        assert_eq!(TransactionType::AccountRestrictionAddress, 0x4150.into());
+        assert_eq!(TransactionType::AccountRestrictionMosaic, 0x4250.into());
+        assert_eq!(TransactionType::AccountRestrictionOperation, 0x4350.into());
+        assert_eq!(TransactionType::SecretLock, 0x4152.into());
+        assert_eq!(TransactionType::SecretProof, 0x4252.into());
+        assert_eq!(TransactionType::AccountLink, 0x414C.into());
+        assert_eq!(TransactionType::NemesisBlock, 0x8043.into());
+        assert_eq!(TransactionType::Block, 0x8143.into());
+        assert_eq!(TransactionType::AccountMetadataV2, 0x413F.into());
+        assert_eq!(TransactionType::MosaicMetadataV2, 0x423F.into());
+        assert_eq!(TransactionType::NamespaceMetadataV2, 0x433F.into());
+        assert_eq!(TransactionType::ModifyMosaicLevy, 0x434D.into());
+        assert_eq!(TransactionType::RemoveMosaicLevy, 0x444D.into());
     }
 }

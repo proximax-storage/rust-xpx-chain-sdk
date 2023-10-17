@@ -5,9 +5,17 @@
  */
 
 pub(crate) use self::internal::*;
+pub use self::namespace_alias::*;
 pub use self::namespace_id::*;
-pub use self::namespace_model::*;
+pub use self::namespace_ids::*;
+pub use self::namespace_info::*;
+pub use self::namespace_name::*;
+pub use self::namespace_type::*;
 
 mod internal;
+mod namespace_alias;
 mod namespace_id;
-mod namespace_model;
+mod namespace_ids;
+mod namespace_info;
+mod namespace_name;
+mod namespace_type;

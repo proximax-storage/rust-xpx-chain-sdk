@@ -4,69 +4,78 @@
  * license that can be found in the LICENSE file.
  */
 
-use {::std::fmt, failure::_core::any::Any, serde_json::Value};
+use ::std::fmt;
+use std::any::Any;
+use serde_json::Value;
 
 use crate::{
-    models::{
-        account::{Account, PublicAccount},
-        asset_id_model::AssetId,
-        consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE},
-        mosaic::{MosaicId, MosaicNonce, MosaicProperties, SUPPLY_MUTABLE, TRANSFERABLE},
-        network::NetworkType,
-    },
-    Result,
+    account::PublicAccount,
+    mosaic::{MosaicId, MosaicNonce, MosaicProperties},
+    network::NetworkType,
 };
+use crate::models::consts::{MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE, MOSAIC_OPTIONAL_PROPERTY_SIZE};
+use crate::transaction::buffers;
+use crate::transaction::internal::mosaic_property_array_to_buffer;
+use crate::transaction::schema::mosaic_definition_transaction_schema;
 
 use super::{
-    buffer::mosaic_definition as buffer,
-    deadline::Deadline,
-    internal::{mosaic_property_array_to_buffer, sign_transaction},
-    schema::mosaic_definition_transaction_schema,
-    AbsTransaction, AbstractTransaction, HashValue, SignedTransaction, Transaction,
-    TransactionType, MOSAIC_DEFINITION_VERSION,
+    CommonTransaction,
+    deadline::Deadline, Transaction, TransactionType,
+    TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Builder, Deserialize)]
+#[builder(create_empty = "empty", build_fn(error = "crate::api::error::Error"))]
 #[serde(rename_all = "camelCase")]
 pub struct MosaicDefinitionTransaction {
-    pub abs_transaction: AbstractTransaction,
+    /// Represents common transaction information..
+    #[builder(private, pattern = "mutable")]
+    pub common: CommonTransaction,
     pub properties: MosaicProperties,
     pub mosaic_nonce: MosaicNonce,
+    #[builder(setter(name = "owner_public_account", custom))]
     pub mosaic_id: MosaicId,
 }
 
+impl MosaicDefinitionTransactionBuilder {
+    /// The deadline method sets the deadline field.
+    pub fn deadline(&mut self, value: Deadline) -> &mut MosaicDefinitionTransactionBuilder {
+        self.common.as_mut().map(|item| item.deadline = Some(value));
+        self
+    }
+
+    /// The max_fee method sets the max_fee field.
+    pub fn max_fee(&mut self, value: u64) -> &mut MosaicDefinitionTransactionBuilder {
+        self.common.as_mut().map(|item| item.max_fee = Some(value));
+        self
+    }
+
+    pub fn owner_public_account(
+        &mut self,
+        value: PublicAccount,
+    ) -> &mut MosaicDefinitionTransactionBuilder {
+        let nonce = self.mosaic_nonce.unwrap_or(MosaicNonce::random());
+        let mosaic_id = MosaicId::create_from_nonce(nonce, value);
+        self.mosaic_id = Some(mosaic_id);
+        self
+    }
+}
+
 impl MosaicDefinitionTransaction {
-    pub fn new(
-        deadline: Deadline,
-        nonce: MosaicNonce,
-        owner_public_account: PublicAccount,
-        properties: MosaicProperties,
-        network_type: NetworkType,
-    ) -> Result<Self> {
-        let abs_tx = AbstractTransaction::new_from_type(
-            deadline,
-            MOSAIC_DEFINITION_VERSION,
+    /// Build a MosaicDefinitionTransaction transaction object.
+    pub fn builder(network_type: NetworkType) -> MosaicDefinitionTransactionBuilder {
+        let common = CommonTransaction::create_from_type(
             TransactionType::MosaicDefinition,
             network_type,
+            TransactionVersion::MOSAIC_DEFINITION,
+            Some(Default::default()),
+            None,
         );
-
-        let mosaic_id = MosaicId::from_nonce_and_owner(nonce, owner_public_account);
-
-        Ok(Self {
-            abs_transaction: abs_tx,
-            properties,
-            mosaic_nonce: nonce,
-            mosaic_id,
-        })
+        MosaicDefinitionTransactionBuilder { common: Some(common), ..Default::default() }
     }
 }
 
-impl AbsTransaction for MosaicDefinitionTransaction {
-    fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
-    }
-}
-
+#[typetag::serde]
 impl Transaction for MosaicDefinitionTransaction {
     fn size(&self) -> usize {
         MOSAIC_DEFINITION_TRANSACTION_HEADER_SIZE
@@ -77,37 +86,33 @@ impl Transaction for MosaicDefinitionTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(
-        self,
-        account: Account,
-        generation_hash: HashValue,
-    ) -> Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
+    fn get_common_transaction(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
+    fn to_serializer<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
 
         let mut flags: u8 = 0;
         if self.properties.supply_mutable {
-            flags += SUPPLY_MUTABLE;
+            flags += MosaicProperties::FLAG_SUPPLY_MUTABLE;
         }
 
         if self.properties.transferable {
-            flags += TRANSFERABLE;
+            flags += MosaicProperties::FLAG_TRANSFERABLE;
         }
 
-        let mosaic_vec = builder.create_vector(&self.mosaic_id.to_u32_array());
+        let mosaic_vec = builder.create_vector(&self.mosaic_id.to_dto());
         let property_vec = mosaic_property_array_to_buffer(
             &mut builder,
             self.properties.clone().optional_properties,
         );
 
-        let abs_vector = self.abs_transaction.build_vector(&mut builder);
+        let abs_vector = self.common.build_vector(&mut builder);
 
-        let mut txn_builder = buffer::MosaicDefinitionTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder = buffers::MosaicDefinitionTransactionBufferBuilder::new(&mut builder);
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
@@ -116,7 +121,7 @@ impl Transaction for MosaicDefinitionTransaction {
         txn_builder.add_max_fee(abs_vector.max_fee_vec);
         txn_builder.add_deadline(abs_vector.deadline_vec);
 
-        txn_builder.add_mosaic_nonce(self.mosaic_nonce.to_u32());
+        txn_builder.add_mosaic_nonce(self.mosaic_nonce.to_dto());
         txn_builder.add_mosaic_id(mosaic_vec);
         txn_builder.add_flags(flags);
         txn_builder.add_divisibility(self.properties.divisibility);
@@ -127,11 +132,7 @@ impl Transaction for MosaicDefinitionTransaction {
         builder.finish(t, None);
 
         let buf = builder.finished_data();
-        Ok(mosaic_definition_transaction_schema().serialize(&mut buf.to_vec()))
-    }
-
-    fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        mosaic_definition_transaction_schema().serialize(&mut buf.to_vec())
     }
 
     fn as_any(&self) -> &dyn Any {
@@ -149,10 +150,6 @@ impl Transaction for MosaicDefinitionTransaction {
 
 impl fmt::Display for MosaicDefinitionTransaction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

@@ -11,25 +11,25 @@ use crate::models::{
 };
 
 use super::{
-    buffer::modify_metadata as buffer, internal::metadata_modification_array_to_buffer,
-    schema::modify_metadata_transaction_schema, AbstractTransaction,
+    buffers, CommonTransaction,
+    internal::metadata_modification_array_to_buffer, schema::modify_metadata_transaction_schema,
 };
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ModifyMetadataTransaction {
-    pub abs_transaction: AbstractTransaction,
+    pub common: CommonTransaction,
     pub metadata_type: MetadataType,
     pub modifications: Vec<MetadataModification>,
 }
 
 impl ModifyMetadataTransaction {
     pub(crate) fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        self.common.set_aggregate(signer)
     }
 
-    pub(crate) fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
+    pub(crate) fn common(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
     pub(crate) fn size(&self) -> usize {
@@ -43,13 +43,13 @@ impl ModifyMetadataTransaction {
         builder: &mut fb::FlatBufferBuilder,
         metadata_vec: fb::WIPOffset<fb::Vector<u8>>,
         alias_size: usize,
-    ) -> crate::Result<Vec<u8>> {
+    ) -> Vec<u8> {
         let modification_vec =
             metadata_modification_array_to_buffer(builder, self.modifications.to_owned());
 
-        let abs_vector = self.abs_transaction.build_vector(builder);
+        let abs_vector = self.common.build_vector(builder);
 
-        let mut txn_builder = buffer::ModifyMetadataTransactionBufferBuilder::new(builder);
+        let mut txn_builder = buffers::ModifyMetadataTransactionBufferBuilder::new(builder);
         txn_builder.add_size_((self.size() + alias_size) as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
         txn_builder.add_signer(abs_vector.signer_vec);
@@ -66,6 +66,6 @@ impl ModifyMetadataTransaction {
 
         let buf = builder.finished_data();
 
-        Ok(modify_metadata_transaction_schema().serialize(&mut buf.to_vec()))
+        modify_metadata_transaction_schema().serialize(&mut buf.to_vec())
     }
 }

@@ -10,16 +10,14 @@ use {num_enum::IntoPrimitive, std::collections::HashMap};
 
 use crate::models::{
     account::PublicAccount,
-    mosaic::{Mosaic, MosaicId},
+    mosaic::{Mosaic, MosaicId, UnresolvedMosaicId},
     transaction::{Amount, Height},
-    uint_64::Uint64,
 };
-use crate::AssetId;
 
 pub type OfferInfos = Vec<OfferInfo>;
 pub type OfferIdInfos = Vec<OfferIdInfo>;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Copy, IntoPrimitive, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Copy, IntoPrimitive, Eq, Hash)]
 #[repr(u8)]
 pub enum OfferType {
     #[serde(rename = "sell")]
@@ -56,13 +54,13 @@ impl From<u8> for OfferType {
     }
 }
 
-impl core::fmt::Display for OfferType {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+impl fmt::Display for OfferType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", serde_json::to_string(self).unwrap_or_default())
     }
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Offer {
     pub r#type: OfferType,
@@ -71,26 +69,18 @@ pub struct Offer {
 }
 
 impl Offer {
-    pub fn new(offer_type: OfferType, mosaic: Mosaic, cost: Amount) -> Self {
-        Self {
-            r#type: offer_type,
-            mosaic,
-            cost,
-        }
+    pub fn create(offer_type: OfferType, mosaic: Mosaic, cost: Amount) -> Self {
+        Self { r#type: offer_type, mosaic, cost }
     }
 }
 
-impl core::fmt::Display for Offer {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for Offer {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AddOffer {
     #[serde(flatten)]
@@ -99,44 +89,33 @@ pub struct AddOffer {
 }
 
 impl AddOffer {
-    pub fn new(offer: Offer, duration: u64) -> Self {
+    pub fn create(offer: Offer, duration: u64) -> Self {
         Self { offer, duration }
     }
 }
 
-impl core::fmt::Display for AddOffer {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for AddOffer {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RemoveOffer {
     pub r#type: OfferType,
-    pub asset_id: Box<dyn AssetId>,
+    pub asset_id: Box<dyn UnresolvedMosaicId>,
 }
 
 impl RemoveOffer {
-    pub fn new(offer_type: OfferType, asset_id: impl AssetId + 'static) -> Self {
-        Self {
-            r#type: offer_type,
-            asset_id: Box::new(asset_id),
-        }
+    pub fn create(offer_type: OfferType, asset_id: impl UnresolvedMosaicId + 'static) -> Self {
+        Self { r#type: offer_type, asset_id: Box::new(asset_id) }
     }
 }
 
 impl fmt::Display for RemoveOffer {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }
 
@@ -145,18 +124,14 @@ impl fmt::Display for RemoveOffer {
 pub struct OfferInfo {
     pub owner: PublicAccount,
     pub mosaic: Mosaic,
-    pub price_denominator: Uint64,
-    pub price_numerator: Uint64,
+    pub price_denominator: u64,
+    pub price_numerator: u64,
     pub deadline: Height,
 }
 
-impl core::fmt::Display for OfferInfo {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for OfferInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -167,13 +142,9 @@ pub struct OfferIdInfo {
     pub offer_info: OfferInfo,
 }
 
-impl core::fmt::Display for OfferIdInfo {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for OfferIdInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -192,13 +163,9 @@ pub struct Exchange {
     pub sell_offers: OfferInfos,
 }
 
-impl core::fmt::Display for Exchange {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for Exchange {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -207,17 +174,13 @@ pub struct ExchangeInfo {
     pub exchange: Exchange,
 }
 
-impl core::fmt::Display for ExchangeInfo {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{:?}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for ExchangeInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExchangeConfirmation {
     #[serde(flatten)]
@@ -226,18 +189,14 @@ pub struct ExchangeConfirmation {
 }
 
 impl ExchangeConfirmation {
-    pub fn new(offer: Offer, owner: PublicAccount) -> Self {
+    pub fn create(offer: Offer, owner: PublicAccount) -> Self {
         Self { offer, owner }
     }
 }
 
-impl core::fmt::Display for ExchangeConfirmation {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for ExchangeConfirmation {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }
 
@@ -265,12 +224,8 @@ impl UserExchangeInfo {
     }
 }
 
-impl core::fmt::Display for UserExchangeInfo {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+impl fmt::Display for UserExchangeInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }

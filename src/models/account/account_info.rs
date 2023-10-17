@@ -4,9 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
-use crate::models::{mosaic::Mosaic, Uint64};
+use crate::mosaic::Mosaic;
 
-use super::{account_type::AccountLinkType, address_model::Address};
+use super::{AccountLinkType, Address};
 
 /// The 'AccountInfo' structure describes basic information for an account.
 #[derive(Debug, Serialize)]
@@ -16,7 +16,7 @@ pub struct AccountInfo {
     pub address: Address,
 
     /// The block height when the address was published.
-    pub address_height: Uint64,
+    pub address_height: u64,
 
     /// The public key of an account can be used to verify signatures of the account.
     /// Only accounts that have already published a transaction have a public key assigned to the account.
@@ -24,7 +24,7 @@ pub struct AccountInfo {
     pub public_key: String,
 
     /// The block height when the public key was first published.
-    pub public_key_height: Uint64,
+    pub public_key_height: u64,
 
     /// The account type.
     pub account_type: AccountLinkType,
@@ -32,32 +32,8 @@ pub struct AccountInfo {
     pub mosaics: Vec<Mosaic>,
 }
 
-impl AccountInfo {
-    pub fn new(
-        address: Address,
-        address_height: Uint64,
-        public_key: String,
-        public_key_height: Uint64,
-        account_type: AccountLinkType,
-        mosaics: Vec<Mosaic>,
-    ) -> Self {
-        AccountInfo {
-            address,
-            address_height,
-            public_key,
-            public_key_height,
-            account_type,
-            mosaics,
-        }
-    }
-}
-
 impl core::fmt::Display for AccountInfo {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap_or_default())
     }
 }

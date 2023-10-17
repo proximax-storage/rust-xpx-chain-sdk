@@ -1,0 +1,74 @@
+/*
+ * Copyright 2018 ProximaX Limited. All rights reserved.
+ * Use of this source code is governed by the Apache 2.0
+ * license that can be found in the LICENSE file.
+ */
+
+use std::task::{Context, Poll};
+
+use futures_util::future::BoxFuture;
+use hyper::http::{HeaderValue, Request, Uri};
+use hyper::http::uri::{Authority, Parts, Scheme};
+use tower::Service;
+
+#[derive(Debug, Clone)]
+pub struct AddOrigin<T> {
+    inner: T,
+    scheme: Option<Scheme>,
+    authority: Option<Authority>,
+}
+
+impl<T> AddOrigin<T> {
+    pub(crate) fn new(inner: T, origin: Uri) -> Self {
+        let Parts { scheme, authority, .. } = origin.into_parts();
+
+        Self { inner, scheme, authority }
+    }
+}
+
+impl<T, ReqBody> Service<Request<ReqBody>> for AddOrigin<T>
+    where
+        T: Service<Request<ReqBody>>,
+        T::Future: Send + 'static,
+        T::Error: Into<crate::api::Error>,
+{
+    type Response = T::Response;
+    type Error = crate::api::Error;
+    type Future = BoxFuture<'static, Result<Self::Response, Self::Error>>;
+
+    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        self.inner.poll_ready(cx).map_err(Into::into)
+    }
+
+    fn call(&mut self, req: Request<ReqBody>) -> Self::Future {
+        if self.scheme.is_none() || self.authority.is_none() {
+            let err = crate::api::transport::Error::new_invalid_uri();
+            return Box::pin(async move { Err::<Self::Response, _>(err.into()) });
+        }
+
+        // Split the request into the head and the body.
+        let (mut head, body) = req.into_parts();
+
+        // Update the the request URI
+        head.uri = {
+            // Split the request URI into parts.
+            let mut uri: Parts = head.uri.into();
+            // Update the URI parts, setting hte scheme and authority
+            uri.scheme = self.scheme.clone();
+            uri.authority = self.authority.clone();
+
+            Uri::from_parts(uri).expect("valid uri")
+        };
+        head.headers.append(
+            "Host",
+            HeaderValue::from_bytes(head.uri.host().as_ref().unwrap().as_bytes())
+                .expect("host header should be valid"),
+        );
+
+        let request = Request::from_parts(head, body);
+
+        let fut = self.inner.call(request);
+
+        Box::pin(async move { fut.await.map_err(Into::into) })
+    }
+}

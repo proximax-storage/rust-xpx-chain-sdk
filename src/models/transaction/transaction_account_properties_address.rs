@@ -4,72 +4,60 @@
  * license that can be found in the LICENSE file.
  */
 
-use {
-    ::std::fmt::{self, Display, Formatter},
-    failure::_core::any::Any,
-    serde_json::Value,
-};
+use anyhow::{bail, ensure, Result};
+
+use ::std::fmt::{self, Display, Formatter};
+use std::any::Any;
+use serde_json::Value;
 
 use crate::{
-    account::{Account, AccountPropertiesAddressModification, AccountPropertyType, PublicAccount},
-    models::consts::{
-        ACCOUNT_PROPERTIES_ADDRESS_MODIFICATION_SIZE, ACCOUNT_PROPERTY_ADDRESS_HEADER,
-    },
+    account::{AccountPropertiesAddressModification, AccountPropertyType},
     network::NetworkType,
-    Result,
 };
+use crate::account::PublicAccount;
+use crate::models::consts::{ACCOUNT_PROPERTIES_ADDRESS_MODIFICATION_SIZE, ACCOUNT_PROPERTY_ADDRESS_HEADER};
+use crate::transaction::buffers::{AccountPropertiesTransactionBufferBuilder, PropertyModificationBuffer, PropertyModificationBufferBuilder};
+use crate::transaction::schema::account_property_transaction_schema;
 
 use super::{
-    buffer::account_properties as buffer, internal::sign_transaction,
-    schema::account_property_transaction_schema, AbsTransaction, AbstractTransaction, Deadline,
-    HashValue, SignedTransaction, Transaction, TransactionType, ACCOUNT_PROPERTY_ADDRESS_VERSION,
+    CommonTransaction, Deadline, Transaction, TransactionType, TransactionVersion,
 };
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AccountPropertiesAddressTransaction {
-    pub abs_transaction: AbstractTransaction,
+    pub common: CommonTransaction,
     pub property_type: AccountPropertyType,
     pub modifications: Vec<AccountPropertiesAddressModification>,
 }
 
 impl AccountPropertiesAddressTransaction {
-    pub fn new(
+    pub fn create(
         deadline: Deadline,
         property_type: AccountPropertyType,
         modifications: Vec<AccountPropertiesAddressModification>,
         network_type: NetworkType,
-    ) -> crate::Result<Self> {
-        ensure!(
-            !modifications.is_empty(),
-            "modifications must not be empty."
-        );
+        max_fee: Option<u64>,
+    ) -> Result<Self> {
+        ensure!(!modifications.is_empty(), "modifications must not be empty.");
 
         if property_type.value() & AccountPropertyType::AllowAddress.value() == 0 {
             bail!("wrong propertyType for address account properties")
         }
 
-        let abs_tx = AbstractTransaction::new_from_type(
-            deadline,
-            ACCOUNT_PROPERTY_ADDRESS_VERSION,
+        let abs_tx = CommonTransaction::create_from_type(
             TransactionType::AccountRestrictionAddress,
             network_type,
+            TransactionVersion::MODIFY_ACCOUNT_RESTRICTION_ADDRESS,
+            Some(deadline),
+            max_fee,
         );
 
-        Ok(Self {
-            abs_transaction: abs_tx,
-            property_type,
-            modifications,
-        })
+        Ok(Self { common: abs_tx, property_type, modifications })
     }
 }
 
-impl AbsTransaction for AccountPropertiesAddressTransaction {
-    fn abs_transaction(&self) -> AbstractTransaction {
-        self.abs_transaction.to_owned()
-    }
-}
-
+#[typetag::serde]
 impl Transaction for AccountPropertiesAddressTransaction {
     fn size(&self) -> usize {
         ACCOUNT_PROPERTY_ADDRESS_HEADER
@@ -80,22 +68,18 @@ impl Transaction for AccountPropertiesAddressTransaction {
         serde_json::to_value(self).unwrap_or_default()
     }
 
-    fn sign_transaction_with(
-        self,
-        account: Account,
-        generation_hash: HashValue,
-    ) -> Result<SignedTransaction> {
-        sign_transaction(self, account, generation_hash)
+    fn get_common_transaction(&self) -> CommonTransaction {
+        self.common.to_owned()
     }
 
-    fn embedded_to_bytes<'a>(&self) -> Result<Vec<u8>> {
+    fn to_serializer<'a>(&self) -> Vec<u8> {
         // Build up a serialized buffer algorithmically.
         // Initialize it with a capacity of 0 bytes.
         let mut builder = fb::FlatBufferBuilder::new();
 
         let ml = self.modifications.len();
 
-        let mut modifications_buffer: Vec<fb::WIPOffset<buffer::PropertyModificationBuffer<'a>>> =
+        let mut modifications_buffer: Vec<fb::WIPOffset<PropertyModificationBuffer<'a>>> =
             Vec::with_capacity(ml);
 
         for modification in self.modifications.iter() {
@@ -103,8 +87,7 @@ impl Transaction for AccountPropertiesAddressTransaction {
 
             let v_address = builder.create_vector(address);
 
-            let mut modification_buffer =
-                buffer::PropertyModificationBufferBuilder::new(&mut builder);
+            let mut modification_buffer = PropertyModificationBufferBuilder::new(&mut builder);
             modification_buffer.add_modification_type(modification.modification_type.value());
             modification_buffer.add_value(v_address);
 
@@ -113,9 +96,9 @@ impl Transaction for AccountPropertiesAddressTransaction {
 
         let v_modifications = builder.create_vector(&modifications_buffer);
 
-        let abs_vector = self.abs_transaction.build_vector(&mut builder);
+        let abs_vector = self.common.build_vector(&mut builder);
 
-        let mut txn_builder = buffer::AccountPropertiesTransactionBufferBuilder::new(&mut builder);
+        let mut txn_builder = AccountPropertiesTransactionBufferBuilder::new(&mut builder);
 
         txn_builder.add_size_(self.size() as u32);
         txn_builder.add_signature(abs_vector.signature_vec);
@@ -134,11 +117,11 @@ impl Transaction for AccountPropertiesAddressTransaction {
 
         let buf = builder.finished_data();
 
-        Ok(account_property_transaction_schema().serialize(&mut buf.to_vec()))
+        account_property_transaction_schema().serialize(&mut buf.to_vec())
     }
 
     fn set_aggregate(&mut self, signer: PublicAccount) {
-        self.abs_transaction.set_aggregate(signer)
+        self.common.set_aggregate(signer)
     }
 
     fn as_any(&self) -> &dyn Any {
@@ -156,10 +139,6 @@ impl Transaction for AccountPropertiesAddressTransaction {
 
 impl Display for AccountPropertiesAddressTransaction {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_json::to_string_pretty(&self).unwrap_or_default()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
     }
 }

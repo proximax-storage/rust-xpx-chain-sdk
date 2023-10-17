@@ -4,17 +4,14 @@
  * license that can be found in the LICENSE file.
  */
 
+use anyhow::Result;
+
 use {
     regex::Regex,
     sha3::{Digest, Sha3_256},
 };
 
-use crate::{
-    account::Address,
-    helpers::{array_u8_to_u64, hex_encode, u64_to_array_u8},
-    models::{asset_id_model::AssetId, errors_const},
-    network::ALIAS_ADDRESS,
-};
+use crate::{errors_const, helpers::array_u8_to_u64, mosaic::UnresolvedMosaicId};
 
 use super::NamespaceId;
 
@@ -26,7 +23,7 @@ fn is_valid_namespace_name(name: &str) -> bool {
 }
 
 /// Generates a `NamespaceId` from a namespaceFullName.
-pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<NamespaceId>> {
+pub(crate) fn generate_namespace_path(name: &str) -> Result<Vec<NamespaceId>> {
     let parts: Vec<&str> = name.split('.').collect();
 
     ensure!(!parts.is_empty(), errors_const::ERR_INVALID_NAMESPACE_NAME);
@@ -38,10 +35,7 @@ pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<Namespace
     let mut path: Vec<NamespaceId> = vec![];
 
     for part in parts {
-        ensure!(
-            is_valid_namespace_name(part),
-            errors_const::ERR_INVALID_NAMESPACE_NAME
-        );
+        ensure!(is_valid_namespace_name(part), errors_const::ERR_INVALID_NAMESPACE_NAME);
 
         namespace_id = generate_namespace_id(part, namespace_id)?;
 
@@ -51,33 +45,16 @@ pub(crate) fn generate_namespace_path(name: &str) -> crate::Result<Vec<Namespace
     Ok(path)
 }
 
-pub(crate) fn generate_namespace_id(
-    name: &str,
-    parent_id: NamespaceId,
-) -> crate::Result<NamespaceId> {
+pub(crate) fn generate_namespace_id(name: &str, parent_id: NamespaceId) -> Result<NamespaceId> {
     let mut result = Sha3_256::default();
 
-    let id_to_bytes = parent_id.to_bytes();
+    let id_to_bytes = parent_id.to_builder();
 
-    result.input(id_to_bytes);
+    result.update(id_to_bytes);
 
-    result.input(name);
+    result.update(name);
 
-    let t_result = result.result();
+    let t_result = result.finalize();
 
-    Ok(NamespaceId::new(array_u8_to_u64(&t_result) | NAMESPACE_BIT))
-}
-
-// returns new Address from namespace identifier
-pub(crate) fn new_address_from_namespace(namespace_id: NamespaceId) -> crate::Result<Address> {
-    // 0x91 | namespaceId on 8 bytes | 16 bytes 0-pad = 25 bytes
-    let mut address_raw = ALIAS_ADDRESS.to_hex();
-
-    let buf = u64_to_array_u8(*namespace_id);
-
-    address_raw += &hex_encode(&buf);
-
-    address_raw += "00000000000000000000000000000000";
-
-    Address::from_encoded(&address_raw)
+    Ok(NamespaceId::create(array_u8_to_u64(&t_result) | NAMESPACE_BIT))
 }
