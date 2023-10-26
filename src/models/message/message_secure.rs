@@ -51,8 +51,11 @@ impl SecureMessage {
         // Encrypts the message
         let mut block_cipher = Ed25519BlockCipher::new(&sender_account.key_pair.secret);
 
-        let payload_vec =
-            if is_hex(&payload) { hex_decode(payload) } else { payload.as_bytes().to_vec() };
+        let payload_vec = if is_hex(&payload) {
+            hex_decode(payload)
+        } else {
+            payload.as_bytes().to_vec()
+        };
 
         let encrypted_payload = block_cipher.encrypt(
             &payload_vec,
@@ -72,7 +75,10 @@ impl SecureMessage {
     pub fn from_hex_payload(payload: &str) -> Result<Self> {
         ensure!(is_hex(payload), errors_const::ERR_INVALID_PAYLOAD_HEX);
 
-        Ok(SecureMessage { r#type: MessageType::SecureMessageType, payload: payload.to_string() })
+        Ok(SecureMessage {
+            r#type: MessageType::SecureMessageType,
+            payload: payload.to_string(),
+        })
     }
 
     /// It creates a `SecureMessage` from the given bytes.
@@ -93,13 +99,13 @@ impl SecureMessage {
     ) -> Result<PlainMessage> {
         let mut block_cipher = Ed25519BlockCipher::new(&recipient_account.key_pair.secret);
 
-        let encrypted_payload = block_cipher.decrypt(
-            &hex_decode(&self.payload),
-            &PublicKey::from_bytes(sender_public_account.to_builder())
-                .map_err(|err| anyhow!(err))?,
-        );
-
-        let encrypted_payload = encrypted_payload.unwrap();
+        let encrypted_payload = block_cipher
+            .decrypt(
+                &hex_decode(&self.payload),
+                &PublicKey::from_bytes(sender_public_account.to_builder())
+                    .map_err(|err| anyhow!(err))?,
+            )
+            .map_err(|err| anyhow!(err))?;
 
         let payload = match String::from_utf8(encrypted_payload.to_owned()) {
             Ok(payload) => payload,
@@ -125,7 +131,11 @@ impl Message for SecureMessage {
 
 impl core::fmt::Display for SecureMessage {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(f, "{}", serde_json::to_string_pretty(&self).unwrap_or_default())
+        write!(
+            f,
+            "{}",
+            serde_json::to_string_pretty(&self).unwrap_or_default()
+        )
     }
 }
 
@@ -143,11 +153,11 @@ pub mod tests {
         "B72F2950498111BADF276D6D9D5E345F04E0D5C9B8342DA983C3395B4CF18F08";
 
     lazy_static! {
-		static ref SENDER: Account =
-			Account::from_hex_private_key(SENDER_PRIVATE_KEY, NetworkType::PrivateTest).unwrap();
-		static ref RECIPIENT: Account =
-			Account::from_hex_private_key(RECIPIENT_PRIVATE_KEY, NetworkType::PrivateTest).unwrap();
-	}
+        static ref SENDER: Account =
+            Account::from_hex_private_key(SENDER_PRIVATE_KEY, NetworkType::PrivateTest).unwrap();
+        static ref RECIPIENT: Account =
+            Account::from_hex_private_key(RECIPIENT_PRIVATE_KEY, NetworkType::PrivateTest).unwrap();
+    }
 
     #[test]
     fn test_should_create_from_a_dto() {
@@ -159,10 +169,12 @@ pub mod tests {
 
     #[test]
     fn test_should_return_encrypted_message_dto() {
-        let encrypted_message =
-            SENDER.encrypt_message(RECIPIENT.public_account, "test transaction").unwrap();
-        let plain_message =
-            RECIPIENT.decrypt_message(SENDER.public_account, encrypted_message).unwrap();
+        let encrypted_message = SENDER
+            .encrypt_message(RECIPIENT.public_account, "test transaction")
+            .unwrap();
+        let plain_message = RECIPIENT
+            .decrypt_message(SENDER.public_account, encrypted_message)
+            .unwrap();
 
         assert_eq!(plain_message.payload, "test transaction");
     }
